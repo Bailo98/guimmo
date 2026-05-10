@@ -19,7 +19,7 @@ export const MOCK_PROPERTIES: Property[] = [
     neighborhood: "kipe",
     city: "Conakry",
     images: [
-      { id: "img-1", url: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80", alt: "Façade", isPrimary: true },
+      { id: "img-1", url: "https://images.unsplash.com/photo-5Hy1HNPJjcU?w=800&q=80", alt: "Façade", isPrimary: true },
       { id: "img-2", url: "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&q=80", alt: "Salon", isPrimary: false },
       { id: "img-3", url: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80", alt: "Cuisine", isPrimary: false },
     ],
@@ -74,7 +74,7 @@ export const MOCK_PROPERTIES: Property[] = [
     neighborhood: "hamdallaye",
     city: "Conakry",
     images: [
-      { id: "img-4", url: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80", alt: "Façade villa", isPrimary: true },
+      { id: "img-4", url: "https://images.unsplash.com/photo-ybVhYLhh1wA?w=800&q=80", alt: "Façade villa", isPrimary: true },
       { id: "img-5", url: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80", alt: "Jardin", isPrimary: false },
     ],
     owner: {
@@ -168,7 +168,7 @@ export const MOCK_PROPERTIES: Property[] = [
     neighborhood: "ratoma",
     city: "Conakry",
     images: [
-      { id: "img-7", url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80", alt: "Façade appartement", isPrimary: true },
+      { id: "img-7", url: "https://images.unsplash.com/photo-dTV3FTL7x58?w=800&q=80", alt: "Façade appartement", isPrimary: true },
       { id: "img-8", url: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=800&q=80", alt: "Salon", isPrimary: false },
     ],
     owner: {
@@ -223,8 +223,8 @@ export const MOCK_PROPERTIES: Property[] = [
     neighborhood: "taouyah",
     city: "Conakry",
     images: [
-      { id: "img-9", url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80", alt: "Maison", isPrimary: true },
-      { id: "img-10", url: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80", alt: "Cour intérieure", isPrimary: false },
+      { id: "img-9", url: "https://images.unsplash.com/photo-z11gbBo13ro?w=800&q=80", alt: "Maison", isPrimary: true },
+      { id: "img-10", url: "https://images.unsplash.com/photo-5Hy1HNPJjcU?w=800&q=80", alt: "Cour intérieure", isPrimary: false },
     ],
     owner: {
       id: "user-001",

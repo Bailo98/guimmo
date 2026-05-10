@@ -53,7 +53,7 @@ export default function InscriptionPage() {
   const [loading, setLoading] = useState(false);
   const [signupError, setSignupError] = useState<string | null>(null);
   const [form, setForm] = useState({
-    name: "", phone: "", whatsapp: "", password: "",
+    name: "", phone: "", password: "",
   });
 
   // OTP state
