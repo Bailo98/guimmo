@@ -1,64 +1,39 @@
 "use client";
 import { useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 function AuthCallbackInner() {
+  const searchParams = useSearchParams();
+
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
       window.location.href = "/connexion";
       return;
     }
 
-    function redirect(session: unknown) {
-      if (!session) return false;
-      document.cookie = `guimmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
-      window.location.href = "/compte";
-      return true;
+    const code = searchParams.get("code");
+
+    if (!code) {
+      window.location.href = "/connexion";
+      return;
     }
 
-    // Supabase v2 auto-exchanges the PKCE code from the URL on init.
-    // We just need to listen for the resulting session — do NOT call
-    // exchangeCodeForSession manually (double-exchange kills the code).
-    let done = false;
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (event: string, session: any) => {
-        if (done) return;
-        if (event === "SIGNED_IN" && session) {
-          done = true;
-          subscription.unsubscribe();
-          redirect(session);
-        }
-      }
-    );
-
-    // Also check immediately — the SIGNED_IN event may have already fired
-    // before our listener was registered.
+    // detectSessionInUrl is disabled — we handle the PKCE exchange once here.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    supabase.auth.getSession().then(({ data }: any) => {
-      if (done) return;
-      if (data?.session) {
-        done = true;
-        subscription.unsubscribe();
-        redirect(data.session);
-      }
-    });
-
-    // Fallback: give Supabase up to 10 seconds to finish the code exchange.
-    const timeout = setTimeout(() => {
-      if (!done) {
-        done = true;
-        subscription.unsubscribe();
+    (supabase.auth as any).exchangeCodeForSession(code)
+      .then(({ data, error }: any) => {
+        if (error || !data?.session) {
+          window.location.href = "/connexion";
+          return;
+        }
+        document.cookie = `guimmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+        window.location.href = "/compte";
+      })
+      .catch(() => {
         window.location.href = "/connexion";
-      }
-    }, 10000);
-
-    return () => {
-      clearTimeout(timeout);
-      subscription.unsubscribe();
-    };
-  }, []);
+      });
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen bg-[#111418] flex items-center justify-center">

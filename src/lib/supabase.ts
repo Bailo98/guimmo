@@ -9,7 +9,7 @@ export const supabase = isSupabaseConfigured
   ? createClient(url, key, {
       auth: {
         flowType: "pkce",
-        detectSessionInUrl: true,
+        detectSessionInUrl: false, // handled manually in /auth/callback
         persistSession: true,
       },
     })
