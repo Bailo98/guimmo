@@ -1,0 +1,126 @@
+"use client";
+import React, { createContext, useCallback, useContext, useRef, useState } from "react";
+import { X, CheckCircle, AlertCircle, Info } from "lucide-react";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type ToastType = "success" | "error" | "info";
+
+interface Toast {
+  id: number;
+  message: string;
+  type: ToastType;
+}
+
+interface ToastContextValue {
+  success: (message: string) => void;
+  error: (message: string) => void;
+  info: (message: string) => void;
+}
+
+// ─── Context ──────────────────────────────────────────────────────────────────
+
+const ToastContext = createContext<ToastContextValue | null>(null);
+
+// ─── Provider ─────────────────────────────────────────────────────────────────
+
+export function ToastProvider({ children }: { children: React.ReactNode }) {
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const counterRef = useRef(0);
+
+  const dismiss = useCallback((id: number) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
+  const addToast = useCallback((message: string, type: ToastType) => {
+    const id = ++counterRef.current;
+    setToasts((prev) => [...prev, { id, message, type }]);
+    setTimeout(() => dismiss(id), 3000);
+  }, [dismiss]);
+
+  const value: ToastContextValue = {
+    success: (msg) => addToast(msg, "success"),
+    error: (msg) => addToast(msg, "error"),
+    info: (msg) => addToast(msg, "info"),
+  };
+
+  return (
+    <ToastContext.Provider value={value}>
+      {children}
+      <Toaster toasts={toasts} onDismiss={dismiss} />
+    </ToastContext.Provider>
+  );
+}
+
+// ─── Hook ─────────────────────────────────────────────────────────────────────
+
+export function useToast(): ToastContextValue {
+  const ctx = useContext(ToastContext);
+  if (!ctx) throw new Error("useToast must be used inside <ToastProvider>");
+  return ctx;
+}
+
+// ─── Toaster ──────────────────────────────────────────────────────────────────
+
+const STYLES: Record<ToastType, { bg: string; border: string; icon: React.ReactNode }> = {
+  success: {
+    bg: "bg-[#16A34A]",
+    border: "border-green-700",
+    icon: <CheckCircle className="w-4 h-4 flex-shrink-0" />,
+  },
+  error: {
+    bg: "bg-red-600",
+    border: "border-red-700",
+    icon: <AlertCircle className="w-4 h-4 flex-shrink-0" />,
+  },
+  info: {
+    bg: "bg-[#F97316]",
+    border: "border-orange-600",
+    icon: <Info className="w-4 h-4 flex-shrink-0" />,
+  },
+};
+
+interface ToasterProps {
+  toasts: Toast[];
+  onDismiss: (id: number) => void;
+}
+
+function Toaster({ toasts, onDismiss }: ToasterProps) {
+  if (toasts.length === 0) return null;
+
+  return (
+    <div
+      aria-live="polite"
+      className="fixed bottom-20 left-0 right-0 z-50 flex flex-col items-center gap-2 px-4 pointer-events-none"
+    >
+      {toasts.map((toast) => {
+        const style = STYLES[toast.type];
+        return (
+          <div
+            key={toast.id}
+            className={`
+              pointer-events-auto flex items-center gap-3 w-full max-w-sm
+              ${style.bg} ${style.border} border
+              text-white text-sm font-medium
+              px-4 py-3 rounded-xl shadow-lg
+              animate-toast-in
+            `}
+          >
+            {style.icon}
+            <span className="flex-1">{toast.message}</span>
+            <button
+              onClick={() => onDismiss(toast.id)}
+              className="flex-shrink-0 ml-1 hover:opacity-70 transition-opacity"
+              aria-label="Fermer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// Named export so layout.tsx can import it independently if needed
+export { Toaster };
