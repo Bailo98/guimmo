@@ -1,8 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, Eye, MapPin, Bed, Bath, Square, Zap, MessageCircle, Phone, Scale, Star } from "lucide-react";
-import { motion } from "framer-motion";
+import { Heart, Eye, MapPin, Bed, Bath, Square, MessageCircle, Phone, Scale, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatPrice, timeAgo, getWhatsAppUrl, getWhatsAppMessage } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
@@ -48,12 +47,8 @@ export function PropertyCard({ property, variant = "default", className, index =
 
   if (variant === "horizontal") {
     return (
-      <motion.div
-        className={cn("group flex gap-3 bg-white dark:bg-[#1e2430] rounded-2xl overflow-hidden border border-slate-100 dark:border-[#2a3040] hover:shadow-lg transition-shadow duration-200", className)}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: index * 0.05 }}
-        whileHover={{ scale: 1.01 }}
+      <div
+        className={cn("group flex gap-3 bg-white dark:bg-[#1e2430] rounded-2xl overflow-hidden border border-slate-100 dark:border-[#2a3040] hover:shadow-lg transition-shadow duration-200 animate-fadeIn", className)}
       >
         <Link href={`/annonces/${property.id}`} className="relative w-28 flex-shrink-0">
           <div className="relative w-full h-full min-h-[100px]">
@@ -86,7 +81,6 @@ export function PropertyCard({ property, variant = "default", className, index =
             {property.bathrooms && <span className="flex items-center gap-0.5"><Bath className="w-3 h-3" />{property.bathrooms}</span>}
             {property.surface && <span className="flex items-center gap-0.5"><Square className="w-3 h-3" />{property.surface}m²</span>}
           </div>
-          {/* Contact actions */}
           <div className="flex items-center gap-2 mt-2">
             <a
               href={phoneUrl}
@@ -106,21 +100,17 @@ export function PropertyCard({ property, variant = "default", className, index =
             </a>
           </div>
         </div>
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <motion.div
+    <div
       className={cn(
-        "group bg-white dark:bg-[#1e2430] rounded-2xl overflow-hidden border border-slate-100 dark:border-[#2a3040] hover:shadow-xl transition-shadow duration-200",
+        "group bg-white dark:bg-[#1e2430] rounded-2xl overflow-hidden border border-slate-100 dark:border-[#2a3040] hover:shadow-xl transition-shadow duration-200 animate-fadeIn",
         property.availableNow && "border-l-2 border-l-green-400",
         className
       )}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.05 }}
-      whileHover={{ scale: 1.02 }}
     >
       {/* Image */}
       <Link href={`/annonces/${property.id}`} className="block relative aspect-[4/3] overflow-hidden">
@@ -281,6 +271,6 @@ export function PropertyCard({ property, variant = "default", className, index =
 
         <p className="text-slate-400 text-[10px] mt-2">{timeAgo(property.createdAt)}</p>
       </div>
-    </motion.div>
+    </div>
   );
 }

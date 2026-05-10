@@ -19,7 +19,7 @@
   --color-surface-dark-border-2: #334155;
 
   /* Typography */
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
 
   /* Animations */
   --animate-fade-in: fadeIn 0.3s ease-out;
