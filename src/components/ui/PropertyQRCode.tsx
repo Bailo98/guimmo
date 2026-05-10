@@ -1,4 +1,5 @@
 "use client";
+import { useRef } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { QrCode, Download } from "lucide-react";
 
@@ -8,8 +9,10 @@ interface Props {
 }
 
 export function PropertyQRCode({ url, title }: Props) {
+  const qrId = useRef(`qr-${Math.random().toString(36).slice(2)}`).current;
+
   function handleDownload() {
-    const svg = document.getElementById("property-qr-svg");
+    const svg = document.getElementById(qrId);
     if (!svg) return;
     const svgData = new XMLSerializer().serializeToString(svg);
     const canvas = document.createElement("canvas");
@@ -35,7 +38,7 @@ export function PropertyQRCode({ url, title }: Props) {
       <div className="flex items-center gap-4">
         <div className="bg-white p-2 rounded-xl border border-slate-200 flex-shrink-0">
           <QRCodeSVG
-            id="property-qr-svg"
+            id={qrId}
             value={url}
             size={88}
             bgColor="#ffffff"

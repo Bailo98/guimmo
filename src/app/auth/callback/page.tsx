@@ -31,7 +31,8 @@ function AuthCallbackInner() {
       }
 
       // Listen for auth state change (implicit flow or delayed PKCE)
-      const { data: { subscription } } = supabase!.auth.onAuthStateChange((event, session) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: { subscription } } = supabase!.auth.onAuthStateChange((event: any, session: any) => {
         if (event === "SIGNED_IN" && session) {
           document.cookie = `guimmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
           subscription.unsubscribe();

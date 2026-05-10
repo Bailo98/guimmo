@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { Save, Globe, Phone, Mail, Facebook, Instagram, Youtube, MessageCircle, Users, FileText, Info } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Save, Globe, Phone, Mail, Link, Video, MessageCircle, Users, FileText, Info } from "lucide-react";
 
 const TABS = [
   { id: "contact", label: "Coordonnées", icon: Phone },
@@ -38,8 +38,16 @@ export default function AdminContenuPage() {
   const [about, setAbout] = useState(INITIAL_ABOUT);
   const [saved, setSaved] = useState(false);
 
+  useEffect(() => {
+    try {
+      const c = localStorage.getItem("guimmo-contact");
+      if (c) setContact((prev) => ({ ...prev, ...JSON.parse(c) }));
+      const a = localStorage.getItem("guimmo-about");
+      if (a) setAbout((prev) => ({ ...prev, ...JSON.parse(a) }));
+    } catch { /* ignore */ }
+  }, []);
+
   function handleSave() {
-    // In production, save to Supabase site_settings table
     localStorage.setItem("guimmo-contact", JSON.stringify(contact));
     localStorage.setItem("guimmo-about", JSON.stringify(about));
     setSaved(true);
@@ -94,9 +102,9 @@ export default function AdminContenuPage() {
               { key: "emailSupport", label: "Email support", icon: Mail, placeholder: "support@guimmo.gn" },
               { key: "phone", label: "Téléphone", icon: Phone, placeholder: "+224 620 000 000" },
               { key: "whatsapp", label: "WhatsApp support", icon: MessageCircle, placeholder: "+224 620 000 000" },
-              { key: "facebook", label: "Page Facebook", icon: Facebook, placeholder: "https://facebook.com/guimmo" },
-              { key: "instagram", label: "Instagram", icon: Instagram, placeholder: "https://instagram.com/guimmo" },
-              { key: "youtube", label: "YouTube", icon: Youtube, placeholder: "https://youtube.com/@guimmo" },
+              { key: "facebook", label: "Page Facebook", icon: Link, placeholder: "https://facebook.com/guimmo" },
+              { key: "instagram", label: "Instagram", icon: Link, placeholder: "https://instagram.com/guimmo" },
+              { key: "youtube", label: "YouTube", icon: Video, placeholder: "https://youtube.com/@guimmo" },
               { key: "website", label: "Site web", icon: Globe, placeholder: "https://guimmo.gn" },
             ].map((f) => {
               const Icon = f.icon;
@@ -201,22 +209,36 @@ export default function AdminContenuPage() {
   );
 }
 
+const DEFAULT_MEMBERS = [
+  { id: "1", name: "Mamadou Diallo", role: "CEO & Fondateur", bio: "Passionné d'immobilier et de technologie.", photo: "" },
+  { id: "2", name: "Fatoumata Camara", role: "Directrice commerciale", bio: "10 ans d'expérience en immobilier.", photo: "" },
+];
+
 function TeamEditor() {
-  const [members, setMembers] = useState([
-    { id: "1", name: "Mamadou Diallo", role: "CEO & Fondateur", bio: "Passionné d'immobilier et de technologie.", photo: "" },
-    { id: "2", name: "Fatoumata Camara", role: "Directrice commerciale", bio: "10 ans d'expérience en immobilier.", photo: "" },
-  ]);
+  const [members, setMembers] = useState(DEFAULT_MEMBERS);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("guimmo-team");
+      if (saved) setMembers(JSON.parse(saved));
+    } catch { /* ignore */ }
+  }, []);
+
+  function save(next: typeof members) {
+    setMembers(next);
+    try { localStorage.setItem("guimmo-team", JSON.stringify(next)); } catch { /* ignore */ }
+  }
 
   function addMember() {
-    setMembers([...members, { id: Date.now().toString(), name: "", role: "", bio: "", photo: "" }]);
+    save([...members, { id: Date.now().toString(), name: "", role: "", bio: "", photo: "" }]);
   }
 
   function removeMember(id: string) {
-    setMembers(members.filter((m) => m.id !== id));
+    save(members.filter((m) => m.id !== id));
   }
 
   function updateMember(id: string, field: string, value: string) {
-    setMembers(members.map((m) => m.id === id ? { ...m, [field]: value } : m));
+    save(members.map((m) => m.id === id ? { ...m, [field]: value } : m));
   }
 
   return (
@@ -264,20 +286,34 @@ function TeamEditor() {
   );
 }
 
+const DEFAULT_POSTS = [
+  { id: "1", title: "Comment trouver un logement à Conakry", category: "Guide", content: "", published: true, date: "2024-01-15" },
+];
+
 function BlogEditor() {
-  const [posts, setPosts] = useState([
-    { id: "1", title: "Comment trouver un logement à Conakry", category: "Guide", content: "", published: true, date: "2024-01-15" },
-  ]);
+  const [posts, setPosts] = useState(DEFAULT_POSTS);
   const [editing, setEditing] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("guimmo-blog-posts");
+      if (saved) setPosts(JSON.parse(saved));
+    } catch { /* ignore */ }
+  }, []);
+
+  function savePosts(next: typeof posts) {
+    setPosts(next);
+    try { localStorage.setItem("guimmo-blog-posts", JSON.stringify(next)); } catch { /* ignore */ }
+  }
 
   function addPost() {
     const newPost = { id: Date.now().toString(), title: "", category: "Actualité", content: "", published: false, date: new Date().toISOString().split("T")[0] };
-    setPosts([newPost, ...posts]);
+    savePosts([newPost, ...posts]);
     setEditing(newPost.id);
   }
 
   function updatePost(id: string, field: string, value: string | boolean) {
-    setPosts(posts.map((p) => p.id === id ? { ...p, [field]: value } : p));
+    savePosts(posts.map((p) => p.id === id ? { ...p, [field]: value } : p));
   }
 
   return (
@@ -341,7 +377,7 @@ function BlogEditor() {
                   </div>
                   <span className="text-sm text-slate-700 dark:text-slate-200">Publié</span>
                 </label>
-                <button onClick={() => setPosts(posts.filter((p) => p.id !== post.id))} className="text-xs text-red-500 hover:text-red-700 font-semibold">
+                <button onClick={() => savePosts(posts.filter((p) => p.id !== post.id))} className="text-xs text-red-500 hover:text-red-700 font-semibold">
                   Supprimer
                 </button>
               </div>

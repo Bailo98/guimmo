@@ -761,6 +761,7 @@ export default function PublierPage() {
                 { label: "Photos", value: `${images.length} photo${images.length !== 1 ? "s" : ""}` },
                 { label: "Équipements", value: form.features.length > 0 ? form.features.join(", ") : "Aucun" },
                 { label: "Contact", value: form.phone || "—" },
+                { label: "Vidéo", value: form.videoUrl ? "✅ Oui" : "Non" },
               ].map(({ label, value }) => (
                 <div key={label} className="flex items-start justify-between text-sm gap-3">
                   <span className="text-slate-500 flex-shrink-0">{label}</span>
