@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { BarChart3, Home, Users, FileText, CreditCard, AlertTriangle, Settings, LogOut } from "lucide-react";
+import { BarChart3, Home, Users, FileText, CreditCard, AlertTriangle, Settings, LogOut, Palette } from "lucide-react";
 
 const NAV = [
   { href: "/admin", icon: Home, label: "Tableau de bord" },
@@ -12,6 +12,7 @@ const NAV = [
   { href: "/admin/paiements", icon: CreditCard, label: "Paiements" },
   { href: "/admin/signalements", icon: AlertTriangle, label: "Signalements" },
   { href: "/admin/moderation", icon: BarChart3, label: "Modération" },
+  { href: "/admin/contenu", icon: Palette, label: "Contenu du site" },
   { href: "/admin/parametres", icon: Settings, label: "Paramètres" },
 ];
 
@@ -62,7 +63,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-colors text-sm font-medium"
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors text-sm font-medium ${pathname === item.href ? "bg-white/10 text-white" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
               >
                 <Icon className="w-4 h-4" />
                 {item.label}

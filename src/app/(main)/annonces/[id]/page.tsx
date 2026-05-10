@@ -13,13 +13,13 @@ import { AvailabilityCalendar } from "@/components/property/AvailabilityCalendar
 import { UserPropertyDetail } from "@/components/property/UserPropertyDetail";
 import { PropertyGallery } from "@/components/property/PropertyGallery";
 import { PropertyDetailMapSection } from "@/components/map/PropertyDetailMapSection";
+import { PropertyQRCode } from "@/components/ui/PropertyQRCode";
 import type { Metadata } from "next";
 import { PropertyTimeline } from "@/components/property/PropertyTimeline";
 import { PrintButton } from "@/components/ui/PrintButton";
 import {
   MapPin, Bed, Bath, Square, Eye, Calendar, CheckCircle,
-  Shield, Phone, Wifi, Zap, Car, Sun, Droplets, Play,
-  QrCode
+  Shield, Phone, Wifi, Zap, Car, Sun, Droplets, Play, ArrowLeft
 } from "lucide-react";
 
 interface Props {
@@ -114,14 +114,22 @@ export default async function PropertyDetailPage({ params }: Props) {
           .dark\\:border-\\[\\#2a3040\\] { border-color: #ddd !important; }
         }
       `}</style>
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs text-slate-400 py-4">
-        <Link href="/" className="hover:text-[#F97316]">Accueil</Link>
-        <span>/</span>
-        <Link href="/annonces" className="hover:text-[#F97316]">Annonces</Link>
-        <span>/</span>
-        <span className="text-slate-600 dark:text-slate-300 line-clamp-1">{property.title}</span>
-      </nav>
+      {/* Back button + Breadcrumb */}
+      <div className="flex items-center gap-3 py-4">
+        <Link
+          href="/annonces"
+          className="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-[#1e2430] hover:bg-slate-200 dark:hover:bg-[#2a3040] transition-colors text-slate-600 dark:text-slate-300 flex-shrink-0"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </Link>
+        <nav className="flex items-center gap-2 text-xs text-slate-400 overflow-hidden">
+          <Link href="/" className="hover:text-[#F97316] whitespace-nowrap">Accueil</Link>
+          <span>/</span>
+          <Link href="/annonces" className="hover:text-[#F97316] whitespace-nowrap">Annonces</Link>
+          <span>/</span>
+          <span className="text-slate-600 dark:text-slate-300 line-clamp-1">{property.title}</span>
+        </nav>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content */}
@@ -233,15 +241,15 @@ export default async function PropertyDetailPage({ params }: Props) {
           {/* Availability calendar */}
           <AvailabilityCalendar availableNow={property.availableNow} />
 
-          {/* Video section - only for demo on prop-001 */}
-          {property.id === "prop-001" && (
+          {/* Video section */}
+          {(property as { videoUrl?: string }).videoUrl && (
             <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-5 border border-slate-100 dark:border-[#2a3040]">
               <h2 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                 <Play className="w-4 h-4 text-[#F97316]" /> Vidéo de présentation
               </h2>
               <div className="relative aspect-video rounded-xl overflow-hidden bg-slate-900">
                 <iframe
-                  src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                  src={(property as { videoUrl?: string }).videoUrl}
                   title="Visite vidéo"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -278,21 +286,11 @@ export default async function PropertyDetailPage({ params }: Props) {
             <PrintButton />
           </div>
 
-          {/* QR Code */}
-          <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-5 border border-slate-100 dark:border-[#2a3040] print:break-inside-avoid">
-            <h2 className="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-              <QrCode className="w-4 h-4 text-[#F97316]" /> QR Code de l&apos;annonce
-            </h2>
-            <div className="flex items-center gap-4">
-              <div className="bg-white p-3 rounded-xl w-24 h-24 flex items-center justify-center border-2 border-dashed border-slate-200">
-                <QrCode className="w-12 h-12 text-slate-400" />
-              </div>
-              <div>
-                <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">Scannez pour partager</p>
-                <p className="text-xs text-slate-400 mt-1">Collez ce QR code sur une affiche physique pour que les gens accèdent directement à cette annonce</p>
-              </div>
-            </div>
-          </div>
+          {/* QR Code réel */}
+          <PropertyQRCode
+            url={`https://guimmo-orcin.vercel.app/annonces/${property.id}`}
+            title={property.title}
+          />
 
           {/* Property Timeline */}
           <PropertyTimeline price={property.price} createdAt={property.createdAt} availableNow={property.availableNow} />

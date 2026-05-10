@@ -69,6 +69,7 @@ interface FormState {
   phone: string;
   whatsapp: string;
   email: string;
+  videoUrl: string;
 }
 
 const INITIAL_FORM: FormState = {
@@ -90,6 +91,7 @@ const INITIAL_FORM: FormState = {
   phone: "",
   whatsapp: "",
   email: "",
+  videoUrl: "",
 };
 
 const DRAFT_KEY = "guimmo-draft";
@@ -258,6 +260,7 @@ export default function PublierPage() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         features: form.features,
+        ...(form.videoUrl ? { videoUrl: form.videoUrl } : {}),
       });
       // Save to Supabase (runs in background, doesn't block UX)
       publishProperty(
@@ -645,6 +648,21 @@ export default function PublierPage() {
                   );
                 })}
               </div>
+            </div>
+
+            {/* Video URL */}
+            <div className="mb-6">
+              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 block">
+                🎬 Vidéo de présentation <span className="font-normal text-slate-400">(optionnel)</span>
+              </label>
+              <input
+                type="url"
+                placeholder="https://youtube.com/embed/... ou https://drive.google.com/..."
+                value={form.videoUrl}
+                onChange={(e) => setForm({ videoUrl: e.target.value })}
+                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm"
+              />
+              <p className="text-xs text-slate-400 mt-1">Collez un lien YouTube, Google Drive ou Vimeo pour ajouter une visite vidéo</p>
             </div>
 
             {/* Furnished & availableNow toggles */}

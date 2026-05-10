@@ -1,0 +1,354 @@
+"use client";
+import { useState } from "react";
+import { Save, Globe, Phone, Mail, Facebook, Instagram, Youtube, MessageCircle, Users, FileText, Info } from "lucide-react";
+
+const TABS = [
+  { id: "contact", label: "Coordonnées", icon: Phone },
+  { id: "about", label: "À propos", icon: Info },
+  { id: "team", label: "Équipe", icon: Users },
+  { id: "blog", label: "Blog", icon: FileText },
+];
+
+const INITIAL_CONTACT = {
+  email: "contact@guimmo.gn",
+  emailSupport: "support@guimmo.gn",
+  phone: "+224 620 000 000",
+  whatsapp: "+224 620 000 000",
+  facebook: "https://facebook.com/guimmo",
+  instagram: "https://instagram.com/guimmo",
+  youtube: "",
+  address: "Kipé, Conakry, Guinée",
+  website: "https://guimmo-orcin.vercel.app",
+};
+
+const INITIAL_ABOUT = {
+  title: "La plateforme immobilière de confiance en Guinée",
+  subtitle: "GuImmo connecte propriétaires et locataires en toute sécurité.",
+  mission: "Notre mission est de simplifier la recherche immobilière en Guinée en offrant une plateforme fiable, transparente et accessible à tous.",
+  vision: "Devenir la référence de l'immobilier en Afrique de l'Ouest.",
+  founded: "2024",
+  employees: "12",
+  listings: "2 400+",
+  users: "15 000+",
+};
+
+export default function AdminContenuPage() {
+  const [tab, setTab] = useState("contact");
+  const [contact, setContact] = useState(INITIAL_CONTACT);
+  const [about, setAbout] = useState(INITIAL_ABOUT);
+  const [saved, setSaved] = useState(false);
+
+  function handleSave() {
+    // In production, save to Supabase site_settings table
+    localStorage.setItem("guimmo-contact", JSON.stringify(contact));
+    localStorage.setItem("guimmo-about", JSON.stringify(about));
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white">Contenu du site</h1>
+          <p className="text-slate-500 text-sm">Modifiez les informations affichées sur le site</p>
+        </div>
+        <button
+          onClick={handleSave}
+          className="flex items-center gap-2 bg-[#F97316] text-white font-bold px-4 py-2.5 rounded-xl hover:bg-[#EA6C0A] transition-colors"
+        >
+          <Save className="w-4 h-4" />
+          {saved ? "✓ Enregistré !" : "Enregistrer"}
+        </button>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-2 border-b border-slate-200 dark:border-[#2a3040]">
+        {TABS.map((t) => {
+          const Icon = t.icon;
+          return (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors ${
+                tab === t.id
+                  ? "border-[#F97316] text-[#F97316]"
+                  : "border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Contact tab */}
+      {tab === "contact" && (
+        <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-6 border border-slate-100 dark:border-[#2a3040] space-y-5">
+          <h2 className="font-bold text-slate-900 dark:text-white">Coordonnées de GuImmo</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              { key: "email", label: "Email principal", icon: Mail, placeholder: "contact@guimmo.gn" },
+              { key: "emailSupport", label: "Email support", icon: Mail, placeholder: "support@guimmo.gn" },
+              { key: "phone", label: "Téléphone", icon: Phone, placeholder: "+224 620 000 000" },
+              { key: "whatsapp", label: "WhatsApp support", icon: MessageCircle, placeholder: "+224 620 000 000" },
+              { key: "facebook", label: "Page Facebook", icon: Facebook, placeholder: "https://facebook.com/guimmo" },
+              { key: "instagram", label: "Instagram", icon: Instagram, placeholder: "https://instagram.com/guimmo" },
+              { key: "youtube", label: "YouTube", icon: Youtube, placeholder: "https://youtube.com/@guimmo" },
+              { key: "website", label: "Site web", icon: Globe, placeholder: "https://guimmo.gn" },
+            ].map((f) => {
+              const Icon = f.icon;
+              return (
+                <div key={f.key}>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">{f.label}</label>
+                  <div className="relative">
+                    <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      type="text"
+                      value={contact[f.key as keyof typeof contact]}
+                      onChange={(e) => setContact({ ...contact, [f.key]: e.target.value })}
+                      placeholder={f.placeholder}
+                      className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Adresse physique</label>
+            <input
+              type="text"
+              value={contact.address}
+              onChange={(e) => setContact({ ...contact, address: e.target.value })}
+              className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* About tab */}
+      {tab === "about" && (
+        <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-6 border border-slate-100 dark:border-[#2a3040] space-y-5">
+          <h2 className="font-bold text-slate-900 dark:text-white">Page À propos</h2>
+
+          <div className="space-y-4">
+            {[
+              { key: "title", label: "Titre principal", multiline: false },
+              { key: "subtitle", label: "Sous-titre", multiline: false },
+            ].map((f) => (
+              <div key={f.key}>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">{f.label}</label>
+                <input
+                  type="text"
+                  value={about[f.key as keyof typeof about]}
+                  onChange={(e) => setAbout({ ...about, [f.key]: e.target.value })}
+                  className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+                />
+              </div>
+            ))}
+
+            {[
+              { key: "mission", label: "Notre mission" },
+              { key: "vision", label: "Notre vision" },
+            ].map((f) => (
+              <div key={f.key}>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">{f.label}</label>
+                <textarea
+                  rows={3}
+                  value={about[f.key as keyof typeof about]}
+                  onChange={(e) => setAbout({ ...about, [f.key]: e.target.value })}
+                  className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316] resize-none"
+                />
+              </div>
+            ))}
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { key: "founded", label: "Année de création" },
+                { key: "employees", label: "Employés" },
+                { key: "listings", label: "Annonces actives" },
+                { key: "users", label: "Utilisateurs" },
+              ].map((f) => (
+                <div key={f.key}>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">{f.label}</label>
+                  <input
+                    type="text"
+                    value={about[f.key as keyof typeof about]}
+                    onChange={(e) => setAbout({ ...about, [f.key]: e.target.value })}
+                    className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Team tab */}
+      {tab === "team" && (
+        <TeamEditor />
+      )}
+
+      {/* Blog tab */}
+      {tab === "blog" && (
+        <BlogEditor />
+      )}
+    </div>
+  );
+}
+
+function TeamEditor() {
+  const [members, setMembers] = useState([
+    { id: "1", name: "Mamadou Diallo", role: "CEO & Fondateur", bio: "Passionné d'immobilier et de technologie.", photo: "" },
+    { id: "2", name: "Fatoumata Camara", role: "Directrice commerciale", bio: "10 ans d'expérience en immobilier.", photo: "" },
+  ]);
+
+  function addMember() {
+    setMembers([...members, { id: Date.now().toString(), name: "", role: "", bio: "", photo: "" }]);
+  }
+
+  function removeMember(id: string) {
+    setMembers(members.filter((m) => m.id !== id));
+  }
+
+  function updateMember(id: string, field: string, value: string) {
+    setMembers(members.map((m) => m.id === id ? { ...m, [field]: value } : m));
+  }
+
+  return (
+    <div className="space-y-4">
+      {members.map((m) => (
+        <div key={m.id} className="bg-white dark:bg-[#1e2430] rounded-2xl p-5 border border-slate-100 dark:border-[#2a3040]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              { key: "name", label: "Nom" },
+              { key: "role", label: "Poste" },
+              { key: "photo", label: "URL photo" },
+            ].map((f) => (
+              <div key={f.key}>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">{f.label}</label>
+                <input
+                  type="text"
+                  value={m[f.key as keyof typeof m]}
+                  onChange={(e) => updateMember(m.id, f.key, e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316] text-slate-900 dark:text-white"
+                />
+              </div>
+            ))}
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Bio</label>
+              <textarea
+                rows={2}
+                value={m.bio}
+                onChange={(e) => updateMember(m.id, "bio", e.target.value)}
+                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316] resize-none text-slate-900 dark:text-white"
+              />
+            </div>
+          </div>
+          <button onClick={() => removeMember(m.id)} className="mt-3 text-xs text-red-500 hover:text-red-700 font-semibold">
+            Supprimer ce membre
+          </button>
+        </div>
+      ))}
+      <button
+        onClick={addMember}
+        className="w-full py-3 rounded-2xl border-2 border-dashed border-slate-200 dark:border-[#2a3040] text-slate-500 hover:border-[#F97316] hover:text-[#F97316] transition-colors text-sm font-semibold"
+      >
+        + Ajouter un membre
+      </button>
+    </div>
+  );
+}
+
+function BlogEditor() {
+  const [posts, setPosts] = useState([
+    { id: "1", title: "Comment trouver un logement à Conakry", category: "Guide", content: "", published: true, date: "2024-01-15" },
+  ]);
+  const [editing, setEditing] = useState<string | null>(null);
+
+  function addPost() {
+    const newPost = { id: Date.now().toString(), title: "", category: "Actualité", content: "", published: false, date: new Date().toISOString().split("T")[0] };
+    setPosts([newPost, ...posts]);
+    setEditing(newPost.id);
+  }
+
+  function updatePost(id: string, field: string, value: string | boolean) {
+    setPosts(posts.map((p) => p.id === id ? { ...p, [field]: value } : p));
+  }
+
+  return (
+    <div className="space-y-4">
+      <button
+        onClick={addPost}
+        className="flex items-center gap-2 bg-[#F97316] text-white font-bold px-4 py-2.5 rounded-xl hover:bg-[#EA6C0A] transition-colors text-sm"
+      >
+        + Nouvel article
+      </button>
+
+      {posts.map((post) => (
+        <div key={post.id} className="bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] overflow-hidden">
+          <div className="p-4 flex items-center justify-between">
+            <div>
+              <p className="font-semibold text-slate-900 dark:text-white text-sm">{post.title || "Nouvel article"}</p>
+              <div className="flex items-center gap-3 mt-1">
+                <span className="text-xs text-slate-400">{post.date}</span>
+                <span className={`text-xs font-semibold ${post.published ? "text-green-500" : "text-yellow-500"}`}>
+                  {post.published ? "Publié" : "Brouillon"}
+                </span>
+              </div>
+            </div>
+            <button
+              onClick={() => setEditing(editing === post.id ? null : post.id)}
+              className="text-xs font-semibold text-[#F97316] hover:underline"
+            >
+              {editing === post.id ? "Fermer" : "Modifier"}
+            </button>
+          </div>
+
+          {editing === post.id && (
+            <div className="border-t border-slate-100 dark:border-[#2a3040] p-4 space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">Titre</label>
+                  <input type="text" value={post.title} onChange={(e) => updatePost(post.id, "title", e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316] text-slate-900 dark:text-white" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">Catégorie</label>
+                  <select value={post.category} onChange={(e) => updatePost(post.id, "category", e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316] text-slate-900 dark:text-white">
+                    {["Guide", "Actualité", "Conseil", "Marché", "Annonce"].map((c) => <option key={c}>{c}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1">Contenu</label>
+                <textarea rows={6} value={post.content} onChange={(e) => updatePost(post.id, "content", e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316] resize-none text-slate-900 dark:text-white"
+                  placeholder="Écrivez votre article ici..." />
+              </div>
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <div
+                    onClick={() => updatePost(post.id, "published", !post.published)}
+                    className={`w-10 h-5 rounded-full transition-colors relative cursor-pointer ${post.published ? "bg-green-500" : "bg-slate-300"}`}
+                  >
+                    <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all ${post.published ? "right-0.5" : "left-0.5"}`} />
+                  </div>
+                  <span className="text-sm text-slate-700 dark:text-slate-200">Publié</span>
+                </label>
+                <button onClick={() => setPosts(posts.filter((p) => p.id !== post.id))} className="text-xs text-red-500 hover:text-red-700 font-semibold">
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
