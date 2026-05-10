@@ -30,12 +30,12 @@ export default function ComptePage() {
     supabase.auth.getUser().then(({ data }: any) => { const authUser = data?.user;
       if (!authUser) return;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      supabase.from("profiles").select("*").eq("id", authUser.id).single()
+      supabase!.from("profiles").select("*").eq("id", authUser.id).single()
         .then(({ data: profile }: any) => {
           if (profile) setUser({ name: profile.name, role: profile.role, phone: profile.phone ?? "", trustScore: profile.trust_score ?? 50, verified: profile.verified ?? false });
         });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      supabase.from("properties").select("*, property_images(url, is_primary)").eq("owner_id", authUser.id).order("created_at", { ascending: false })
+      supabase!.from("properties").select("*, property_images(url, is_primary)").eq("owner_id", authUser.id).order("created_at", { ascending: false })
         .then(({ data: props }: any) => { if (props) setMyProperties(props); });
     });
   }, []);
