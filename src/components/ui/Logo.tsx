@@ -7,15 +7,26 @@ interface LogoProps {
   className?: string;
 }
 
-const heights = { sm: 32, md: 40, lg: 48 };
+const textSizes = { sm: "text-xl", md: "text-2xl", lg: "text-3xl" };
+const imgSizes  = { sm: 28, md: 32, lg: 40 };
 
 export function Logo({ size = "md", className }: LogoProps) {
-  const h = heights[size];
-  const w = Math.round(h * 3);
+  const px = imgSizes[size];
 
   return (
-    <Link href="/" className={cn("flex items-center", className)}>
-      <Image src="/logo.png" alt="GuImmo" width={w} height={h} style={{ height: h, width: "auto" }} priority />
+    <Link href="/" className={cn("flex items-center gap-2 font-black tracking-tight", textSizes[size], className)}>
+      <Image
+        src="/logo.png"
+        alt=""
+        width={px}
+        height={px}
+        className="rounded-full object-cover flex-shrink-0"
+        style={{ width: px, height: px }}
+        priority
+      />
+      <span style={{ color: "#CE1126" }}>Gu</span>
+      <span style={{ color: "#FCD116" }}>Im</span>
+      <span style={{ color: "#009460" }}>mo</span>
     </Link>
   );
 }
