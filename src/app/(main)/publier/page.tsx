@@ -42,33 +42,6 @@ interface FormState {
   contactMethod: ContactMethod;
 }
 
-async function convertToJpeg(file: File): Promise<File> {
-  if (file.type === "image/jpeg" || file.type === "image/png") return file;
-  return new Promise((resolve) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width  = img.width;
-      canvas.height = img.height;
-      canvas.getContext("2d")?.drawImage(img, 0, 0);
-      canvas.toBlob(
-        (blob) => {
-          const converted = new File(
-            [blob!],
-            file.name.replace(/\.\w+$/, ".jpg"),
-            { type: "image/jpeg" }
-          );
-          URL.revokeObjectURL(url);
-          resolve(converted);
-        },
-        "image/jpeg",
-        0.85
-      );
-    };
-    img.src = url;
-  });
-}
 
 function formatGNF(raw: string): string {
   const n = parseInt(raw.replace(/\D/g, ""), 10);
