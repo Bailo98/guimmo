@@ -20,8 +20,8 @@ export function MessageButton({ propertyId, ownerId, propertyTitle, className }:
   const [content, setContent] = useState("");
   const [sending, setSending] = useState(false);
 
-  // Don't show button to the property owner
-  if (user?.id === ownerId) return null;
+  // Hide only if ownerId is a real value that matches the logged-in user
+  if (ownerId && user?.id === ownerId) return null;
 
   function handleClick() {
     if (!user) {
