@@ -97,12 +97,14 @@ function ConnexionForm() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === "phone" ? (
                 <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">
+                  <label htmlFor="phone" className="block text-sm font-semibold text-slate-300 mb-2">
                     Numéro de téléphone
                   </label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                     <input
+                      id="phone"
+                      name="phone"
                       type="tel"
                       placeholder="+224 628 222 510 ou +1 438 000 0000"
                       value={form.phone}
@@ -114,7 +116,7 @@ function ConnexionForm() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => switchMode("email")}
+                    onClick={(e) => { e.preventDefault(); switchMode("email"); }}
                     className="text-xs text-[#F97316] hover:underline mt-1.5 block"
                   >
                     Utiliser mon email à la place →
@@ -122,12 +124,14 @@ function ConnexionForm() {
                 </div>
               ) : (
                 <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">
+                  <label htmlFor="email" className="block text-sm font-semibold text-slate-300 mb-2">
                     Adresse email
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                     <input
+                      id="email"
+                      name="email"
                       type="email"
                       placeholder="vous@email.com"
                       value={form.email}
@@ -139,7 +143,7 @@ function ConnexionForm() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => switchMode("phone")}
+                    onClick={(e) => { e.preventDefault(); switchMode("phone"); }}
                     className="text-xs text-[#F97316] hover:underline mt-1.5 block"
                   >
                     ← Utiliser mon numéro de téléphone
@@ -148,12 +152,14 @@ function ConnexionForm() {
               )}
 
               <div>
-                <label className="block text-sm font-semibold text-slate-300 mb-2">
+                <label htmlFor="password" className="block text-sm font-semibold text-slate-300 mb-2">
                   Mot de passe
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                   <input
+                    id="password"
+                    name="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={form.password}
