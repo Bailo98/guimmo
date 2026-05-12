@@ -223,12 +223,12 @@ export default function MessagesPage() {
     if (!user || !isSupabaseConfigured || !supabase) return;
 
     isDeletingRef.current = true;
-    let query = supabase.from("messages").delete();
-    if (conv.propertyId) {
-      query = query.eq("property_id", conv.propertyId);
-    }
-    query = query.or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
-    await query;
+    const { error, count } = await supabase
+      .from("messages")
+      .delete({ count: "exact" })
+      .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
+      .eq("property_id", conv.propertyId);
+    console.log("DELETE result:", { error, count });
     isDeletingRef.current = false;
 
     setMessages((prev) => prev.filter((m) => {

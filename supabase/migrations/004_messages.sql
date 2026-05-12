@@ -28,5 +28,9 @@ DROP POLICY IF EXISTS "messages_update" ON messages;
 CREATE POLICY "messages_update" ON messages
   FOR UPDATE USING (auth.uid() = receiver_id);
 
+DROP POLICY IF EXISTS "messages_delete" ON messages;
+CREATE POLICY "messages_delete" ON messages
+  FOR DELETE USING (auth.uid() = sender_id OR auth.uid() = receiver_id);
+
 -- Enable Realtime
 ALTER PUBLICATION supabase_realtime ADD TABLE messages;
