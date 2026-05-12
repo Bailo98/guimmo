@@ -1,11 +1,13 @@
 "use client";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 function AuthCallbackInner() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState("Connexion en cours...");
+  // Guard: prevent double-exchange if searchParams ref changes between renders
+  const exchangedRef = useRef(false);
 
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
@@ -20,7 +22,16 @@ function AuthCallbackInner() {
 
     // PKCE flow: code in query param
     if (code) {
+      // Guard: code is single-use — abort if already exchanged in this page lifecycle
+      if (exchangedRef.current) return;
+      exchangedRef.current = true;
+
       setStatus("Échange du code PKCE...");
+
+      // Remove code from URL immediately to prevent re-use on refresh
+      const cleanUrl = window.location.pathname + (redirectTo !== "/compte" ? `?redirect=${redirectTo}` : "");
+      window.history.replaceState({}, "", cleanUrl);
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (supabase.auth as any).exchangeCodeForSession(code)
         .then(({ data, error }: any) => {
@@ -47,6 +58,7 @@ function AuthCallbackInner() {
     // Implicit flow fallback: access_token in hash (legacy)
     if (accessToken) {
       setStatus("Session via token implicite...");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       supabase.auth.getSession().then(({ data }: any) => {
         if (data?.session) {
           document.cookie = `guimmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
