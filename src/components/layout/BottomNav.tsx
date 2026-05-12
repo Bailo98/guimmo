@@ -18,6 +18,7 @@ export function BottomNav() {
   const pathname = usePathname();
   const favorites = useAppStore((s) => s.favorites);
   const unreadMessages = useAppStore((s) => s.unreadMessages);
+  const _hasHydrated = useAppStore((s) => s._hasHydrated);
   const t = useT();
 
   return (
@@ -54,12 +55,12 @@ export function BottomNav() {
               <div className="relative">
                 <Icon className={cn("w-5 h-5", isActive && "fill-current opacity-20")} />
                 <Icon className="w-5 h-5 absolute inset-0" />
-                {item.href === "/favoris" && favorites.length > 0 && (
+                {_hasHydrated && item.href === "/favoris" && favorites.length > 0 && (
                   <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#F97316] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
                     {favorites.length > 9 ? "9+" : favorites.length}
                   </span>
                 )}
-                {item.href === "/messages" && unreadMessages() > 0 && (
+                {_hasHydrated && item.href === "/messages" && unreadMessages() > 0 && (
                   <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#F97316] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
                     {unreadMessages() > 9 ? "9+" : unreadMessages()}
                   </span>

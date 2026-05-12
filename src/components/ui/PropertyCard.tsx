@@ -36,6 +36,7 @@ const NEIGHBORHOOD_LABELS: Record<string, string> = {
 export function PropertyCard({ property, variant = "default", className, index = 0 }: PropertyCardProps) {
   const { toggleFavorite, isFavorite, _hasHydrated, addToCompare, compareList } = useAppStore();
   const fav = _hasHydrated && isFavorite(property.id);
+  const inCompare = _hasHydrated && compareList.includes(property.id);
   const primaryImage = property.images.find((i) => i.isPrimary) ?? property.images[0];
   const neighborhoodLabel = NEIGHBORHOOD_LABELS[property.neighborhood] ?? property.neighborhood;
 
@@ -247,7 +248,7 @@ export function PropertyCard({ property, variant = "default", className, index =
           <button
             onClick={(e) => {
               e.preventDefault();
-              if (compareList.includes(property.id)) {
+              if (inCompare) {
                 toast("Déjà dans le comparateur", "info");
               } else if (compareList.length >= 3) {
                 toast("Maximum 3 annonces à comparer", "error");
@@ -258,7 +259,7 @@ export function PropertyCard({ property, variant = "default", className, index =
             }}
             className={cn(
               "flex items-center justify-center gap-1 text-xs font-semibold py-2 px-2.5 rounded-xl border transition-colors",
-              compareList.includes(property.id)
+              inCompare
                 ? "border-[#F97316] text-[#F97316] bg-orange-50 dark:bg-orange-900/20"
                 : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-[#F97316] hover:text-[#F97316]"
             )}

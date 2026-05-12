@@ -5,10 +5,10 @@ import { useAppStore } from "@/lib/store";
 import { MOCK_PROPERTIES } from "@/data/mock-properties";
 
 export function CompareBar() {
-  const { compareList, removeFromCompare, clearCompare } = useAppStore();
+  const { compareList, removeFromCompare, clearCompare, _hasHydrated } = useAppStore();
   const router = useRouter();
 
-  if (compareList.length === 0) return null;
+  if (!_hasHydrated || compareList.length === 0) return null;
 
   const properties = compareList
     .map((id) => MOCK_PROPERTIES.find((p) => p.id === id))
