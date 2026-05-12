@@ -9,10 +9,9 @@ export const supabase = isSupabaseConfigured
   ? createClient(url, key, {
       auth: {
         flowType: "pkce",
-        // Let the client auto-detect and exchange the code from the URL.
-        // Manual exchangeCodeForSession caused double-exchange: the client's
-        // internal init could consume the code first, making the manual call fail.
-        detectSessionInUrl: true,
+        // Server route handler (route.ts) does the exchange — browser client
+        // must not touch the code.
+        detectSessionInUrl: false,
         persistSession: true,
         storage: typeof window !== "undefined" ? window.localStorage : undefined,
       },
