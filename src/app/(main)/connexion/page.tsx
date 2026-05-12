@@ -94,6 +94,32 @@ function ConnexionForm() {
               <p className="text-slate-400 text-sm mt-1">Accédez à votre compte GuImmo</p>
             </div>
 
+            {/* Mode toggle — outside <form> so it can never accidentally submit */}
+            <div className="flex rounded-xl overflow-hidden border border-[#2a3040] mb-4">
+              <button
+                type="button"
+                onClick={() => switchMode("phone")}
+                className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
+                  mode === "phone"
+                    ? "bg-[#F97316] text-white"
+                    : "bg-[#151922] text-slate-400 hover:text-white"
+                }`}
+              >
+                📱 Téléphone
+              </button>
+              <button
+                type="button"
+                onClick={() => switchMode("email")}
+                className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
+                  mode === "email"
+                    ? "bg-[#F97316] text-white"
+                    : "bg-[#151922] text-slate-400 hover:text-white"
+                }`}
+              >
+                ✉️ Email
+              </button>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === "phone" ? (
                 <div>
@@ -114,13 +140,6 @@ function ConnexionForm() {
                       autoComplete="tel"
                     />
                   </div>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.preventDefault(); switchMode("email"); }}
-                    className="text-xs text-[#F97316] hover:underline mt-1.5 block"
-                  >
-                    Utiliser mon email à la place →
-                  </button>
                 </div>
               ) : (
                 <div>
@@ -141,13 +160,6 @@ function ConnexionForm() {
                       autoComplete="email"
                     />
                   </div>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.preventDefault(); switchMode("phone"); }}
-                    className="text-xs text-[#F97316] hover:underline mt-1.5 block"
-                  >
-                    ← Utiliser mon numéro de téléphone
-                  </button>
                 </div>
               )}
 

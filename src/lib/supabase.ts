@@ -11,6 +11,9 @@ export const supabase = isSupabaseConfigured
         flowType: "pkce",
         detectSessionInUrl: false, // handled manually in /auth/callback
         persistSession: true,
+        // Force localStorage so Chrome's third-party cookie restrictions
+        // don't delete the PKCE code_verifier mid-flow
+        storage: typeof window !== "undefined" ? window.localStorage : undefined,
       },
     })
   : null;
