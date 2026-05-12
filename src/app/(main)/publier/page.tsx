@@ -126,18 +126,21 @@ export default function PublierPage() {
     setForm((f) => ({ ...f, [key]: val }));
   }
 
-  async function addPhotos(files: FileList | null) {
+  function addPhotos(files: FileList | null) {
     if (!files) return;
-    const raw = Array.from(files).filter((f) => f.type.startsWith("image/"));
-    if (!raw.length) return;
-    const converted = await Promise.all(raw.map(async (f) => {
-      console.log("[photo] avant conversion:", f.name, f.type);
-      const c = await convertToJpeg(f);
-      console.log("[photo] après conversion:", c.name, c.type);
-      return c;
-    }));
-    const previews = converted.map((f) => URL.createObjectURL(f));
-    setForm((f) => ({ ...f, photos: [...f.photos, ...converted] }));
+    const BLOCKED = ["image/avif", "image/heic", "image/heif"];
+    const all = Array.from(files).filter((f) => f.type.startsWith("image/"));
+    const blocked = all.filter((f) => BLOCKED.includes(f.type));
+    if (blocked.length) {
+      toast(
+        `Format non supporté (${blocked.map((f) => f.type.split("/")[1].toUpperCase()).join(", ")}). Utilisez JPG, PNG ou WebP.`,
+        "error"
+      );
+    }
+    const accepted = all.filter((f) => !BLOCKED.includes(f.type));
+    if (!accepted.length) return;
+    const previews = accepted.map((f) => URL.createObjectURL(f));
+    setForm((f) => ({ ...f, photos: [...f.photos, ...accepted] }));
     setPhotoPreviews((p) => [...p, ...previews]);
   }
 
@@ -184,10 +187,9 @@ export default function PublierPage() {
       // 1. Upload photos to Supabase Storage
       const uploadedUrls: string[] = [];
       for (let i = 0; i < form.photos.length; i++) {
-        const file = form.photos[i]; // already converted to JPEG in addPhotos
+        const file = form.photos[i];
         const ext  = file.name.split(".").pop() ?? "jpg";
         const path = `${user.id}/${Date.now()}-${i}.${ext}`;
-        console.log("[upload] sending:", file.name, file.type, path);
         const { error: upErr } = await supabase.storage
           .from("property-images")
           .upload(path, file, { upsert: false, contentType: file.type });
@@ -430,7 +432,7 @@ export default function PublierPage() {
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif"
+            accept="image/jpeg,image/png,image/webp"
             multiple
             className="hidden"
             onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }}
@@ -438,7 +440,7 @@ export default function PublierPage() {
           <input
             ref={cameraInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif"
+            accept="image/jpeg,image/png,image/webp"
             capture="environment"
             className="hidden"
             onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }}
