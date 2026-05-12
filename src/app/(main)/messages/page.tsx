@@ -124,14 +124,12 @@ export default function MessagesPage() {
 
     const { data, error } = await supabase
       .from("messages")
-      .select(`
-        *,
-        sender:sender_id(id, full_name),
-        receiver:receiver_id(id, full_name),
-        property:property_id(id, title)
-      `)
+      .select("*")
       .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: false });
+
+    console.log("messages error:", error);
+    console.log("messages data:", data);
 
     if (!error && data) setMessages(data as DbMessage[]);
     setFetching(false);
