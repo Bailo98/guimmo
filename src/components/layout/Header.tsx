@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Moon, Sun, Menu, X, Plus, LogOut, User, ChevronDown } from "lucide-react";
+import { Moon, Sun, Menu, X, Plus, LogOut, User, ChevronDown, Shield } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth-context";
@@ -37,6 +37,9 @@ export function Header() {
 
   const displayName = profile?.full_name ?? user?.email?.split("@")[0] ?? "Mon compte";
   const initials = displayName.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
+  const role = profile?.role ?? "buyer";
+  const isAdmin = role === "admin";
+  const isProprietaire = ["proprietaire", "owner", "agent", "agence", "admin"].includes(role);
 
   return (
     <header className="sticky top-0 z-40 bg-white/90 dark:bg-[#111418]/90 backdrop-blur-xl border-b border-slate-100 dark:border-[#2a3040]">
@@ -58,13 +61,15 @@ export function Header() {
             {(!mounted || theme === "dark") ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
 
-          <Link
-            href="/publier"
-            className="hidden md:flex items-center gap-1.5 bg-[#F97316] hover:bg-[#EA6C0A] text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
-          >
-            <Plus className="w-4 h-4" />
-            Publier
-          </Link>
+          {isProprietaire && (
+            <Link
+              href="/publier"
+              className="hidden md:flex items-center gap-1.5 bg-[#F97316] hover:bg-[#EA6C0A] text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
+            >
+              <Plus className="w-4 h-4" />
+              Publier
+            </Link>
+          )}
 
           {user ? (
             <div ref={userMenuRef} className="relative hidden md:block">
@@ -87,22 +92,35 @@ export function Header() {
                     <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{displayName}</p>
                     <p className="text-xs text-slate-400 truncate">{user.email}</p>
                   </div>
-                  <Link
-                    href="/compte"
-                    onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#2a3040] transition-colors"
-                  >
-                    <User className="w-4 h-4" />
-                    Mon compte
-                  </Link>
-                  <Link
-                    href="/compte/annonces"
-                    onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#2a3040] transition-colors"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Mes annonces
-                  </Link>
+                  {isAdmin ? (
+                    <Link
+                      href="/admin"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-[#F97316] font-semibold hover:bg-slate-50 dark:hover:bg-[#2a3040] transition-colors"
+                    >
+                      <Shield className="w-4 h-4" />
+                      Administration
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/compte"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#2a3040] transition-colors"
+                    >
+                      <User className="w-4 h-4" />
+                      Mon compte
+                    </Link>
+                  )}
+                  {isProprietaire && !isAdmin && (
+                    <Link
+                      href="/publier"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#2a3040] transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Publier une annonce
+                    </Link>
+                  )}
                   <button
                     onClick={handleSignOut}
                     className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border-t border-slate-100 dark:border-[#2a3040]"
@@ -138,9 +156,15 @@ export function Header() {
           </Link>
           {user ? (
             <>
-              <Link href="/compte" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
-                <User className="w-4 h-4" /> Mon compte
-              </Link>
+              {isAdmin ? (
+                <Link href="/admin" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-3 rounded-xl text-[#F97316] font-semibold hover:bg-slate-50 dark:hover:bg-slate-800">
+                  <Shield className="w-4 h-4" /> Administration
+                </Link>
+              ) : (
+                <Link href="/compte" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+                  <User className="w-4 h-4" /> Mon compte
+                </Link>
+              )}
               <button
                 onClick={() => { handleSignOut(); setMenuOpen(false); }}
                 className="w-full flex items-center gap-2 px-3 py-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
@@ -158,14 +182,16 @@ export function Header() {
               </Link>
             </>
           )}
-          <Link
-            href="/publier"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center justify-center gap-2 bg-[#F97316] text-white font-bold py-3 rounded-xl mt-2"
-          >
-            <Plus className="w-4 h-4" />
-            Publier une annonce
-          </Link>
+          {isProprietaire && (
+            <Link
+              href="/publier"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center justify-center gap-2 bg-[#F97316] text-white font-bold py-3 rounded-xl mt-2"
+            >
+              <Plus className="w-4 h-4" />
+              Publier une annonce
+            </Link>
+          )}
         </div>
       )}
     </header>

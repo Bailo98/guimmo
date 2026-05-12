@@ -88,6 +88,9 @@ export default function ComptePage() {
 
   // Profile edit
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [agencyName, setAgencyName] = useState("");
+  const [upgrading, setUpgrading] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
 
   // Auth guard
@@ -97,10 +100,17 @@ export default function ComptePage() {
     }
   }, [authLoading, user, router]);
 
-  // Sync full name from profile
+  // Sync profile fields
   useEffect(() => {
     if (profile?.full_name) setFullName(profile.full_name);
+    if (profile?.phone) setPhone(profile.phone);
+    if (profile?.agency_name) setAgencyName(profile.agency_name);
   }, [profile]);
+
+  // Admin redirect
+  useEffect(() => {
+    if (!authLoading && profile?.role === "admin") router.replace("/admin");
+  }, [authLoading, profile, router]);
 
   const loadListings = useCallback(async () => {
     if (!user || !supabase) return;
@@ -174,10 +184,10 @@ export default function ComptePage() {
   async function saveProfile() {
     if (!user || !supabase || !fullName.trim()) return;
     setSavingProfile(true);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ full_name: fullName.trim() })
-      .eq("id", user.id);
+    const updates: Record<string, string> = { full_name: fullName.trim() };
+    if (phone.trim()) updates.phone = phone.trim();
+    if (profile?.role === "agence" && agencyName.trim()) updates.agency_name = agencyName.trim();
+    const { error } = await supabase.from("profiles").update(updates).eq("id", user.id);
     if (error) {
       toast("Erreur lors de la sauvegarde", "error");
     } else {
@@ -185,6 +195,19 @@ export default function ComptePage() {
       toast("✅ Profil sauvegardé", "success");
     }
     setSavingProfile(false);
+  }
+
+  async function upgradeToProprietaire() {
+    if (!user || !supabase) return;
+    setUpgrading(true);
+    const { error } = await supabase.from("profiles").update({ role: "proprietaire" }).eq("id", user.id);
+    if (error) {
+      toast("Erreur lors de la mise à jour", "error");
+    } else {
+      await refreshProfile();
+      toast("✅ Vous êtes maintenant propriétaire !", "success");
+    }
+    setUpgrading(false);
   }
 
   async function handleSignOut() {
@@ -201,6 +224,11 @@ export default function ComptePage() {
   }
   if (!user) return null;
 
+  const role = profile?.role ?? "buyer";
+  const isProprietaire = ["proprietaire", "owner", "agent", "agence"].includes(role);
+  const isChercheur = !isProprietaire && role !== "admin";
+  const isAgence = role === "agence";
+
   const displayName = profile?.full_name ?? user.email?.split("@")[0] ?? "Propriétaire";
   const initials = displayName.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
 
@@ -216,19 +244,55 @@ export default function ComptePage() {
           <h1 className="text-xl font-black text-slate-900 dark:text-white truncate">{displayName}</h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm truncate">{user.email}</p>
         </div>
-        <Link
-          href="/publier"
-          className="ml-auto flex-none flex items-center gap-1.5 bg-[#F97316] hover:bg-[#EA6C0A] text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-colors shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
-        >
-          <Plus className="w-4 h-4" />
-          Publier
-        </Link>
+        {isProprietaire && (
+          <Link
+            href="/publier"
+            className="ml-auto flex-none flex items-center gap-1.5 bg-[#F97316] hover:bg-[#EA6C0A] text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-colors shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
+          >
+            <Plus className="w-4 h-4" />
+            Publier
+          </Link>
+        )}
       </div>
 
       {/* ══════════════════════════════════════
-          SECTION 1 — Mes annonces
+          SECTION CHERCHEUR
       ══════════════════════════════════════ */}
-      <section className="mb-10">
+      {isChercheur && (
+        <section className="mb-8 space-y-3">
+          <Link
+            href="/messages"
+            className="flex items-center justify-between bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] px-4 py-4 hover:border-[#F97316]/40 transition-colors"
+          >
+            <span className="font-semibold text-slate-900 dark:text-white text-sm">💬 Mes messages</span>
+            <span className="text-slate-400 text-xs">→</span>
+          </Link>
+          <Link
+            href="/favoris"
+            className="flex items-center justify-between bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] px-4 py-4 hover:border-[#F97316]/40 transition-colors"
+          >
+            <span className="font-semibold text-slate-900 dark:text-white text-sm">❤️ Mes favoris</span>
+            <span className="text-slate-400 text-xs">→</span>
+          </Link>
+          <div className="bg-[#F97316]/5 dark:bg-[#F97316]/10 border border-[#F97316]/20 rounded-2xl px-4 py-4">
+            <p className="font-bold text-slate-900 dark:text-white text-sm mb-1">Vous êtes propriétaire ?</p>
+            <p className="text-slate-500 dark:text-slate-400 text-xs mb-3">Publiez vos annonces et gérez vos locations.</p>
+            <button
+              onClick={upgradeToProprietaire}
+              disabled={upgrading}
+              className="flex items-center gap-2 bg-[#F97316] hover:bg-[#EA6C0A] disabled:opacity-50 text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
+            >
+              {upgrading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Plus className="w-4 h-4" />}
+              Devenir propriétaire
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════
+          SECTION 1 — Mes annonces (propriétaires)
+      ══════════════════════════════════════ */}
+      {isProprietaire && <section className="mb-10">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-slate-900 dark:text-white">
             Mes annonces
@@ -375,6 +439,8 @@ export default function ComptePage() {
         )}
       </section>
 
+      }
+
       {/* ══════════════════════════════════════
           SECTION 2 — Mon profil
       ══════════════════════════════════════ */}
@@ -422,11 +488,33 @@ export default function ComptePage() {
             </span>
           </div>
 
-          {/* Phone (from profile, read-only display) */}
-          {profile?.phone && (
-            <div className="px-4 py-3">
-              <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Téléphone</p>
-              <p className="text-slate-700 dark:text-slate-300 text-sm font-medium mt-0.5">{profile.phone}</p>
+          {/* Phone editable */}
+          <div className="p-4">
+            <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+              Téléphone
+            </label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+224 620 00 00 00"
+              className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316]/50"
+            />
+          </div>
+
+          {/* Agency name (agence only) */}
+          {isAgence && (
+            <div className="p-4">
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+                Nom de l&apos;agence
+              </label>
+              <input
+                type="text"
+                value={agencyName}
+                onChange={(e) => setAgencyName(e.target.value)}
+                placeholder="Nom de votre agence"
+                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316]/50"
+              />
             </div>
           )}
 
