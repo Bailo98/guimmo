@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Nunito } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
@@ -10,6 +10,13 @@ const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter",
+});
+
+const nunito = Nunito({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["800"],
+  variable: "--font-nunito",
 });
 
 export const metadata: Metadata = {
@@ -58,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="preconnect" href="https://kqshknfrtlbjaufkdeeg.supabase.co" />
       </head>
-      <body className={`${inter.variable} font-sans bg-white dark:bg-[#111418] text-slate-900 dark:text-white min-h-screen`}>
+      <body className={`${inter.variable} ${nunito.variable} font-sans bg-white dark:bg-[#111418] text-slate-900 dark:text-white min-h-screen`}>
         <QueryProvider>
           <AuthProvider>
             <ThemeProvider>{children}</ThemeProvider>

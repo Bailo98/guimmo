@@ -13,7 +13,7 @@ export function Logo({ size = "md", className }: LogoProps) {
   const px = imgSizes[size];
 
   return (
-    <Link href="/" className={cn("flex items-center gap-2 font-black tracking-tight", textSizes[size], className)}>
+    <Link href="/" className={cn("flex items-center gap-2", textSizes[size], className)}>
       <img
         src="/logo.png"
         alt=""
@@ -21,10 +21,10 @@ export function Logo({ size = "md", className }: LogoProps) {
         height={px}
         style={{ borderRadius: "50%", width: px, height: px, objectFit: "cover", flexShrink: 0 }}
       />
-      <span>
+      <span style={{ fontFamily: "var(--font-nunito), Nunito, sans-serif", fontWeight: 800, letterSpacing: "-0.01em" }}>
         <span style={{ color: "#CE1126" }}>Gu</span>
-        <span style={{ color: "#FCD116" }}>Im</span>
-        <span style={{ color: "#009460" }}>mo</span>
+        <span style={{ color: "#FCD116" }}>I</span>
+        <span style={{ color: "#009460" }}>mmo</span>
       </span>
     </Link>
   );
