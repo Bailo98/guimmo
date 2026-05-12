@@ -91,38 +91,6 @@ export interface Conversation {
   lastRead: string;
 }
 
-const SEED_CONVERSATIONS: Conversation[] = [
-  {
-    id: "conv-1",
-    propertyId: "prop-001",
-    propertyTitle: "Appartement 3ch à Kipé",
-    participantName: "Mamadou Diallo",
-    participantAvatar: "M",
-    participantPhone: "+224620000001",
-    lastRead: "2026-05-10T14:00:00.000Z",
-    messages: [
-      { id: "msg-1-1", from: "them", text: "Bonjour, est-ce que le logement est toujours disponible ?", sentAt: "2026-05-10T14:28:00.000Z" },
-      { id: "msg-1-2", from: "me", text: "Oui, il est disponible ! Vous souhaitez visiter ?", sentAt: "2026-05-10T14:29:00.000Z" },
-      { id: "msg-1-3", from: "them", text: "Oui avec plaisir. Quand êtes-vous disponible ?", sentAt: "2026-05-10T14:31:00.000Z" },
-      { id: "msg-1-4", from: "them", text: "Je préfère le week-end si possible.", sentAt: "2026-05-10T14:32:00.000Z" },
-    ],
-  },
-  {
-    id: "conv-2",
-    propertyId: "prop-003",
-    propertyTitle: "Studio meublé à Ratoma",
-    participantName: "Fatoumata Bah",
-    participantAvatar: "F",
-    participantPhone: "+224628000002",
-    lastRead: "2026-05-09T10:10:00.000Z",
-    messages: [
-      { id: "msg-2-1", from: "them", text: "Bonjour, je suis intéressée par votre studio à Ratoma.", sentAt: "2026-05-09T09:15:00.000Z" },
-      { id: "msg-2-2", from: "me", text: "Bonjour ! Il est disponible dès maintenant.", sentAt: "2026-05-09T10:02:00.000Z" },
-      { id: "msg-2-3", from: "them", text: "Merci pour votre réponse. Je suis intéressée.", sentAt: "2026-05-09T10:05:00.000Z" },
-      { id: "msg-2-4", from: "me", text: "N'hésitez pas à me contacter pour une visite !", sentAt: "2026-05-09T10:08:00.000Z" },
-    ],
-  },
-];
 
 interface AppState {
   // Theme
@@ -480,7 +448,7 @@ export const useAppStore = create<AppState>()(
         get().ownerReviews.filter((r) => r.ownerId === ownerId),
 
       // Conversations / Chat
-      conversations: SEED_CONVERSATIONS,
+      conversations: [],
       sendMessage: (conversationId, text) => {
         const now = new Date().toISOString();
         const newMsg: ChatMessage = {

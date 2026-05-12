@@ -24,8 +24,8 @@ export function Logo({ size = "md", className }: LogoProps) {
       />
       <span style={{ fontFamily: "'Nunito', sans-serif", fontWeight: 800, letterSpacing: "-0.01em" }}>
         <span style={{ color: "#CE1126" }}>Gu</span>
-        <span style={{ color: "#FCD116" }}>I</span>
-        <span style={{ color: "#009460" }}>mmo</span>
+        <span style={{ color: "#FCD116" }}>Im</span>
+        <span style={{ color: "#009460" }}>mo</span>
       </span>
     </Link>
   );
