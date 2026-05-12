@@ -322,6 +322,10 @@ export default async function PropertyDetailPage({ params }: Props) {
               </p>
             </div>
 
+            <button style={{ background: "red", color: "white", padding: "10px", width: "100%", borderRadius: 8 }}>
+              TEST MESSAGE BUTTON
+            </button>
+
             <a
               href={whatsappUrl}
               target="_blank"
