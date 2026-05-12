@@ -115,6 +115,7 @@ export default function MessagesPage() {
   const messagesEndRef                = useRef<HTMLDivElement>(null);
   const textareaRef                   = useRef<HTMLTextAreaElement>(null);
   const longPressTimer                = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isDeletingRef                 = useRef(false);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -173,6 +174,7 @@ export default function MessagesPage() {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages" },
         (payload) => {
+          if (isDeletingRef.current) return;
           const msg = payload.new as { sender_id: string; receiver_id: string };
           if (msg.sender_id !== user.id && msg.receiver_id !== user.id) return;
           loadMessages();
@@ -220,12 +222,14 @@ export default function MessagesPage() {
   async function deleteConversation(conv: Conversation) {
     if (!user || !isSupabaseConfigured || !supabase) return;
 
+    isDeletingRef.current = true;
     let query = supabase.from("messages").delete();
     if (conv.propertyId) {
       query = query.eq("property_id", conv.propertyId);
     }
     query = query.or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
     await query;
+    isDeletingRef.current = false;
 
     setMessages((prev) => prev.filter((m) => {
       const sameUsers =
