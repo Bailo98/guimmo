@@ -3,9 +3,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Send, MessageSquare, Home } from "lucide-react";
+import { ArrowLeft, Send, MessageSquare, Home, Trash2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { toast } from "@/lib/toast";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -110,8 +111,10 @@ export default function MessagesPage() {
   const [activeKey, setActiveKey]     = useState<string | null>(null);
   const [input, setInput]             = useState("");
   const [sending, setSending]         = useState(false);
+  const [contextMenu, setContextMenu] = useState<string | null>(null);
   const messagesEndRef                = useRef<HTMLDivElement>(null);
   const textareaRef                   = useRef<HTMLTextAreaElement>(null);
+  const longPressTimer                = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -214,6 +217,29 @@ export default function MessagesPage() {
     );
   }
 
+  async function deleteConversation(conv: Conversation) {
+    if (!user || !isSupabaseConfigured || !supabase) return;
+
+    let query = supabase.from("messages").delete();
+    if (conv.propertyId) {
+      query = query.eq("property_id", conv.propertyId);
+    }
+    query = query.or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
+    await query;
+
+    setMessages((prev) => prev.filter((m) => {
+      const sameUsers =
+        (m.sender_id === user.id && m.receiver_id === conv.otherUserId) ||
+        (m.sender_id === conv.otherUserId && m.receiver_id === user.id);
+      const sameProp = conv.propertyId ? m.property_id === conv.propertyId : !m.property_id;
+      return !(sameUsers && sameProp);
+    }));
+
+    if (activeKey === conv.key) setActiveKey(null);
+    setContextMenu(null);
+    toast("Conversation supprimée", "success");
+  }
+
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
     if (!input.trim() || !user || !activeConv || !isSupabaseConfigured || !supabase) return;
@@ -273,35 +299,77 @@ export default function MessagesPage() {
             const lastMsg = conv.messages[conv.messages.length - 1];
             const initial = conv.otherUserName.charAt(0).toUpperCase();
             return (
-              <button
-                key={conv.key}
-                onClick={() => openConversation(conv)}
-                className={`w-full text-left px-4 py-3.5 flex items-start gap-3 hover:bg-slate-50 dark:hover:bg-[#252d3d] transition-colors border-b border-slate-50 dark:border-[#252d3d] ${
-                  activeKey === conv.key ? "bg-[#F97316]/5 dark:bg-[#F97316]/10 border-l-2 border-l-[#F97316]" : ""
-                }`}
-              >
-                <div className="w-11 h-11 rounded-full bg-[#F97316] flex-shrink-0 flex items-center justify-center text-white font-bold text-base">
-                  {initial}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="font-semibold text-sm text-slate-900 dark:text-white truncate">{conv.otherUserName}</p>
-                    {lastMsg && <span className="text-[10px] text-slate-400 flex-shrink-0">{formatTime(lastMsg.created_at)}</span>}
+              <div key={conv.key} className="relative group border-b border-slate-50 dark:border-[#252d3d]">
+                <button
+                  onClick={() => openConversation(conv)}
+                  onTouchStart={() => {
+                    longPressTimer.current = setTimeout(() => setContextMenu(conv.key), 500);
+                  }}
+                  onTouchEnd={() => { if (longPressTimer.current) clearTimeout(longPressTimer.current); }}
+                  onTouchMove={() => { if (longPressTimer.current) clearTimeout(longPressTimer.current); }}
+                  className={`w-full text-left px-4 py-3.5 flex items-start gap-3 hover:bg-slate-50 dark:hover:bg-[#252d3d] transition-colors ${
+                    activeKey === conv.key ? "bg-[#F97316]/5 dark:bg-[#F97316]/10 border-l-2 border-l-[#F97316]" : ""
+                  }`}
+                >
+                  <div className="w-11 h-11 rounded-full bg-[#F97316] flex-shrink-0 flex items-center justify-center text-white font-bold text-base">
+                    {initial}
                   </div>
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <Home className="w-3 h-3 text-slate-400 flex-shrink-0" />
-                    <p className="text-xs text-[#F97316] font-medium truncate">{conv.propertyTitle}</p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-semibold text-sm text-slate-900 dark:text-white truncate">{conv.otherUserName}</p>
+                      {lastMsg && <span className="text-[10px] text-slate-400 flex-shrink-0">{formatTime(lastMsg.created_at)}</span>}
+                    </div>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <Home className="w-3 h-3 text-slate-400 flex-shrink-0" />
+                      <p className="text-xs text-[#F97316] font-medium truncate">{conv.propertyTitle}</p>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{lastMsg?.content ?? ""}</p>
+                      {conv.unreadCount > 0 && (
+                        <span className="flex-shrink-0 w-5 h-5 bg-[#F97316] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                          {conv.unreadCount > 9 ? "9+" : conv.unreadCount}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between gap-2 mt-0.5">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{lastMsg?.content ?? ""}</p>
-                    {conv.unreadCount > 0 && (
-                      <span className="flex-shrink-0 w-5 h-5 bg-[#F97316] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                        {conv.unreadCount > 9 ? "9+" : conv.unreadCount}
-                      </span>
-                    )}
+                </button>
+
+                {/* Desktop: trash icon on hover */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); deleteConversation(conv); }}
+                  className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  aria-label="Supprimer la conversation"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+
+                {/* Mobile: long-press context menu */}
+                {contextMenu === conv.key && (
+                  <div
+                    className="absolute inset-0 z-20 flex items-center justify-center bg-black/20"
+                    onClick={() => setContextMenu(null)}
+                  >
+                    <div
+                      className="bg-white dark:bg-[#1e2430] rounded-2xl shadow-xl border border-slate-100 dark:border-[#2a3040] overflow-hidden min-w-[180px]"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <button
+                        onClick={() => deleteConversation(conv)}
+                        className="flex items-center gap-2 w-full px-4 py-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 text-sm font-semibold"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Supprimer
+                      </button>
+                      <button
+                        onClick={() => setContextMenu(null)}
+                        className="flex items-center gap-2 w-full px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#252d3d] text-sm border-t border-slate-100 dark:border-[#2a3040]"
+                      >
+                        Annuler
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </button>
+                )}
+              </div>
             );
           })}
         </div>
