@@ -235,11 +235,15 @@ export default function MessagesPage() {
       channelRef.current = null;
     }
 
-    await supabase
-      .from("messages")
-      .delete()
-      .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-      .eq("property_id", conv.propertyId);
+    try {
+      await supabase
+        .from("messages")
+        .delete()
+        .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
+        .eq("property_id", conv.propertyId);
+    } catch {
+      // ignore - local state already updated
+    }
 
     // Update local state immediately
     setMessages((prev) => prev.filter((m) => {
