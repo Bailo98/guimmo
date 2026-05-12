@@ -7,7 +7,7 @@ interface Profile {
   id: string;
   full_name: string | null;
   phone: string | null;
-  role: "buyer" | "owner" | "agent" | "agency" | "admin";
+  role: "buyer" | "chercheur" | "proprietaire" | "owner" | "agent" | "agence" | "agency" | "admin";
   agency_name: string | null;
   avatar_url: string | null;
   is_verified: boolean;
