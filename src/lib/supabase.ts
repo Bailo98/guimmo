@@ -9,10 +9,11 @@ export const supabase = isSupabaseConfigured
   ? createClient(url, key, {
       auth: {
         flowType: "pkce",
-        detectSessionInUrl: false, // handled manually in /auth/callback
+        // Let the client auto-detect and exchange the code from the URL.
+        // Manual exchangeCodeForSession caused double-exchange: the client's
+        // internal init could consume the code first, making the manual call fail.
+        detectSessionInUrl: true,
         persistSession: true,
-        // Force localStorage so Chrome's third-party cookie restrictions
-        // don't delete the PKCE code_verifier mid-flow
         storage: typeof window !== "undefined" ? window.localStorage : undefined,
       },
     })

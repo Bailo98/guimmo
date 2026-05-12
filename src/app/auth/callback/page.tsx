@@ -6,8 +6,7 @@ import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 function AuthCallbackInner() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState("Connexion en cours...");
-  // Guard: prevent double-exchange if searchParams ref changes between renders
-  const exchangedRef = useRef(false);
+  const doneRef = useRef(false);
 
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
@@ -15,65 +14,55 @@ function AuthCallbackInner() {
       return;
     }
 
-    const code = searchParams.get("code");
+    const oauthError = searchParams.get("error");
+    if (oauthError) {
+      const desc = searchParams.get("error_description") || oauthError;
+      setStatus(`Erreur : ${desc}`);
+      setTimeout(() => { window.location.href = "/connexion"; }, 4000);
+      return;
+    }
+
     const redirectTo = searchParams.get("redirect") ?? "/compte";
-    const hashParams = new URLSearchParams(window.location.hash.slice(1));
-    const accessToken = hashParams.get("access_token");
 
-    // PKCE flow: code in query param
-    if (code) {
-      // Guard: code is single-use — abort if already exchanged in this page lifecycle
-      if (exchangedRef.current) return;
-      exchangedRef.current = true;
-
-      setStatus("Échange du code PKCE...");
-
-      // Remove code from URL immediately to prevent re-use on refresh
-      const cleanUrl = window.location.pathname + (redirectTo !== "/compte" ? `?redirect=${redirectTo}` : "");
-      window.history.replaceState({}, "", cleanUrl);
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (supabase.auth as any).exchangeCodeForSession(code)
-        .then(({ data, error }: any) => {
-          if (error) {
-            setStatus(`Erreur: ${error.message}`);
-            setTimeout(() => { window.location.href = "/connexion"; }, 4000);
-            return;
-          }
-          if (data?.session) {
-            document.cookie = `guimmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
-            window.location.href = redirectTo;
-          } else {
-            setStatus("Session introuvable après échange");
-            setTimeout(() => { window.location.href = "/connexion"; }, 4000);
-          }
-        })
-        .catch((e: Error) => {
-          setStatus(`Exception: ${e.message}`);
-          setTimeout(() => { window.location.href = "/connexion"; }, 4000);
-        });
-      return;
+    function finish(session: { user: unknown } | null) {
+      if (doneRef.current) return;
+      doneRef.current = true;
+      if (session) {
+        document.cookie = `guimmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+        window.location.href = redirectTo;
+      } else {
+        setStatus("Authentification échouée");
+        setTimeout(() => { window.location.href = "/connexion"; }, 3000);
+      }
     }
 
-    // Implicit flow fallback: access_token in hash (legacy)
-    if (accessToken) {
-      setStatus("Session via token implicite...");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      supabase.auth.getSession().then(({ data }: any) => {
-        if (data?.session) {
-          document.cookie = `guimmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
-          window.location.href = redirectTo;
-        } else {
-          setTimeout(() => { window.location.href = "/connexion"; }, 2000);
+    // The Supabase client (detectSessionInUrl: true) auto-exchanges the code
+    // from the URL. We just listen for the resulting SIGNED_IN event.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+          finish(session);
         }
-      });
-      return;
-    }
+      }
+    );
 
-    // No code and no token
-    const error = searchParams.get("error_description") || searchParams.get("error");
-    setStatus(error ? `Erreur Google: ${error}` : "Aucun code reçu");
-    setTimeout(() => { window.location.href = "/connexion"; }, 4000);
+    // Race guard: exchange may have already completed before the listener fired
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) finish(session);
+    });
+
+    // Hard timeout: if nothing fires after 10s, give up
+    const timer = setTimeout(() => {
+      if (!doneRef.current) {
+        setStatus("Délai dépassé. Veuillez réessayer.");
+        setTimeout(() => { window.location.href = "/connexion"; }, 2000);
+      }
+    }, 10000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timer);
+    };
   }, [searchParams]);
 
   return (
