@@ -41,11 +41,14 @@ const INITIAL_MESSAGE: Message = {
 };
 
 export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
+  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>("start");
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [rentBudget, setRentBudget] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -132,6 +135,8 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
   }
 
   const lastBotMsg = [...messages].reverse().find((m) => m.from === "bot");
+
+  if (!mounted) return null;
 
   return (
     <>
