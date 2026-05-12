@@ -236,15 +236,12 @@ export default function MessagesPage() {
       channelRef.current = null;
     }
 
-    try {
-      await supabase
-        .from("messages")
-        .delete()
-        .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-        .eq("property_id", conv.propertyId);
-    } catch {
-      // ignore - local state already updated
-    }
+    const { error, count } = await supabase
+      .from("messages")
+      .delete({ count: "exact" })
+      .eq("property_id", conv.propertyId);
+    console.log("DELETE error:", JSON.stringify(error));
+    console.log("DELETE count:", count);
 
     // Update local state immediately
     setMessages((prev) => prev.filter((m) => {
