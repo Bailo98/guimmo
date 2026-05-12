@@ -132,12 +132,20 @@ export function Header() {
               )}
             </div>
           ) : (
-            <Link
-              href="/connexion"
-              className="hidden md:flex text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-[#F97316] dark:hover:text-[#F97316] transition-colors px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800"
-            >
-              Connexion
-            </Link>
+            <div className="hidden md:flex items-center gap-2">
+              <Link
+                href="/connexion"
+                className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-[#F97316] dark:hover:text-[#F97316] transition-colors px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800"
+              >
+                Connexion
+              </Link>
+              <Link
+                href="/inscription"
+                className="text-sm font-bold text-white bg-[#F97316] hover:bg-[#EA6C0A] transition-colors px-4 py-2 rounded-xl"
+              >
+                S&apos;inscrire
+              </Link>
+            </div>
           )}
 
           <button
