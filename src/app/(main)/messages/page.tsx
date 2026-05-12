@@ -126,9 +126,9 @@ export default function MessagesPage() {
       .from("messages")
       .select(`
         *,
-        sender:profiles!messages_sender_id_fkey(id, full_name),
-        receiver:profiles!messages_receiver_id_fkey(id, full_name),
-        property:properties!messages_property_id_fkey(id, title)
+        sender:sender_id(id, full_name),
+        receiver:receiver_id(id, full_name),
+        property:property_id(id, title)
       `)
       .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
       .order("created_at", { ascending: true });
@@ -157,9 +157,9 @@ export default function MessagesPage() {
             .from("messages")
             .select(`
               *,
-              sender:profiles!messages_sender_id_fkey(id, full_name),
-              receiver:profiles!messages_receiver_id_fkey(id, full_name),
-              property:properties!messages_property_id_fkey(id, title)
+              sender:sender_id(id, full_name),
+              receiver:receiver_id(id, full_name),
+              property:property_id(id, title)
             `)
             .eq("id", msg.id)
             .single();

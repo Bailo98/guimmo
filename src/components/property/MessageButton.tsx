@@ -10,18 +10,18 @@ interface Props {
   propertyId: string;
   ownerId: string;
   propertyTitle: string;
+  isOwner?: boolean;
   className?: string;
 }
 
-export function MessageButton({ propertyId, ownerId, propertyTitle, className }: Props) {
+export function MessageButton({ propertyId, ownerId, propertyTitle, isOwner = false, className }: Props) {
   const { user } = useAuth();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState("");
   const [sending, setSending] = useState(false);
 
-  // Hide only if ownerId is a real value that matches the logged-in user
-  if (ownerId && user?.id === ownerId) return null;
+  if (isOwner) return null;
 
   function handleClick() {
     if (!user) {
