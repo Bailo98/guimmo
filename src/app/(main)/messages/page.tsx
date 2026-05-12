@@ -113,6 +113,7 @@ export default function MessagesPage() {
   const [sending, setSending]         = useState(false);
   const [contextMenu, setContextMenu] = useState<string | null>(null);
   const [isDeleting, setIsDeleting]   = useState(false);
+  const [deletedKeys, setDeletedKeys] = useState<Set<string>>(new Set());
   const messagesEndRef                = useRef<HTMLDivElement>(null);
   const textareaRef                   = useRef<HTMLTextAreaElement>(null);
   const longPressTimer                = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -254,6 +255,7 @@ export default function MessagesPage() {
       return !(sameUsers && sameProp);
     }));
 
+    setDeletedKeys((prev) => new Set([...prev, conv.key]));
     if (activeKey === conv.key) setActiveKey(null);
     setContextMenu(null);
     toast("Conversation supprimée", "success");
@@ -293,7 +295,7 @@ export default function MessagesPage() {
 
   if (!user) return null;
 
-  const conversations = buildConversations(messages, user.id);
+  const conversations = buildConversations(messages, user.id).filter((c) => !deletedKeys.has(c.key));
   const activeConv    = conversations.find((c) => c.key === activeKey) ?? null;
   const totalUnread   = conversations.reduce((s, c) => s + c.unreadCount, 0);
 
