@@ -87,13 +87,14 @@ function ConnexionForm() {
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input
                     type="tel"
-                    placeholder="+224 6XX XXX XXX"
+                    placeholder="+224 628 222 510 ou +1 438 000 0000"
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
                     className="w-full bg-[#151922] border border-[#2a3040] rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:border-transparent text-sm"
                     required
                   />
                 </div>
+                <p className="text-xs text-slate-500 mt-1.5">Entrez votre numéro complet avec l&apos;indicatif pays</p>
               </div>
 
               <div>
