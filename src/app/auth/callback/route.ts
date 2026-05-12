@@ -6,7 +6,13 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const oauthError = searchParams.get("error");
-  const next = searchParams.get("next") ?? searchParams.get("redirect") ?? "/compte";
+  // Destination priority: ?next= param → ?redirect= param → oauth_redirect cookie → /compte
+  const cookieStore = await cookies();
+  const cookieRedirect = cookieStore.get("oauth_redirect")?.value;
+  const next = searchParams.get("next")
+    ?? searchParams.get("redirect")
+    ?? (cookieRedirect ? decodeURIComponent(cookieRedirect) : null)
+    ?? "/compte";
 
   console.log("[callback] origin:", origin);
   console.log("[callback] code:", code ? `présent (${code.slice(0, 8)}…)` : "ABSENT");
@@ -20,7 +26,6 @@ export async function GET(request: Request) {
   }
 
   if (code) {
-    const cookieStore = await cookies();
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

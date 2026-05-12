@@ -21,10 +21,16 @@ function ConnexionForm() {
     if (!isSupabaseConfigured || !supabase) return;
     setLoading(true);
     setError(null);
+    // Store destination in a short-lived cookie read by the route handler.
+    // redirectTo must be the exact URL registered in Supabase Dashboard —
+    // no query params, otherwise Supabase rejects it and never calls our handler.
+    if (redirect !== "/compte") {
+      document.cookie = `oauth_redirect=${encodeURIComponent(redirect)}; path=/; max-age=300; SameSite=Lax`;
+    }
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirect)}`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
     if (oauthError) {
