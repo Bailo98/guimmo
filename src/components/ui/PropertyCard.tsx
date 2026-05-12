@@ -269,7 +269,7 @@ export function PropertyCard({ property, variant = "default", className, index =
           </button>
         </div>
 
-        <p className="text-slate-400 text-[10px] mt-2">{timeAgo(property.createdAt)}</p>
+        <p className="text-slate-400 text-[10px] mt-2" suppressHydrationWarning>{timeAgo(property.createdAt)}</p>
       </div>
     </div>
   );

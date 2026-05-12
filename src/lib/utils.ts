@@ -17,7 +17,7 @@ export function formatPrice(amount: number, currency = "GNF"): string {
 
 export function formatDate(date: Date | string): string {
   const d = typeof date === "string" ? new Date(date) : date;
-  return new Intl.DateTimeFormat("fr-GN", {
+  return new Intl.DateTimeFormat("fr-FR", {
     day: "numeric",
     month: "short",
     year: "numeric",

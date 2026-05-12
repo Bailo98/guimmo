@@ -25,9 +25,14 @@ const MONTH_NAMES = [
 
 type DayStatus = "available" | "unavailable" | "past" | "empty";
 
+function getToday() {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
 export function AvailabilityCalendar({ availableNow }: Props) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const [today] = useState(getToday);
 
   const [displayed, setDisplayed] = useState({
     year: today.getFullYear(),
