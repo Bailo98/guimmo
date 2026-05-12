@@ -157,19 +157,23 @@ export default function PublierPage() {
           .from("property-images")
           .upload(path, file, { upsert: false, contentType: file.type });
         if (upErr) {
-          console.error(upErr);
-          if (upErr.message?.includes("Bucket not found") || upErr.message?.includes("bucket")) {
-            toast("Le stockage de photos n'est pas configuré. Contactez l'administrateur.", "error");
-            setSubmitting(false);
-            return;
+          console.error("[upload]", upErr);
+          const msg = upErr.message ?? "";
+          if (msg.includes("Bucket not found") || msg.includes("bucket")) {
+            toast("Bucket introuvable. Contactez l'administrateur.", "error");
+          } else if (msg.includes("policy") || msg.includes("violates") || msg.includes("403")) {
+            toast("Accès refusé au stockage — vérifiez les politiques RLS.", "error");
+          } else {
+            toast(`Erreur upload : ${msg}`, "error");
           }
-          continue;
+          setSubmitting(false);
+          return;
         }
         const { data: { publicUrl } } = supabase.storage.from("property-images").getPublicUrl(path);
         uploadedUrls.push(publicUrl);
       }
       if (uploadedUrls.length === 0) {
-        toast("Erreur lors de l'upload des photos", "error");
+        toast("Aucune photo uploadée — réessayez.", "error");
         setSubmitting(false);
         return;
       }
