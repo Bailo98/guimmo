@@ -1,804 +1,737 @@
 "use client";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import {
-  Home, Camera, Phone, CheckCircle, ChevronRight, ChevronLeft,
-  Upload, X, Wind, Car, Wifi, Zap, Droplets, Sun, Trees, Waves,
-  Shield, ChevronUp,
+  ChevronLeft, X, Mic, MicOff, MapPin, Phone,
+  Upload, Camera, ArrowRight,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { PROPERTY_TYPES } from "@/lib/constants";
-import { POPULAR_NEIGHBORHOODS } from "@/data/neighborhoods";
-import { Button } from "@/components/ui/Button";
-import { useAppStore } from "@/lib/store";
+import { useAuth } from "@/lib/auth-context";
+import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
-import { publishProperty } from "@/lib/properties";
+import { NEIGHBORHOODS } from "@/data/neighborhoods";
+import { cn } from "@/lib/utils";
 
-const WIZARD_STEPS = [
-  { id: 1, label: "Votre bien", icon: Home },
-  { id: 2, label: "Photos & Équipements", icon: Camera },
-  { id: 3, label: "Contact & Publication", icon: Phone },
+type PType = "apartment" | "house" | "studio" | "villa" | "room" | "land";
+type TxType = "rent" | "sale";
+type ContactMethod = "whatsapp" | "call" | "both";
+
+const TYPE_OPTIONS: { id: PType; label: string; emoji: string }[] = [
+  { id: "apartment", label: "Appartement", emoji: "🏢" },
+  { id: "house",     label: "Maison",      emoji: "🏠" },
+  { id: "studio",    label: "Studio",      emoji: "🛏️" },
+  { id: "villa",     label: "Villa",       emoji: "🏡" },
+  { id: "room",      label: "Chambre",     emoji: "🚪" },
+  { id: "land",      label: "Terrain",     emoji: "🌿" },
 ];
 
-const TRANSACTION_TYPES = [
-  { value: "rent", label: "À louer", emoji: "🔑" },
-  { value: "sale", label: "À vendre", emoji: "🏷️" },
-];
-
-const PRICE_PERIODS = [
-  { value: "month", label: "/mois" },
-  { value: "year", label: "/an" },
-  { value: "total", label: "total" },
-];
-
-const FEATURES_LIST = [
-  { value: "balcon", label: "Balcon", icon: Sun },
-  { value: "parking", label: "Parking", icon: Car },
-  { value: "ascenseur", label: "Ascenseur", icon: ChevronUp },
-  { value: "jardin", label: "Jardin", icon: Trees },
-  { value: "piscine", label: "Piscine", icon: Waves },
-  { value: "climatisation", label: "Climatisation", icon: Wind },
-  { value: "gardiennage", label: "Gardiennage", icon: Shield },
-  { value: "eau-courante", label: "Eau courante", icon: Droplets },
-  { value: "groupe-électrogène", label: "Groupe élec.", icon: Zap },
-  { value: "internet-fibre", label: "Internet fibre", icon: Wifi },
-];
-
-interface ImagePreview {
-  file: File;
-  url: string;
-  id: string;
-}
+const ROOM_OPTIONS = [0, 1, 2, 3, 4, "5+"] as const;
+const COMMUNES = ["Ratoma", "Dixinn", "Matam", "Kaloum", "Matoto", "Coyah"];
+const STEP_LABELS = ["Type & transaction", "Photos & prix", "Quartier", "Contact"];
 
 interface FormState {
-  title: string;
-  type: string;
-  transactionType: string;
-  neighborhood: string;
-  city: string;
-  surface: string;
-  rooms: string;
-  bathrooms: string;
+  type: PType | "";
+  txType: TxType | "";
+  photos: File[];
   price: string;
-  pricePeriod: string;
-  description: string;
-  features: string[];
-  furnished: boolean;
-  availableNow: boolean;
-  ownerName: string;
+  rooms: number;
+  furnished: boolean | null;
+  neighborhood: string;
+  locationDetail: string;
   phone: string;
-  whatsapp: string;
-  email: string;
-  videoUrl: string;
+  contactMethod: ContactMethod;
 }
 
-const INITIAL_FORM: FormState = {
-  title: "",
-  type: "",
-  transactionType: "rent",
-  neighborhood: "",
-  city: "Conakry",
-  surface: "",
-  rooms: "",
-  bathrooms: "",
-  price: "",
-  pricePeriod: "month",
-  description: "",
-  features: [],
-  furnished: false,
-  availableNow: true,
-  ownerName: "",
-  phone: "",
-  whatsapp: "",
-  email: "",
-  videoUrl: "",
-};
+function formatGNF(raw: string): string {
+  const n = parseInt(raw.replace(/\D/g, ""), 10);
+  if (isNaN(n) || n === 0) return "";
+  return new Intl.NumberFormat("fr-GN", { maximumFractionDigits: 0 }).format(n) + " GNF";
+}
 
-const DRAFT_KEY = "guimmo-draft";
+function generateTitle(type: string, rooms: number, neighborhood: string): string {
+  const labels: Record<string, string> = {
+    apartment: "Appartement", house: "Maison", studio: "Studio",
+    villa: "Villa", room: "Chambre", land: "Terrain",
+  };
+  const nName = NEIGHBORHOODS.find((n) => n.id === neighborhood)?.name ?? neighborhood;
+  const tLabel = labels[type] ?? type;
+  if (rooms > 0 && type !== "land") {
+    return `${tLabel} ${rooms} chambre${rooms > 1 ? "s" : ""} à ${nName}`;
+  }
+  return `${tLabel} à ${nName}`;
+}
 
 export default function PublierPage() {
+  const { user, profile, loading: authLoading } = useAuth();
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [published, setPublished] = useState(false);
-  const [images, setImages] = useState<ImagePreview[]>([]);
-  const [dragOver, setDragOver] = useState(false);
-  const [errors, setErrors] = useState<Partial<Record<keyof FormState | "images", string>>>({});
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const addPublishedListing = useAppStore((s) => s.addPublishedListing);
+  const [submitting, setSubmitting] = useState(false);
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [micActive, setMicActive] = useState(false);
+  const [micField, setMicField] = useState<"price" | "location" | null>(null);
 
-  const [form, setFormState] = useState<FormState>(INITIAL_FORM);
+  const fileInputRef   = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null);
 
-  // Restore draft from localStorage on mount
+  const [form, setForm] = useState<FormState>({
+    type: "", txType: "", photos: [], price: "",
+    rooms: 1, furnished: null,
+    neighborhood: "", locationDetail: "",
+    phone: "", contactMethod: "both",
+  });
+
+  // Auth guard
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(DRAFT_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved) as Partial<FormState>;
-        setFormState((prev) => ({ ...prev, ...parsed }));
-      }
-    } catch {
-      // ignore
+    if (!authLoading && !user) {
+      router.replace("/connexion?redirect=/publier");
     }
-  }, []);
+  }, [authLoading, user, router]);
 
-  // Auto-save to localStorage on form change
-  const setForm = useCallback((updater: Partial<FormState> | ((prev: FormState) => FormState)) => {
-    setFormState((prev) => {
-      const next = typeof updater === "function" ? updater(prev) : { ...prev, ...updater };
-      try {
-        localStorage.setItem(DRAFT_KEY, JSON.stringify(next));
-      } catch {
-        // ignore
-      }
-      return next;
-    });
-  }, []);
+  // Pre-fill phone from profile
+  useEffect(() => {
+    if (profile?.phone) setForm((f) => ({ ...f, phone: profile.phone! }));
+  }, [profile]);
 
-  function toggleFeature(value: string) {
-    setForm((prev) => ({
-      ...prev,
-      features: prev.features.includes(value)
-        ? prev.features.filter((f) => f !== value)
-        : [...prev.features, value],
-    }));
+  function update<K extends keyof FormState>(key: K, val: FormState[K]) {
+    setForm((f) => ({ ...f, [key]: val }));
   }
 
-  function addFiles(files: FileList | null) {
+  function addPhotos(files: FileList | null) {
     if (!files) return;
-    const valid = Array.from(files).filter(
-      (f) => f.type.startsWith("image/") && f.size <= 5 * 1024 * 1024
-    );
-    const previews: ImagePreview[] = valid.map((f) => ({
-      file: f,
-      url: URL.createObjectURL(f),
-      id: `${f.name}-${f.size}-${Date.now()}`,
-    }));
-    setImages((prev) => [...prev, ...previews].slice(0, 10));
+    const newFiles = Array.from(files).filter((f) => f.type.startsWith("image/"));
+    if (!newFiles.length) return;
+    const previews = newFiles.map((f) => URL.createObjectURL(f));
+    setForm((f) => ({ ...f, photos: [...f.photos, ...newFiles] }));
+    setPhotoPreviews((p) => [...p, ...previews]);
   }
 
-  function removeImage(id: string) {
-    setImages((prev) => {
-      const removed = prev.find((i) => i.id === id);
-      if (removed) URL.revokeObjectURL(removed.url);
-      return prev.filter((i) => i.id !== id);
-    });
+  function removePhoto(i: number) {
+    URL.revokeObjectURL(photoPreviews[i]);
+    setForm((f) => ({ ...f, photos: f.photos.filter((_, idx) => idx !== i) }));
+    setPhotoPreviews((p) => p.filter((_, idx) => idx !== i));
   }
 
-  function setPrimary(id: string) {
-    setImages((prev) => {
-      const idx = prev.findIndex((i) => i.id === id);
-      if (idx <= 0) return prev;
-      const next = [...prev];
-      const [item] = next.splice(idx, 1);
-      return [item, ...next];
-    });
+  function toggleMic(field: "price" | "location") {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) { toast("Micro non supporté sur ce navigateur", "error"); return; }
+
+    if (micActive) { recognitionRef.current?.stop(); return; }
+
+    const recognition = new SR();
+    recognitionRef.current = recognition;
+    recognition.lang = "fr-FR";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => { setMicActive(true); setMicField(field); };
+    recognition.onend   = () => { setMicActive(false); setMicField(null); };
+    recognition.onerror = () => { setMicActive(false); setMicField(null); toast("Erreur micro", "error"); };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    recognition.onresult = (e: any) => {
+      const text: string = e.results[0][0].transcript;
+      if (field === "price") {
+        const digits = text.replace(/\D/g, "");
+        if (digits) update("price", digits);
+      } else {
+        update("locationDetail", text);
+      }
+    };
+    recognition.start();
   }
 
-  function validateStep(s: number): boolean {
-    const errs: typeof errors = {};
-    if (s === 1) {
-      if (!form.type) errs.type = "Sélectionnez un type de bien";
-      if (!form.neighborhood) errs.neighborhood = "Sélectionnez un quartier";
-      if (!form.price) errs.price = "Indiquez un prix";
-    }
-    if (s === 3) {
-      if (!form.phone) errs.phone = "Le numéro de téléphone est obligatoire";
-    }
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
-  }
+  async function handleSubmit() {
+    if (!user || !supabase) return;
+    setSubmitting(true);
 
-  function next() {
-    if (!validateStep(step)) return;
-    if (step < 3) setStep(step + 1);
-  }
-
-  function prev() {
-    if (step > 1) setStep(step - 1);
-  }
-
-  async function fileToDataUrl(file: File): Promise<string> {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target?.result as string);
-      reader.readAsDataURL(file);
-    });
-  }
-
-  async function handlePublish() {
-    if (!validateStep(3)) return;
-    setLoading(true);
     try {
-      const typeLabel = PROPERTY_TYPES.find((t) => t.value === form.type)?.label ?? form.type;
-      const neighborhoodLabel = POPULAR_NEIGHBORHOODS.find((n) => n.id === form.neighborhood)?.name ?? form.neighborhood;
-      const autoTitle = form.title.trim() ||
-        `${typeLabel}${form.rooms ? ` ${form.rooms}ch` : ""} à ${neighborhoodLabel}`;
+      // 1. Upload photos to Supabase Storage
+      const uploadedUrls: string[] = [];
+      for (let i = 0; i < form.photos.length; i++) {
+        const file = form.photos[i];
+        const ext  = file.name.split(".").pop() ?? "jpg";
+        const path = `${user.id}/${Date.now()}-${i}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from("property-images")
+          .upload(path, file, { upsert: false, contentType: file.type });
+        if (upErr) {
+          console.error(upErr);
+          if (upErr.message?.includes("Bucket not found") || upErr.message?.includes("bucket")) {
+            toast("Le stockage de photos n'est pas configuré. Contactez l'administrateur.", "error");
+            setSubmitting(false);
+            return;
+          }
+          continue;
+        }
+        const { data: { publicUrl } } = supabase.storage.from("property-images").getPublicUrl(path);
+        uploadedUrls.push(publicUrl);
+      }
+      if (uploadedUrls.length === 0) {
+        toast("Erreur lors de l'upload des photos", "error");
+        setSubmitting(false);
+        return;
+      }
 
-      const imageDataUrls = await Promise.all(images.map((img) => fileToDataUrl(img.file)));
-      const propertyImages = imageDataUrls.map((url, i) => ({
-        id: `img-${Date.now()}-${i}`,
-        url,
-        alt: autoTitle,
-        isPrimary: i === 0,
-      }));
+      // 2. Insert into properties
+      const priceNum = parseInt(form.price.replace(/\D/g, ""), 10);
+      const title    = generateTitle(form.type, form.rooms, form.neighborhood);
+      const { data: property, error: insertErr } = await supabase
+        .from("properties")
+        .insert({
+          title,
+          description:         form.locationDetail || "",
+          type:                form.type,
+          transaction_type:    form.txType,
+          price:               priceNum,
+          price_period:        form.txType === "rent" ? "month" : "total",
+          rooms:               form.rooms,
+          bathrooms:           0,
+          surface:             null,
+          furnished:           form.furnished ?? false,
+          available_now:       true,
+          neighborhood:        form.neighborhood,
+          city:                "Conakry",
+          status:              "active",
+          contact_phone:       form.phone,
+          contact_preference:  form.contactMethod,
+          owner_id:            user.id,
+          features:            [],
+          is_boosted:          false,
+          views:               0,
+          whatsapp_clicks:     0,
+        })
+        .select("id")
+        .single();
 
-      const id = `user-${Date.now()}`;
-      addPublishedListing({
-        id,
-        title: autoTitle,
-        description: form.description,
-        type: form.type || "apartment",
-        transactionType: form.transactionType as "rent" | "sale",
-        status: "active",
-        price: parseInt(form.price) || 0,
-        pricePeriod: form.pricePeriod as "month" | "year" | "total",
-        surface: form.surface ? parseInt(form.surface) : undefined,
-        rooms: form.rooms ? parseInt(form.rooms) : undefined,
-        bathrooms: form.bathrooms ? parseInt(form.bathrooms) : undefined,
-        furnished: form.furnished,
-        availableNow: form.availableNow,
-        neighborhood: form.neighborhood,
-        city: form.city || "Conakry",
-        images: propertyImages,
-        owner: {
-          id: "current-user",
-          name: form.ownerName || "Mon Compte",
-          email: form.email || "user@guimmo.gn",
-          phone: form.phone,
-          whatsapp: form.whatsapp || form.phone,
-          role: "owner",
-          verified: false,
-          badges: [],
-          trustScore: 50,
-          createdAt: new Date().toISOString(),
-        },
-        badges: [],
-        views: 0,
-        whatsappClicks: 0,
-        isBoosted: false,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        features: form.features,
-        ...(form.videoUrl ? { videoUrl: form.videoUrl } : {}),
-      });
-      // Save to Supabase (runs in background, doesn't block UX)
-      publishProperty(
-        {
-          title: autoTitle, description: form.description,
-          type: form.type || "apartment", transactionType: form.transactionType,
-          price: parseInt(form.price) || 0, pricePeriod: form.pricePeriod,
-          surface: form.surface ? parseInt(form.surface) : undefined,
-          rooms: form.rooms ? parseInt(form.rooms) : undefined,
-          bathrooms: form.bathrooms ? parseInt(form.bathrooms) : undefined,
-          furnished: form.furnished, availableNow: form.availableNow,
-          neighborhood: form.neighborhood, city: form.city || "Conakry",
-          features: form.features,
-        },
-        imageDataUrls
-      ).catch(() => {}); // silent fail — local store is the fallback
+      if (insertErr || !property) {
+        console.error(insertErr);
+        toast("Erreur lors de la publication", "error");
+        setSubmitting(false);
+        return;
+      }
 
-      // Clear draft after successful publish
-      try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
-      toast("Annonce publiée avec succès !", "success");
-      setPublished(true);
-      setTimeout(() => router.push("/compte/annonces"), 2000);
-    } finally {
-      setLoading(false);
+      // 3. Insert images
+      await supabase.from("property_images").insert(
+        uploadedUrls.map((url, i) => ({
+          property_id: property.id,
+          url,
+          alt:        title,
+          is_primary: i === 0,
+          sort_order: i,
+        }))
+      );
+
+      toast("✅ Votre annonce est en ligne !", "success");
+      router.push(`/annonces/${property.id}`);
+    } catch (err) {
+      console.error(err);
+      toast("Une erreur est survenue", "error");
+      setSubmitting(false);
     }
   }
 
-  const progress = ((step - 1) / (WIZARD_STEPS.length - 1)) * 100;
-  const neighborhoodLabel = POPULAR_NEIGHBORHOODS.find((n) => n.id === form.neighborhood)?.name ?? form.neighborhood;
-  const typeLabel = PROPERTY_TYPES.find((t) => t.value === form.type)?.label ?? form.type;
+  const canAdvance =
+    step === 1 ? !!form.type && !!form.txType :
+    step === 2 ? form.photos.length >= 1 && !!form.price :
+    step === 3 ? !!form.neighborhood :
+    !!form.phone;
 
-  if (published) {
+  if (authLoading) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-[60vh] text-center gap-4">
-        <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-2">
-          <CheckCircle className="w-10 h-10 text-green-500" />
-        </div>
-        <h2 className="text-2xl font-black text-slate-900 dark:text-white">Annonce publiée !</h2>
-        <p className="text-slate-500 dark:text-slate-400 text-sm max-w-xs">
-          Votre annonce GuImmo a été soumise avec succès. Elle sera vérifiée par notre équipe sous 24h.
-        </p>
-        <p className="text-xs text-slate-400">Redirection vers vos annonces...</p>
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#F97316] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
+  if (!user) return null;
+
+  const typeLabel        = TYPE_OPTIONS.find((t) => t.id === form.type)?.label ?? "";
+  const typeEmoji        = TYPE_OPTIONS.find((t) => t.id === form.type)?.emoji ?? "";
+  const neighborhoodName = NEIGHBORHOODS.find((n) => n.id === form.neighborhood)?.name ?? "";
+  const priceFormatted   = formatGNF(form.price);
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-6">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <h1 className="text-xl font-black text-slate-900 dark:text-white">Publier une annonce</h1>
-          <span className="text-sm text-slate-400 font-medium">Étape {step}/{WIZARD_STEPS.length}</span>
-        </div>
+    <div className="max-w-xl mx-auto px-4 pt-4 pb-40">
 
-        {/* Progress bar */}
-        <div className="h-1.5 bg-slate-100 dark:bg-[#2a3040] rounded-full overflow-hidden mb-4">
-          <div className="h-full bg-[#F97316] rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+      {/* ── Progress ── */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
+            Étape {step}&nbsp;/&nbsp;4
+          </p>
+          <p className="text-xs text-slate-400">{STEP_LABELS[step - 1]}</p>
         </div>
-
-        {/* Step labels */}
-        <div className="flex items-center gap-2">
-          {WIZARD_STEPS.map((s, idx) => {
-            const Icon = s.icon;
-            const isActive = s.id === step;
-            const isDone = s.id < step;
-            return (
-              <div key={s.id} className="flex items-center gap-2 flex-1">
-                <div className="flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
-                    isActive ? "bg-[#F97316] text-white shadow-lg shadow-orange-500/30"
-                      : isDone ? "bg-green-500 text-white"
-                      : "bg-slate-100 dark:bg-[#2a3040] text-slate-400"
-                  )}>
-                    {isDone ? <CheckCircle className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
-                  </div>
-                  <span className={cn(
-                    "text-[10px] font-semibold text-center leading-tight whitespace-nowrap",
-                    isActive ? "text-[#F97316]" : isDone ? "text-green-500" : "text-slate-400"
-                  )}>
-                    {s.label}
-                  </span>
-                </div>
-                {idx < WIZARD_STEPS.length - 1 && (
-                  <div className={cn(
-                    "flex-1 h-0.5 rounded-full mb-4 transition-colors",
-                    isDone ? "bg-green-500" : "bg-slate-100 dark:bg-[#2a3040]"
-                  )} />
-                )}
-              </div>
-            );
-          })}
+        <div className="relative h-2 bg-slate-100 dark:bg-[#2a3040] rounded-full overflow-hidden">
+          <div
+            className="absolute inset-y-0 left-0 bg-[#F97316] rounded-full transition-all duration-500"
+            style={{ width: `${(step / 4) * 100}%` }}
+          />
+        </div>
+        <div className="flex gap-1 mt-2">
+          {[1, 2, 3, 4].map((n) => (
+            <div
+              key={n}
+              className={cn(
+                "flex-1 h-1 rounded-full transition-colors duration-300",
+                n <= step ? "bg-[#F97316]" : "bg-slate-200 dark:bg-[#2a3040]"
+              )}
+            />
+          ))}
         </div>
       </div>
 
-      {/* Step content */}
-      <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-6 border border-slate-100 dark:border-[#2a3040] min-h-[300px]">
-
-        {/* ── STEP 1: Votre bien ── */}
-        {step === 1 && (
+      {/* ── STEP 1 : Type + Transaction ── */}
+      {step === 1 && (
+        <div className="space-y-8 animate-fadeIn">
           <div>
-            <h2 className="font-bold text-slate-900 dark:text-white mb-1">Votre bien</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mb-5">Décrivez le logement que vous proposez</p>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-1">
+              Quel type de bien ?
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">
+              Sélectionnez le type de logement
+            </p>
+          </div>
 
-            {/* Transaction type */}
-            <div className="flex gap-2 mb-5">
-              {TRANSACTION_TYPES.map((t) => (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {TYPE_OPTIONS.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => update("type", t.id)}
+                className={cn(
+                  "flex flex-col items-center gap-2 p-5 rounded-2xl border-2 font-semibold text-sm transition-all active:scale-95",
+                  form.type === t.id
+                    ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20 text-[#F97316]"
+                    : "border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#1e2430] text-slate-700 dark:text-slate-300 hover:border-[#F97316]/40"
+                )}
+              >
+                <span className="text-4xl leading-none">{t.emoji}</span>
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          <div>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-3">
+              Location ou vente ?
+            </h2>
+            <div className="grid grid-cols-2 gap-3">
+              {([
+                { id: "rent" as TxType, label: "🔑 Location", sub: "Louer mon bien" },
+                { id: "sale" as TxType, label: "💰 Vente",    sub: "Vendre mon bien" },
+              ] as const).map((tx) => (
                 <button
-                  key={t.value}
-                  onClick={() => setForm({ transactionType: t.value })}
+                  key={tx.id}
+                  onClick={() => update("txType", tx.id)}
                   className={cn(
-                    "flex-1 py-3 rounded-xl text-sm font-bold transition-all border",
-                    form.transactionType === t.value
-                      ? "bg-[#F97316] text-white border-[#F97316]"
-                      : "bg-slate-50 dark:bg-[#151922] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[#2a3040]"
+                    "flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all active:scale-95",
+                    form.txType === tx.id
+                      ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20"
+                      : "border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#1e2430] hover:border-[#F97316]/40"
                   )}
                 >
-                  {t.emoji} {t.label}
+                  <p className={cn("font-bold text-base", form.txType === tx.id ? "text-[#F97316]" : "text-slate-900 dark:text-white")}>
+                    {tx.label}
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{tx.sub}</p>
                 </button>
               ))}
             </div>
-
-            {/* Property type */}
-            <div className="mb-5">
-              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 block">Type de bien *</label>
-              <div className="grid grid-cols-2 gap-2">
-                {PROPERTY_TYPES.map((t) => (
-                  <button
-                    key={t.value}
-                    onClick={() => { setForm({ type: t.value }); setErrors((e) => ({ ...e, type: undefined })); }}
-                    className={cn(
-                      "py-3 px-4 rounded-xl text-sm font-semibold transition-all border text-left",
-                      form.type === t.value
-                        ? "bg-[#F97316]/10 border-[#F97316] text-[#F97316]"
-                        : "bg-slate-50 dark:bg-[#151922] border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300"
-                    )}
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-              {errors.type && <p className="text-red-500 text-xs mt-1">{errors.type}</p>}
-            </div>
-
-            {/* Neighborhood */}
-            <div className="mb-5">
-              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 block">Quartier *</label>
-              <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-1">
-                {POPULAR_NEIGHBORHOODS.map((n) => (
-                  <button
-                    key={n.id}
-                    onClick={() => { setForm({ neighborhood: n.id }); setErrors((e) => ({ ...e, neighborhood: undefined })); }}
-                    className={cn(
-                      "py-2.5 px-3 rounded-xl text-sm font-semibold transition-all border text-left",
-                      form.neighborhood === n.id
-                        ? "bg-[#F97316]/10 border-[#F97316] text-[#F97316]"
-                        : "bg-slate-50 dark:bg-[#151922] border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300"
-                    )}
-                  >
-                    📍 {n.name}
-                  </button>
-                ))}
-              </div>
-              {errors.neighborhood && <p className="text-red-500 text-xs mt-1">{errors.neighborhood}</p>}
-            </div>
-
-            {/* City */}
-            <div className="mb-5">
-              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 block">Ville</label>
-              <input
-                type="text"
-                placeholder="Ex: Conakry"
-                value={form.city}
-                onChange={(e) => setForm({ city: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm"
-              />
-            </div>
-
-            {/* Surface, rooms, bathrooms */}
-            <div className="grid grid-cols-3 gap-3 mb-5">
-              {[
-                { key: "surface", label: "Surface (m²)", emoji: "📐" },
-                { key: "rooms", label: "Chambres", emoji: "🛏️" },
-                { key: "bathrooms", label: "Salles de bain", emoji: "🚿" },
-              ].map((f) => (
-                <div key={f.key}>
-                  <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 block">{f.emoji} {f.label}</label>
-                  <input
-                    type="number"
-                    value={form[f.key as keyof FormState] as string}
-                    onChange={(e) => setForm({ [f.key]: e.target.value })}
-                    className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-slate-900 dark:text-white text-center font-bold focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm"
-                    min="0"
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Price */}
-            <div className="mb-5">
-              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 block">Prix *</label>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <input
-                    type="number"
-                    placeholder="Ex: 2500000"
-                    value={form.price}
-                    onChange={(e) => { setForm({ price: e.target.value }); setErrors((e2) => ({ ...e2, price: undefined })); }}
-                    className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 text-slate-900 dark:text-white text-sm font-bold placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-[#F97316]"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-semibold">GNF</span>
-                </div>
-                <select
-                  value={form.pricePeriod}
-                  onChange={(e) => setForm({ pricePeriod: e.target.value })}
-                  className="bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-3 text-slate-700 dark:text-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316]"
-                >
-                  {PRICE_PERIODS.map((p) => (
-                    <option key={p.value} value={p.value}>{p.label}</option>
-                  ))}
-                </select>
-              </div>
-              {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
-              <div className="flex flex-wrap gap-2 mt-2">
-                {["500000", "1000000", "2000000", "3000000", "5000000"].map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => setForm({ price: p })}
-                    className={cn(
-                      "px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors",
-                      form.price === p ? "bg-[#F97316] text-white border-[#F97316]" : "bg-slate-50 dark:bg-[#151922] text-slate-500 dark:text-slate-400 border-slate-200 dark:border-[#2a3040]"
-                    )}
-                  >
-                    {parseInt(p).toLocaleString()}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Title */}
-            <div className="mb-5">
-              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 block">Titre de l&apos;annonce</label>
-              <input
-                type="text"
-                placeholder="Ex: Bel appartement 3ch meublé à Kipé"
-                value={form.title}
-                onChange={(e) => setForm({ title: e.target.value })}
-                maxLength={80}
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm"
-              />
-              <p className="text-xs text-slate-400 mt-1 text-right">{form.title.length}/80 · laissez vide pour un titre automatique</p>
-            </div>
-
-            {/* Description */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 block">Description</label>
-              <textarea
-                rows={4}
-                placeholder="Décrivez votre logement : état, équipements, environnement..."
-                value={form.description}
-                onChange={(e) => setForm({ description: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm resize-none"
-              />
-              <p className={cn("text-xs mt-1 text-right", form.description.length < 50 ? "text-slate-400" : "text-green-500")}>
-                {form.description.length} / 50 min.
-              </p>
-            </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* ── STEP 2: Photos & Équipements ── */}
-        {step === 2 && (
+      {/* ── STEP 2 : Photos + Prix + Chambres + Meublé ── */}
+      {step === 2 && (
+        <div className="space-y-7 animate-fadeIn">
           <div>
-            <h2 className="font-bold text-slate-900 dark:text-white mb-1">Photos &amp; Équipements</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mb-5">Ajoutez des photos et sélectionnez les équipements</p>
-
-            {/* Photo upload */}
-            <div className="mb-6">
-              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 block">Photos (max 10)</label>
-              <label
-                className={cn(
-                  "flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-2xl cursor-pointer transition-colors",
-                  dragOver
-                    ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20"
-                    : "border-[#F97316]/40 dark:border-[#F97316]/30 hover:border-[#F97316] hover:bg-orange-50 dark:hover:bg-orange-900/10"
-                )}
-                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                onDragLeave={() => setDragOver(false)}
-                onDrop={(e) => { e.preventDefault(); setDragOver(false); addFiles(e.dataTransfer.files); }}
-              >
-                <Upload className="w-6 h-6 text-[#F97316] mb-2" />
-                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                  {dragOver ? "Déposez ici !" : "Appuyez ou glissez-déposez des photos"}
-                </p>
-                <p className="text-xs text-slate-400 mt-1">JPEG, PNG · Max 5 MB / photo</p>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => addFiles(e.target.files)}
-                  ref={fileInputRef}
-                />
-              </label>
-
-              {images.length > 0 && (
-                <div className="mt-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                      {images.length} photo{images.length > 1 ? "s" : ""} · <span className="text-[#F97316]">La 1ère sera la principale</span>
-                    </p>
-                    <button
-                      onClick={() => { images.forEach((i) => URL.revokeObjectURL(i.url)); setImages([]); }}
-                      className="text-xs text-red-400 hover:text-red-600 transition-colors"
-                    >
-                      Tout supprimer
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2">
-                    {images.map((img, idx) => (
-                      <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-[#151922]">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={img.url} alt={`Photo ${idx + 1}`} className="w-full h-full object-cover" />
-                        {idx === 0 && (
-                          <span className="absolute top-1 left-1 bg-[#F97316] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                            Principale
-                          </span>
-                        )}
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100">
-                          {idx !== 0 && (
-                            <button
-                              onClick={() => setPrimary(img.id)}
-                              className="bg-white/90 text-slate-700 text-[10px] font-bold px-2 py-1 rounded-lg hover:bg-[#F97316] hover:text-white transition-colors"
-                            >
-                              Principale
-                            </button>
-                          )}
-                          <button
-                            onClick={() => removeImage(img.id)}
-                            className="w-7 h-7 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                    {images.length < 10 && (
-                      <label className="aspect-square rounded-xl border-2 border-dashed border-slate-200 dark:border-[#2a3040] flex flex-col items-center justify-center cursor-pointer hover:border-[#F97316] hover:bg-orange-50 dark:hover:bg-orange-900/10 transition-colors">
-                        <Upload className="w-5 h-5 text-slate-300 dark:text-slate-600 mb-1" />
-                        <span className="text-[10px] text-slate-400">Ajouter</span>
-                        <input type="file" multiple accept="image/*" className="hidden" onChange={(e) => addFiles(e.target.files)} />
-                      </label>
-                    )}
-                  </div>
-                </div>
-              )}
-              {images.length === 0 && (
-                <p className="text-xs text-slate-400 mt-2 text-center">
-                  💡 Les annonces avec photos reçoivent 5x plus de contacts
-                </p>
-              )}
-            </div>
-
-            {/* Features */}
-            <div className="mb-6">
-              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3 block">Équipements &amp; services</label>
-              <div className="grid grid-cols-2 gap-2">
-                {FEATURES_LIST.map(({ value, label, icon: Icon }) => {
-                  const selected = form.features.includes(value);
-                  return (
-                    <button
-                      key={value}
-                      onClick={() => toggleFeature(value)}
-                      className={cn(
-                        "flex items-center gap-2.5 px-3 py-2.5 rounded-xl border text-sm font-semibold transition-all",
-                        selected
-                          ? "bg-[#F97316] border-[#F97316] text-white"
-                          : "bg-slate-50 dark:bg-[#151922] border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#F97316]/50"
-                      )}
-                    >
-                      <Icon className="w-4 h-4 flex-shrink-0" />
-                      {label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Video URL */}
-            <div className="mb-6">
-              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 block">
-                🎬 Vidéo de présentation <span className="font-normal text-slate-400">(optionnel)</span>
-              </label>
-              <input
-                type="url"
-                placeholder="https://youtube.com/embed/... ou https://drive.google.com/..."
-                value={form.videoUrl}
-                onChange={(e) => setForm({ videoUrl: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm"
-              />
-              <p className="text-xs text-slate-400 mt-1">Collez un lien YouTube, Google Drive ou Vimeo pour ajouter une visite vidéo</p>
-            </div>
-
-            {/* Furnished & availableNow toggles */}
-            <div className="flex gap-3">
-              <button
-                onClick={() => setForm((p) => ({ ...p, furnished: !p.furnished }))}
-                className={cn(
-                  "flex-1 py-3 rounded-xl text-sm font-semibold border transition-colors",
-                  form.furnished ? "bg-[#F97316]/10 border-[#F97316] text-[#F97316]" : "bg-slate-50 dark:bg-[#151922] border-slate-200 dark:border-[#2a3040] text-slate-500 dark:text-slate-400"
-                )}
-              >
-                {form.furnished ? "✅ Meublé" : "Meublé ?"}
-              </button>
-              <button
-                onClick={() => setForm((p) => ({ ...p, availableNow: !p.availableNow }))}
-                className={cn(
-                  "flex-1 py-3 rounded-xl text-sm font-semibold border transition-colors",
-                  form.availableNow ? "bg-green-50 dark:bg-green-900/20 border-green-500 text-green-600 dark:text-green-400" : "bg-slate-50 dark:bg-[#151922] border-slate-200 dark:border-[#2a3040] text-slate-500 dark:text-slate-400"
-                )}
-              >
-                {form.availableNow ? "✅ Disponible" : "Disponible ?"}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ── STEP 3: Contact & Publication ── */}
-        {step === 3 && (
-          <div>
-            <h2 className="font-bold text-slate-900 dark:text-white mb-1">Contact &amp; Publication</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mb-5">Renseignez vos coordonnées et vérifiez le récapitulatif</p>
-
-            {/* Contact fields */}
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">👤 Nom du propriétaire</label>
-                <input
-                  type="text"
-                  placeholder="Ex: Mamadou Diallo"
-                  value={form.ownerName}
-                  onChange={(e) => setForm({ ownerName: e.target.value })}
-                  className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">📞 Numéro de téléphone *</label>
-                <input
-                  type="tel"
-                  placeholder="+224 620 000 000"
-                  value={form.phone}
-                  onChange={(e) => { setForm({ phone: e.target.value }); setErrors((er) => ({ ...er, phone: undefined })); }}
-                  className={cn(
-                    "w-full bg-slate-50 dark:bg-[#151922] border rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm",
-                    errors.phone ? "border-red-500" : "border-slate-200 dark:border-[#2a3040]"
-                  )}
-                />
-                {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
-              </div>
-              <div>
-                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">
-                  💬 WhatsApp <span className="font-normal text-slate-400">(si différent)</span>
-                </label>
-                <input
-                  type="tel"
-                  placeholder="+224 620 000 000"
-                  value={form.whatsapp}
-                  onChange={(e) => setForm({ whatsapp: e.target.value })}
-                  className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">
-                  ✉️ Email <span className="font-normal text-slate-400">(optionnel)</span>
-                </label>
-                <input
-                  type="email"
-                  placeholder="email@exemple.com"
-                  value={form.email}
-                  onChange={(e) => setForm({ email: e.target.value })}
-                  className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm"
-                />
-              </div>
-            </div>
-
-            {/* Summary preview */}
-            <div className="bg-slate-50 dark:bg-[#151922] rounded-2xl p-4 mb-6 space-y-2">
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wide mb-3">Récapitulatif</p>
-              {[
-                { label: "Type", value: typeLabel || "—" },
-                { label: "Transaction", value: form.transactionType === "rent" ? "À louer" : "À vendre" },
-                { label: "Quartier", value: neighborhoodLabel || "—" },
-                { label: "Ville", value: form.city || "—" },
-                { label: "Surface", value: form.surface ? `${form.surface} m²` : "—" },
-                { label: "Chambres", value: form.rooms || "—" },
-                { label: "Prix", value: form.price ? `${parseInt(form.price).toLocaleString()} GNF` : "—" },
-                { label: "Photos", value: `${images.length} photo${images.length !== 1 ? "s" : ""}` },
-                { label: "Équipements", value: form.features.length > 0 ? form.features.join(", ") : "Aucun" },
-                { label: "Contact", value: form.phone || "—" },
-                { label: "Vidéo", value: form.videoUrl ? "✅ Oui" : "Non" },
-              ].map(({ label, value }) => (
-                <div key={label} className="flex items-start justify-between text-sm gap-3">
-                  <span className="text-slate-500 flex-shrink-0">{label}</span>
-                  <span className="font-semibold text-slate-900 dark:text-white text-right line-clamp-2">{value}</span>
-                </div>
-              ))}
-            </div>
-
-            <p className="text-xs text-slate-400 mb-4 text-center">
-              Votre annonce sera vérifiée par notre équipe sous 24h avant d&apos;être publiée.
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-1">
+              Photos &amp; prix
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">
+              Minimum 1 photo obligatoire pour continuer
             </p>
-
-            <Button onClick={handlePublish} loading={loading} variant="brand" size="lg" className="w-full">
-              Publier mon annonce
-            </Button>
           </div>
-        )}
-      </div>
 
-      {/* Navigation */}
-      <div className="flex gap-3 mt-4">
-        {step > 1 && (
+          {/* Photo grid */}
+          {photoPreviews.length > 0 && (
+            <div className="grid grid-cols-3 gap-2">
+              {photoPreviews.map((url, i) => (
+                <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-[#1e2430]">
+                  <Image src={url} alt={`Photo ${i + 1}`} fill className="object-cover" sizes="120px" />
+                  <button
+                    onClick={() => removePhoto(i)}
+                    className="absolute top-1 right-1 w-6 h-6 bg-black/60 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition-colors"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                  {i === 0 && (
+                    <span className="absolute bottom-1 left-1 bg-[#F97316] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                      Principale
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Upload buttons */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316] transition-colors text-sm font-semibold"
+            >
+              <Upload className="w-4 h-4" />
+              Galerie
+            </button>
+            <button
+              onClick={() => cameraInputRef.current?.click()}
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316] transition-colors text-sm font-semibold"
+            >
+              <Camera className="w-4 h-4" />
+              Prendre une photo
+            </button>
+          </div>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }}
+          />
+          <input
+            ref={cameraInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }}
+          />
+
+          {/* Price */}
+          <div>
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+              Prix {form.txType === "rent" ? "(par mois)" : ""} <span className="text-red-400">*</span>
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                inputMode="numeric"
+                placeholder="Ex: 1500000"
+                value={form.price}
+                onChange={(e) => update("price", e.target.value)}
+                className="w-full bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 pr-12 text-slate-900 dark:text-white font-semibold text-base focus:outline-none focus:ring-2 focus:ring-[#F97316]/50"
+              />
+              <button
+                onClick={() => toggleMic("price")}
+                title="Dicter le prix"
+                className={cn(
+                  "absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                  micActive && micField === "price"
+                    ? "bg-red-500 text-white animate-pulse"
+                    : "bg-slate-100 dark:bg-[#2a3040] text-slate-500 dark:text-slate-400 hover:text-[#F97316]"
+                )}
+              >
+                {micActive && micField === "price"
+                  ? <MicOff className="w-4 h-4" />
+                  : <Mic className="w-4 h-4" />}
+              </button>
+            </div>
+            {priceFormatted && (
+              <p className="text-[#F97316] font-bold text-sm mt-2 ml-1">
+                {priceFormatted}{form.txType === "rent" ? "/mois" : ""}
+              </p>
+            )}
+            {micActive && micField === "price" && (
+              <p className="text-red-500 text-xs mt-1 flex items-center gap-1.5 ml-1">
+                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse inline-block" />
+                Parlez le montant…
+              </p>
+            )}
+          </div>
+
+          {/* Rooms */}
+          <div>
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+              Nombre de chambres
+            </label>
+            <div className="flex gap-2 flex-wrap">
+              {ROOM_OPTIONS.map((r) => {
+                const val = r === "5+" ? 5 : (r as number);
+                return (
+                  <button
+                    key={String(r)}
+                    onClick={() => update("rooms", val)}
+                    className={cn(
+                      "w-12 h-12 rounded-xl border-2 font-bold text-sm transition-all",
+                      form.rooms === val
+                        ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20 text-[#F97316]"
+                        : "border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 hover:border-[#F97316]/40"
+                    )}
+                  >
+                    {r}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Furnished */}
+          <div>
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+              Meublé ?
+            </label>
+            <div className="flex gap-3">
+              {([
+                { val: true,  label: "🛋️ Oui" },
+                { val: false, label: "🪑 Non" },
+              ] as const).map((f) => (
+                <button
+                  key={String(f.val)}
+                  onClick={() => update("furnished", f.val)}
+                  className={cn(
+                    "flex-1 py-3 rounded-xl border-2 font-bold text-sm transition-all",
+                    form.furnished === f.val
+                      ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20 text-[#F97316]"
+                      : "border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 hover:border-[#F97316]/40"
+                  )}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── STEP 3 : Quartier ── */}
+      {step === 3 && (
+        <div className="space-y-7 animate-fadeIn">
+          <div>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-1">
+              Où se trouve le bien ?
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">
+              Sélectionnez le quartier à Conakry
+            </p>
+          </div>
+
+          {/* Neighborhood select */}
+          <div>
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+              Quartier <span className="text-red-400">*</span>
+            </label>
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              <select
+                value={form.neighborhood}
+                onChange={(e) => update("neighborhood", e.target.value)}
+                className="w-full bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl pl-9 pr-4 py-3 text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#F97316]/50 appearance-none"
+              >
+                <option value="">— Choisir un quartier —</option>
+                {COMMUNES.map((commune) => (
+                  <optgroup key={commune} label={commune}>
+                    {NEIGHBORHOODS.filter((n) => n.commune === commune).map((n) => (
+                      <option key={n.id} value={n.id}>{n.name}</option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Location detail + mic */}
+          <div>
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+              Précision sur l&apos;emplacement{" "}
+              <span className="text-slate-400 font-normal">(optionnel)</span>
+            </label>
+            <div className="relative">
+              <textarea
+                value={form.locationDetail}
+                onChange={(e) => update("locationDetail", e.target.value)}
+                placeholder="Ex : près du carrefour, derrière la mosquée…"
+                rows={3}
+                className="w-full bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 pr-12 text-slate-900 dark:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#F97316]/50 resize-none"
+              />
+              <button
+                onClick={() => toggleMic("location")}
+                title="Dicter la description"
+                className={cn(
+                  "absolute right-3 top-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                  micActive && micField === "location"
+                    ? "bg-red-500 text-white animate-pulse"
+                    : "bg-slate-100 dark:bg-[#2a3040] text-slate-500 dark:text-slate-400 hover:text-[#F97316]"
+                )}
+              >
+                {micActive && micField === "location"
+                  ? <MicOff className="w-4 h-4" />
+                  : <Mic className="w-4 h-4" />}
+              </button>
+            </div>
+            {micActive && micField === "location" && (
+              <p className="text-red-500 text-xs mt-1 flex items-center gap-1.5 ml-1">
+                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse inline-block" />
+                Parlez maintenant…
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── STEP 4 : Contact + Récapitulatif + Publier ── */}
+      {step === 4 && (
+        <div className="space-y-7 animate-fadeIn">
+          <div>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-1">
+              Contact &amp; publication
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">
+              Le numéro que les locataires verront
+            </p>
+          </div>
+
+          {/* Summary */}
+          <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/30 rounded-2xl p-4">
+            <p className="text-[10px] font-bold text-orange-500 uppercase tracking-wider mb-3">
+              Récapitulatif
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {form.type && (
+                <span className="bg-white dark:bg-[#1e2430] text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-200 dark:border-[#2a3040]">
+                  {typeEmoji} {typeLabel}
+                </span>
+              )}
+              {form.txType && (
+                <span className="bg-white dark:bg-[#1e2430] text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-200 dark:border-[#2a3040]">
+                  {form.txType === "rent" ? "🔑 Location" : "💰 Vente"}
+                </span>
+              )}
+              {form.neighborhood && (
+                <span className="bg-white dark:bg-[#1e2430] text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-200 dark:border-[#2a3040]">
+                  📍 {neighborhoodName}
+                </span>
+              )}
+              {priceFormatted && (
+                <span className="bg-white dark:bg-[#1e2430] text-[#F97316] text-xs font-bold px-3 py-1.5 rounded-full border border-orange-200 dark:border-orange-700/30">
+                  {priceFormatted}{form.txType === "rent" ? "/mois" : ""}
+                </span>
+              )}
+              {form.photos.length > 0 && (
+                <span className="bg-white dark:bg-[#1e2430] text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-200 dark:border-[#2a3040]">
+                  📸 {form.photos.length} photo{form.photos.length > 1 ? "s" : ""}
+                </span>
+              )}
+              {form.rooms > 0 && form.type !== "land" && (
+                <span className="bg-white dark:bg-[#1e2430] text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-200 dark:border-[#2a3040]">
+                  🛏️ {form.rooms === 5 ? "5+" : form.rooms} ch.
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Phone */}
+          <div>
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+              Numéro de téléphone <span className="text-red-400">*</span>
+            </label>
+            <div className="relative">
+              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              <input
+                type="tel"
+                value={form.phone}
+                onChange={(e) => update("phone", e.target.value)}
+                placeholder="+224 6XX XX XX XX"
+                className="w-full bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl pl-9 pr-4 py-3 text-slate-900 dark:text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#F97316]/50"
+              />
+            </div>
+          </div>
+
+          {/* Contact method */}
+          <div>
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3">
+              Comment souhaitez-vous être contacté ?
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {([
+                { id: "whatsapp" as ContactMethod, label: "WhatsApp", emoji: "💬" },
+                { id: "call"     as ContactMethod, label: "Appel",    emoji: "📞" },
+                { id: "both"     as ContactMethod, label: "Les deux", emoji: "✅" },
+              ] as const).map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => update("contactMethod", c.id)}
+                  className={cn(
+                    "flex flex-col items-center gap-1.5 py-3.5 rounded-xl border-2 font-semibold text-xs transition-all",
+                    form.contactMethod === c.id
+                      ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20 text-[#F97316]"
+                      : "border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 hover:border-[#F97316]/40"
+                  )}
+                >
+                  <span className="text-2xl">{c.emoji}</span>
+                  {c.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Publish button */}
           <button
-            onClick={prev}
-            className="flex items-center gap-1.5 px-4 py-3 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 text-sm font-semibold hover:border-[#F97316] hover:text-[#F97316] transition-colors"
+            onClick={handleSubmit}
+            disabled={!form.phone || submitting}
+            className="w-full bg-[#F97316] hover:bg-[#EA6C0A] disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-4 px-6 rounded-2xl text-base transition-colors shadow-[0_8px_32px_rgba(249,115,22,0.35)] flex items-center justify-center gap-2"
           >
-            <ChevronLeft className="w-4 h-4" /> Retour
+            {submitting ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin flex-shrink-0" />
+                Publication en cours…
+              </>
+            ) : (
+              "🚀 Publier mon annonce"
+            )}
           </button>
-        )}
-        {step < 3 && (
-          <button
-            onClick={next}
-            className="flex-1 flex items-center justify-center gap-1.5 bg-[#F97316] hover:bg-[#EA6C0A] text-white font-bold py-3 rounded-xl text-sm transition-colors active:scale-95"
-          >
-            Suivant <ChevronRight className="w-4 h-4" />
-          </button>
-        )}
+
+          <p className="text-slate-400 text-xs text-center leading-relaxed">
+            En publiant, vous acceptez que votre annonce soit visible par tous les visiteurs de GuImmo.
+          </p>
+        </div>
+      )}
+
+      {/* ── Bottom navigation bar ── */}
+      <div className="fixed bottom-16 left-0 right-0 bg-white/95 dark:bg-[#111418]/95 backdrop-blur border-t border-slate-100 dark:border-[#2a3040] px-4 py-3 z-40">
+        <div className="max-w-xl mx-auto flex gap-3">
+          {step > 1 ? (
+            <button
+              onClick={() => setStep((s) => s - 1)}
+              disabled={submitting}
+              className="flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 font-semibold text-sm hover:border-[#F97316] hover:text-[#F97316] transition-colors disabled:opacity-40"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Retour
+            </button>
+          ) : (
+            <div className="w-24" />
+          )}
+
+          {step < 4 && (
+            <button
+              onClick={() => { if (canAdvance) setStep((s) => s + 1); }}
+              disabled={!canAdvance}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all",
+                canAdvance
+                  ? "bg-[#F97316] hover:bg-[#EA6C0A] text-white shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
+                  : "bg-slate-100 dark:bg-[#1e2430] text-slate-400 dark:text-slate-500 cursor-not-allowed"
+              )}
+            >
+              Continuer
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

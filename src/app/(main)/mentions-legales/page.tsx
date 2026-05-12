@@ -26,7 +26,7 @@ export default function MentionsLegalesPage() {
             <p><span className="font-semibold text-slate-900 dark:text-white">Siège social :</span> Kipé, Conakry, République de Guinée</p>
             <p><span className="font-semibold text-slate-900 dark:text-white">Directeur de la publication :</span> Aliou Barry</p>
             <p><span className="font-semibold text-slate-900 dark:text-white">Email :</span> <a href="mailto:contact@guimmo.gn" className="text-[#009460] hover:underline">contact@guimmo.gn</a></p>
-            <p><span className="font-semibold text-slate-900 dark:text-white">Téléphone :</span> <a href="tel:+224620000000" className="text-[#009460] hover:underline">+224 620 000 000</a></p>
+            <p><span className="font-semibold text-slate-900 dark:text-white">Téléphone :</span> <a href="tel:+224628222510" className="text-[#009460] hover:underline">+224 628 222 510</a></p>
           </div>
         </section>
 

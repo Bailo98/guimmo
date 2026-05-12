@@ -1,705 +1,295 @@
 "use client";
-import { useState, useMemo, useRef, useEffect, useCallback } from "react";
-import { Search, SlidersHorizontal, X, MapPin, ChevronDown, Grid3x3, List, Map, Clock, Mic, MicOff, Link2 } from "lucide-react";
+import { useState, useEffect, useMemo, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { SkeletonCard } from "@/components/ui/SkeletonCard";
-import { EmptyState } from "@/components/ui/EmptyState";
-import { PullToRefresh } from "@/components/ui/PullToRefresh";
-import { MOCK_PROPERTIES } from "@/data/mock-properties";
 import { fetchProperties } from "@/lib/properties";
-import { POPULAR_NEIGHBORHOODS, NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
-import { PROPERTY_TYPES } from "@/lib/constants";
-import { useSearchParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Suspense } from "react";
-import { PropertyMapWrapper } from "@/components/map/PropertyMapWrapper";
-import { toast } from "@/lib/toast";
-import { useAppStore } from "@/lib/store";
 import type { Property } from "@/types";
 
-const SEARCH_HISTORY_KEY = "guimmo-searches";
-const MAX_HISTORY = 5;
-const PAGE_SIZE = 9;
-const SAVED_SEARCHES_KEY = "guimmo-saved-searches";
+const PAGE_SIZE = 12;
 
-function getSavedSearches(): string[] {
-  if (typeof window === "undefined") return [];
-  try {
-    return JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) ?? "[]");
-  } catch {
-    return [];
-  }
+const QUARTIER_CHIPS = [
+  { id: "", label: "Tous" },
+  { id: "kipe", label: "Kipé" },
+  { id: "hamdallaye", label: "Hamdallaye" },
+  { id: "dixinn", label: "Dixinn" },
+  { id: "ratoma", label: "Ratoma" },
+  { id: "taouyah", label: "Taouyah" },
+  { id: "sonfonia", label: "Sonfonia" },
+  { id: "kaloum", label: "Kaloum" },
+  { id: "lambanyi", label: "Lambanyi" },
+  { id: "matam", label: "Matam" },
+  { id: "madina", label: "Madina" },
+  { id: "cosa", label: "Cosa" },
+];
+
+const TYPE_CHIPS = [
+  { id: "", label: "Tous" },
+  { id: "apartment", label: "Appartement" },
+  { id: "house", label: "Maison" },
+  { id: "studio", label: "Studio" },
+  { id: "villa", label: "Villa" },
+  { id: "room", label: "Chambre" },
+  { id: "office", label: "Bureau" },
+  { id: "shop", label: "Boutique" },
+  { id: "land", label: "Terrain" },
+];
+
+const BUDGET_CHIPS = [
+  { id: "", label: "Tous budgets", min: 0, max: Infinity },
+  { id: "lt1m", label: "< 1 M GNF", min: 0, max: 1_000_000 },
+  { id: "1to2m", label: "1–2 M GNF", min: 1_000_000, max: 2_000_000 },
+  { id: "2to5m", label: "2–5 M GNF", min: 2_000_000, max: 5_000_000 },
+  { id: "gt5m", label: "> 5 M GNF", min: 5_000_000, max: Infinity },
+];
+
+function Chip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "flex-none px-4 py-2 rounded-full text-sm font-semibold border transition-colors whitespace-nowrap",
+        active
+          ? "bg-[#F97316] text-white border-[#F97316]"
+          : "bg-white dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[#2a3040] hover:border-[#F97316] hover:text-[#F97316]"
+      )}
+    >
+      {children}
+    </button>
+  );
 }
 
-function saveSearch(query: string) {
-  const prev = getSavedSearches().filter((s) => s !== query);
-  const next = [query, ...prev].slice(0, MAX_HISTORY);
-  localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(next));
-}
-
-function removeSearch(query: string) {
-  const next = getSavedSearches().filter((s) => s !== query);
-  localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(next));
-}
-
-function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-function SearchPageContent() {
+function AnnoncesContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Read all params from URL on init
-  const initSortBy = (searchParams.get("sortBy") ?? "recent") as "recent" | "price_asc" | "price_desc" | "popular";
-  const initMinPrice = searchParams.get("minPrice") ? Number(searchParams.get("minPrice")) : 0;
-  const initMaxPrice = searchParams.get("maxPrice") ? Number(searchParams.get("maxPrice")) : 10_000_000;
-
-  const [query, setQuery] = useState(searchParams.get("q") ?? "");
-  const [neighborhood, setNeighborhood] = useState(searchParams.get("neighborhood") ?? "");
-  const [type, setType] = useState(searchParams.get("type") ?? "");
-  const [transactionType, setTransactionType] = useState(searchParams.get("transactionType") ?? "");
-  const [furnished, setFurnished] = useState<boolean | null>(null);
-  const [availableNow, setAvailableNow] = useState(false);
-  const [minPrice, setMinPrice] = useState(initMinPrice);
-  const [maxPrice, setMaxPrice] = useState(initMaxPrice);
-  const [sortBy, setSortBy] = useState<"recent" | "price_asc" | "price_desc" | "popular">(initSortBy);
-  const [view, setView] = useState<"grid" | "list" | "map">("grid");
-  const [showFilters, setShowFilters] = useState(false);
-  const [listening, setListening] = useState(false);
-  const [radiusKm, setRadiusKm] = useState(0);
-
-  // Pagination
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-
-  // Skeleton loading state
+  const [allProperties, setAllProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const _hasHydrated = useAppStore((s) => s._hasHydrated);
+
+  const neighborhood = searchParams.get("neighborhood") ?? "";
+  const type = searchParams.get("type") ?? "";
+  const budget = searchParams.get("budget") ?? "";
+  const page = Number(searchParams.get("page") ?? "1");
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 600);
-    return () => clearTimeout(timer);
+    fetchProperties()
+      .then(setAllProperties)
+      .finally(() => setLoading(false));
   }, []);
 
-  // User-published listings from store
-  const publishedListings = useAppStore((s) => s.publishedListings);
-
-  // Supabase properties (replaces mock when real data exists)
-  const [dbProperties, setDbProperties] = useState<Property[]>(MOCK_PROPERTIES);
-  useEffect(() => {
-    fetchProperties().then(setDbProperties);
-  }, []);
-
-  const allProperties: Property[] = [
-    ...(publishedListings as unknown as Property[]),
-    ...dbProperties,
-  ];
-
-  // Search history
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  const [showHistory, setShowHistory] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const historyDropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setSearchHistory(getSavedSearches());
-  }, []);
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (
-        historyDropdownRef.current &&
-        !historyDropdownRef.current.contains(e.target as Node) &&
-        !searchInputRef.current?.contains(e.target as Node)
-      ) {
-        setShowHistory(false);
-      }
+  function setParam(key: string, value: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
     }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
-  // Bidirectional URL sync — update URL whenever key filter state changes
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (query) params.set("q", query);
-    if (neighborhood) params.set("neighborhood", neighborhood);
-    if (type) params.set("type", type);
-    if (transactionType) params.set("transactionType", transactionType);
-    if (sortBy !== "recent") params.set("sortBy", sortBy);
-    if (minPrice > 0) params.set("minPrice", String(minPrice));
-    if (maxPrice < 10_000_000) params.set("maxPrice", String(maxPrice));
-
-    const search = params.toString();
-    router.replace(search ? `?${search}` : "?", { scroll: false });
-  }, [query, neighborhood, type, transactionType, sortBy, minPrice, maxPrice, router]);
-
-  // Reset pagination whenever filters change
-  useEffect(() => {
-    setVisibleCount(PAGE_SIZE);
-  }, [query, neighborhood, type, transactionType, furnished, availableNow, minPrice, maxPrice, sortBy, publishedListings]);
-
-  const handleQueryChange = (val: string) => {
-    setQuery(val);
-    setShowHistory(val === "");
-  };
-
-  const handleQueryBlur = () => {
-    if (query.trim()) {
-      saveSearch(query.trim());
-      setSearchHistory(getSavedSearches());
-    }
-  };
-
-  const handleHistoryClick = useCallback((item: string) => {
-    setQuery(item);
-    setShowHistory(false);
-    searchInputRef.current?.focus();
-  }, []);
-
-  const handleHistoryRemove = useCallback((item: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    removeSearch(item);
-    setSearchHistory(getSavedSearches());
-  }, []);
-
-  function startVoiceSearch() {
-    const SpeechRecognition = (window as unknown as { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown }).SpeechRecognition
-      ?? (window as unknown as { webkitSpeechRecognition?: unknown }).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      toast("Recherche vocale non supportée sur ce navigateur", "warning");
-      return;
-    }
-    const recognition = new (SpeechRecognition as new () => {
-      lang: string;
-      onresult: (e: { results: { transcript: string }[][] }) => void;
-      onerror: () => void;
-      onend: () => void;
-      start: () => void;
-    })();
-    recognition.lang = "fr-FR";
-    recognition.onresult = (e) => {
-      const transcript = e.results[0][0].transcript;
-      setQuery(transcript);
-      setListening(false);
-    };
-    recognition.onerror = () => setListening(false);
-    recognition.onend = () => setListening(false);
-    setListening(true);
-    recognition.start();
+    params.delete("page");
+    router.replace(`?${params.toString()}`, { scroll: false });
   }
+
+  function setPage(p: number) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (p === 1) {
+      params.delete("page");
+    } else {
+      params.set("page", String(p));
+    }
+    router.replace(`?${params.toString()}`, { scroll: true });
+  }
+
+  const budgetChip = BUDGET_CHIPS.find((b) => b.id === budget) ?? BUDGET_CHIPS[0];
 
   const filtered = useMemo(() => {
-    let results = [...allProperties];
-
-    if (query) {
-      const q = query.toLowerCase();
-      results = results.filter((p) =>
-        p.title.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        p.neighborhood.includes(q)
-      );
-    }
-    if (neighborhood) results = results.filter((p) => p.neighborhood === neighborhood);
-    if (type) results = results.filter((p) => p.type === type);
-    if (transactionType) results = results.filter((p) => p.transactionType === transactionType);
-    if (furnished !== null) results = results.filter((p) => p.furnished === furnished);
-    if (availableNow) results = results.filter((p) => p.availableNow);
-
-    results = results.filter((p) => p.price >= minPrice && p.price <= maxPrice);
-    results = results.filter((p) => p.status === "active");
-
-    if (radiusKm > 0 && neighborhood) {
-      const center = NEIGHBORHOOD_COORDINATES[neighborhood];
-      if (center) {
-        results = results.filter((p) => {
-          const coords = NEIGHBORHOOD_COORDINATES[p.neighborhood];
-          if (!coords) return true; // keep if no coords available
-          return haversineKm(center[0], center[1], coords[0], coords[1]) <= radiusKm;
-        });
+    return allProperties.filter((p) => {
+      if (neighborhood && p.neighborhood !== neighborhood) return false;
+      if (type && p.type !== type) return false;
+      if (budget) {
+        if (p.price < budgetChip.min || p.price > budgetChip.max) return false;
       }
-    }
-
-    results.sort((a, b) => {
-      if (sortBy === "price_asc") return a.price - b.price;
-      if (sortBy === "price_desc") return b.price - a.price;
-      if (sortBy === "popular") return b.views - a.views;
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      return true;
     });
+  }, [allProperties, neighborhood, type, budget, budgetChip]);
 
-    return results;
-  }, [query, neighborhood, type, transactionType, furnished, availableNow, minPrice, maxPrice, sortBy, radiusKm, publishedListings]);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(Math.max(1, page), totalPages);
+  const pageItems = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
-  // Sliced results for pagination
-  const visibleItems = filtered.slice(0, visibleCount);
-
-  const hasActiveFilters =
-    !!neighborhood || !!type || !!transactionType || furnished !== null || availableNow ||
-    minPrice > 0 || maxPrice < 10_000_000 || radiusKm > 0;
+  const hasFilters = !!neighborhood || !!type || !!budget;
 
   function clearFilters() {
-    setNeighborhood("");
-    setType("");
-    setTransactionType("");
-    setFurnished(null);
-    setAvailableNow(false);
-    setMinPrice(0);
-    setMaxPrice(10_000_000);
-    setRadiusKm(0);
+    router.replace("/annonces", { scroll: false });
   }
 
-  function handleSaveSearch() {
-    const parts: string[] = [];
-    if (query) parts.push(`Recherche: ${query}`);
-    if (type) parts.push(`Type: ${type}`);
-    if (neighborhood) parts.push(`Quartier: ${neighborhood}`);
-    if (transactionType) parts.push(transactionType === "rent" ? "Location" : "Vente");
-    const label = parts.length > 0 ? parts.join(", ") : "Recherche sauvegardée";
-
-    try {
-      const existing = JSON.parse(localStorage.getItem(SAVED_SEARCHES_KEY) ?? "[]") as Array<{
-        label: string;
-        url: string;
-        savedAt: number;
-      }>;
-      const entry = { label, url: window.location.href, savedAt: Date.now() };
-      localStorage.setItem(SAVED_SEARCHES_KEY, JSON.stringify([entry, ...existing].slice(0, 20)));
-    } catch {
-      // ignore storage errors
-    }
-    toast("Recherche sauvegardée !", "success");
-  }
-
-  const fmt = (v: number) =>
-    new Intl.NumberFormat("fr-GN", { style: "currency", currency: "GNF", maximumFractionDigits: 0 }).format(v);
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1).filter(
+    (n) => n === 1 || n === totalPages || Math.abs(n - safePage) <= 1
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      {/* Search bar sticky */}
-      <div className="sticky top-16 z-30 bg-white/90 dark:bg-[#111418]/90 backdrop-blur py-3 -mx-4 px-4 mb-4 border-b border-slate-100 dark:border-[#2a3040]">
-        <div className="flex gap-2">
-          {/* Search input with history dropdown */}
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              ref={searchInputRef}
-              type="text"
-              placeholder="Rechercher (quartier, type...)"
-              value={query}
-              onChange={(e) => handleQueryChange(e.target.value)}
-              onFocus={() => { if (!query) setShowHistory(true); }}
-              onBlur={handleQueryBlur}
-              className="w-full bg-slate-50 dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl pl-9 pr-16 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:border-transparent dark:text-white placeholder:text-slate-400"
-            />
-            <button
-              onClick={startVoiceSearch}
-              className={cn(
-                "absolute top-1/2 -translate-y-1/2 transition-colors",
-                query ? "right-8" : "right-3",
-                listening ? "text-red-500 animate-pulse" : "text-slate-400 hover:text-[#F97316]"
-              )}
-              title="Recherche vocale"
-            >
-              {listening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-            </button>
-            {query && (
-              <button
-                onClick={() => { setQuery(""); setShowHistory(true); }}
-                className="absolute right-3 top-1/2 -translate-y-1/2"
-              >
-                <X className="w-4 h-4 text-slate-400" />
-              </button>
-            )}
-
-            {/* History dropdown */}
-            {showHistory && searchHistory.length > 0 && (
-              <div
-                ref={historyDropdownRef}
-                className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#1e2430] rounded-xl shadow-lg border border-slate-100 dark:border-[#2a3040] z-50 overflow-hidden"
-              >
-                {searchHistory.map((item) => (
-                  <div
-                    key={item}
-                    onMouseDown={() => handleHistoryClick(item)}
-                    className="flex items-center gap-2 px-3 py-2.5 hover:bg-slate-50 dark:hover:bg-[#2a3040] cursor-pointer group"
-                  >
-                    <Clock className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                    <span className="flex-1 text-sm text-slate-700 dark:text-slate-300 truncate">{item}</span>
-                    <button
-                      onMouseDown={(e) => handleHistoryRemove(item, e)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5"
-                    >
-                      <X className="w-3 h-3 text-slate-400 hover:text-red-500" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+      {/* Filter chips */}
+      <div className="sticky top-16 z-30 bg-white/95 dark:bg-[#111418]/95 backdrop-blur -mx-4 px-4 py-3 border-b border-slate-100 dark:border-[#2a3040] space-y-2 mb-6">
+        {/* Search hint row */}
+        <div className="flex items-center gap-2">
+          <div className="flex-1 flex items-center gap-2 bg-slate-50 dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2">
+            <Search className="w-4 h-4 text-slate-400 flex-shrink-0" />
+            <span className="text-sm text-slate-400">Filtrer les annonces…</span>
           </div>
+          {hasFilters && (
+            <button
+              onClick={clearFilters}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold text-red-500 border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 transition-colors"
+            >
+              <X className="w-3.5 h-3.5" />
+              Effacer
+            </button>
+          )}
+        </div>
 
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className={cn(
-              "flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors",
-              showFilters || hasActiveFilters
-                ? "bg-[#F97316] text-white border-[#F97316]"
-                : "bg-slate-50 dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[#2a3040]"
-            )}
-          >
-            <SlidersHorizontal className="w-4 h-4" />
-            Filtres
-            {hasActiveFilters && (
-              <span className="w-2 h-2 bg-white rounded-full" />
-            )}
-          </button>
-
-          {/* View toggle: grid / list / map */}
-          <div className="hidden md:flex items-center gap-1 bg-slate-50 dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl p-1">
-            <button
-              onClick={() => setView("grid")}
-              className={cn("p-1.5 rounded-lg transition-colors", view === "grid" ? "bg-white dark:bg-[#2a3040] text-[#F97316] shadow-sm" : "text-slate-400")}
-            >
-              <Grid3x3 className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setView("list")}
-              className={cn("p-1.5 rounded-lg transition-colors", view === "list" ? "bg-white dark:bg-[#2a3040] text-[#F97316] shadow-sm" : "text-slate-400")}
-            >
-              <List className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setView("map")}
-              className={cn(
-                "flex items-center gap-1 px-2 py-1.5 rounded-lg transition-colors text-xs font-semibold",
-                view === "map" ? "bg-white dark:bg-[#2a3040] text-[#F97316] shadow-sm" : "text-slate-400"
-              )}
-            >
-              <Map className="w-4 h-4" />
-              <span>Carte</span>
-            </button>
+        {/* Quartier row */}
+        <div>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 px-0.5">Quartier</p>
+          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+            {QUARTIER_CHIPS.map((c) => (
+              <Chip key={c.id} active={neighborhood === c.id} onClick={() => setParam("neighborhood", c.id)}>
+                {c.label}
+              </Chip>
+            ))}
           </div>
         </div>
 
-        {/* Quick toggles — always visible */}
-        <div className="flex gap-2 mt-2">
-          <button
-            onClick={() => setAvailableNow(!availableNow)}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors",
-              availableNow
-                ? "bg-[#F97316] text-white border-[#F97316]"
-                : "bg-slate-50 dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[#2a3040] hover:border-[#F97316] hover:text-[#F97316]"
-            )}
-          >
-            <span className={cn("w-2 h-2 rounded-full", availableNow ? "bg-white" : "bg-green-400")} />
-            Disponible maintenant
-          </button>
-          <button
-            onClick={() => setFurnished(furnished === true ? null : true)}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors",
-              furnished === true
-                ? "bg-[#F97316] text-white border-[#F97316]"
-                : "bg-slate-50 dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[#2a3040] hover:border-[#F97316] hover:text-[#F97316]"
-            )}
-          >
-            Meublé
-          </button>
+        {/* Type row */}
+        <div>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 px-0.5">Type</p>
+          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+            {TYPE_CHIPS.map((c) => (
+              <Chip key={c.id} active={type === c.id} onClick={() => setParam("type", c.id)}>
+                {c.label}
+              </Chip>
+            ))}
+          </div>
         </div>
 
-        {/* Filter panel */}
-        {showFilters && (
-          <div className="mt-3 p-4 bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] space-y-4 animate-[slideDown_0.2s_ease-out]">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-              {/* Neighborhood */}
-              <div>
-                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 block">Quartier</label>
-                <div className="relative">
-                  <MapPin className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-                  <select value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} className="w-full appearance-none bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl pl-8 pr-6 py-2 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]">
-                    <option value="">Tous</option>
-                    {POPULAR_NEIGHBORHOODS.map((n) => <option key={n.id} value={n.id}>{n.name}</option>)}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none" />
-                </div>
-              </div>
+        {/* Budget row */}
+        <div>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 px-0.5">Budget</p>
+          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+            {BUDGET_CHIPS.map((c) => (
+              <Chip key={c.id} active={budget === c.id} onClick={() => setParam("budget", c.id)}>
+                {c.label}
+              </Chip>
+            ))}
+          </div>
+        </div>
+      </div>
 
-              {/* Type */}
-              <div>
-                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 block">Type</label>
-                <div className="relative">
-                  <select value={type} onChange={(e) => setType(e.target.value)} className="w-full appearance-none bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 pr-6 py-2 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]">
-                    <option value="">Tous</option>
-                    {PROPERTY_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none" />
-                </div>
-              </div>
-
-              {/* Transaction */}
-              <div>
-                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 block">Transaction</label>
-                <div className="relative">
-                  <select value={transactionType} onChange={(e) => setTransactionType(e.target.value)} className="w-full appearance-none bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 pr-6 py-2 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]">
-                    <option value="">Tout</option>
-                    <option value="rent">Location</option>
-                    <option value="sale">Vente</option>
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none" />
-                </div>
-              </div>
-
-              {/* Sort */}
-              <div>
-                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 block">Trier par</label>
-                <div className="relative">
-                  <select value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)} className="w-full appearance-none bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 pr-6 py-2 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]">
-                    <option value="recent">Plus récent</option>
-                    <option value="price_asc">Prix croissant</option>
-                    <option value="price_desc">Prix décroissant</option>
-                    <option value="popular">Plus populaire</option>
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none" />
-                </div>
-              </div>
-
-              {/* Radius */}
-              <div>
-                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 block">Rayon</label>
-                <div className="relative">
-                  <select
-                    value={radiusKm}
-                    onChange={(e) => setRadiusKm(Number(e.target.value))}
-                    className="w-full appearance-none bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 pr-6 py-2 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]"
-                  >
-                    <option value={0}>Tout Conakry</option>
-                    <option value={2}>2 km</option>
-                    <option value={5}>5 km</option>
-                    <option value={10}>10 km</option>
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none" />
-                </div>
-              </div>
-            </div>
-
-            {/* Price range sliders */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3 block">Budget</label>
-              <div className="flex gap-6">
-                {/* Min price */}
-                <div className="flex-1">
-                  <p className="text-xs font-semibold mb-1.5" style={{ color: "#F97316" }}>{fmt(minPrice)}</p>
-                  <input
-                    type="range"
-                    min={0}
-                    max={10_000_000}
-                    step={100_000}
-                    value={minPrice}
-                    onChange={(e) => {
-                      const v = Number(e.target.value);
-                      setMinPrice(Math.min(v, maxPrice - 100_000));
-                    }}
-                    style={{ accentColor: "#F97316" }}
-                    className="w-full"
-                  />
-                  <p className="text-xs text-slate-400 mt-0.5">Min</p>
-                </div>
-                {/* Max price */}
-                <div className="flex-1">
-                  <p className="text-xs font-semibold mb-1.5" style={{ color: "#F97316" }}>{fmt(maxPrice)}</p>
-                  <input
-                    type="range"
-                    min={0}
-                    max={10_000_000}
-                    step={100_000}
-                    value={maxPrice}
-                    onChange={(e) => {
-                      const v = Number(e.target.value);
-                      setMaxPrice(Math.max(v, minPrice + 100_000));
-                    }}
-                    style={{ accentColor: "#F97316" }}
-                    className="w-full"
-                  />
-                  <p className="text-xs text-slate-400 mt-0.5">Max</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Toggles */}
-            <div className="flex flex-wrap gap-3">
-              <button
-                onClick={() => setFurnished(furnished === true ? null : true)}
-                className={cn(
-                  "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border",
-                  furnished === true
-                    ? "bg-[#F97316] text-white border-[#F97316]"
-                    : "bg-slate-50 dark:bg-[#151922] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#2a3040]"
-                )}
-              >
-                Meublé uniquement
-              </button>
-              <button
-                onClick={() => setAvailableNow(!availableNow)}
-                className={cn(
-                  "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border",
-                  availableNow
-                    ? "bg-[#F97316] text-white border-[#F97316]"
-                    : "bg-slate-50 dark:bg-[#151922] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#2a3040]"
-                )}
-              >
-                Disponible maintenant
-              </button>
-              {hasActiveFilters && (
-                <button onClick={clearFilters} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-red-500 border border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center gap-1">
-                  <X className="w-3 h-3" /> Effacer tout
+      {/* Results count */}
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          {loading ? (
+            <span className="inline-block w-24 h-4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+          ) : (
+            <>
+              <span className="font-bold text-slate-900 dark:text-white">{filtered.length}</span>{" "}
+              annonce{filtered.length !== 1 ? "s" : ""} trouvée{filtered.length !== 1 ? "s" : ""}
+              {hasFilters && (
+                <button onClick={clearFilters} className="ml-2 text-[#F97316] hover:underline text-xs">
+                  (voir tout)
                 </button>
               )}
-            </div>
-          </div>
+            </>
+          )}
+        </p>
+        {!loading && totalPages > 1 && (
+          <p className="text-xs text-slate-400">
+            Page {safePage} / {totalPages}
+          </p>
         )}
       </div>
 
-      {/* Active filter chips */}
-      {hasActiveFilters && (
-        <div className="flex flex-wrap gap-2 mb-3">
-          {type && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-orange-50 dark:bg-orange-900/20 text-[#F97316] border border-orange-200 dark:border-orange-800">
-              {PROPERTY_TYPES.find((t) => t.value === type)?.label ?? type}
-              <button onClick={() => setType("")} className="ml-0.5 hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
-            </span>
-          )}
-          {neighborhood && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-orange-50 dark:bg-orange-900/20 text-[#F97316] border border-orange-200 dark:border-orange-800">
-              <MapPin className="w-3 h-3" />
-              {POPULAR_NEIGHBORHOODS.find((n) => n.id === neighborhood)?.name ?? neighborhood}
-              <button onClick={() => setNeighborhood("")} className="ml-0.5 hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
-            </span>
-          )}
-          {transactionType && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-orange-50 dark:bg-orange-900/20 text-[#F97316] border border-orange-200 dark:border-orange-800">
-              {transactionType === "rent" ? "Location" : "Vente"}
-              <button onClick={() => setTransactionType("")} className="ml-0.5 hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
-            </span>
-          )}
-          {minPrice > 0 && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-orange-50 dark:bg-orange-900/20 text-[#F97316] border border-orange-200 dark:border-orange-800">
-              Min {fmt(minPrice)}
-              <button onClick={() => setMinPrice(0)} className="ml-0.5 hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
-            </span>
-          )}
-          {maxPrice < 10_000_000 && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-orange-50 dark:bg-orange-900/20 text-[#F97316] border border-orange-200 dark:border-orange-800">
-              Max {fmt(maxPrice)}
-              <button onClick={() => setMaxPrice(10_000_000)} className="ml-0.5 hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
-            </span>
-          )}
-          {furnished === true && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-orange-50 dark:bg-orange-900/20 text-[#F97316] border border-orange-200 dark:border-orange-800">
-              Meublé
-              <button onClick={() => setFurnished(null)} className="ml-0.5 hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
-            </span>
-          )}
-          {availableNow && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-orange-50 dark:bg-orange-900/20 text-[#F97316] border border-orange-200 dark:border-orange-800">
-              Disponible maintenant
-              <button onClick={() => setAvailableNow(false)} className="ml-0.5 hover:text-red-500 transition-colors"><X className="w-3 h-3" /></button>
-            </span>
-          )}
+      {/* Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: PAGE_SIZE }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
         </div>
-      )}
-
-      {/* Results count + save search + copy URL + mobile map toggle */}
-      <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
-        <div className="flex items-center gap-3">
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            <span className="font-bold text-slate-900 dark:text-white">{filtered.length}</span> annonce{filtered.length !== 1 ? "s" : ""} trouvée{filtered.length !== 1 ? "s" : ""}
+      ) : filtered.length === 0 ? (
+        <div className="text-center py-20">
+          <div className="text-5xl mb-4">🏠</div>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+            Aucune annonce trouvée
+          </h3>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">
+            Essayez d&apos;élargir vos filtres pour voir plus de résultats.
           </p>
-          {hasActiveFilters && (
-            <button
-              onClick={handleSaveSearch}
-              className="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold bg-slate-50 dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#2a3040] hover:border-[#F97316] hover:text-[#F97316] transition-colors"
-            >
-              💾 Sauvegarder
-            </button>
-          )}
           <button
-            onClick={() => {
-              navigator.clipboard.writeText(window.location.href).then(() => {
-                toast("Lien copié !", "success");
-              }).catch(() => {
-                toast("Impossible de copier le lien", "warning");
-              });
-            }}
-            className="flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-semibold bg-slate-50 dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#2a3040] hover:border-[#F97316] hover:text-[#F97316] transition-colors"
-            title="Copier le lien de recherche"
+            onClick={clearFilters}
+            className="bg-[#F97316] hover:bg-[#EA6C0A] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
           >
-            <Link2 className="w-3 h-3" /> Copier la recherche
+            Voir toutes les annonces
           </button>
         </div>
-        <button
-          onClick={() => setView(view === "map" ? "grid" : "map")}
-          className={cn(
-            "md:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors",
-            view === "map"
-              ? "bg-[#F97316] text-white border-[#F97316]"
-              : "bg-slate-50 dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[#2a3040]"
-          )}
-        >
-          <Map className="w-3.5 h-3.5" />
-          {view === "map" ? "Liste" : "Carte"}
-        </button>
-      </div>
-
-      {/* Results */}
-      {(loading || !_hasHydrated) ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
-        </div>
-      ) : view === "map" ? (
-        <PropertyMapWrapper properties={filtered} />
-      ) : filtered.length === 0 ? (
-        <EmptyState
-          icon={Search}
-          title="Aucune annonce trouvée"
-          description="Essayez de modifier vos filtres pour voir plus de résultats."
-          action={{ label: "Effacer les filtres", href: "/annonces" }}
-        />
       ) : (
         <>
-          <div className={cn(
-            "gap-4",
-            view === "grid"
-              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-              : "grid grid-cols-1"
-          )}>
-            {visibleItems.map((p, i) => (
-              <PropertyCard key={p.id} property={p} variant={view === "list" ? "horizontal" : "default"} index={i} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {pageItems.map((p, i) => (
+              <PropertyCard key={p.id} property={p} index={i} />
             ))}
           </div>
 
-          {/* Pagination footer */}
-          <div className="mt-8 flex flex-col items-center gap-4">
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Affichage de{" "}
-              <span className="font-semibold text-slate-900 dark:text-white">{visibleItems.length}</span>
-              {" "}sur{" "}
-              <span className="font-semibold text-slate-900 dark:text-white">{filtered.length}</span>
-              {" "}annonce{filtered.length !== 1 ? "s" : ""}
-            </p>
-            {visibleCount < filtered.length && (
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-10 flex items-center justify-center gap-2">
               <button
-                onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-                className="bg-[#F97316] hover:bg-[#EA6C0A] active:bg-[#D96309] text-white font-semibold px-8 py-3 rounded-xl transition-colors shadow-sm"
+                onClick={() => setPage(safePage - 1)}
+                disabled={safePage === 1}
+                className="w-9 h-9 rounded-xl border border-slate-200 dark:border-[#2a3040] flex items-center justify-center text-slate-500 dark:text-slate-400 hover:border-[#F97316] hover:text-[#F97316] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
-                Voir {Math.min(PAGE_SIZE, filtered.length - visibleCount)} annonce{Math.min(PAGE_SIZE, filtered.length - visibleCount) !== 1 ? "s" : ""} de plus
+                <ChevronLeft className="w-4 h-4" />
               </button>
-            )}
-          </div>
+
+              {pageNumbers.map((n, idx) => {
+                const prev = pageNumbers[idx - 1];
+                return (
+                  <div key={n} className="flex items-center gap-2">
+                    {prev && n - prev > 1 && (
+                      <span className="text-slate-300 dark:text-slate-600 text-sm px-1">…</span>
+                    )}
+                    <button
+                      onClick={() => setPage(n)}
+                      className={cn(
+                        "w-9 h-9 rounded-xl text-sm font-semibold border transition-colors",
+                        n === safePage
+                          ? "bg-[#F97316] text-white border-[#F97316]"
+                          : "border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316]"
+                      )}
+                    >
+                      {n}
+                    </button>
+                  </div>
+                );
+              })}
+
+              <button
+                onClick={() => setPage(safePage + 1)}
+                disabled={safePage === totalPages}
+                className="w-9 h-9 rounded-xl border border-slate-200 dark:border-[#2a3040] flex items-center justify-center text-slate-500 dark:text-slate-400 hover:border-[#F97316] hover:text-[#F97316] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>
@@ -708,14 +298,16 @@ function SearchPageContent() {
 
 export default function AnnoncesPage() {
   return (
-    <Suspense fallback={
-      <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
-      </div>
-    }>
-      <PullToRefresh onRefresh={() => window.location.reload()}>
-        <SearchPageContent />
-      </PullToRefresh>
+    <Suspense
+      fallback={
+        <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      }
+    >
+      <AnnoncesContent />
     </Suspense>
   );
 }

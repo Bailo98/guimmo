@@ -8,21 +8,24 @@ import { OnboardingModal } from "@/components/ui/OnboardingModal";
 import { PageTransition } from "@/components/ui/PageTransition";
 import { WhatsAppWidget } from "@/components/ui/WhatsAppWidget";
 import { ChatbotWidget } from "@/components/ui/ChatbotWidget";
+import { getContactWhatsApp } from "@/lib/site-config";
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
+export default async function MainLayout({ children }: { children: React.ReactNode }) {
+  const whatsappNumber = await getContactWhatsApp();
+
   return (
     <ToastProvider>
       <Header />
       <main className="min-h-screen pb-20 md:pb-0">
         <PageTransition>{children}</PageTransition>
       </main>
-      <Footer />
+      <Footer whatsappNumber={whatsappNumber} />
       <BottomNav />
       <CompareBar />
       <OnboardingModal />
       <ScrollToTop />
-      <WhatsAppWidget />
-      <ChatbotWidget />
+      <WhatsAppWidget whatsappNumber={whatsappNumber} />
+      <ChatbotWidget whatsappNumber={whatsappNumber} />
     </ToastProvider>
   );
 }

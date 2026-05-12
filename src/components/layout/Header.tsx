@@ -1,86 +1,52 @@
 "use client";
 import Link from "next/link";
-import { Moon, Sun, Menu, X, Plus, Search, MessageSquare } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Moon, Sun, Menu, X, Plus, LogOut, User, ChevronDown } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
+import { useAuth } from "@/lib/auth-context";
 import { Logo } from "@/components/ui/Logo";
 import { cn } from "@/lib/utils";
-import { NotificationBell } from "@/components/ui/NotificationBell";
-import { useT } from "@/lib/i18n";
 
 export function Header() {
   const { theme, toggleTheme } = useAppStore();
-  const lang = useAppStore((s) => s.lang);
-  const setLang = useAppStore((s) => s.setLang);
-  const t = useT();
-  const unreadMessages = useAppStore((s) => s.unreadMessages);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  const { user, profile, signOut } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  async function handleSignOut() {
+    await signOut();
+    setUserMenuOpen(false);
+    router.push("/");
+  }
+
+  const displayName = profile?.full_name ?? user?.email?.split("@")[0] ?? "Mon compte";
+  const initials = displayName.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
     <header className="sticky top-0 z-40 bg-white/90 dark:bg-[#111418]/90 backdrop-blur-xl border-b border-slate-100 dark:border-[#2a3040]">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
         <Logo />
 
-        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1">
-          <Link
-            href="/annonces"
-            className="px-3 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-[#F97316] transition-colors"
-          >
-            {t("listings")}
-          </Link>
-          <Link
-            href="/annonces?type=apartment"
-            className="px-3 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-[#F97316] transition-colors"
-          >
-            Appartements
-          </Link>
-          <Link
-            href="/annonces?type=house"
-            className="px-3 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-[#F97316] transition-colors"
-          >
-            Maisons
-          </Link>
-          <Link
-            href="/tarifs"
-            className="px-3 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-[#F97316] transition-colors"
-          >
-            Tarifs
+          <Link href="/annonces" className="px-3 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-[#F97316] transition-colors">
+            Annonces
           </Link>
         </nav>
 
-        {/* Actions */}
         <div className="flex items-center gap-2">
-          <Link
-            href="/annonces"
-            className="hidden md:flex items-center gap-1.5 w-9 h-9 md:w-auto md:px-3 md:py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-          >
-            <Search className="w-4 h-4" />
-          </Link>
-
-          <NotificationBell />
-
-          <button
-            onClick={() => setLang(lang === "fr" ? "en" : "fr")}
-            title={lang === "fr" ? "Switch to English" : "Passer en Français"}
-            className="hidden md:flex items-center text-xs font-bold px-2 py-1 rounded-lg border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#009460] hover:text-[#009460] transition-colors gap-1"
-          >
-            {lang === "fr" ? "🌍 EN" : "🌍 FR"}
-          </button>
-
-          <Link
-            href="/messages"
-            className="hidden md:flex relative w-9 h-9 rounded-xl items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Messages"
-          >
-            <MessageSquare className="w-4 h-4" />
-            {unreadMessages() > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-[#F97316] text-white text-[10px] font-bold flex items-center justify-center px-0.5">
-                {unreadMessages() > 9 ? "9+" : unreadMessages()}
-              </span>
-            )}
-          </Link>
-
           <button
             onClick={toggleTheme}
             className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
@@ -94,15 +60,64 @@ export function Header() {
             className="hidden md:flex items-center gap-1.5 bg-[#F97316] hover:bg-[#EA6C0A] text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
           >
             <Plus className="w-4 h-4" />
-            {t("publish")}
+            Publier
           </Link>
 
-          <Link
-            href="/connexion"
-            className="hidden md:flex text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-[#F97316] dark:hover:text-[#F97316] transition-colors px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800"
-          >
-            {t("login")}
-          </Link>
+          {user ? (
+            <div ref={userMenuRef} className="relative hidden md:block">
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                <div className="w-7 h-7 rounded-full bg-[#F97316] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                  {initials || <User className="w-3.5 h-3.5" />}
+                </div>
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300 max-w-[100px] truncate">
+                  {displayName.split(" ")[0]}
+                </span>
+                <ChevronDown className={cn("w-3.5 h-3.5 text-slate-400 transition-transform", userMenuOpen && "rotate-180")} />
+              </button>
+
+              {userMenuOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1e2430] rounded-2xl shadow-xl border border-slate-100 dark:border-[#2a3040] overflow-hidden z-50">
+                  <div className="px-4 py-3 border-b border-slate-100 dark:border-[#2a3040]">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{displayName}</p>
+                    <p className="text-xs text-slate-400 truncate">{user.email}</p>
+                  </div>
+                  <Link
+                    href="/compte"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#2a3040] transition-colors"
+                  >
+                    <User className="w-4 h-4" />
+                    Mon compte
+                  </Link>
+                  <Link
+                    href="/compte/annonces"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="flex items-center gap-2 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#2a3040] transition-colors"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Mes annonces
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border-t border-slate-100 dark:border-[#2a3040]"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Se déconnecter
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link
+              href="/connexion"
+              className="hidden md:flex text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-[#F97316] dark:hover:text-[#F97316] transition-colors px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800"
+            >
+              Connexion
+            </Link>
+          )}
 
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -113,44 +128,40 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden border-t border-slate-100 dark:border-[#2a3040] bg-white dark:bg-[#111418] px-4 pb-4 space-y-1 animate-[slideDown_0.2s_ease-out]">
-          <Link
-            href="/annonces"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
-          >
-            {t("listings")}
+          <Link href="/annonces" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+            Annonces
           </Link>
-          <Link
-            href="/tarifs"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
-          >
-            Tarifs
-          </Link>
-          <Link
-            href="/connexion"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
-          >
-            {t("login")}
-          </Link>
-          <Link
-            href="/inscription"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
-          >
-            {t("signup")}
-          </Link>
+          {user ? (
+            <>
+              <Link href="/compte" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+                <User className="w-4 h-4" /> Mon compte
+              </Link>
+              <button
+                onClick={() => { handleSignOut(); setMenuOpen(false); }}
+                className="w-full flex items-center gap-2 px-3 py-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+              >
+                <LogOut className="w-4 h-4" /> Se déconnecter
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/connexion" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+                Connexion
+              </Link>
+              <Link href="/inscription" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-3 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+                S&apos;inscrire
+              </Link>
+            </>
+          )}
           <Link
             href="/publier"
             onClick={() => setMenuOpen(false)}
             className="flex items-center justify-center gap-2 bg-[#F97316] text-white font-bold py-3 rounded-xl mt-2"
           >
             <Plus className="w-4 h-4" />
-            {t("publish_action")}
+            Publier une annonce
           </Link>
         </div>
       )}

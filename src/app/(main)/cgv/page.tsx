@@ -9,7 +9,7 @@ export default function CGVPage() {
         { title: "3. Annonces et responsabilité", content: "GuImmo n'est pas responsable des transactions entre utilisateurs. La plateforme sert d'intermédiaire de mise en relation uniquement. Chaque utilisateur est responsable des informations publiées dans ses annonces." },
         { title: "4. Paiements", content: "Les paiements pour les services premium sont traités via Orange Money, MTN Mobile Money ou Visa/Mastercard. GuImmo ne stocke jamais les données bancaires des utilisateurs." },
         { title: "5. Protection des données", content: "Les données personnelles collectées (nom, téléphone, email) sont utilisées uniquement pour le fonctionnement du service. Elles ne sont pas vendues à des tiers." },
-        { title: "6. Contact", content: "Pour toute question, contactez-nous sur WhatsApp au +224 620 000 000 ou par email à contact@guimmo.gn." },
+        { title: "6. Contact", content: "Pour toute question, contactez-nous sur WhatsApp au +224 628 222 510 ou par email à contact@guimmo.gn." },
       ].map((s) => (
         <section key={s.title}>
           <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{s.title}</h2>

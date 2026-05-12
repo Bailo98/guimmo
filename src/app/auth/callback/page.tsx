@@ -14,6 +14,7 @@ function AuthCallbackInner() {
     }
 
     const code = searchParams.get("code");
+    const redirectTo = searchParams.get("redirect") ?? "/compte";
     const hashParams = new URLSearchParams(window.location.hash.slice(1));
     const accessToken = hashParams.get("access_token");
 
@@ -30,7 +31,7 @@ function AuthCallbackInner() {
           }
           if (data?.session) {
             document.cookie = `guimmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
-            window.location.href = "/compte";
+            window.location.href = redirectTo;
           } else {
             setStatus("Session introuvable après échange");
             setTimeout(() => { window.location.href = "/connexion"; }, 4000);
@@ -49,7 +50,7 @@ function AuthCallbackInner() {
       supabase.auth.getSession().then(({ data }: any) => {
         if (data?.session) {
           document.cookie = `guimmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
-          window.location.href = "/compte";
+          window.location.href = redirectTo;
         } else {
           setTimeout(() => { window.location.href = "/connexion"; }, 2000);
         }

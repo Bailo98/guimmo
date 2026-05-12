@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PROTECTED_ROUTES = ["/compte", "/publier", "/messages"];
+const PROTECTED_ROUTES = ["/compte", "/publier", "/messages", "/favoris"];
 const AUTH_ROUTES = ["/connexion", "/inscription"];
 
 export function proxy(request: NextRequest) {
@@ -9,7 +9,7 @@ export function proxy(request: NextRequest) {
   const authCookie = request.cookies.get("guimmo-auth");
   const isAuthenticated = !!authCookie?.value;
 
-  const isProtected = PROTECTED_ROUTES.some((r) => pathname.startsWith(r));
+  const isProtected = PROTECTED_ROUTES.some((r) => pathname === r || pathname.startsWith(r + "/"));
   const isAuthRoute = AUTH_ROUTES.some((r) => pathname.startsWith(r));
 
   if (isProtected && !isAuthenticated) {
@@ -19,7 +19,8 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (isAuthRoute && isAuthenticated) {
+  // Redirect logged-in users away from auth pages (only if no redirect param)
+  if (isAuthRoute && isAuthenticated && !request.nextUrl.searchParams.get("redirect")) {
     return NextResponse.redirect(new URL("/compte", request.url));
   }
 
@@ -27,5 +28,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/compte/:path*", "/publier/:path*", "/connexion", "/inscription"],
+  matcher: ["/compte/:path*", "/publier/:path*", "/messages/:path*", "/favoris/:path*", "/connexion", "/inscription"],
 };

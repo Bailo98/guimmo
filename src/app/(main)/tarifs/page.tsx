@@ -363,7 +363,7 @@ export default function TarifsPage() {
           <MessageCircle className="w-4 h-4 text-[#25D366]" />
           <p className="text-slate-500 dark:text-slate-400 text-sm">
             Besoin d&apos;aide ? Contactez-nous sur{" "}
-            <a href="https://wa.me/224620000000" className="text-[#25D366] font-semibold hover:underline">
+            <a href="https://wa.me/224628222510" className="text-[#25D366] font-semibold hover:underline">
               WhatsApp
             </a>
           </p>

@@ -374,7 +374,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
                   Recevez nos meilleurs conseils immobiliers directement sur WhatsApp.
                 </p>
                 <a
-                  href="https://wa.me/224000000000"
+                  href="https://wa.me/224628222510"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-white text-[#F97316] font-bold px-4 py-2 rounded-xl text-sm hover:bg-white/90 transition-colors"

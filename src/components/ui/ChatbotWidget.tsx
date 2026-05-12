@@ -40,7 +40,7 @@ const INITIAL_MESSAGE: Message = {
   ],
 };
 
-export function ChatbotWidget() {
+export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>("start");
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
@@ -98,7 +98,7 @@ export function ChatbotWidget() {
           text: "Contactez notre équipe sur WhatsApp pour toute autre question !",
           link: {
             label: "Ouvrir WhatsApp",
-            href: "https://wa.me/224620000000?text=Bonjour%20GuImmo%2C%20j%27ai%20besoin%20d%27aide",
+            href: `https://wa.me/${whatsappNumber}?text=Bonjour%20GuImmo%2C%20j%27ai%20besoin%20d%27aide`,
           },
         });
       }

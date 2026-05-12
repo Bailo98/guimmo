@@ -1,35 +1,27 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
-import { MessageCircle, Phone, Mail } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 
-export function Footer() {
+export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
   return (
     <footer className="bg-slate-50 dark:bg-[#0d1014] border-t border-slate-100 dark:border-[#2a3040] mt-16">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Logo size="md" />
             <p className="text-slate-500 dark:text-slate-400 text-sm mt-3 leading-relaxed">
-              La plateforme immobilière de confiance en Guinée. Trouvez rapidement votre logement à Conakry.
+              La plateforme immobilière de confiance en Guinée.
             </p>
-            <div className="flex items-center gap-2 mt-4 flex-wrap">
-              <a href="https://wa.me/224620000000" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-xl bg-[#25D366] flex items-center justify-center text-white hover:opacity-90 transition-opacity">
-                <MessageCircle className="w-4 h-4" />
-              </a>
-              <a href="tel:+224620000000" className="w-9 h-9 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-[#009460] hover:text-white transition-colors">
-                <Phone className="w-4 h-4" />
-              </a>
-              <a href="mailto:contact@guimmo.gn" className="w-9 h-9 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-[#009460] hover:text-white transition-colors">
-                <Mail className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-9 h-9 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-[#E1306C] hover:text-white transition-colors text-xs font-bold">
-                IG
-              </a>
-              <a href="#" className="w-9 h-9 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-[#1877F2] hover:text-white transition-colors text-xs font-bold">
-                FB
-              </a>
-            </div>
+            <a
+              href={`https://wa.me/${whatsappNumber}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-4 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] text-sm font-semibold px-4 py-2 rounded-xl border border-[#25D366]/30 transition-colors"
+            >
+              <MessageCircle className="w-4 h-4" />
+              WhatsApp
+            </a>
           </div>
 
           {/* Annonces */}
@@ -40,12 +32,11 @@ export function Footer() {
                 { label: "Toutes les annonces", href: "/annonces" },
                 { label: "Appartements", href: "/annonces?type=apartment" },
                 { label: "Maisons", href: "/annonces?type=house" },
-                { label: "Studios", href: "/annonces?type=studio" },
                 { label: "Villas", href: "/annonces?type=villa" },
-                { label: "Nouvelles annonces", href: "/nouveautes" },
+                { label: "Publier une annonce", href: "/publier" },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#009460] transition-colors">
+                  <Link href={l.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#F97316] transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -58,37 +49,14 @@ export function Footer() {
             <h3 className="font-semibold text-slate-900 dark:text-white text-sm mb-4">Quartiers</h3>
             <ul className="space-y-2">
               {[
-                { label: "Kipé", href: "/quartiers/kipe" },
-                { label: "Hamdallaye", href: "/quartiers/hamdallaye" },
-                { label: "Dixinn", href: "/quartiers/dixinn" },
-                { label: "Ratoma", href: "/quartiers/ratoma" },
-                { label: "Taouyah", href: "/quartiers/taouyah" },
-                { label: "Comparer", href: "/quartiers/compare" },
+                { label: "Kipé", href: "/annonces?neighborhood=kipe" },
+                { label: "Hamdallaye", href: "/annonces?neighborhood=hamdallaye" },
+                { label: "Dixinn", href: "/annonces?neighborhood=dixinn" },
+                { label: "Ratoma", href: "/annonces?neighborhood=ratoma" },
+                { label: "Taouyah", href: "/annonces?neighborhood=taouyah" },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#009460] transition-colors">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* GuImmo */}
-          <div>
-            <h3 className="font-semibold text-slate-900 dark:text-white text-sm mb-4">GuImmo</h3>
-            <ul className="space-y-2">
-              {[
-                { label: "Publier une annonce", href: "/publier" },
-                { label: "Tarifs & Abonnements", href: "/tarifs" },
-                { label: "Comment ça marche", href: "/comment-ca-marche" },
-                { label: "Guide location", href: "/guide" },
-                { label: "Estimateur de prix", href: "/estimateur" },
-                { label: "Blog immobilier", href: "/blog" },
-                { label: "FAQ", href: "/faq" },
-              ].map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#009460] transition-colors">
+                  <Link href={l.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#F97316] transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -101,16 +69,14 @@ export function Footer() {
             <h3 className="font-semibold text-slate-900 dark:text-white text-sm mb-4">Informations</h3>
             <ul className="space-y-2">
               {[
-                { label: "À propos de GuImmo", href: "/a-propos" },
-                { label: "Conditions d'utilisation", href: "/cgv" },
-                { label: "Politique de confidentialité", href: "/confidentialite" },
-                { label: "Mentions légales", href: "/mentions-legales" },
+                { label: "À propos", href: "/a-propos" },
                 { label: "Contact", href: "/contact" },
-                { label: "Témoignages", href: "/temoignages" },
-                { label: "Agences partenaires", href: "/agences" },
+                { label: "CGU", href: "/cgv" },
+                { label: "Confidentialité", href: "/confidentialite" },
+                { label: "Mentions légales", href: "/mentions-legales" },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#009460] transition-colors">
+                  <Link href={l.href} className="text-sm text-slate-500 dark:text-slate-400 hover:text-[#F97316] transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -119,16 +85,10 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-10 pt-6 border-t border-slate-200 dark:border-[#2a3040] flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-slate-400 text-xs text-center">
-            © 2025 GuImmo — Guinée Immobilier. Tous droits réservés. Made with ♥ in Conakry.
+        <div className="pt-6 border-t border-slate-200 dark:border-[#2a3040] text-center">
+          <p className="text-slate-400 text-xs">
+            🏠 GuImmo — Conakry, Guinée &nbsp;|&nbsp; © 2025 Tous droits réservés
           </p>
-          <div className="flex items-center gap-4">
-            <Link href="/cgv" className="text-xs text-slate-400 hover:text-[#009460] transition-colors">CGU</Link>
-            <Link href="/confidentialite" className="text-xs text-slate-400 hover:text-[#009460] transition-colors">Confidentialité</Link>
-            <Link href="/contact" className="text-xs text-slate-400 hover:text-[#009460] transition-colors">Contact</Link>
-          </div>
         </div>
       </div>
     </footer>

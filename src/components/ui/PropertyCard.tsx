@@ -139,14 +139,13 @@ export function PropertyCard({ property, variant = "default", className, index =
                 <Star className="w-2.5 h-2.5 fill-white" /> Sponsorisé
               </span>
             )}
-            {property.availableNow && (
+            {property.availableNow ? (
               <span className="bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                Disponible
+                ✅ Disponible
               </span>
-            )}
-            {property.price < 1_500_000 && property.transactionType === "rent" && (
+            ) : (
               <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                Prix attractif
+                ❌ Déjà loué
               </span>
             )}
           </div>

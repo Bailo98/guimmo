@@ -38,12 +38,12 @@ export default function ContactPage() {
               <p className="font-bold text-slate-900 dark:text-white text-sm mb-0.5">WhatsApp</p>
               <p className="text-slate-500 dark:text-slate-400 text-xs mb-2">Réponse en quelques minutes</p>
               <a
-                href="https://wa.me/224620000000"
+                href="https://wa.me/224628222510"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm font-semibold text-[#25D366] hover:underline"
               >
-                +224 620 000 000
+                +224 628 222 510
               </a>
             </div>
           </div>
@@ -55,8 +55,8 @@ export default function ContactPage() {
             <div>
               <p className="font-bold text-slate-900 dark:text-white text-sm mb-0.5">Téléphone</p>
               <p className="text-slate-500 dark:text-slate-400 text-xs mb-2">Lun–Ven, 8h–18h</p>
-              <a href="tel:+224620000000" className="text-sm font-semibold text-[#009460] hover:underline">
-                +224 620 000 000
+              <a href="tel:+224628222510" className="text-sm font-semibold text-[#009460] hover:underline">
+                +224 628 222 510
               </a>
             </div>
           </div>

@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 
-export function WhatsAppWidget() {
+export function WhatsAppWidget({ whatsappNumber }: { whatsappNumber: string }) {
   return (
     <div className="fixed bottom-24 right-4 z-50 md:bottom-8 group">
       {/* Ping effect */}
@@ -14,7 +14,7 @@ export function WhatsAppWidget() {
         </div>
       </div>
       <motion.a
-        href="https://wa.me/224620000000?text=Bonjour%20GuImmo%2C%20j%27ai%20besoin%20d%27aide"
+        href={`https://wa.me/${whatsappNumber}?text=Bonjour%20GuImmo%2C%20j%27ai%20besoin%20d%27aide`}
         target="_blank"
         rel="noopener noreferrer"
         whileHover={{ scale: 1.1 }}

@@ -12,8 +12,8 @@ const TABS = [
 const INITIAL_CONTACT = {
   email: "contact@guimmo.gn",
   emailSupport: "support@guimmo.gn",
-  phone: "+224 620 000 000",
-  whatsapp: "+224 620 000 000",
+  phone: "+224 628 222 510",
+  whatsapp: "+224 628 222 510",
   facebook: "https://facebook.com/guimmo",
   instagram: "https://instagram.com/guimmo",
   youtube: "",

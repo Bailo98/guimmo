@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { Toaster } from "@/components/ui/Toaster";
+import { AuthProvider } from "@/lib/auth-context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -58,8 +59,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${inter.variable} font-sans bg-white dark:bg-[#111418] text-slate-900 dark:text-white min-h-screen`}>
         <QueryProvider>
-          <ThemeProvider>{children}</ThemeProvider>
-          <Toaster />
+          <AuthProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+            <Toaster />
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>
