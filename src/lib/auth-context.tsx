@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
 import type { User } from "@supabase/supabase-js";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
@@ -48,6 +48,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (user) await fetchProfile(user.id);
   }, [user, fetchProfile]);
 
+  const loadingRef = useRef(true);
+
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
       // Mock session for dev without Supabase
@@ -55,15 +57,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (cookie) {
         setUser({ id: "mock-user", email: "demo@guimmo.gn" } as User);
       }
+      loadingRef.current = false;
       setLoading(false);
       return;
     }
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) fetchProfile(session.user.id);
-      setLoading(false);
-    });
+    // Safety timeout: if loading is still true after 3s (getSession hung or
+    // onAuthStateChange never fired), force it false so the page can redirect.
+    const safetyTimer = setTimeout(() => {
+      if (loadingRef.current) {
+        loadingRef.current = false;
+        setLoading(false);
+      }
+    }, 3000);
+
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        setUser(session?.user ?? null);
+        if (session?.user) fetchProfile(session.user.id);
+      })
+      .catch(() => {
+        // getSession rejected (network error, bad token, etc.) — treat as no session
+        setUser(null);
+      })
+      .finally(() => {
+        loadingRef.current = false;
+        setLoading(false);
+      });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
@@ -73,11 +93,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } else {
           setProfile(null);
         }
-        setLoading(false);
+        // Mark loading done on first event (covers INITIAL_SESSION with null session)
+        if (loadingRef.current) {
+          loadingRef.current = false;
+          setLoading(false);
+        }
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      clearTimeout(safetyTimer);
+      subscription.unsubscribe();
+    };
   }, [fetchProfile]);
 
   const signOut = useCallback(async () => {
