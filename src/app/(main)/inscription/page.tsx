@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 const USER_ROLES = [
-  { value: "user", label: "Chercher un logement", icon: "🔍", desc: "Je cherche à louer ou acheter" },
+  { value: "buyer", label: "Chercher un logement", icon: "🔍", desc: "Je cherche à louer ou acheter" },
   { value: "owner", label: "Propriétaire particulier", icon: "🏠", desc: "Je loue mon propre logement" },
   { value: "agent", label: "Agent immobilier", icon: "🤝", desc: "Je suis agent professionnel" },
   { value: "agency", label: "Agence immobilière", icon: "🏢", desc: "Je représente une agence" },
