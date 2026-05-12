@@ -118,22 +118,43 @@ export default function MessagesPage() {
     if (!authLoading && !user) router.replace("/connexion?redirect=/messages");
   }, [authLoading, user, router]);
 
-  // Load all messages
+  // Load all messages (3-step: raw messages → profiles + properties → enrich)
   const loadMessages = useCallback(async () => {
     if (!user || !isSupabaseConfigured || !supabase) { setFetching(false); return; }
 
-    const { data, error } = await supabase
+    const { data: raw, error } = await supabase
       .from("messages")
-      .select(`
-        *,
-        sender:sender_id(id, full_name),
-        receiver:receiver_id(id, full_name),
-        property:property_id(id, title)
-      `)
+      .select("*")
       .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
       .order("created_at", { ascending: false });
 
-    if (!error && data) setMessages(data as DbMessage[]);
+    if (error || !raw) { setFetching(false); return; }
+
+    const otherUserIds = [...new Set(raw.map((m) =>
+      m.sender_id === user.id ? m.receiver_id : m.sender_id
+    ))];
+    const propertyIds = [...new Set(raw.map((m) => m.property_id).filter(Boolean))];
+
+    const [profilesRes, propertiesRes] = await Promise.all([
+      otherUserIds.length > 0
+        ? supabase.from("profiles").select("id, full_name").in("id", otherUserIds)
+        : Promise.resolve({ data: [] as { id: string; full_name: string | null }[] }),
+      propertyIds.length > 0
+        ? supabase.from("properties").select("id, title").in("id", propertyIds)
+        : Promise.resolve({ data: [] as { id: string; title: string }[] }),
+    ]);
+
+    const profileMap = new Map((profilesRes.data ?? []).map((p) => [p.id, p]));
+    const propertyMap = new Map((propertiesRes.data ?? []).map((p) => [p.id, p]));
+
+    const enriched: DbMessage[] = raw.map((m) => ({
+      ...m,
+      sender: profileMap.get(m.sender_id) ?? null,
+      receiver: profileMap.get(m.receiver_id) ?? null,
+      property: m.property_id ? (propertyMap.get(m.property_id) ?? null) : null,
+    }));
+
+    setMessages(enriched);
     setFetching(false);
   }, [user]);
 
@@ -148,29 +169,16 @@ export default function MessagesPage() {
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages" },
-        async (payload) => {
-          const msg = payload.new as DbMessage;
+        (payload) => {
+          const msg = payload.new as { sender_id: string; receiver_id: string };
           if (msg.sender_id !== user.id && msg.receiver_id !== user.id) return;
-
-          // Fetch joined data for the new message
-          const { data } = await supabase!
-            .from("messages")
-            .select(`
-              *,
-              sender:sender_id(id, full_name),
-              receiver:receiver_id(id, full_name),
-              property:property_id(id, title)
-            `)
-            .eq("id", msg.id)
-            .single();
-
-          if (data) setMessages((prev) => [...prev, data as DbMessage]);
+          loadMessages();
         }
       )
       .subscribe();
 
     return () => { supabase?.removeChannel(channel); };
-  }, [user]);
+  }, [user, loadMessages]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
