@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +22,7 @@ export function Logo({ size = "md", className }: LogoProps) {
         height={px}
         style={{ borderRadius: "50%", width: px, height: px, objectFit: "cover", flexShrink: 0 }}
       />
-      <span style={{ fontFamily: "var(--font-nunito), Nunito, sans-serif", fontWeight: 800, letterSpacing: "-0.01em" }}>
+      <span style={{ fontFamily: "'Nunito', sans-serif", fontWeight: 800, letterSpacing: "-0.01em" }}>
         <span style={{ color: "#CE1126" }}>Gu</span>
         <span style={{ color: "#FCD116" }}>I</span>
         <span style={{ color: "#009460" }}>mmo</span>
