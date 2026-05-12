@@ -112,10 +112,11 @@ export default function MessagesPage() {
   const [input, setInput]             = useState("");
   const [sending, setSending]         = useState(false);
   const [contextMenu, setContextMenu] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting]   = useState(false);
   const messagesEndRef                = useRef<HTMLDivElement>(null);
   const textareaRef                   = useRef<HTMLTextAreaElement>(null);
   const longPressTimer                = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isDeletingRef                 = useRef(false);
+  const channelRef                    = useRef<ReturnType<NonNullable<typeof supabase>["channel"]> | null>(null);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -165,25 +166,30 @@ export default function MessagesPage() {
   useEffect(() => { loadMessages(); }, [loadMessages]);
 
   // Realtime subscription
-  useEffect(() => {
+  const setupRealtime = useCallback(() => {
     if (!user || !isSupabaseConfigured || !supabase) return;
+    if (channelRef.current) supabase.removeChannel(channelRef.current);
 
-    const channel = supabase
-      .channel(`messages-${user.id}`)
+    channelRef.current = supabase
+      .channel(`messages-${user.id}-${Date.now()}`)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages" },
         (payload) => {
-          if (isDeletingRef.current) return;
           const msg = payload.new as { sender_id: string; receiver_id: string };
           if (msg.sender_id !== user.id && msg.receiver_id !== user.id) return;
           loadMessages();
         }
       )
       .subscribe();
-
-    return () => { supabase?.removeChannel(channel); };
   }, [user, loadMessages]);
+
+  useEffect(() => {
+    setupRealtime();
+    return () => {
+      if (channelRef.current && supabase) supabase.removeChannel(channelRef.current);
+    };
+  }, [setupRealtime]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -220,17 +226,22 @@ export default function MessagesPage() {
   }
 
   async function deleteConversation(conv: Conversation) {
-    if (!user || !isSupabaseConfigured || !supabase) return;
+    if (!user || !isSupabaseConfigured || !supabase || isDeleting) return;
+    setIsDeleting(true);
 
-    isDeletingRef.current = true;
-    const { error, count } = await supabase
+    // Unsubscribe before delete so Realtime doesn't reload on DELETE events
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+
+    await supabase
       .from("messages")
-      .delete({ count: "exact" })
+      .delete()
       .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
       .eq("property_id", conv.propertyId);
-    console.log("DELETE result:", { error, count });
-    isDeletingRef.current = false;
 
+    // Update local state immediately
     setMessages((prev) => prev.filter((m) => {
       const sameUsers =
         (m.sender_id === user.id && m.receiver_id === conv.otherUserId) ||
@@ -242,6 +253,10 @@ export default function MessagesPage() {
     if (activeKey === conv.key) setActiveKey(null);
     setContextMenu(null);
     toast("Conversation supprimée", "success");
+    setIsDeleting(false);
+
+    // Resubscribe after delete events have settled
+    setTimeout(() => setupRealtime(), 2000);
   }
 
   async function handleSend(e: React.FormEvent) {
