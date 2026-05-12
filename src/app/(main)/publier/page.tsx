@@ -126,12 +126,18 @@ export default function PublierPage() {
     setForm((f) => ({ ...f, [key]: val }));
   }
 
-  function addPhotos(files: FileList | null) {
+  async function addPhotos(files: FileList | null) {
     if (!files) return;
-    const newFiles = Array.from(files).filter((f) => f.type.startsWith("image/"));
-    if (!newFiles.length) return;
-    const previews = newFiles.map((f) => URL.createObjectURL(f));
-    setForm((f) => ({ ...f, photos: [...f.photos, ...newFiles] }));
+    const raw = Array.from(files).filter((f) => f.type.startsWith("image/"));
+    if (!raw.length) return;
+    const converted = await Promise.all(raw.map(async (f) => {
+      console.log("[photo] avant conversion:", f.name, f.type);
+      const c = await convertToJpeg(f);
+      console.log("[photo] après conversion:", c.name, c.type);
+      return c;
+    }));
+    const previews = converted.map((f) => URL.createObjectURL(f));
+    setForm((f) => ({ ...f, photos: [...f.photos, ...converted] }));
     setPhotoPreviews((p) => [...p, ...previews]);
   }
 
@@ -178,23 +184,17 @@ export default function PublierPage() {
       // 1. Upload photos to Supabase Storage
       const uploadedUrls: string[] = [];
       for (let i = 0; i < form.photos.length; i++) {
-        const file = form.photos[i];
+        const file = form.photos[i]; // already converted to JPEG in addPhotos
         const ext  = file.name.split(".").pop() ?? "jpg";
         const path = `${user.id}/${Date.now()}-${i}.${ext}`;
-        const converted = await convertToJpeg(file);
+        console.log("[upload] sending:", file.name, file.type, path);
         const { error: upErr } = await supabase.storage
           .from("property-images")
-          .upload(path, converted, { upsert: false, contentType: converted.type });
+          .upload(path, file, { upsert: false, contentType: file.type });
         if (upErr) {
-          console.error("[upload]", upErr);
-          const msg = upErr.message ?? "";
-          if (msg.includes("Bucket not found") || msg.includes("bucket")) {
-            toast("Bucket introuvable. Contactez l'administrateur.", "error");
-          } else if (msg.includes("policy") || msg.includes("violates") || msg.includes("403")) {
-            toast("Accès refusé au stockage — vérifiez les politiques RLS.", "error");
-          } else {
-            toast(`Erreur upload : ${msg}`, "error");
-          }
+          console.error("[upload] error:", JSON.stringify(upErr));
+          const msg = upErr.message ?? JSON.stringify(upErr);
+          toast(`Erreur upload : ${msg}`, "error");
           setSubmitting(false);
           return;
         }
