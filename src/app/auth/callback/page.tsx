@@ -2,10 +2,12 @@
 import { useEffect, useRef, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { toast } from "@/lib/toast";
 
 function AuthCallbackInner() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState("Connexion en cours...");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const doneRef = useRef(false);
 
   useEffect(() => {
@@ -54,8 +56,10 @@ function AuthCallbackInner() {
     // Hard timeout: if nothing fires after 10s, give up
     const timer = setTimeout(() => {
       if (!doneRef.current) {
-        setStatus("Délai dépassé. Veuillez réessayer.");
-        setTimeout(() => { window.location.href = "/connexion"; }, 2000);
+        const msg = "La connexion a expiré, veuillez réessayer.";
+        toast(msg, "error");
+        setErrorMsg(msg);
+        setTimeout(() => { window.location.href = "/connexion"; }, 3000);
       }
     }, 10000);
 
@@ -70,7 +74,13 @@ function AuthCallbackInner() {
       <div className="text-center max-w-sm px-4">
         <div className="w-12 h-12 border-4 border-[#F97316] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
         <p className="text-white font-semibold">{status}</p>
-        <p className="text-slate-400 text-sm mt-2">Veuillez patienter...</p>
+        {errorMsg ? (
+          <p className="text-red-400 text-sm mt-3 bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-2">
+            {errorMsg}
+          </p>
+        ) : (
+          <p className="text-slate-400 text-sm mt-2">Veuillez patienter...</p>
+        )}
       </div>
     </div>
   );
