@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
@@ -15,18 +14,18 @@ export function Logo({ size = "md", className }: LogoProps) {
 
   return (
     <Link href="/" className={cn("flex items-center gap-2 font-black tracking-tight", textSizes[size], className)}>
-      <Image
+      <img
         src="/logo.png"
         alt=""
         width={px}
         height={px}
-        className="rounded-full object-cover flex-shrink-0"
-        style={{ width: px, height: px }}
-        priority
+        style={{ borderRadius: "50%", width: px, height: px, objectFit: "cover", flexShrink: 0 }}
       />
-      <span style={{ color: "#CE1126" }}>Gu</span>
-      <span style={{ color: "#FCD116" }}>Im</span>
-      <span style={{ color: "#009460" }}>mo</span>
+      <span>
+        <span style={{ color: "#CE1126" }}>Gu</span>
+        <span style={{ color: "#FCD116" }}>Im</span>
+        <span style={{ color: "#009460" }}>mo</span>
+      </span>
     </Link>
   );
 }
