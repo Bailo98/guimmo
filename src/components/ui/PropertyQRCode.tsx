@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useId } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { QrCode, Download } from "lucide-react";
 
@@ -9,7 +9,9 @@ interface Props {
 }
 
 export function PropertyQRCode({ url, title }: Props) {
-  const qrId = useRef(`qr-${Math.random().toString(36).slice(2)}`).current;
+  const reactId = useId();
+  const qrId = `qr-${reactId.replace(/:/g, "")}`;
+
 
   function handleDownload() {
     const svg = document.getElementById(qrId);
