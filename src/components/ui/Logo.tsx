@@ -6,14 +6,15 @@ interface LogoProps {
   className?: string;
 }
 
+const heights = { sm: 28, md: 36, lg: 44 };
+
 export function Logo({ size = "md", className }: LogoProps) {
-  const sizes = { sm: "text-xl", md: "text-2xl", lg: "text-3xl" };
+  const h = heights[size];
+  const w = Math.round(h * (160 / 48));
 
   return (
-    <Link href="/" className={cn("flex items-center gap-0 font-black tracking-tight", sizes[size], className)}>
-      <span style={{ color: "#CE1126" }}>Gu</span>
-      <span style={{ color: "#FCD116" }}>Im</span>
-      <span style={{ color: "#009460" }}>mo</span>
+    <Link href="/" className={cn("flex items-center", className)}>
+      <img src="/logo-text.svg" alt="GuImmo" height={h} width={w} style={{ height: h, width: w }} />
     </Link>
   );
 }

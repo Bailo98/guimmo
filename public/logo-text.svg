@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 48" width="160" height="48" fill="none">
+  <!-- Icon: orange background -->
+  <rect width="48" height="48" rx="10" fill="#F97316"/>
+  <!-- Roof triangle -->
+  <polygon points="24,7 42,24 6,24" fill="white"/>
+  <!-- Roof peak dot -->
+  <circle cx="24" cy="7" r="2.5" fill="#F97316"/>
+  <!-- House body -->
+  <rect x="10" y="24" width="28" height="17" rx="1" fill="white"/>
+  <!-- Door -->
+  <rect x="20" y="31" width="8" height="10" rx="1.5" fill="#F97316"/>
+  <!-- Left window -->
+  <rect x="12" y="27" width="5" height="5" rx="1" fill="#F97316"/>
+  <!-- Right window -->
+  <rect x="31" y="27" width="5" height="5" rx="1" fill="#F97316"/>
+
+  <!-- Text: "Gu" in orange, "Immo" in dark -->
+  <text x="58" y="32" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="22" letter-spacing="-0.5" fill="#F97316">Gu</text>
+  <text x="83" y="32" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="22" letter-spacing="-0.5" fill="#1e293b">Immo</text>
+</svg>
