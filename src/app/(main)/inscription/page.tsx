@@ -233,9 +233,11 @@ export default function InscriptionPage() {
                     </label>
                     <div className="relative">
                       {role === "agency"
-                        ? <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        : <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />}
+                        ? <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                        : <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />}
                       <input
+                        id="name"
+                        name="name"
                         type="text"
                         placeholder={role === "agency" ? "Conakry Premium Immo" : "Mamadou Diallo"}
                         value={form.name}
@@ -254,8 +256,10 @@ export default function InscriptionPage() {
                         Numéro de téléphone
                       </label>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                         <input
+                          id="phone"
+                          name="phone"
                           type="tel"
                           placeholder="+224 628 222 510 ou +1 438 000 0000"
                           value={form.phone}
@@ -279,8 +283,10 @@ export default function InscriptionPage() {
                         Adresse email
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                         <input
+                          id="email"
+                          name="email"
                           type="email"
                           placeholder="vous@email.com"
                           value={form.email}
@@ -306,8 +312,10 @@ export default function InscriptionPage() {
                       Mot de passe
                     </label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                       <input
+                        id="password"
+                        name="password"
                         type={showPassword ? "text" : "password"}
                         placeholder="••••••••  (min. 6 caractères)"
                         value={form.password}
