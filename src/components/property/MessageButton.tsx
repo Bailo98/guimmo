@@ -37,12 +37,14 @@ export function MessageButton({ propertyId, ownerId, propertyTitle, className }:
     setSending(true);
 
     if (isSupabaseConfigured && supabase) {
-      const { error } = await supabase.from("messages").insert({
+      const payload = {
         sender_id: user.id,
         receiver_id: ownerId,
         property_id: propertyId,
         content: content.trim(),
-      });
+      };
+      console.log("Sending message:", payload);
+      const { error } = await supabase.from("messages").insert(payload);
       if (error) {
         toast("Erreur lors de l'envoi. Réessayez.", "error");
         setSending(false);
