@@ -42,6 +42,34 @@ interface FormState {
   contactMethod: ContactMethod;
 }
 
+async function convertToJpeg(file: File): Promise<File> {
+  if (file.type === "image/jpeg" || file.type === "image/png") return file;
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width  = img.width;
+      canvas.height = img.height;
+      canvas.getContext("2d")?.drawImage(img, 0, 0);
+      canvas.toBlob(
+        (blob) => {
+          const converted = new File(
+            [blob!],
+            file.name.replace(/\.\w+$/, ".jpg"),
+            { type: "image/jpeg" }
+          );
+          URL.revokeObjectURL(url);
+          resolve(converted);
+        },
+        "image/jpeg",
+        0.85
+      );
+    };
+    img.src = url;
+  });
+}
+
 function formatGNF(raw: string): string {
   const n = parseInt(raw.replace(/\D/g, ""), 10);
   if (isNaN(n) || n === 0) return "";
@@ -153,9 +181,10 @@ export default function PublierPage() {
         const file = form.photos[i];
         const ext  = file.name.split(".").pop() ?? "jpg";
         const path = `${user.id}/${Date.now()}-${i}.${ext}`;
+        const converted = await convertToJpeg(file);
         const { error: upErr } = await supabase.storage
           .from("property-images")
-          .upload(path, file, { upsert: false, contentType: file.type });
+          .upload(path, converted, { upsert: false, contentType: converted.type });
         if (upErr) {
           console.error("[upload]", upErr);
           const msg = upErr.message ?? "";
@@ -401,7 +430,7 @@ export default function PublierPage() {
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif"
             multiple
             className="hidden"
             onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }}
@@ -409,7 +438,7 @@ export default function PublierPage() {
           <input
             ref={cameraInputRef}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif"
             capture="environment"
             className="hidden"
             onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }}
