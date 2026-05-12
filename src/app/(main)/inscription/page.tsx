@@ -108,7 +108,7 @@ export default function InscriptionPage() {
       // Real Supabase signup
       // NOTE: Phone OTP auth requires Twilio configured in Supabase.
       // As a workaround, we use the phone number formatted as an email address.
-      const email = `${form.phone.replace(/[\s+]/g, "")}@guimmo.gn`;
+      const email = `${form.phone.replace(/[\s+]/g, "")}@gmail.com`;
       const { error: authError } = await supabase.auth.signUp({
         email,
         password: form.password,
