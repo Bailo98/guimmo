@@ -239,7 +239,7 @@ export default function MessagesPage() {
     const { error, count } = await supabase
       .from("messages")
       .delete({ count: "exact" })
-      .eq("property_id", conv.propertyId);
+      .or(`and(sender_id.eq.${user.id},receiver_id.eq.${conv.otherUserId}),and(sender_id.eq.${conv.otherUserId},receiver_id.eq.${user.id})`);
     console.log("DELETE error:", JSON.stringify(error));
     console.log("DELETE count:", count);
 
