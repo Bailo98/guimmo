@@ -53,9 +53,9 @@ export default function AProposPage() {
       <h2 className="text-xl font-black text-white mb-6">Nos valeurs</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-14">
         {VALUES.map((v) => (
-          <div key={v.title} className="rounded-2xl p-5 flex gap-4" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}>
-            <div className="w-10 h-10 bg-[#F97316]/20 rounded-xl flex items-center justify-center flex-shrink-0">
-              <v.icon className="w-5 h-5 text-[#F97316]" />
+          <div key={v.title} className="rounded-2xl p-5 flex gap-4" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", border: "1px solid rgba(255,255,255,0.10)" }}>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(255,255,255,0.10)" }}>
+              <v.icon className="w-5 h-5 text-white/60" />
             </div>
             <div>
               <h3 className="font-bold text-white mb-1">{v.title}</h3>
@@ -68,7 +68,7 @@ export default function AProposPage() {
       {/* Fondateur */}
       <h2 className="text-xl font-black text-white mb-6">L&apos;équipe</h2>
       <div className="flex justify-center mb-14">
-        <div className="rounded-2xl p-6 text-center w-48" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}>
+        <div className="rounded-2xl p-6 text-center w-48" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", border: "1px solid rgba(255,255,255,0.10)" }}>
           <div className="w-14 h-14 bg-gradient-to-br from-[#CE1126] to-[#009460] rounded-2xl flex items-center justify-center text-white font-black text-2xl mx-auto mb-3">
             D
           </div>

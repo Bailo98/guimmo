@@ -41,7 +41,7 @@ export function PropertyCard({ property, variant = "default", className, index =
     return (
       <div
         className={cn("group flex gap-3 rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5", className)}
-        style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.10)" }}
+        style={{ background: "rgba(255,255,255,0.04)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", border: "1px solid rgba(255,255,255,0.08)" }}
       >
         <Link href={`/annonces/${property.id}`} className="relative w-28 flex-shrink-0">
           <div className="relative w-full h-full min-h-[100px]">
@@ -56,10 +56,10 @@ export function PropertyCard({ property, variant = "default", className, index =
           <Link href={`/annonces/${property.id}`}>
             <p className="font-bold text-sm text-white line-clamp-1">{property.title}</p>
             <div className="flex items-center gap-1 text-white/50 text-xs mt-0.5">
-              <MapPin className="w-3 h-3 flex-shrink-0 text-[#F97316]" />
+              <MapPin className="w-3 h-3 flex-shrink-0 text-white/40" />
               <span>{neighborhoodLabel}</span>
             </div>
-            <p className="text-[#F97316] font-bold text-sm mt-1">
+            <p className="text-white font-bold text-sm mt-1">
               {formatPrice(property.price)}
               {property.pricePeriod === "month" && (
                 <span className="text-xs font-normal text-white/40">/mois</span>
@@ -85,8 +85,8 @@ export function PropertyCard({ property, variant = "default", className, index =
   // ── Default variant — pure overlay card ─────────────────────────
   return (
     <div
-      className={cn("group relative rounded-3xl overflow-hidden hover:-translate-y-1 transition-all duration-300", className)}
-      style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.12)" }}
+      className={cn("group relative rounded-[20px] overflow-hidden hover:-translate-y-1 transition-all duration-300", className)}
+      style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", border: "1px solid rgba(255,255,255,0.10)" }}
     >
       <Link href={`/annonces/${property.id}`} className="block relative h-[220px]">
         {primaryImage ? (
@@ -109,11 +109,11 @@ export function PropertyCard({ property, variant = "default", className, index =
 
         {/* Top-left: type + badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
-          <span className="bg-black/50 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full leading-none">
+          <span className="text-white/80 text-[11px] font-bold px-2.5 py-1 rounded-full leading-none" style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
             {TYPE_LABELS[property.type] ?? property.type}
           </span>
           {isNew && (
-            <span className="bg-[#F97316] text-white text-[11px] font-bold px-2.5 py-1 rounded-full leading-none">
+            <span className="text-white text-[11px] font-bold px-2.5 py-1 rounded-full leading-none" style={{ background: "rgba(255,255,255,0.20)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
               Nouveau
             </span>
           )}
@@ -142,10 +142,10 @@ export function PropertyCard({ property, variant = "default", className, index =
           >
             <Heart className={cn("w-4 h-4", fav && "fill-white")} />
           </button>
-          <div className="bg-[#F97316] rounded-xl shadow-md px-2.5 py-1.5 text-right">
+          <div className="rounded-xl shadow-md px-2.5 py-1.5 text-right" style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.20)" }}>
             <p className="text-white font-bold text-xs leading-tight">{formatPrice(property.price)}</p>
             {property.pricePeriod === "month" && (
-              <p className="text-white/70 text-[10px] leading-tight">/mois</p>
+              <p className="text-white/60 text-[10px] leading-tight">/mois</p>
             )}
           </div>
         </div>

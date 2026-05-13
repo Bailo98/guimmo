@@ -220,7 +220,7 @@ export default function ComptePage() {
   if (authLoading || !user) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#F97316] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -238,7 +238,7 @@ export default function ComptePage() {
 
       {/* ── Header ── */}
       <div className="flex items-center gap-4 mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-[#F97316] flex items-center justify-center text-white text-xl font-black flex-shrink-0">
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl font-black flex-shrink-0" style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.20)" }}>
           {initials || <User className="w-6 h-6" />}
         </div>
         <div className="min-w-0">
@@ -275,7 +275,7 @@ export default function ComptePage() {
             <span className="font-semibold text-white text-sm">❤️ Mes favoris</span>
             <span className="text-white/40 text-xs">→</span>
           </Link>
-          <div className="bg-[#F97316]/5 dark:bg-[#F97316]/10 border border-[#F97316]/20 rounded-2xl px-4 py-4">
+          <div className="rounded-2xl px-4 py-4" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)" }}>
             <p className="font-bold text-white text-sm mb-1">Vous êtes propriétaire ?</p>
             <p className="text-white/50 text-xs mb-3">Publiez vos annonces et gérez vos locations.</p>
             <button
@@ -367,7 +367,7 @@ export default function ComptePage() {
                         <MapPin className="w-3 h-3 flex-shrink-0" />
                         {NEIGHBORHOOD_LABELS[listing.neighborhood] ?? listing.neighborhood}
                       </div>
-                      <p className="text-[#F97316] font-bold text-sm mt-1">
+                      <p className="text-white font-bold text-sm mt-1">
                         {formatGNF(listing.price, listing.price_period)}
                       </p>
 
@@ -415,7 +415,7 @@ export default function ComptePage() {
                     {/* Edit */}
                     <Link
                       href={`/publier?edit=${listing.id}`}
-                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-white/60 hover:border-[#F97316] hover:text-[#F97316] transition-colors" style={{ border: "1px solid rgba(255,255,255,0.10)" }}
+                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-white/60 hover:text-white hover:border-white/30 transition-colors" style={{ border: "1px solid rgba(255,255,255,0.10)" }}
                     >
                       <Pencil className="w-3.5 h-3.5" />
                       Modifier

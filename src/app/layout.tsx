@@ -71,7 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="preconnect" href="https://kqshknfrtlbjaufkdeeg.supabase.co" />
       </head>
-      <body className={`${inter.variable} ${nunito.variable} font-sans bg-[#0A0A0F] text-white min-h-screen`}>
+      <body className={`${inter.variable} ${nunito.variable} font-sans bg-[#0F0F0F] text-white min-h-screen`}>
         <QueryProvider>
           <AuthProvider>
             <ThemeProvider>{children}</ThemeProvider>

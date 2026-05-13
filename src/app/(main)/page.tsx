@@ -106,10 +106,10 @@ export default async function HomePage() {
     : properties.slice(0, 6);
 
   return (
-    <div className="bg-[#0A0A0F]">
+    <div className="bg-[#0F0F0F]">
 
       {/* ── HERO ──────────────────────────────────────────────────── */}
-      <section className="relative bg-[#0f1219] overflow-hidden min-h-[480px] flex items-center">
+      <section className="relative bg-[#0F0F0F] overflow-hidden min-h-[480px] flex items-center">
         {/* Background texture */}
         <div
           className="absolute inset-0 opacity-[0.04]"
@@ -142,14 +142,14 @@ export default async function HomePage() {
           <SearchBar />
 
           {/* Publish CTA strip */}
-          <div className="mt-6 rounded-2xl overflow-hidden" style={{ background: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)" }}>
+          <div className="mt-6 rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }}>
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4">
-              <p className="text-white font-semibold text-sm text-center sm:text-left">
+              <p className="text-white/70 font-semibold text-sm text-center sm:text-left">
                 Vous avez un bien à louer ou vendre ? Publiez gratuitement en 2 minutes
               </p>
               <Link
                 href="/publier"
-                className="flex-none bg-white text-[#F97316] font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-orange-50 transition-colors whitespace-nowrap shadow-sm"
+                className="flex-none bg-[#F97316] hover:bg-[#EA580C] text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-colors whitespace-nowrap"
               >
                 Publier maintenant
               </Link>
@@ -167,10 +167,10 @@ export default async function HomePage() {
               key={cat.id}
               href={`/annonces?type=${cat.id}`}
               className="flex-none flex items-center gap-2.5 rounded-2xl px-4 py-3 snap-start transition-all group hover:-translate-y-0.5"
-              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}
+              style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}
             >
               <span className="text-2xl">{cat.emoji}</span>
-              <span className="text-sm font-semibold text-white group-hover:text-[#F97316] whitespace-nowrap transition-colors">
+              <span className="text-sm font-semibold text-white/80 group-hover:text-white whitespace-nowrap transition-colors">
                 {cat.label}
               </span>
             </Link>
@@ -243,14 +243,14 @@ export default async function HomePage() {
               key={n.id}
               href={`/annonces?neighborhood=${n.id}`}
               className="flex-none w-44 snap-start group rounded-2xl p-5 hover:-translate-y-0.5 transition-all"
-              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}
+              style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}
             >
-              <div className="w-10 h-10 rounded-xl bg-[#F97316]/20 flex items-center justify-center mb-3 group-hover:bg-[#F97316] transition-colors">
-                <MapPin className="w-5 h-5 text-[#F97316] group-hover:text-white transition-colors" />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 transition-colors" style={{ background: "rgba(255,255,255,0.10)" }}>
+                <MapPin className="w-5 h-5 text-white/60 transition-colors" />
               </div>
-              <p className="font-bold text-white group-hover:text-[#F97316] transition-colors text-sm">{n.name}</p>
+              <p className="font-bold text-white/80 group-hover:text-white transition-colors text-sm">{n.name}</p>
               <p className="text-xs text-white/50 mt-1 leading-tight">{n.avgPrice}</p>
-              <p className="text-xs font-semibold text-[#F97316] mt-2">Voir les biens →</p>
+              <p className="text-xs font-semibold text-white/40 group-hover:text-white/70 mt-2 transition-colors">Voir les biens →</p>
             </Link>
           ))}
         </div>
@@ -258,9 +258,9 @@ export default async function HomePage() {
 
       {/* ── CTA PUBLIER ───────────────────────────────────────────── */}
       <section className="max-w-4xl mx-auto px-4 py-14">
-        <div className="relative bg-[#0f1219] rounded-3xl p-8 md:p-12 text-center overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#F97316] rounded-full blur-3xl opacity-10" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#16A34A] rounded-full blur-3xl opacity-10" />
+        <div className="relative rounded-3xl p-8 md:p-12 text-center overflow-hidden" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }}>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl opacity-[0.03]" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full blur-3xl opacity-[0.03]" />
           <div className="relative">
             <p className="text-5xl mb-4">🏠</p>
             <h2 className="text-2xl md:text-3xl font-black text-white mb-3">

@@ -104,7 +104,7 @@ export default function InscriptionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex flex-col">
+    <div className="min-h-screen bg-[#0F0F0F] flex flex-col">
       <div className="p-4 flex items-center justify-between">
         <Logo />
         <Link href="/connexion" className="text-sm text-slate-400 hover:text-white transition-colors">
@@ -129,7 +129,7 @@ export default function InscriptionPage() {
             ))}
           </div>
 
-          <div className="rounded-3xl p-8" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.12)" }}>
+          <div className="rounded-3xl p-8" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", border: "1px solid rgba(255,255,255,0.10)" }}>
 
             {/* ── STEP 1 — Role ── */}
             {step === 1 && (

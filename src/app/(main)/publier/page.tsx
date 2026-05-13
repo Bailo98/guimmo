@@ -275,7 +275,7 @@ export default function PublierPage() {
   if (authLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#F97316] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -299,7 +299,7 @@ export default function PublierPage() {
         </div>
         <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
           <div
-            className="absolute inset-y-0 left-0 bg-[#F97316] rounded-full transition-all duration-500"
+            className="absolute inset-y-0 left-0 bg-white/70 rounded-full transition-all duration-500"
             style={{ width: `${(step / 4) * 100}%` }}
           />
         </div>
@@ -309,7 +309,7 @@ export default function PublierPage() {
               key={n}
               className={cn(
                 "flex-1 h-1 rounded-full transition-colors duration-300",
-                n <= step ? "bg-[#F97316]" : "bg-white/10"
+                n <= step ? "bg-white/70" : "bg-white/10"
               )}
             />
           ))}
@@ -336,8 +336,8 @@ export default function PublierPage() {
                 className={cn(
                   "flex flex-col items-center gap-2 p-5 rounded-2xl border-2 font-semibold text-sm transition-all active:scale-95",
                   form.type === t.id
-                    ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20 text-[#F97316]"
-                    : "hover:border-[#F97316]/40 text-white"
+                    ? "border-white/40 text-white"
+                    : "hover:border-white/30 text-white"
                 )}
               >
                 <span className="text-4xl leading-none">{t.emoji}</span>
@@ -362,10 +362,10 @@ export default function PublierPage() {
                     "flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all active:scale-95",
                     form.txType === tx.id
                       ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20"
-                      : "hover:border-[#F97316]/40"
+                      : "hover:border-white/30"
                   )}
                 >
-                  <p className={cn("font-bold text-base", form.txType === tx.id ? "text-[#F97316]" : "text-white")}>
+                  <p className="font-bold text-base text-white">
                     {tx.label}
                   </p>
                   <p className="text-xs text-white/50 mt-0.5">{tx.sub}</p>
@@ -401,7 +401,7 @@ export default function PublierPage() {
                     <X className="w-3.5 h-3.5" />
                   </button>
                   {i === 0 && (
-                    <span className="absolute bottom-1 left-1 bg-[#F97316] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                    <span className="absolute bottom-1 left-1 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none" style={{ background: "rgba(255,255,255,0.25)" }}>
                       Principale
                     </span>
                   )}
@@ -414,14 +414,14 @@ export default function PublierPage() {
           <div className="flex gap-2">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-white/20 text-white/70 hover:border-[#F97316] hover:text-[#F97316] transition-colors text-sm font-semibold"
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-white/20 text-white/70 hover:border-white/40 hover:text-white transition-colors text-sm font-semibold"
             >
               <Upload className="w-4 h-4" />
               Galerie
             </button>
             <button
               onClick={() => cameraInputRef.current?.click()}
-              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-white/20 text-white/70 hover:border-[#F97316] hover:text-[#F97316] transition-colors text-sm font-semibold"
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-white/20 text-white/70 hover:border-white/40 hover:text-white transition-colors text-sm font-semibold"
             >
               <Camera className="w-4 h-4" />
               Prendre une photo
@@ -459,7 +459,7 @@ export default function PublierPage() {
                 placeholder="Ex: 1500000"
                 value={form.price}
                 onChange={(e) => update("price", e.target.value)}
-                className="w-full rounded-xl px-4 py-3 pr-12 text-white font-semibold text-base focus:outline-none focus:ring-2 focus:ring-[#F97316]/50"
+                className="w-full rounded-xl px-4 py-3 pr-12 text-white font-semibold text-base focus:outline-none focus:ring-2 focus:ring-white/20"
                 style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
               />
               <button
@@ -469,7 +469,7 @@ export default function PublierPage() {
                   "absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-colors",
                   micActive && micField === "price"
                     ? "bg-red-500 text-white animate-pulse"
-                    : "bg-white/10 text-white/50 hover:text-[#F97316]"
+                    : "bg-white/10 text-white/50 hover:text-white"
                 )}
               >
                 {micActive && micField === "price"
@@ -478,7 +478,7 @@ export default function PublierPage() {
               </button>
             </div>
             {priceFormatted && (
-              <p className="text-[#F97316] font-bold text-sm mt-2 ml-1">
+              <p className="text-white font-bold text-sm mt-2 ml-1">
                 {priceFormatted}{form.txType === "rent" ? "/mois" : ""}
               </p>
             )}
@@ -505,8 +505,8 @@ export default function PublierPage() {
                     className={cn(
                       "w-12 h-12 rounded-xl border-2 font-bold text-sm transition-all",
                       form.rooms === val
-                        ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20 text-[#F97316]"
-                        : "text-white/70 hover:border-[#F97316]/40"
+                        ? "border-white/40 text-white"
+                        : "text-white/70 hover:border-white/30"
                     )}
                   >
                     {r}
@@ -532,8 +532,8 @@ export default function PublierPage() {
                   className={cn(
                     "flex-1 py-3 rounded-xl border-2 font-bold text-sm transition-all",
                     form.furnished === f.val
-                      ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20 text-[#F97316]"
-                      : "text-white/70 hover:border-[#F97316]/40"
+                      ? "border-white/40 text-white"
+                      : "text-white/70 hover:border-white/30"
                   )}
                 >
                   {f.label}
@@ -568,7 +568,7 @@ export default function PublierPage() {
                 name="neighborhood"
                 value={form.neighborhood}
                 onChange={(e) => update("neighborhood", e.target.value)}
-                className="w-full rounded-xl pl-9 pr-4 py-3 text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#F97316]/50 appearance-none"
+                className="w-full rounded-xl pl-9 pr-4 py-3 text-white font-medium focus:outline-none focus:ring-2 focus:ring-white/20 appearance-none"
                 style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
               >
                 <option value="">— Choisir un quartier —</option>
@@ -599,7 +599,7 @@ export default function PublierPage() {
                   ? "border-green-400 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400"
                   : geoState === "error"
                   ? "border-red-300 bg-red-50 dark:bg-red-900/10 text-red-500"
-                  : "text-white/70 hover:border-[#F97316] hover:text-[#F97316]"
+                  : "text-white/70 hover:border-white/40 hover:text-white"
               )}
             >
               {geoState === "loading" && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -626,7 +626,7 @@ export default function PublierPage() {
                 onChange={(e) => update("locationDetail", e.target.value)}
                 placeholder="Ex : près du carrefour, derrière la mosquée…"
                 rows={3}
-                className="w-full rounded-xl px-4 py-3 pr-12 text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#F97316]/50 resize-none"
+                className="w-full rounded-xl px-4 py-3 pr-12 text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white/20 resize-none"
                 style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
               />
               <button
@@ -636,7 +636,7 @@ export default function PublierPage() {
                   "absolute right-3 top-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors",
                   micActive && micField === "location"
                     ? "bg-red-500 text-white animate-pulse"
-                    : "bg-white/10 text-white/50 hover:text-[#F97316]"
+                    : "bg-white/10 text-white/50 hover:text-white"
                 )}
               >
                 {micActive && micField === "location"
@@ -688,7 +688,7 @@ export default function PublierPage() {
                 </span>
               )}
               {priceFormatted && (
-                <span className="text-[#F97316] text-xs font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(249,115,22,0.12)", border: "1px solid rgba(249,115,22,0.25)" }}>
+                <span className="text-white/80 text-xs font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.20)" }}>
                   {priceFormatted}{form.txType === "rent" ? "/mois" : ""}
                 </span>
               )}
@@ -719,7 +719,7 @@ export default function PublierPage() {
                 value={form.phone}
                 onChange={(e) => update("phone", e.target.value)}
                 placeholder="+224 6XX XX XX XX"
-                className="w-full rounded-xl pl-9 pr-4 py-3 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#F97316]/50"
+                className="w-full rounded-xl pl-9 pr-4 py-3 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/20"
                 style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
               />
             </div>
@@ -742,8 +742,8 @@ export default function PublierPage() {
                   className={cn(
                     "flex flex-col items-center gap-1.5 py-3.5 rounded-xl border-2 font-semibold text-xs transition-all",
                     form.contactMethod === c.id
-                      ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20 text-[#F97316]"
-                      : "text-white/70 hover:border-[#F97316]/40"
+                      ? "border-white/40 text-white"
+                      : "text-white/70 hover:border-white/30"
                   )}
                 >
                   <span className="text-2xl">{c.emoji}</span>
@@ -782,7 +782,7 @@ export default function PublierPage() {
             <button
               onClick={() => setStep((s) => s - 1)}
               disabled={submitting}
-              className="flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-[#2a3040] text-white/70 font-semibold text-sm hover:border-[#F97316] hover:text-[#F97316] transition-colors disabled:opacity-40"
+              className="flex items-center gap-2 px-4 py-3 rounded-xl text-white/70 font-semibold text-sm hover:border-white/40 hover:text-white transition-colors disabled:opacity-40" style={{ border: "1px solid rgba(255,255,255,0.12)" }}
             >
               <ChevronLeft className="w-4 h-4" />
               Retour
@@ -799,7 +799,7 @@ export default function PublierPage() {
                 "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all",
                 canAdvance
                   ? "bg-[#F97316] hover:bg-[#EA6C0A] text-white shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
-                  : "bg-slate-100 dark:bg-[#1e2430] text-slate-400 dark:text-slate-500 cursor-not-allowed"
+                  : "bg-white/5 text-white/30 cursor-not-allowed"
               )}
             >
               Continuer

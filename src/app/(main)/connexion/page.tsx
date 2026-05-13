@@ -81,7 +81,7 @@ function ConnexionForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex flex-col">
+    <div className="min-h-screen bg-[#0F0F0F] flex flex-col">
       <div className="p-4 flex items-center justify-between">
         <Logo />
         <Link href="/" className="text-sm text-slate-400 hover:text-white transition-colors">
@@ -91,10 +91,10 @@ function ConnexionForm() {
 
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-sm">
-          <div className="rounded-3xl p-8" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.12)" }}>
+          <div className="rounded-3xl p-8" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", border: "1px solid rgba(255,255,255,0.10)" }}>
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-[#F97316]/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Lock className="w-8 h-8 text-[#F97316]" />
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <Lock className="w-8 h-8 text-white/70" />
               </div>
               <h1 className="text-2xl font-black text-white">Connexion</h1>
               <p className="text-slate-400 text-sm mt-1">Accédez à votre compte GuImmo</p>
@@ -229,7 +229,8 @@ function ConnexionForm() {
               type="button"
               disabled={loading}
               onClick={handleGoogleSignIn}
-              className="flex items-center justify-center gap-3 w-full bg-white hover:bg-slate-50 disabled:opacity-50 text-slate-700 font-semibold py-3 rounded-xl border border-slate-200 transition-colors text-sm"
+              className="flex items-center justify-center gap-3 w-full disabled:opacity-50 text-white/80 font-semibold py-3 rounded-xl transition-colors text-sm hover:text-white"
+              style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)" }}
             >
               <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -255,7 +256,7 @@ function ConnexionForm() {
 
 export default function ConnexionPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0A0A0F]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0F0F0F]" />}>
       <ConnexionForm />
     </Suspense>
   );

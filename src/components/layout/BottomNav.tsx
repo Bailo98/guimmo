@@ -35,14 +35,14 @@ export function BottomNav() {
     return (
       <Link href={href} className="flex flex-col items-center justify-center gap-0.5 w-14 h-14">
         <div className="relative">
-          <Icon className={cn("w-[22px] h-[22px]", active ? "text-[#F97316]" : "text-white/40")} />
+          <Icon className={cn("w-[22px] h-[22px]", active ? "text-white" : "text-white/40")} />
           {hasBadge && (
-            <span className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#F97316] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
+            <span className="absolute -top-1 -right-1.5 w-4 h-4 text-white text-[8px] font-bold rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.25)" }}>
               {favorites.length > 9 ? "9+" : favorites.length}
             </span>
           )}
         </div>
-        <span className={cn("text-[10px] font-semibold", active ? "text-[#F97316]" : "text-white/40")}>
+        <span className={cn("text-[10px] font-semibold", active ? "text-white" : "text-white/40")}>
           {label}
         </span>
       </Link>
@@ -52,7 +52,7 @@ export function BottomNav() {
   return (
     <nav
       className="md:hidden fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom,0px)]"
-      style={{ background: "rgba(10,10,15,0.85)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", borderTop: "1px solid rgba(255,255,255,0.08)" }}
+      style={{ background: "rgba(15,15,15,0.90)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderTop: "1px solid rgba(255,255,255,0.08)" }}
     >
       <div className="flex items-center justify-around h-16 px-2">
         {LEFT_NAV.map((item) => (
@@ -61,7 +61,7 @@ export function BottomNav() {
 
         {/* FAB */}
         <Link href="/publier" className="flex flex-col items-center justify-center -mt-6">
-          <span className="w-14 h-14 bg-[#F97316] rounded-full flex items-center justify-center shadow-[0_6px_24px_rgba(249,115,22,0.45)] active:scale-95 transition-transform">
+          <span className="w-14 h-14 rounded-full flex items-center justify-center active:scale-95 transition-transform" style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.20)" }}>
             <Plus className="w-7 h-7 text-white" strokeWidth={2.5} />
           </span>
         </Link>

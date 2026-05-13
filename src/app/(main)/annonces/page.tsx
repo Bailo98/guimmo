@@ -53,11 +53,11 @@ function TypeChip({ active, onClick, children }: {
       onClick={onClick}
       className={cn(
         "flex-none px-4 py-2 rounded-full text-sm font-semibold transition-all whitespace-nowrap",
-        active
-          ? "bg-[#F97316] text-white"
-          : "text-white/60 hover:text-[#F97316]"
+        active ? "text-white" : "text-white/50 hover:text-white"
       )}
-      style={active ? {} : { background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
+      style={active
+        ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
+        : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}
     >
       {children}
     </button>
@@ -72,11 +72,11 @@ function SmallChip({ active, onClick, children }: {
       onClick={onClick}
       className={cn(
         "flex-none px-3 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap",
-        active
-          ? "bg-[#F97316] text-white"
-          : "text-white/60 hover:text-[#F97316]"
+        active ? "text-white" : "text-white/50 hover:text-white"
       )}
-      style={active ? {} : { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+      style={active
+        ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
+        : { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
     >
       {children}
     </button>
@@ -139,9 +139,9 @@ function AnnoncesContent() {
   const activeFilterCount = [neighborhood, type, budget].filter(Boolean).length;
 
   return (
-    <div className="bg-[#0A0A0F] min-h-screen">
+    <div className="bg-[#0F0F0F] min-h-screen">
       {/* ── Sticky filter bar ───────────────────────────────────── */}
-      <div className="sticky top-16 z-30 -mx-0 px-4 pt-4 pb-3 space-y-3" style={{ background: "rgba(10,10,15,0.95)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+      <div className="sticky top-16 z-30 -mx-0 px-4 pt-4 pb-3 space-y-3" style={{ background: "rgba(15,15,15,0.97)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
         {/* Search pill + filter button */}
         <div className="flex items-center gap-2">
           <div className="flex-1 flex items-center gap-3 rounded-full px-4 py-2.5" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}>
@@ -153,10 +153,12 @@ function AnnoncesContent() {
             className={cn(
               "flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold transition-all",
               filtersOpen || activeFilterCount > 0
-                ? "bg-[#F97316] text-white"
-                : "text-white/60 hover:text-[#F97316]"
+                ? "text-white"
+                : "text-white/50 hover:text-white"
             )}
-            style={filtersOpen || activeFilterCount > 0 ? {} : { background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
+            style={filtersOpen || activeFilterCount > 0
+              ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
+              : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}
           >
             <SlidersHorizontal className="w-4 h-4" />
             {activeFilterCount > 0 ? `Filtres (${activeFilterCount})` : "Filtres"}
@@ -278,9 +280,11 @@ function AnnoncesContent() {
                         onClick={() => setPage(n)}
                         className={cn(
                           "w-9 h-9 rounded-full text-sm font-semibold transition-colors",
-                          n === safePage ? "bg-[#F97316] text-white" : "text-white/60 hover:text-[#F97316]"
+                          n === safePage ? "text-white" : "text-white/50 hover:text-white"
                         )}
-                        style={n === safePage ? {} : { background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
+                        style={n === safePage
+                          ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
+                          : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}
                       >
                         {n}
                       </button>

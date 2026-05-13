@@ -47,7 +47,7 @@ export function Header() {
   return (
     <header
       className="sticky top-0 z-40 transition-all duration-300"
-      style={{ background: "rgba(10,10,15,0.8)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+      style={{ background: "rgba(15,15,15,0.80)", backdropFilter: "blur(16px) saturate(180%)", WebkitBackdropFilter: "blur(16px) saturate(180%)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
     >
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
         <Logo />
@@ -55,7 +55,7 @@ export function Header() {
         <nav className="hidden md:flex items-center gap-1">
           <Link
             href="/annonces"
-            className={cn("px-3 py-2 rounded-xl text-sm font-medium transition-colors hover:text-[#F97316] hover:bg-white/10", pathname === "/annonces" ? "text-[#F97316]" : "text-white/80")}
+            className={cn("px-3 py-2 rounded-xl text-sm font-medium transition-colors hover:text-white hover:bg-white/10", pathname === "/annonces" ? "text-white" : "text-white/70")}
           >
             Annonces
           </Link>
@@ -86,7 +86,7 @@ export function Header() {
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="flex items-center gap-2 px-2 py-1.5 rounded-xl transition-colors hover:bg-white/10"
               >
-                <div className="w-7 h-7 rounded-full bg-[#F97316] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.20)" }}>
                   {initials || <User className="w-3.5 h-3.5" />}
                 </div>
                 <span className="text-sm font-medium max-w-[100px] truncate text-white/90">
@@ -106,7 +106,7 @@ export function Header() {
                   </div>
                   {isAdmin ? (
                     <Link href="/admin" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-sm text-[#F97316] font-semibold hover:bg-white/5 transition-colors">
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-white/80 font-semibold hover:bg-white/5 transition-colors">
                       <Shield className="w-4 h-4" /> Administration
                     </Link>
                   ) : (
@@ -131,7 +131,7 @@ export function Header() {
           ) : (
             <div className="hidden md:flex items-center gap-2">
               <Link href="/connexion"
-                className="text-sm font-medium transition-colors px-3 py-2 rounded-xl hover:text-[#F97316] text-white/80 hover:bg-white/10">
+                className="text-sm font-medium transition-colors px-3 py-2 rounded-xl hover:text-white text-white/70 hover:bg-white/10">
                 Connexion
               </Link>
               <Link href="/inscription"
@@ -153,7 +153,7 @@ export function Header() {
       {menuOpen && (
         <div
           className="md:hidden border-t border-white/8 px-4 pb-4 space-y-1 animate-[slideDown_0.2s_ease-out]"
-          style={{ background: "rgba(10,10,15,0.95)" }}
+          style={{ background: "rgba(15,15,15,0.97)" }}
         >
           <Link href="/annonces" onClick={() => setMenuOpen(false)}
             className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 hover:bg-white/8">
@@ -163,7 +163,7 @@ export function Header() {
             <>
               {isAdmin ? (
                 <Link href="/admin" onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-3 rounded-xl text-[#F97316] font-semibold hover:bg-white/8">
+                  className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 font-semibold hover:bg-white/8">
                   <Shield className="w-4 h-4" /> Administration
                 </Link>
               ) : (
