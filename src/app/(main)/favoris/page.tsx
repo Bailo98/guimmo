@@ -1,414 +1,159 @@
 "use client";
-import { useState } from "react";
-import { Heart, Bell, BellOff, FolderPlus, Pencil, Trash2, ChevronRight, CheckCircle, X } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Heart, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/lib/auth-context";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { useAppStore } from "@/lib/store";
 import { MOCK_PROPERTIES } from "@/data/mock-properties";
 import { PropertyCard } from "@/components/ui/PropertyCard";
-import { toast } from "@/lib/toast";
-import { cn } from "@/lib/utils";
-import { formatPrice } from "@/lib/utils";
 import type { Property } from "@/types";
-import type { PublishedProperty, FavoriteCollection } from "@/lib/store";
 
-const PRESET_COLORS = ["#F97316", "#22c55e", "#3b82f6", "#a855f7", "#ef4444"];
-
-function asProperty(p: PublishedProperty): Property {
-  return p as unknown as Property;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapRow(row: any): Property {
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description ?? "",
+    type: row.type,
+    transactionType: row.transaction_type,
+    status: row.status ?? "active",
+    price: row.price,
+    pricePeriod: row.price_period ?? "month",
+    surface: row.surface,
+    rooms: row.rooms,
+    bathrooms: row.bathrooms,
+    furnished: row.furnished ?? false,
+    availableNow: row.available_now ?? true,
+    neighborhood: row.neighborhood,
+    city: row.city ?? "Conakry",
+    features: row.features ?? [],
+    images: (row.property_images ?? []).map((img: { id: string; url: string; alt: string; is_primary: boolean }) => ({
+      id: img.id,
+      url: img.url,
+      alt: img.alt ?? "",
+      isPrimary: img.is_primary ?? false,
+    })),
+    owner: {
+      id: row.profiles?.id ?? row.owner_id,
+      name: row.profiles?.full_name ?? row.profiles?.name ?? "Propriétaire",
+      email: "",
+      phone: row.profiles?.phone ?? "",
+      whatsapp: row.profiles?.phone ?? "",
+      role: row.profiles?.role ?? "owner",
+      verified: row.profiles?.is_verified ?? false,
+      badges: [],
+      trustScore: 50,
+      totalListings: 1,
+      avgRating: 4.5,
+      reviewCount: 0,
+      createdAt: new Date(row.profiles?.created_at ?? Date.now()),
+    },
+    badges: [],
+    views: row.views ?? 0,
+    whatsappClicks: row.whatsapp_clicks ?? 0,
+    isBoosted: row.is_boosted ?? false,
+    createdAt: new Date(row.created_at ?? Date.now()),
+    updatedAt: new Date(row.updated_at ?? Date.now()),
+  };
 }
 
 export default function FavorisPage() {
-  const favorites = useAppStore((s) => s.favorites);
-  const publishedListings = useAppStore((s) => s.publishedListings);
-  const favoriteCollections = useAppStore((s) => s.favoriteCollections);
-  const createCollection = useAppStore((s) => s.createCollection);
-  const addToCollection = useAppStore((s) => s.addToCollection);
-  const removeFromCollection = useAppStore((s) => s.removeFromCollection);
-  const deleteCollection = useAppStore((s) => s.deleteCollection);
-  const renameCollection = useAppStore((s) => s.renameCollection);
-  const addPriceAlert = useAppStore((s) => s.addPriceAlert);
-  const removePriceAlert = useAppStore((s) => s.removePriceAlert);
-  const hasPriceAlert = useAppStore((s) => s.hasPriceAlert);
+  const { user, loading: authLoading } = useAuth();
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Zustand fallback for unauthenticated / no-Supabase state
+  const storeFavorites = useAppStore((s) => s.favorites);
   const _hasHydrated = useAppStore((s) => s._hasHydrated);
 
-  const [activeTab, setActiveTab] = useState<"favoris" | "collections">("favoris");
-  const [showNewCollectionForm, setShowNewCollectionForm] = useState(false);
-  const [newCollectionName, setNewCollectionName] = useState("");
-  const [newCollectionColor, setNewCollectionColor] = useState(PRESET_COLORS[0]);
-  const [editingCollectionId, setEditingCollectionId] = useState<string | null>(null);
-  const [editingName, setEditingName] = useState("");
-  const [addToCollectionCardId, setAddToCollectionCardId] = useState<string | null>(null);
+  const fetchFavorites = useCallback(async () => {
+    if (!isSupabaseConfigured || !supabase || !user) {
+      // Fall back to store-based favorites
+      if (_hasHydrated) {
+        const all = MOCK_PROPERTIES;
+        setProperties(all.filter((p) => storeFavorites.includes(p.id)));
+        setLoading(false);
+      }
+      return;
+    }
 
-  const allProperties: Property[] = [
-    ...publishedListings.map(asProperty),
-    ...MOCK_PROPERTIES,
-  ];
+    setLoading(true);
+    const { data } = await supabase
+      .from("favorites")
+      .select("property_id, properties(*, property_images(*), profiles(*))")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
 
-  const favProperties = allProperties.filter((p) => favorites.includes(p.id));
+    if (data) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const props = data.map((row: any) => row.properties).filter(Boolean).map(mapRow);
+      setProperties(props);
+    }
+    setLoading(false);
+  }, [user, storeFavorites, _hasHydrated]);
 
-  function handleCreateCollection() {
-    if (!newCollectionName.trim()) return;
-    createCollection(newCollectionName.trim(), newCollectionColor);
-    setNewCollectionName("");
-    setNewCollectionColor(PRESET_COLORS[0]);
-    setShowNewCollectionForm(false);
-    toast("Collection créée", "success");
+  useEffect(() => {
+    if (!authLoading) fetchFavorites();
+  }, [authLoading, fetchFavorites]);
+
+  async function removeFavorite(propertyId: string) {
+    if (isSupabaseConfigured && supabase && user) {
+      await supabase.from("favorites").delete()
+        .eq("user_id", user.id)
+        .eq("property_id", propertyId);
+    }
+    setProperties((p) => p.filter((x) => x.id !== propertyId));
   }
 
-  function handleRename(collection: FavoriteCollection) {
-    if (!editingName.trim()) return;
-    renameCollection(collection.id, editingName.trim());
-    setEditingCollectionId(null);
-    setEditingName("");
-  }
-
-  function getCollectionProperties(collection: FavoriteCollection): Property[] {
-    return collection.propertyIds
-      .map((id) => allProperties.find((p) => p.id === id))
-      .filter((p): p is Property => Boolean(p));
-  }
-
-  if (!_hasHydrated) {
+  if (authLoading || loading) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="h-8 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-2" />
-        <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+      <div className="max-w-5xl mx-auto px-4 py-12 flex items-center justify-center min-h-[40vh]">
+        <Loader2 className="w-6 h-6 text-white/40 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      {/* Header */}
+    <div className="max-w-5xl mx-auto px-4 py-8 pb-24">
       <div className="mb-6">
-        <h1 className="text-2xl font-black text-[#f7f2e6]">Mes favoris</h1>
-        <p className="text-[rgba(240,230,204,0.55)] text-sm">
-          {favProperties.length} annonce{favProperties.length !== 1 ? "s" : ""} sauvegardée{favProperties.length !== 1 ? "s" : ""}
-          {" · "}
-          {favoriteCollections.length} collection{favoriteCollections.length !== 1 ? "s" : ""}
+        <h1 className="text-2xl font-black" style={{ color: "var(--guimmo-cream)" }}>Mes favoris</h1>
+        <p className="text-sm mt-1" style={{ color: "var(--guimmo-cream-dim)" }}>
+          {properties.length} annonce{properties.length !== 1 ? "s" : ""} sauvegardée{properties.length !== 1 ? "s" : ""}
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-1 mb-6 bg-[#1a2e1e] rounded-xl p-1 w-fit">
-        <button
-          onClick={() => setActiveTab("favoris")}
-          className={cn(
-            "px-5 py-2 rounded-lg text-sm font-semibold transition-all",
-            activeTab === "favoris"
-              ? "bg-[#1a2e1e] text-[#f7f2e6] shadow"
-              : "text-[rgba(240,230,204,0.55)] hover:text-[#f7f2e6]"
-          )}
-        >
-          Tous les favoris
-        </button>
-        <button
-          onClick={() => setActiveTab("collections")}
-          className={cn(
-            "px-5 py-2 rounded-lg text-sm font-semibold transition-all",
-            activeTab === "collections"
-              ? "bg-[#1a2e1e] text-[#f7f2e6] shadow"
-              : "text-[rgba(240,230,204,0.55)] hover:text-[#f7f2e6]"
-          )}
-        >
-          Collections
-          {favoriteCollections.length > 0 && (
-            <span className="ml-1.5 bg-[#c8901e] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-              {favoriteCollections.length}
-            </span>
-          )}
-        </button>
-      </div>
-
-      {/* TAB: Tous les favoris */}
-      {activeTab === "favoris" && (
-        <>
-          {favProperties.length === 0 ? (
-            <div className="text-center py-20">
-              <Heart className="w-16 h-16 text-white/10 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-[#f7f2e6] mb-2">Aucun favori</h3>
-              <p className="text-[rgba(240,230,204,0.55)] mb-6">
-                Appuyez sur le cœur sur une annonce pour la sauvegarder ici
-              </p>
-              <Link
-                href="/annonces"
-                className="bg-[#c8901e] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#b87c18] transition-colors inline-block"
-              >
-                Parcourir les annonces
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {favProperties.map((p, i) => (
-                <div key={p.id} className="flex flex-col gap-2 relative">
-                  <PropertyCard property={p} index={i} />
-
-                  {/* Price alert button */}
-                  {hasPriceAlert(p.id) ? (
-                    <button
-                      onClick={() => {
-                        removePriceAlert(p.id);
-                        toast("Alerte prix désactivée", "info");
-                      }}
-                      className="flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-xl bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
-                    >
-                      <BellOff className="w-3.5 h-3.5" />
-                      Alerte active — Désactiver
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        addPriceAlert(p.id, p.price);
-                        toast("Alerte prix activée pour cette annonce 🔔", "success");
-                      }}
-                      className="flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-400 hover:border-[#F97316] hover:text-[#F97316] dark:hover:border-[#F97316] dark:hover:text-[#F97316] transition-colors"
-                    >
-                      <Bell className="w-3.5 h-3.5" />
-                      Alerte prix
-                    </button>
-                  )}
-
-                  {/* Add to collection */}
-                  <div className="relative">
-                    <button
-                      onClick={() => setAddToCollectionCardId(addToCollectionCardId === p.id ? null : p.id)}
-                      className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
-                    >
-                      <FolderPlus className="w-3.5 h-3.5" />
-                      Ajouter à une collection
-                    </button>
-                    {addToCollectionCardId === p.id && (
-                      <div className="absolute bottom-full mb-1 left-0 right-0 bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl shadow-xl z-50 overflow-hidden">
-                        {favoriteCollections.length === 0 ? (
-                          <p className="text-xs text-slate-400 p-3">Aucune collection. Créez-en une dans l&apos;onglet Collections.</p>
-                        ) : (
-                          favoriteCollections.map((col) => {
-                            const inCol = col.propertyIds.includes(p.id);
-                            return (
-                              <button
-                                key={col.id}
-                                onClick={() => {
-                                  if (inCol) {
-                                    removeFromCollection(col.id, p.id);
-                                    toast(`Retiré de « ${col.name} »`, "info");
-                                  } else {
-                                    addToCollection(col.id, p.id);
-                                    toast(`Ajouté à « ${col.name} »`, "success");
-                                  }
-                                  setAddToCollectionCardId(null);
-                                }}
-                                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-[#2a3040] transition-colors text-left"
-                              >
-                                <span
-                                  className="w-3 h-3 rounded-full flex-shrink-0"
-                                  style={{ backgroundColor: col.color }}
-                                />
-                                <span className="flex-1 text-slate-800 dark:text-white">{col.name}</span>
-                                {inCol && <CheckCircle className="w-3.5 h-3.5 text-[#F97316]" />}
-                              </button>
-                            );
-                          })
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </>
-      )}
-
-      {/* TAB: Collections */}
-      {activeTab === "collections" && (
-        <div className="space-y-6">
-          {/* Create collection button */}
-          {!showNewCollectionForm ? (
-            <button
-              onClick={() => setShowNewCollectionForm(true)}
-              className="flex items-center gap-2 text-sm font-semibold text-[#F97316] hover:text-[#EA6C0A] transition-colors"
-            >
-              <FolderPlus className="w-4 h-4" />
-              Créer une collection
-            </button>
-          ) : (
-            <div className="bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-2xl p-5">
-              <h3 className="text-sm font-bold text-[#f7f2e6] mb-3">Nouvelle collection</h3>
-              <input
-                type="text"
-                placeholder="Nom de la collection"
-                value={newCollectionName}
-                onChange={(e) => setNewCollectionName(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleCreateCollection()}
-                autoFocus
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm text-[#f7f2e6] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] mb-3"
-              />
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-xs text-[rgba(240,230,204,0.55)]">Couleur :</span>
-                {PRESET_COLORS.map((color) => (
-                  <button
-                    key={color}
-                    onClick={() => setNewCollectionColor(color)}
-                    className={cn(
-                      "w-6 h-6 rounded-full border-2 transition-transform",
-                      newCollectionColor === color ? "border-white scale-110 shadow-md" : "border-transparent"
-                    )}
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={handleCreateCollection}
-                  disabled={!newCollectionName.trim()}
-                  className="flex-1 bg-[#c8901e] disabled:opacity-50 text-white font-semibold py-2 px-4 rounded-xl text-sm hover:bg-[#b87c18] transition-colors"
-                >
-                  Créer
-                </button>
-                <button
-                  onClick={() => {
-                    setShowNewCollectionForm(false);
-                    setNewCollectionName("");
-                  }}
-                  className="py-2 px-4 rounded-xl text-sm border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#2a3040] transition-colors"
-                >
-                  Annuler
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Collections list */}
-          {favoriteCollections.length === 0 && !showNewCollectionForm ? (
-            <div className="text-center py-16">
-              <FolderPlus className="w-14 h-14 text-white/10 mx-auto mb-3" />
-              <p className="text-[#f7f2e6] font-bold mb-1">Aucune collection</p>
-              <p className="text-[rgba(240,230,204,0.55)] text-sm">
-                Organisez vos favoris en créant des collections thématiques
-              </p>
-            </div>
-          ) : (
-            favoriteCollections.map((collection) => {
-              const collectionProperties = getCollectionProperties(collection);
-
-              return (
-                <div
-                  key={collection.id}
-                  className="bg-white dark:bg-[#1e2430] border border-slate-100 dark:border-[#2a3040] rounded-2xl overflow-hidden"
-                >
-                  {/* Collection header */}
-                  <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-100 dark:border-[#2a3040]">
-                    <span
-                      className="w-3.5 h-3.5 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: collection.color }}
-                    />
-
-                    {editingCollectionId === collection.id ? (
-                      <form
-                        onSubmit={(e) => { e.preventDefault(); handleRename(collection); }}
-                        className="flex-1 flex gap-2"
-                      >
-                        <input
-                          type="text"
-                          value={editingName}
-                          onChange={(e) => setEditingName(e.target.value)}
-                          autoFocus
-                          className="flex-1 bg-slate-50 dark:bg-[#151922] border border-[#F97316] rounded-lg px-3 py-1 text-sm text-[#f7f2e6] focus:outline-none"
-                        />
-                        <button type="submit" className="text-xs font-bold text-[#F97316] hover:underline">
-                          OK
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setEditingCollectionId(null)}
-                          className="text-xs text-slate-400 hover:text-slate-600"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                      </form>
-                    ) : (
-                      <>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-[#f7f2e6] text-sm truncate">{collection.name}</h3>
-                          <p className="text-xs text-slate-400">
-                            {collection.propertyIds.length} annonce{collection.propertyIds.length !== 1 ? "s" : ""}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1 ml-auto">
-                          <button
-                            onClick={() => {
-                              setEditingCollectionId(collection.id);
-                              setEditingName(collection.name);
-                            }}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#2a3040] transition-colors"
-                            title="Renommer"
-                          >
-                            <Pencil className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            onClick={() => {
-                              deleteCollection(collection.id);
-                              toast("Collection supprimée", "info");
-                            }}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                            title="Supprimer"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                          <Link
-                            href={`/favoris?collection=${collection.id}`}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#2a3040] transition-colors"
-                            title="Voir tout"
-                          >
-                            <ChevronRight className="w-4 h-4" />
-                          </Link>
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                  {/* Properties horizontal scroll */}
-                  {collectionProperties.length === 0 ? (
-                    <div className="px-5 py-8 text-center">
-                      <p className="text-sm text-slate-400">Aucune annonce dans cette collection</p>
-                      <p className="text-xs text-slate-500 mt-1">
-                        Ajoutez des annonces depuis l&apos;onglet &quot;Tous les favoris&quot;
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="px-4 py-4">
-                      <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
-                        {collectionProperties.map((p, i) => (
-                          <div key={p.id} className="flex-shrink-0 w-72 relative group/item">
-                            <PropertyCard property={p} variant="horizontal" index={i} />
-                            <button
-                              onClick={() => {
-                                removeFromCollection(collection.id, p.id);
-                                toast(`Retiré de « ${collection.name} »`, "info");
-                              }}
-                              className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover/item:opacity-100 transition-opacity z-10"
-                              title="Retirer de la collection"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })
-          )}
+      {properties.length === 0 ? (
+        <div className="text-center py-24">
+          <Heart className="w-16 h-16 mx-auto mb-4" style={{ color: "rgba(255,255,255,0.08)" }} />
+          <h3 className="text-xl font-bold mb-2" style={{ color: "var(--guimmo-cream)" }}>Aucun favori</h3>
+          <p className="text-sm mb-6" style={{ color: "var(--guimmo-cream-dim)" }}>
+            Appuyez sur le cœur d&apos;une annonce pour la sauvegarder ici
+          </p>
+          <Link
+            href="/annonces"
+            className="inline-block font-semibold px-6 py-3 rounded-xl transition-colors hover:opacity-90"
+            style={{ background: "var(--guimmo-amber)", color: "#fff" }}
+          >
+            Parcourir les annonces
+          </Link>
         </div>
-      )}
-
-      {/* Click outside to close dropdown */}
-      {addToCollectionCardId && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setAddToCollectionCardId(null)}
-        />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {properties.map((p, i) => (
+            <div key={p.id} className="relative group">
+              <PropertyCard property={p} index={i} />
+              <button
+                onClick={() => removeFavorite(p.id)}
+                className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ background: "rgba(239,68,68,0.85)" }}
+                title="Retirer des favoris"
+              >
+                <Heart className="w-4 h-4 text-white fill-white" />
+              </button>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

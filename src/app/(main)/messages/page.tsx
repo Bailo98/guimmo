@@ -92,7 +92,7 @@ function EmptyMessages() {
       </p>
       <Link
         href="/annonces"
-        className="bg-[#c8901e] hover:bg-[#EA6C0A] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+        className="bg-[#c8901e] hover:bg-[#b87c18] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
       >
         Voir les annonces
       </Link>
@@ -187,10 +187,13 @@ export default function MessagesPage() {
 
   useEffect(() => {
     setupRealtime();
+    // 10s polling fallback (handles websocket-blocked networks)
+    const interval = setInterval(() => { loadMessages(); }, 10_000);
     return () => {
+      clearInterval(interval);
       if (channelRef.current && supabase) supabase.removeChannel(channelRef.current);
     };
-  }, [setupRealtime]);
+  }, [setupRealtime, loadMessages]);
 
   // Scroll to bottom on new messages
   useEffect(() => {

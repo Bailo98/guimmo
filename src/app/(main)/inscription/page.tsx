@@ -66,9 +66,11 @@ export default function InscriptionPage() {
     setError(null);
 
     if (isSupabaseConfigured && supabase) {
+      const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
+      const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
       const email =
         mode === "phone"
-          ? `${form.phone.replace(/[\s+]/g, "")}@gmail.com`
+          ? `${normalized}@guimmo.gn`
           : form.email;
 
       const { error: authError } = await supabase.auth.signUp({
@@ -242,7 +244,7 @@ export default function InscriptionPage() {
                         placeholder={role === "agency" ? "Conakry Premium Immo" : "Mamadou Diallo"}
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                        className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                         required
                         autoComplete="name"
                       />
@@ -264,7 +266,7 @@ export default function InscriptionPage() {
                           placeholder="+224 628 222 510 ou +1 438 000 0000"
                           value={form.phone}
                           onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                           required
                           autoComplete="tel"
                         />
@@ -291,7 +293,7 @@ export default function InscriptionPage() {
                           placeholder="vous@email.com"
                           value={form.email}
                           onChange={(e) => setForm({ ...form, email: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                           required
                           autoComplete="email"
                         />
@@ -320,7 +322,7 @@ export default function InscriptionPage() {
                         placeholder="••••••••  (min. 6 caractères)"
                         value={form.password}
                         onChange={(e) => setForm({ ...form, password: e.target.value })}
-                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                         required
                         minLength={6}
                         autoComplete="new-password"

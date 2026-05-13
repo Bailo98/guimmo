@@ -45,9 +45,11 @@ function ConnexionForm() {
     setError(null);
 
     if (isSupabaseConfigured && supabase) {
+      const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
+      const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
       const email =
         mode === "phone"
-          ? `${form.phone.replace(/[\s+]/g, "")}@gmail.com`
+          ? `${normalized}@guimmo.gn`
           : form.email;
 
       const { error: authError } = await supabase.auth.signInWithPassword({

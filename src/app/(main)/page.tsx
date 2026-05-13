@@ -37,12 +37,26 @@ const PREVIEW_CARDS = [
   },
 ];
 
-const STATS = [
-  { value: "120+",   label: "Annonces actives" },
-  { value: "80+",    label: "Propriétaires vérifiés" },
-  { value: "3 000+", label: "Utilisateurs" },
-  { value: "98%",    label: "Satisfaction" },
-];
+type Stats = { listings: number; owners: number };
+
+async function fetchStats(): Promise<Stats> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return { listings: 120, owners: 80 };
+  try {
+    const db = createClient(url, key);
+    const [listingsRes, ownersRes] = await Promise.all([
+      db.from("properties").select("id", { count: "exact", head: true }).eq("status", "active"),
+      db.from("profiles").select("id", { count: "exact", head: true }).in("role", ["owner", "agent", "agency"]),
+    ]);
+    return {
+      listings: listingsRes.count ?? 120,
+      owners: ownersRes.count ?? 80,
+    };
+  } catch {
+    return { listings: 120, owners: 80 };
+  }
+}
 
 const POPULAR_NEIGHBORHOODS = [
   { id: "kipe",       name: "Kipé",       avgPrice: "2 500 000 GNF/mois" },
@@ -191,7 +205,7 @@ function PreviewCard({ title, neighborhood, price, rooms, surface, gradientFrom,
 // ─── page ──────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  const properties = await fetchHomeProperties();
+  const [properties, stats] = await Promise.all([fetchHomeProperties(), fetchStats()]);
   const featured = properties.filter((p) => p.isBoosted).slice(0, 6).length > 0
     ? properties.filter((p) => p.isBoosted).slice(0, 6)
     : properties.slice(0, 6);
@@ -321,7 +335,12 @@ export default async function HomePage() {
       <div style={{ background: "#0d1610" }}>
         <div className="max-w-7xl mx-auto px-4 py-10 md:py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
-            {STATS.map((s) => (
+            {[
+              { value: `${stats.listings}+`, label: "Annonces actives" },
+              { value: `${stats.owners}+`,   label: "Propriétaires vérifiés" },
+              { value: "3 000+",             label: "Utilisateurs" },
+              { value: "98%",                label: "Satisfaction" },
+            ].map((s) => (
               <div key={s.label} className="text-center">
                 <p
                   className="text-3xl md:text-4xl font-black"
