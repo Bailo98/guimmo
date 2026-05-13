@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   ChevronLeft, X, Mic, MicOff, MapPin, Phone,
-  Upload, Camera, ArrowRight,
+  Upload, Camera, ArrowRight, Locate, CheckCircle2, Loader2,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
@@ -40,6 +40,8 @@ interface FormState {
   locationDetail: string;
   phone: string;
   contactMethod: ContactMethod;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 
@@ -81,7 +83,9 @@ export default function PublierPage() {
     rooms: 1, furnished: null,
     neighborhood: "", locationDetail: "",
     phone: "", contactMethod: "both",
+    latitude: null, longitude: null,
   });
+  const [geoState, setGeoState] = useState<"idle" | "loading" | "done" | "error">("idle");
 
   // Auth guard
   useEffect(() => {
@@ -152,6 +156,26 @@ export default function PublierPage() {
     recognition.start();
   }
 
+  function handleGeolocate() {
+    if (!navigator.geolocation) {
+      toast("Géolocalisation non supportée sur ce navigateur.", "error");
+      return;
+    }
+    setGeoState("loading");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        update("latitude", pos.coords.latitude);
+        update("longitude", pos.coords.longitude);
+        setGeoState("done");
+      },
+      () => {
+        setGeoState("error");
+        toast("Position refusée ou indisponible.", "error");
+      },
+      { timeout: 10_000, maximumAge: 60_000 }
+    );
+  }
+
   async function handleSubmit() {
     if (!user || !supabase) return;
     setSubmitting(true);
@@ -209,6 +233,8 @@ export default function PublierPage() {
           is_boosted:          false,
           views:               0,
           whatsapp_clicks:     0,
+          latitude:            form.latitude,
+          longitude:           form.longitude,
         })
         .select("id")
         .single();
@@ -549,6 +575,35 @@ export default function PublierPage() {
                 ))}
               </select>
             </div>
+          </div>
+
+          {/* GPS button */}
+          <div>
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+              Coordonnées GPS{" "}
+              <span className="text-slate-400 font-normal">(optionnel — améliore la recherche)</span>
+            </label>
+            <button
+              type="button"
+              onClick={handleGeolocate}
+              disabled={geoState === "loading"}
+              className={cn(
+                "w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 font-semibold text-sm transition-all",
+                geoState === "done"
+                  ? "border-green-400 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400"
+                  : geoState === "error"
+                  ? "border-red-300 bg-red-50 dark:bg-red-900/10 text-red-500"
+                  : "border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316]"
+              )}
+            >
+              {geoState === "loading" && <Loader2 className="w-4 h-4 animate-spin" />}
+              {geoState === "done" && <CheckCircle2 className="w-4 h-4" />}
+              {geoState !== "loading" && geoState !== "done" && <Locate className="w-4 h-4" />}
+              {geoState === "loading" && "Localisation en cours…"}
+              {geoState === "done" && `Position capturée (${form.latitude?.toFixed(4)}, ${form.longitude?.toFixed(4)})`}
+              {geoState === "error" && "Position refusée — réessayer"}
+              {geoState === "idle" && "Utiliser ma position actuelle"}
+            </button>
           </div>
 
           {/* Location detail + mic */}
