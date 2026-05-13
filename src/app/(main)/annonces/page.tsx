@@ -1,10 +1,11 @@
 "use client";
 import { useState, useEffect, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight, LocateFixed } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { NearbySection } from "@/components/ui/NearbySection";
+import { VoiceSearchButton } from "@/components/ui/VoiceSearchButton";
 import { fetchProperties } from "@/lib/properties";
 import { cn } from "@/lib/utils";
 import type { Property } from "@/types";
@@ -89,11 +90,36 @@ function AnnoncesContent() {
   const [allProperties, setAllProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [nearbyCoords, setNearbyCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [gpsLoading, setGpsLoading] = useState(false);
 
   const neighborhood = searchParams.get("neighborhood") ?? "";
   const type = searchParams.get("type") ?? "";
   const budget = searchParams.get("budget") ?? "";
   const page = Number(searchParams.get("page") ?? "1");
+
+  function handleVoiceResult(text: string) {
+    const lower = text.toLowerCase();
+    const QUARTIER_CHIPS_FLAT = QUARTIER_CHIPS.slice(1);
+    const match = QUARTIER_CHIPS_FLAT.find((q) => lower.includes(q.label.toLowerCase()));
+    if (match) { setParam("neighborhood", match.id); return; }
+    const TYPE_FLAT = TYPE_CHIPS.slice(1);
+    const typeMatch = TYPE_FLAT.find((t) => lower.includes(t.label.toLowerCase()));
+    if (typeMatch) { setParam("type", typeMatch.id); }
+  }
+
+  function handleNearby() {
+    if (!navigator.geolocation) return;
+    setGpsLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setNearbyCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setGpsLoading(false);
+      },
+      () => setGpsLoading(false),
+      { timeout: 8000, maximumAge: 60000 }
+    );
+  }
 
   useEffect(() => {
     fetchProperties()
@@ -117,14 +143,31 @@ function AnnoncesContent() {
   const budgetChip = BUDGET_CHIPS.find((b) => b.id === budget) ?? BUDGET_CHIPS[0];
   const hasFilters = !!neighborhood || !!type || !!budget;
 
+  function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
   const filtered = useMemo(() => {
-    return allProperties.filter((p) => {
+    let list = allProperties.filter((p) => {
       if (neighborhood && p.neighborhood !== neighborhood) return false;
       if (type && p.type !== type) return false;
       if (budget && (p.price < budgetChip.min || p.price > budgetChip.max)) return false;
       return true;
     });
-  }, [allProperties, neighborhood, type, budget, budgetChip]);
+    if (nearbyCoords) {
+      list = list
+        .filter((p) => p.latitude != null && p.longitude != null)
+        .sort((a, b) =>
+          haversineKm(nearbyCoords.lat, nearbyCoords.lng, a.latitude!, a.longitude!) -
+          haversineKm(nearbyCoords.lat, nearbyCoords.lng, b.latitude!, b.longitude!)
+        );
+    }
+    return list;
+  }, [allProperties, neighborhood, type, budget, budgetChip, nearbyCoords]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(Math.max(1, page), totalPages);
@@ -147,7 +190,28 @@ function AnnoncesContent() {
           <div className="flex-1 flex items-center gap-3 rounded-full px-4 py-2.5" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}>
             <Search className="w-4 h-4 text-white/40 flex-shrink-0" />
             <span className="flex-1 text-sm text-white/40">Rechercher un bien…</span>
+            <VoiceSearchButton
+              onResult={handleVoiceResult}
+              style={{ minHeight: 32, minWidth: 32, borderRadius: 8, background: "transparent", border: "none", color: "rgba(255,255,255,0.40)" }}
+            />
           </div>
+          <button
+            type="button"
+            onClick={handleNearby}
+            disabled={gpsLoading}
+            title="Près de moi"
+            className={cn(
+              "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all",
+              nearbyCoords ? "text-[#6ec97a]" : "text-white/50 hover:text-white"
+            )}
+            style={nearbyCoords
+              ? { background: "rgba(110,201,122,0.15)", border: "1px solid rgba(110,201,122,0.35)" }
+              : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}
+          >
+            {gpsLoading
+              ? <span className="w-4 h-4 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />
+              : <LocateFixed className="w-4 h-4" />}
+          </button>
           <button
             onClick={() => setFiltersOpen(!filtersOpen)}
             className={cn(

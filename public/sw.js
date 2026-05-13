@@ -1,5 +1,5 @@
-const CACHE_NAME = "logerbien-v1";
-const STATIC_ASSETS = ["/", "/annonces", "/offline.html"];
+const CACHE_NAME = "guimmo-v1";
+const STATIC_ASSETS = ["/", "/annonces", "/offline.html", "/logo.png", "/manifest.json"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -22,6 +22,21 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   if (url.origin !== location.origin) return;
 
+  // Cache-first for immutable Next.js static assets
+  if (url.pathname.startsWith("/_next/static/")) {
+    event.respondWith(
+      caches.match(event.request).then(
+        (cached) => cached ?? fetch(event.request).then((res) => {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(event.request, clone));
+          return res;
+        })
+      )
+    );
+    return;
+  }
+
+  // Network-first for listing pages — cache for offline fallback
   event.respondWith(
     fetch(event.request)
       .then((response) => {

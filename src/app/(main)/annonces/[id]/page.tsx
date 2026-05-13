@@ -5,6 +5,7 @@ import { ArrowLeft, MapPin, Bed, Bath, Square, Phone, CheckCircle, XCircle } fro
 import { PhotoGallery } from "./PhotoGallery";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { MessageButton } from "@/components/property/MessageButton";
+import { ReportButton } from "@/components/property/ReportButton";
 import { getNeighborhoodName } from "@/data/neighborhoods";
 import type { Metadata } from "next";
 import type { Property } from "@/types";
@@ -77,6 +78,8 @@ function mapRow(row: any): Property {
   };
 }
 
+export const revalidate = 60;
+
 async function getDB() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -120,6 +123,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   }
 
   const property = mapRow({ ...row, profiles: profileData });
+  const videoUrl: string | null = (row as Record<string, unknown>).video_url as string | null ?? null;
 
   // Increment views — fire and forget
   void db
@@ -266,6 +270,22 @@ export default async function PropertyDetailPage({ params }: Props) {
                 </div>
               </div>
 
+              {/* Video player */}
+              {videoUrl && (
+                <div className="rounded-2xl overflow-hidden" style={{ background: "#000", border: "1px solid rgba(255,255,255,0.10)" }}>
+                  <p className="text-white/50 text-xs font-bold px-4 pt-3 pb-1">🎥 Visite vidéo</p>
+                  <video
+                    src={videoUrl}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    controls
+                    className="w-full max-h-64 object-cover"
+                  />
+                </div>
+              )}
+
               {/* Description */}
               <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}>
                 <h2 className="font-bold text-white mb-3">Description</h2>
@@ -284,6 +304,11 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </div>
                   </div>
                 )}
+              </div>
+
+              {/* Report */}
+              <div className="flex justify-end pt-2">
+                <ReportButton propertyId={property.id} />
               </div>
 
               {/* Similar listings */}

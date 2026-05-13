@@ -75,6 +75,9 @@ export default function PublierPage() {
 
   const fileInputRef   = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef  = useRef<HTMLInputElement>(null);
+  const [videoFile, setVideoFile]     = useState<File | null>(null);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
 
@@ -176,6 +179,16 @@ export default function PublierPage() {
     );
   }
 
+  function handleVideoSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 100 * 1024 * 1024) { toast("Vidéo trop lourde (max 100 Mo)", "error"); return; }
+    if (videoPreview) URL.revokeObjectURL(videoPreview);
+    setVideoFile(file);
+    setVideoPreview(URL.createObjectURL(file));
+    e.target.value = "";
+  }
+
   async function handleSubmit() {
     if (!user || !supabase) return;
     setSubmitting(true);
@@ -206,9 +219,24 @@ export default function PublierPage() {
         return;
       }
 
+      // 1b. Upload video if present
+      let videoUrl: string | null = null;
+      if (videoFile) {
+        const ext  = videoFile.name.split(".").pop() ?? "mp4";
+        const path = `${user.id}/video-${Date.now()}.${ext}`;
+        const { error: vErr } = await supabase.storage
+          .from("property-images")
+          .upload(path, videoFile, { upsert: false, contentType: videoFile.type });
+        if (!vErr) {
+          const { data: { publicUrl } } = supabase.storage.from("property-images").getPublicUrl(path);
+          videoUrl = publicUrl;
+        }
+      }
+
       // 2. Insert into properties
       const priceNum = parseInt(form.price.replace(/\D/g, ""), 10);
       const title    = generateTitle(form.type, form.rooms, form.neighborhood);
+      const shortRef = "GUI-" + Math.random().toString(36).substring(2, 6).toUpperCase();
       const { data: property, error: insertErr } = await supabase
         .from("properties")
         .insert({
@@ -228,6 +256,8 @@ export default function PublierPage() {
           status:              "active",
           contact_phone:       form.phone,
           contact_preference:  form.contactMethod,
+          short_ref:           shortRef,
+          video_url:           videoUrl,
           owner_id:            user.id,
           features:            [],
           is_boosted:          false,
@@ -361,7 +391,7 @@ export default function PublierPage() {
                   className={cn(
                     "flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all active:scale-95",
                     form.txType === tx.id
-                      ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20"
+                      ? "border-[#c8901e] bg-[rgba(200,144,30,0.12)]"
                       : "hover:border-white/30"
                   )}
                 >
@@ -444,6 +474,41 @@ export default function PublierPage() {
             className="hidden"
             onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }}
           />
+          <input
+            ref={videoInputRef}
+            type="file"
+            accept="video/mp4,video/webm,video/quicktime"
+            className="hidden"
+            onChange={handleVideoSelect}
+          />
+
+          {/* Video upload */}
+          <div>
+            <label className="block text-sm font-bold text-white mb-2">
+              🎥 Vidéo de présentation <span className="text-white/40 font-normal">(optionnel — max 60 s, 100 Mo)</span>
+            </label>
+            {videoPreview ? (
+              <div className="relative rounded-xl overflow-hidden bg-black aspect-video">
+                <video src={videoPreview} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => { URL.revokeObjectURL(videoPreview); setVideoPreview(null); setVideoFile(null); }}
+                  className="absolute top-2 right-2 w-7 h-7 bg-black/70 rounded-full flex items-center justify-center text-white"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => videoInputRef.current?.click()}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-white/20 text-white/60 hover:border-white/40 hover:text-white transition-colors text-sm font-semibold"
+                style={{ minHeight: 52 }}
+              >
+                🎥 Ajouter une vidéo
+              </button>
+            )}
+          </div>
 
           {/* Price */}
           <div>
@@ -596,9 +661,9 @@ export default function PublierPage() {
               className={cn(
                 "w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 font-semibold text-sm transition-all",
                 geoState === "done"
-                  ? "border-green-400 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400"
+                  ? "border-[#6ec97a] bg-[rgba(110,201,122,0.12)] text-[#6ec97a]"
                   : geoState === "error"
-                  ? "border-red-300 bg-red-50 dark:bg-red-900/10 text-red-500"
+                  ? "border-red-400 bg-[rgba(239,68,68,0.10)] text-red-400"
                   : "text-white/70 hover:border-white/40 hover:text-white"
               )}
             >
@@ -667,7 +732,7 @@ export default function PublierPage() {
           </div>
 
           {/* Summary */}
-          <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/30 rounded-2xl p-4">
+          <div className="rounded-2xl p-4 border border-[rgba(200,144,30,0.25)]" style={{ background: "rgba(200,144,30,0.08)" }}>
             <p className="text-[10px] font-bold text-orange-500 uppercase tracking-wider mb-3">
               Récapitulatif
             </p>
@@ -757,7 +822,7 @@ export default function PublierPage() {
           <button
             onClick={handleSubmit}
             disabled={!form.phone || submitting}
-            className="w-full bg-[#F97316] hover:bg-[#EA6C0A] disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-4 px-6 rounded-2xl text-base transition-colors shadow-[0_8px_32px_rgba(249,115,22,0.35)] flex items-center justify-center gap-2"
+            className="w-full bg-[#c8901e] hover:bg-[#b87c18] disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-4 px-6 rounded-2xl text-base transition-colors shadow-[0_8px_32px_rgba(249,115,22,0.35)] flex items-center justify-center gap-2"
           >
             {submitting ? (
               <>
@@ -798,7 +863,7 @@ export default function PublierPage() {
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all",
                 canAdvance
-                  ? "bg-[#F97316] hover:bg-[#EA6C0A] text-white shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
+                  ? "bg-[#c8901e] hover:bg-[#b87c18] text-white shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
                   : "bg-white/5 text-white/30 cursor-not-allowed"
               )}
             >

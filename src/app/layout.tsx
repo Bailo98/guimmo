@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { Toaster } from "@/components/ui/Toaster";
 import { AuthProvider } from "@/lib/auth-context";
+import { PWAInstallBanner } from "@/components/ui/PWAInstallBanner";
+import { ServiceWorkerRegister } from "@/components/ui/ServiceWorkerRegister";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,7 +35,10 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://guimmo.gn";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "GuImmo — Trouvez votre logement en Guinée",
     template: "%s | GuImmo",
@@ -46,6 +51,13 @@ export const metadata: Metadata = {
     description: "La plateforme immobilière de confiance en Guinée",
     type: "website",
     locale: "fr_GN",
+    url: SITE_URL,
+    siteName: "GuImmo",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GuImmo — Immobilier Guinée",
+    description: "La plateforme immobilière de confiance en Guinée",
   },
   manifest: "/manifest.json",
   appleWebApp: {
@@ -60,10 +72,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#111418" },
-  ],
+  themeColor: "#111a14",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -90,6 +99,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AuthProvider>
             <ThemeProvider>{children}</ThemeProvider>
             <Toaster />
+            <PWAInstallBanner />
+            <ServiceWorkerRegister />
           </AuthProvider>
         </QueryProvider>
       </body>
