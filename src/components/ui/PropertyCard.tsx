@@ -1,12 +1,11 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, Eye, MapPin, Bed, Bath, Square, MessageCircle, Phone, Scale, Star } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatPrice, timeAgo, getWhatsAppUrl, getWhatsAppMessage } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
 import { toast } from "@/lib/toast";
-import { TrustBadge } from "./Badge";
 import type { Property } from "@/types";
 
 interface PropertyCardProps {
@@ -28,228 +27,155 @@ const NEIGHBORHOOD_LABELS: Record<string, string> = {
 };
 
 export function PropertyCard({ property, variant = "default", className, index = 0 }: PropertyCardProps) {
-  const { toggleFavorite, isFavorite, _hasHydrated, addToCompare, compareList } = useAppStore();
+  const { toggleFavorite, isFavorite, _hasHydrated } = useAppStore();
   const fav = _hasHydrated && isFavorite(property.id);
-  const inCompare = _hasHydrated && compareList.includes(property.id);
   const primaryImage = property.images.find((i) => i.isPrimary) ?? property.images[0];
   const neighborhoodLabel = NEIGHBORHOOD_LABELS[property.neighborhood] ?? property.neighborhood;
-
-  const whatsappUrl = getWhatsAppUrl(
-    property.owner.whatsapp ?? property.owner.phone,
-    getWhatsAppMessage(property.title, property.id)
-  );
-  const phoneUrl = `tel:${property.owner.phone}`;
-
-  const createdAt = property.createdAt instanceof Date ? property.createdAt : new Date(property.createdAt as unknown as string);
+  const createdAt = property.createdAt instanceof Date
+    ? property.createdAt
+    : new Date(property.createdAt as unknown as string);
   const isNew = Date.now() - createdAt.getTime() < 7 * 24 * 60 * 60 * 1000;
-  const isPro = property.owner.role === "agent" || property.owner.role === "agency";
 
-  // ── Horizontal variant ──────────────────────────────────────────
+  // ── Horizontal variant (NearbySection, etc.) ────────────────────
   if (variant === "horizontal") {
     return (
-      <div className={cn("group flex gap-3 bg-white dark:bg-[#1e2430] rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200 animate-fadeIn", className)}>
+      <div className={cn(
+        "group flex gap-3 bg-white rounded-2xl overflow-hidden",
+        "shadow-[0_2px_16px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_24px_rgba(0,0,0,0.12)]",
+        "transition-shadow duration-200",
+        className
+      )}>
         <Link href={`/annonces/${property.id}`} className="relative w-28 flex-shrink-0">
           <div className="relative w-full h-full min-h-[100px]">
             {primaryImage ? (
               <Image src={primaryImage.url} alt={primaryImage.alt} fill className="object-cover" sizes="112px" />
             ) : (
-              <div className="w-full h-full bg-slate-200 dark:bg-slate-700" />
+              <div className="w-full h-full bg-slate-100" />
             )}
           </div>
-          {property.isBoosted && (
-            <span className="absolute top-1 left-1 bg-[#F97316] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-              <Star className="w-2.5 h-2.5 fill-white" /> Sponsorisé
-            </span>
-          )}
         </Link>
         <div className="flex-1 p-3 min-w-0">
           <Link href={`/annonces/${property.id}`}>
-            <p className="font-semibold text-sm text-slate-900 dark:text-white line-clamp-1">{property.title}</p>
-            <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-xs mt-0.5">
-              <MapPin className="w-3 h-3 flex-shrink-0" />
-              <span>{neighborhoodLabel}, {property.city}</span>
+            <p className="font-bold text-sm text-[#1A1A1A] line-clamp-1">{property.title}</p>
+            <div className="flex items-center gap-1 text-[#6B7280] text-xs mt-0.5">
+              <MapPin className="w-3 h-3 flex-shrink-0 text-[#F97316]" />
+              <span>{neighborhoodLabel}</span>
             </div>
             <p className="text-[#F97316] font-bold text-sm mt-1">
               {formatPrice(property.price)}
-              {property.pricePeriod === "month" && <span className="text-xs font-normal text-slate-400">/mois</span>}
+              {property.pricePeriod === "month" && (
+                <span className="text-xs font-normal text-[#6B7280]">/mois</span>
+              )}
             </p>
           </Link>
-          <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-500 dark:text-slate-400">
-            {property.rooms && <span className="flex items-center gap-0.5"><Bed className="w-3 h-3" />{property.rooms}</span>}
-            {property.bathrooms && <span className="flex items-center gap-0.5"><Bath className="w-3 h-3" />{property.bathrooms}</span>}
-            {property.surface && <span className="flex items-center gap-0.5"><Square className="w-3 h-3" />{property.surface}m²</span>}
-          </div>
-          <div className="flex items-center gap-2 mt-2">
-            <a href={phoneUrl} className="flex items-center gap-1 text-[10px] font-semibold py-1.5 px-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316] transition-colors">
-              <Phone className="w-3 h-3" /> Appeler
-            </a>
-            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[10px] font-bold py-1.5 px-2 rounded-lg bg-[#25D366] text-white hover:bg-[#22c55e] transition-colors">
-              <MessageCircle className="w-3 h-3" /> WhatsApp
-            </a>
+          <div className="flex items-center gap-2 mt-1.5 text-xs text-[#6B7280]">
+            {(property.rooms ?? 0) > 0 && (
+              <span className="flex items-center gap-0.5"><Bed className="w-3 h-3" />{property.rooms}</span>
+            )}
+            {(property.bathrooms ?? 0) > 0 && (
+              <span className="flex items-center gap-0.5"><Bath className="w-3 h-3" />{property.bathrooms}</span>
+            )}
+            {(property.surface ?? 0) > 0 && (
+              <span className="flex items-center gap-0.5"><Square className="w-3 h-3" />{property.surface}m²</span>
+            )}
           </div>
         </div>
       </div>
     );
   }
 
-  // ── Default variant ─────────────────────────────────────────────
+  // ── Default variant — pure overlay card ─────────────────────────
   return (
     <div className={cn(
-      "group bg-white dark:bg-[#1e2430] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-200 animate-fadeIn",
+      "group relative rounded-[20px] overflow-hidden bg-white",
+      "shadow-[0_4px_24px_rgba(0,0,0,0.10)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.18)]",
+      "hover:-translate-y-1 transition-all duration-300",
       className
     )}>
-      {/* Image */}
-      <Link href={`/annonces/${property.id}`} className="block relative h-48 overflow-hidden">
+      <Link href={`/annonces/${property.id}`} className="block relative h-[220px]">
         {primaryImage ? (
           <Image
             src={primaryImage.url}
             alt={primaryImage.alt}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             priority={index < 4}
           />
         ) : (
-          <div className="w-full h-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center">
             <Square className="w-12 h-12 text-slate-400" />
           </div>
         )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        {/* Gradient overlay — stronger at bottom */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
 
-        {/* Top-left: badges */}
-        <div className="absolute top-2 left-2 flex flex-col gap-1 items-start">
+        {/* Top-left: type + badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
+          <span className="bg-white/90 backdrop-blur-sm text-[#1A1A1A] text-[11px] font-bold px-2.5 py-1 rounded-full leading-none">
+            {TYPE_LABELS[property.type] ?? property.type}
+          </span>
           {isNew && (
-            <span className="bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full leading-4">
+            <span className="bg-[#F97316] text-white text-[11px] font-bold px-2.5 py-1 rounded-full leading-none">
               Nouveau
             </span>
           )}
-          {isPro && (
-            <span className="bg-[#F97316] text-white text-[10px] font-bold px-2 py-0.5 rounded-full leading-4">
-              Pro
-            </span>
-          )}
           {property.isBoosted && (
-            <span className="bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 leading-4">
+            <span className="bg-amber-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 leading-none">
               <Star className="w-2.5 h-2.5 fill-white" /> Sponsorisé
             </span>
           )}
         </div>
 
-        {/* Top-right: heart + price */}
-        <div className="absolute top-2 right-2 flex flex-col items-end gap-1.5">
+        {/* Top-right: heart + price badge */}
+        <div className="absolute top-3 right-3 flex flex-col items-end gap-2">
           <button
             onClick={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               toggleFavorite(property.id);
-              toast(fav ? "Retiré des favoris" : "Ajouté aux favoris ❤️", fav ? "info" : "success");
+              toast(fav ? "Retiré des favoris" : "Ajouté aux favoris", fav ? "info" : "success");
             }}
             className={cn(
-              "w-8 h-8 rounded-full flex items-center justify-center transition-all shadow",
-              fav ? "bg-red-500 text-white" : "bg-black/30 text-white hover:bg-black/50"
+              "w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-md",
+              fav
+                ? "bg-red-500 text-white"
+                : "bg-white/90 backdrop-blur-sm text-[#1A1A1A] hover:bg-white"
             )}
           >
             <Heart className={cn("w-4 h-4", fav && "fill-white")} />
           </button>
-          <span className="bg-[#F97316] text-white text-xs font-bold px-2 py-1 rounded-xl shadow leading-tight text-right">
-            {formatPrice(property.price)}
-            {property.pricePeriod === "month" && <span className="block text-[10px] font-normal opacity-90">/mois</span>}
-          </span>
+          <div className="bg-white rounded-xl shadow-md px-2.5 py-1.5 text-right">
+            <p className="text-[#F97316] font-bold text-xs leading-tight">{formatPrice(property.price)}</p>
+            {property.pricePeriod === "month" && (
+              <p className="text-[#6B7280] text-[10px] leading-tight">/mois</p>
+            )}
+          </div>
         </div>
 
-        {/* Bottom-left: type + views */}
-        <div className="absolute bottom-2 left-2 right-2 flex items-end justify-between">
-          <span className="text-white/90 text-[10px] font-semibold bg-black/30 rounded-full px-2 py-0.5">
-            {TYPE_LABELS[property.type] ?? property.type}
-          </span>
-          <span className="text-white/70 text-[10px] flex items-center gap-0.5 bg-black/20 rounded-full px-1.5 py-0.5">
-            <Eye className="w-3 h-3" /> {property.views}
-          </span>
-        </div>
-      </Link>
-
-      {/* Body */}
-      <div className="p-3">
-        <Link href={`/annonces/${property.id}`}>
-          <h3 className="font-semibold text-slate-900 dark:text-white line-clamp-1 text-sm leading-snug">
+        {/* Bottom overlay: title + location + specs */}
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          <h3 className="font-bold text-white text-sm leading-snug line-clamp-1 mb-0.5">
             {property.title}
           </h3>
-        </Link>
-
-        <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-xs mt-1">
-          <MapPin className="w-3 h-3 flex-shrink-0 text-[#F97316]" />
-          <span className="truncate">{neighborhoodLabel}, {property.city}</span>
-        </div>
-
-        {/* Specs */}
-        <div className="flex items-center gap-3 mt-2 text-xs text-slate-500 dark:text-slate-400">
-          {(property.rooms ?? 0) > 0 && (
-            <span className="flex items-center gap-1"><Bed className="w-3 h-3" />{property.rooms} ch.</span>
-          )}
-          {(property.bathrooms ?? 0) > 0 && (
-            <span className="flex items-center gap-1"><Bath className="w-3 h-3" />{property.bathrooms} sdb</span>
-          )}
-          {(property.surface ?? 0) > 0 && (
-            <span className="flex items-center gap-1"><Square className="w-3 h-3" />{property.surface}m²</span>
-          )}
-          {property.furnished && (
-            <span className="text-green-600 dark:text-green-400 font-medium">Meublé</span>
-          )}
-        </div>
-
-        {/* Trust badges */}
-        {property.badges.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2">
-            {property.badges.slice(0, 2).map((b) => (
-              <TrustBadge key={b.id} badge={b} size="sm" />
-            ))}
+          <div className="flex items-center gap-1 text-white/80 mb-2">
+            <MapPin className="w-3 h-3 flex-shrink-0" />
+            <span className="text-[11px] truncate">{neighborhoodLabel}, {property.city}</span>
           </div>
-        )}
-
-        {/* Actions */}
-        <div className="flex gap-2 mt-3">
-          <a
-            href={phoneUrl}
-            className="flex items-center justify-center gap-1 text-xs font-semibold py-2 px-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316] transition-colors"
-          >
-            <Phone className="w-3.5 h-3.5" />
-            Appeler
-          </a>
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 text-center text-xs font-bold py-2 px-3 rounded-xl bg-[#25D366] text-white hover:bg-[#22c55e] transition-colors flex items-center justify-center gap-1"
-          >
-            <MessageCircle className="w-3.5 h-3.5" />
-            WhatsApp
-          </a>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              if (inCompare) {
-                toast("Déjà dans le comparateur", "info");
-              } else if (compareList.length >= 3) {
-                toast("Maximum 3 annonces à comparer", "error");
-              } else {
-                addToCompare(property.id);
-                toast("Ajouté au comparateur", "success");
-              }
-            }}
-            className={cn(
-              "flex items-center justify-center text-xs font-semibold py-2 px-2.5 rounded-xl border transition-colors",
-              inCompare
-                ? "border-[#F97316] text-[#F97316] bg-orange-50 dark:bg-orange-900/20"
-                : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-[#F97316] hover:text-[#F97316]"
+          <div className="flex items-center gap-3 text-white/70 text-[11px]">
+            {(property.rooms ?? 0) > 0 && (
+              <span className="flex items-center gap-1"><Bed className="w-3 h-3" />{property.rooms} ch.</span>
             )}
-            title="Ajouter au comparateur"
-          >
-            <Scale className="w-3.5 h-3.5" />
-          </button>
+            {(property.bathrooms ?? 0) > 0 && (
+              <span className="flex items-center gap-1"><Bath className="w-3 h-3" />{property.bathrooms} sdb</span>
+            )}
+            {(property.surface ?? 0) > 0 && (
+              <span className="flex items-center gap-1"><Square className="w-3 h-3" />{property.surface}m²</span>
+            )}
+          </div>
         </div>
-
-        <p className="text-slate-400 text-[10px] mt-2" suppressHydrationWarning>{timeAgo(property.createdAt)}</p>
-      </div>
+      </Link>
     </div>
   );
 }

@@ -1,78 +1,71 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Heart, Plus, MessageSquare } from "lucide-react";
+import { Home, Search, Heart, Plus, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
-import { useT } from "@/lib/i18n";
 
-const NAV_ITEMS = [
-  { href: "/", icon: Home, labelKey: "home" as const },
-  { href: "/annonces", icon: Search, labelKey: "search" as const },
-  { href: "/publier", icon: Plus, labelKey: "publish" as const, isAction: true },
-  { href: "/favoris", icon: Heart, labelKey: "favorites" as const },
-  { href: "/messages", icon: MessageSquare, labelKey: "messages" as const, showUnreadMessages: true },
+const LEFT_NAV = [
+  { href: "/", icon: Home, label: "Accueil" },
+  { href: "/annonces", icon: Search, label: "Explorer" },
+];
+
+const RIGHT_NAV = [
+  { href: "/favoris", icon: Heart, label: "Favoris", showFavBadge: true },
+  { href: "/compte", icon: User, label: "Profil" },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
   if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
+
   const favorites = useAppStore((s) => s.favorites);
-  const unreadMessages = useAppStore((s) => s.unreadMessages);
   const _hasHydrated = useAppStore((s) => s._hasHydrated);
-  const t = useT();
+
+  function isActive(href: string) {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  }
+
+  function NavItem({ href, icon: Icon, label, showFavBadge }: {
+    href: string; icon: React.ElementType; label: string; showFavBadge?: boolean;
+  }) {
+    const active = isActive(href);
+    const hasBadge = showFavBadge && _hasHydrated && favorites.length > 0;
+    return (
+      <Link href={href} className="flex flex-col items-center justify-center gap-0.5 w-14 h-14">
+        <div className="relative">
+          <Icon className={cn("w-[22px] h-[22px]", active ? "text-[#F97316]" : "text-[#9CA3AF]")} />
+          {hasBadge && (
+            <span className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#F97316] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
+              {favorites.length > 9 ? "9+" : favorites.length}
+            </span>
+          )}
+        </div>
+        <span className={cn("text-[10px] font-semibold", active ? "text-[#F97316]" : "text-[#9CA3AF]")}>
+          {label}
+        </span>
+      </Link>
+    );
+  }
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-[#111418]/95 backdrop-blur-xl border-t border-slate-100 dark:border-[#2a3040] pb-[env(safe-area-inset-bottom,0px)]">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#F0F0F0] pb-[env(safe-area-inset-bottom,0px)]">
       <div className="flex items-center justify-around h-16 px-2">
-        {NAV_ITEMS.map((item) => {
-          const isActive = pathname === item.href;
-          const Icon = item.icon;
-          const label = t(item.labelKey);
+        {LEFT_NAV.map((item) => (
+          <NavItem key={item.href} {...item} />
+        ))}
 
-          if (item.isAction) {
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex flex-col items-center justify-center"
-              >
-                <span className="w-12 h-12 bg-[#F97316] rounded-2xl flex items-center justify-center shadow-[0_4px_20px_rgba(249,115,22,0.4)] -mt-4">
-                  <Icon className="w-6 h-6 text-white" />
-                </span>
-              </Link>
-            );
-          }
+        {/* FAB */}
+        <Link href="/publier" className="flex flex-col items-center justify-center -mt-6">
+          <span className="w-14 h-14 bg-[#F97316] rounded-full flex items-center justify-center shadow-[0_6px_24px_rgba(249,115,22,0.45)] active:scale-95 transition-transform">
+            <Plus className="w-7 h-7 text-white" strokeWidth={2.5} />
+          </span>
+        </Link>
 
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex flex-col items-center justify-center gap-1 w-14 h-14 rounded-2xl transition-colors",
-                isActive ? "text-[#F97316]" : "text-slate-400 dark:text-slate-500"
-              )}
-            >
-              <div className="relative">
-                <Icon className={cn("w-5 h-5", isActive && "fill-current opacity-20")} />
-                <Icon className="w-5 h-5 absolute inset-0" />
-                {_hasHydrated && item.href === "/favoris" && favorites.length > 0 && (
-                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#F97316] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
-                    {favorites.length > 9 ? "9+" : favorites.length}
-                  </span>
-                )}
-                {_hasHydrated && item.href === "/messages" && unreadMessages() > 0 && (
-                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-[#F97316] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
-                    {unreadMessages() > 9 ? "9+" : unreadMessages()}
-                  </span>
-                )}
-              </div>
-              <span className={cn("text-[10px] font-medium", isActive ? "text-[#F97316]" : "text-slate-400 dark:text-slate-500")}>
-                {label}
-              </span>
-            </Link>
-          );
-        })}
+        {RIGHT_NAV.map((item) => (
+          <NavItem key={item.href} {...item} />
+        ))}
       </div>
     </nav>
   );
