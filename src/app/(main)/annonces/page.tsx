@@ -52,11 +52,12 @@ function TypeChip({ active, onClick, children }: {
     <button
       onClick={onClick}
       className={cn(
-        "flex-none px-4 py-2 rounded-full text-sm font-semibold border transition-all whitespace-nowrap",
+        "flex-none px-4 py-2 rounded-full text-sm font-semibold transition-all whitespace-nowrap",
         active
-          ? "bg-[#F97316] text-white border-[#F97316] shadow-sm"
-          : "bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#F97316] hover:text-[#F97316]"
+          ? "bg-[#F97316] text-white"
+          : "text-white/60 hover:text-[#F97316]"
       )}
+      style={active ? {} : { background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
     >
       {children}
     </button>
@@ -70,11 +71,12 @@ function SmallChip({ active, onClick, children }: {
     <button
       onClick={onClick}
       className={cn(
-        "flex-none px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap",
+        "flex-none px-3 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap",
         active
-          ? "bg-[#F97316] text-white border-[#F97316]"
-          : "bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#F97316] hover:text-[#F97316]"
+          ? "bg-[#F97316] text-white"
+          : "text-white/60 hover:text-[#F97316]"
       )}
+      style={active ? {} : { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
     >
       {children}
     </button>
@@ -137,23 +139,24 @@ function AnnoncesContent() {
   const activeFilterCount = [neighborhood, type, budget].filter(Boolean).length;
 
   return (
-    <div className="bg-[#FAFAF8] min-h-screen">
+    <div className="bg-[#0A0A0F] min-h-screen">
       {/* ── Sticky filter bar ───────────────────────────────────── */}
-      <div className="sticky top-16 z-30 bg-[#FAFAF8]/95 backdrop-blur -mx-0 px-4 pt-4 pb-3 border-b border-[#F0F0F0] space-y-3">
+      <div className="sticky top-16 z-30 -mx-0 px-4 pt-4 pb-3 space-y-3" style={{ background: "rgba(10,10,15,0.95)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
         {/* Search pill + filter button */}
         <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-center gap-3 bg-white rounded-full border border-[#E5E7EB] shadow-sm px-4 py-2.5">
-            <Search className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
-            <span className="flex-1 text-sm text-[#9CA3AF]">Rechercher un bien…</span>
+          <div className="flex-1 flex items-center gap-3 rounded-full px-4 py-2.5" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}>
+            <Search className="w-4 h-4 text-white/40 flex-shrink-0" />
+            <span className="flex-1 text-sm text-white/40">Rechercher un bien…</span>
           </div>
           <button
             onClick={() => setFiltersOpen(!filtersOpen)}
             className={cn(
-              "flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold border transition-all",
+              "flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold transition-all",
               filtersOpen || activeFilterCount > 0
-                ? "bg-[#F97316] text-white border-[#F97316]"
-                : "bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#F97316] hover:text-[#F97316]"
+                ? "bg-[#F97316] text-white"
+                : "text-white/60 hover:text-[#F97316]"
             )}
+            style={filtersOpen || activeFilterCount > 0 ? {} : { background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
           >
             <SlidersHorizontal className="w-4 h-4" />
             {activeFilterCount > 0 ? `Filtres (${activeFilterCount})` : "Filtres"}
@@ -161,7 +164,8 @@ function AnnoncesContent() {
           {hasFilters && (
             <button
               onClick={clearFilters}
-              className="w-9 h-9 rounded-full flex items-center justify-center bg-red-50 border border-red-200 text-red-500 hover:bg-red-100 transition-colors"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-red-400 hover:bg-red-500/10 transition-colors"
+              style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}
             >
               <X className="w-4 h-4" />
             </button>
@@ -179,9 +183,9 @@ function AnnoncesContent() {
 
         {/* Neighborhood + budget — collapsible */}
         {filtersOpen && (
-          <div className="space-y-2 pt-1 border-t border-[#F0F0F0]">
+          <div className="space-y-2 pt-1 border-t border-white/8">
             <div>
-              <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-1.5">Quartier</p>
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Quartier</p>
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
                 {QUARTIER_CHIPS.map((c) => (
                   <SmallChip key={c.id} active={neighborhood === c.id} onClick={() => setParam("neighborhood", c.id)}>
@@ -191,7 +195,7 @@ function AnnoncesContent() {
               </div>
             </div>
             <div>
-              <p className="text-[10px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-1.5">Budget</p>
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Budget</p>
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
                 {BUDGET_CHIPS.map((c) => (
                   <SmallChip key={c.id} active={budget === c.id} onClick={() => setParam("budget", c.id)}>
@@ -209,10 +213,10 @@ function AnnoncesContent() {
         <div className="flex items-center justify-between mb-5">
           <p className="text-sm text-[#6B7280]">
             {loading ? (
-              <span className="inline-block w-24 h-4 bg-slate-200 rounded animate-pulse" />
+              <span className="inline-block w-24 h-4 bg-white/10 rounded animate-pulse" />
             ) : (
               <>
-                <span className="font-bold text-[#1A1A1A]">{filtered.length}</span>{" "}
+                <span className="font-bold text-white">{filtered.length}</span>{" "}
                 annonce{filtered.length !== 1 ? "s" : ""}
                 {hasFilters && (
                   <button onClick={clearFilters} className="ml-2 text-[#F97316] hover:underline text-xs">
@@ -223,7 +227,7 @@ function AnnoncesContent() {
             )}
           </p>
           {!loading && totalPages > 1 && (
-            <p className="text-xs text-[#9CA3AF]">Page {safePage} / {totalPages}</p>
+            <p className="text-xs text-white/40">Page {safePage} / {totalPages}</p>
           )}
         </div>
 
@@ -235,8 +239,8 @@ function AnnoncesContent() {
         ) : filtered.length === 0 ? (
           <div className="text-center py-24">
             <p className="text-5xl mb-4">🏠</p>
-            <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">Aucune annonce trouvée</h3>
-            <p className="text-[#6B7280] text-sm mb-6">Essayez d&apos;élargir vos filtres.</p>
+            <h3 className="text-lg font-bold text-white mb-2">Aucune annonce trouvée</h3>
+            <p className="text-white/50 text-sm mb-6">Essayez d&apos;élargir vos filtres.</p>
             <button
               onClick={clearFilters}
               className="bg-[#F97316] hover:bg-[#EA6C0A] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
@@ -258,7 +262,8 @@ function AnnoncesContent() {
                 <button
                   onClick={() => setPage(safePage - 1)}
                   disabled={safePage === 1}
-                  className="w-9 h-9 rounded-full border border-[#E5E7EB] flex items-center justify-center text-[#6B7280] hover:border-[#F97316] hover:text-[#F97316] disabled:opacity-30 disabled:cursor-not-allowed transition-colors bg-white"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#F97316] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
@@ -267,16 +272,15 @@ function AnnoncesContent() {
                   return (
                     <div key={n} className="flex items-center gap-2">
                       {prev && n - prev > 1 && (
-                        <span className="text-[#9CA3AF] text-sm px-1">…</span>
+                        <span className="text-white/30 text-sm px-1">…</span>
                       )}
                       <button
                         onClick={() => setPage(n)}
                         className={cn(
-                          "w-9 h-9 rounded-full text-sm font-semibold border transition-colors",
-                          n === safePage
-                            ? "bg-[#F97316] text-white border-[#F97316]"
-                            : "bg-white border-[#E5E7EB] text-[#6B7280] hover:border-[#F97316] hover:text-[#F97316]"
+                          "w-9 h-9 rounded-full text-sm font-semibold transition-colors",
+                          n === safePage ? "bg-[#F97316] text-white" : "text-white/60 hover:text-[#F97316]"
                         )}
+                        style={n === safePage ? {} : { background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
                       >
                         {n}
                       </button>
@@ -286,7 +290,8 @@ function AnnoncesContent() {
                 <button
                   onClick={() => setPage(safePage + 1)}
                   disabled={safePage === totalPages}
-                  className="w-9 h-9 rounded-full border border-[#E5E7EB] flex items-center justify-center text-[#6B7280] hover:border-[#F97316] hover:text-[#F97316] disabled:opacity-30 disabled:cursor-not-allowed transition-colors bg-white"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#F97316] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>

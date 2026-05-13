@@ -61,7 +61,7 @@ export async function fetchProperties(): Promise<Property[]> {
 
   const { data, error } = await supabase
     .from("properties")
-    .select("*, property_images(*), profiles(*)")
+    .select("*, property_images(*)")
     .eq("status", "active")
     .order("created_at", { ascending: false });
 
@@ -77,7 +77,7 @@ export async function fetchPropertyById(id: string): Promise<Property | undefine
 
   const { data, error } = await supabase
     .from("properties")
-    .select("*, property_images(*), profiles(*)")
+    .select("*, property_images(*)")
     .eq("id", id)
     .single();
 

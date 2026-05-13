@@ -13,18 +13,10 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
   const pathname = usePathname();
-  const isHome = pathname === "/";
 
   useEffect(() => { setMounted(true); }, []);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const userMenuRef = useRef<HTMLDivElement>(null);
   const { user, profile, signOut } = useAuth();
@@ -52,26 +44,18 @@ export function Header() {
   const isAdmin = role === "admin";
   const isProprietaire = ["proprietaire", "owner", "agent", "agence", "admin"].includes(role);
 
-  // Transparent only on home at the very top (hero is dark so text must be white)
-  const transparent = isHome && !scrolled && !menuOpen;
-
-  const headerClass = transparent
-    ? "bg-transparent"
-    : "bg-white/95 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.06)] border-b border-[#F0F0F0]";
-
-  const textClass = transparent ? "text-white/90" : "text-slate-700";
-  const hoverClass = transparent ? "hover:bg-white/10" : "hover:bg-slate-100";
-  const iconClass = transparent ? "text-white/80" : "text-slate-500";
-
   return (
-    <header className={cn("sticky top-0 z-40 transition-all duration-300", headerClass)}>
+    <header
+      className="sticky top-0 z-40 transition-all duration-300"
+      style={{ background: "rgba(10,10,15,0.8)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+    >
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
         <Logo />
 
         <nav className="hidden md:flex items-center gap-1">
           <Link
             href="/annonces"
-            className={cn("px-3 py-2 rounded-xl text-sm font-medium transition-colors hover:text-[#F97316]", textClass, hoverClass)}
+            className={cn("px-3 py-2 rounded-xl text-sm font-medium transition-colors hover:text-[#F97316] hover:bg-white/10", pathname === "/annonces" ? "text-[#F97316]" : "text-white/80")}
           >
             Annonces
           </Link>
@@ -80,7 +64,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <button
             onClick={toggleTheme}
-            className={cn("w-9 h-9 rounded-xl flex items-center justify-center transition-colors", iconClass, hoverClass)}
+            className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors text-white/70 hover:bg-white/10"
             aria-label="Changer le thème"
           >
             {(!mounted || theme === "dark") ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -100,42 +84,45 @@ export function Header() {
             <div ref={userMenuRef} className="relative hidden md:block">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className={cn("flex items-center gap-2 px-2 py-1.5 rounded-xl transition-colors", hoverClass)}
+                className="flex items-center gap-2 px-2 py-1.5 rounded-xl transition-colors hover:bg-white/10"
               >
                 <div className="w-7 h-7 rounded-full bg-[#F97316] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                   {initials || <User className="w-3.5 h-3.5" />}
                 </div>
-                <span className={cn("text-sm font-medium max-w-[100px] truncate", textClass)}>
+                <span className="text-sm font-medium max-w-[100px] truncate text-white/90">
                   {displayName.split(" ")[0]}
                 </span>
-                <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", iconClass, userMenuOpen && "rotate-180")} />
+                <ChevronDown className={cn("w-3.5 h-3.5 transition-transform text-white/60", userMenuOpen && "rotate-180")} />
               </button>
 
               {userMenuOpen && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl shadow-xl border border-[#F0F0F0] overflow-hidden z-50">
-                  <div className="px-4 py-3 border-b border-[#F0F0F0]">
-                    <p className="text-sm font-semibold text-[#1A1A1A] truncate">{displayName}</p>
-                    <p className="text-xs text-[#6B7280] truncate">{user.email}</p>
+                <div
+                  className="absolute right-0 top-full mt-2 w-48 rounded-2xl overflow-hidden z-50 border border-white/10"
+                  style={{ background: "rgba(15,15,22,0.95)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }}
+                >
+                  <div className="px-4 py-3 border-b border-white/8">
+                    <p className="text-sm font-semibold text-white truncate">{displayName}</p>
+                    <p className="text-xs text-white/50 truncate">{user.email}</p>
                   </div>
                   {isAdmin ? (
                     <Link href="/admin" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-sm text-[#F97316] font-semibold hover:bg-slate-50 transition-colors">
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-[#F97316] font-semibold hover:bg-white/5 transition-colors">
                       <Shield className="w-4 h-4" /> Administration
                     </Link>
                   ) : (
                     <Link href="/compte" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-sm text-[#1A1A1A] hover:bg-slate-50 transition-colors">
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-white/80 hover:bg-white/5 transition-colors">
                       <User className="w-4 h-4" /> Mon compte
                     </Link>
                   )}
                   {isProprietaire && !isAdmin && (
                     <Link href="/publier" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-sm text-[#1A1A1A] hover:bg-slate-50 transition-colors">
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-white/80 hover:bg-white/5 transition-colors">
                       <Plus className="w-4 h-4" /> Publier une annonce
                     </Link>
                   )}
                   <button onClick={handleSignOut}
-                    className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors border-t border-[#F0F0F0]">
+                    className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-colors border-t border-white/8">
                     <LogOut className="w-4 h-4" /> Se déconnecter
                   </button>
                 </div>
@@ -144,7 +131,7 @@ export function Header() {
           ) : (
             <div className="hidden md:flex items-center gap-2">
               <Link href="/connexion"
-                className={cn("text-sm font-medium transition-colors px-3 py-2 rounded-xl hover:text-[#F97316]", textClass, hoverClass)}>
+                className="text-sm font-medium transition-colors px-3 py-2 rounded-xl hover:text-[#F97316] text-white/80 hover:bg-white/10">
                 Connexion
               </Link>
               <Link href="/inscription"
@@ -156,7 +143,7 @@ export function Header() {
 
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className={cn("md:hidden w-9 h-9 rounded-xl flex items-center justify-center transition-colors", iconClass, hoverClass)}
+            className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center transition-colors text-white/70 hover:bg-white/10"
           >
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -164,37 +151,40 @@ export function Header() {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden border-t border-[#F0F0F0] bg-white px-4 pb-4 space-y-1 animate-[slideDown_0.2s_ease-out]">
+        <div
+          className="md:hidden border-t border-white/8 px-4 pb-4 space-y-1 animate-[slideDown_0.2s_ease-out]"
+          style={{ background: "rgba(10,10,15,0.95)" }}
+        >
           <Link href="/annonces" onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-3 rounded-xl text-[#1A1A1A] hover:bg-slate-50">
+            className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 hover:bg-white/8">
             Annonces
           </Link>
           {user ? (
             <>
               {isAdmin ? (
                 <Link href="/admin" onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-3 rounded-xl text-[#F97316] font-semibold hover:bg-slate-50">
+                  className="flex items-center gap-2 px-3 py-3 rounded-xl text-[#F97316] font-semibold hover:bg-white/8">
                   <Shield className="w-4 h-4" /> Administration
                 </Link>
               ) : (
                 <Link href="/compte" onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-3 rounded-xl text-[#1A1A1A] hover:bg-slate-50">
+                  className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 hover:bg-white/8">
                   <User className="w-4 h-4" /> Mon compte
                 </Link>
               )}
               <button onClick={() => { handleSignOut(); setMenuOpen(false); }}
-                className="w-full flex items-center gap-2 px-3 py-3 rounded-xl text-red-500 hover:bg-red-50">
+                className="w-full flex items-center gap-2 px-3 py-3 rounded-xl text-red-400 hover:bg-red-500/10">
                 <LogOut className="w-4 h-4" /> Se déconnecter
               </button>
             </>
           ) : (
             <>
               <Link href="/connexion" onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 px-3 py-3 rounded-xl text-[#1A1A1A] hover:bg-slate-50">
+                className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 hover:bg-white/8">
                 Connexion
               </Link>
               <Link href="/inscription" onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 px-3 py-3 rounded-xl text-[#1A1A1A] hover:bg-slate-50">
+                className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 hover:bg-white/8">
                 S&apos;inscrire
               </Link>
             </>

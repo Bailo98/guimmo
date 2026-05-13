@@ -104,7 +104,7 @@ export default function InscriptionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111418] flex flex-col">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col">
       <div className="p-4 flex items-center justify-between">
         <Logo />
         <Link href="/connexion" className="text-sm text-slate-400 hover:text-white transition-colors">
@@ -129,7 +129,7 @@ export default function InscriptionPage() {
             ))}
           </div>
 
-          <div className="bg-[#1e2430] rounded-3xl p-8 border border-[#2a3040]">
+          <div className="rounded-3xl p-8" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.12)" }}>
 
             {/* ── STEP 1 — Role ── */}
             {step === 1 && (
@@ -184,7 +184,7 @@ export default function InscriptionPage() {
                         "w-full flex items-center gap-3 p-4 rounded-2xl border transition-all text-left",
                         role === r.value
                           ? "border-[#F97316] bg-[#F97316]/10"
-                          : "border-[#2a3040] hover:border-[#334155]"
+                          : "hover:border-white/20"
                       )}
                     >
                       <span className="text-2xl">{r.icon}</span>
@@ -242,7 +242,7 @@ export default function InscriptionPage() {
                         placeholder={role === "agency" ? "Conakry Premium Immo" : "Mamadou Diallo"}
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        className="w-full bg-[#151922] border border-[#2a3040] rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm"
+                        className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                         required
                         autoComplete="name"
                       />
@@ -264,7 +264,7 @@ export default function InscriptionPage() {
                           placeholder="+224 628 222 510 ou +1 438 000 0000"
                           value={form.phone}
                           onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                          className="w-full bg-[#151922] border border-[#2a3040] rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm"
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                           required
                           autoComplete="tel"
                         />
@@ -291,7 +291,7 @@ export default function InscriptionPage() {
                           placeholder="vous@email.com"
                           value={form.email}
                           onChange={(e) => setForm({ ...form, email: e.target.value })}
-                          className="w-full bg-[#151922] border border-[#2a3040] rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm"
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                           required
                           autoComplete="email"
                         />
@@ -320,7 +320,7 @@ export default function InscriptionPage() {
                         placeholder="••••••••  (min. 6 caractères)"
                         value={form.password}
                         onChange={(e) => setForm({ ...form, password: e.target.value })}
-                        className="w-full bg-[#151922] border border-[#2a3040] rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm"
+                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                         required
                         minLength={6}
                         autoComplete="new-password"

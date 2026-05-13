@@ -45,23 +45,23 @@ interface DeleteDialogProps {
 function DeleteDialog({ title, onConfirm, onCancel }: DeleteDialogProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-slate-100 dark:border-[#2a3040]">
+      <div className="rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ background: "rgba(15,15,22,0.95)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.12)" }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
             <AlertTriangle className="w-5 h-5 text-red-500" />
           </div>
           <div>
-            <p className="font-bold text-slate-900 dark:text-white text-sm">Supprimer l&apos;annonce</p>
-            <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Cette action est irréversible.</p>
+            <p className="font-bold text-white text-sm">Supprimer l&apos;annonce</p>
+            <p className="text-white/50 text-xs mt-0.5">Cette action est irréversible.</p>
           </div>
         </div>
-        <p className="text-slate-600 dark:text-slate-300 text-sm mb-5 line-clamp-2">
+        <p className="text-white/70 text-sm mb-5 line-clamp-2">
           &ldquo;{title}&rdquo;
         </p>
         <div className="flex gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-[#2a3040] transition-colors"
+            className="flex-1 py-2.5 rounded-xl text-white/70 font-semibold text-sm hover:bg-white/5 transition-colors" style={{ border: "1px solid rgba(255,255,255,0.10)" }}
           >
             Annuler
           </button>
@@ -242,8 +242,8 @@ export default function ComptePage() {
           {initials || <User className="w-6 h-6" />}
         </div>
         <div className="min-w-0">
-          <h1 className="text-xl font-black text-slate-900 dark:text-white truncate">{displayName}</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm truncate">{user.email}</p>
+          <h1 className="text-xl font-black text-white truncate">{displayName}</h1>
+          <p className="text-white/50 text-sm truncate">{user.email}</p>
         </div>
         {isProprietaire && (
           <Link
@@ -263,21 +263,21 @@ export default function ComptePage() {
         <section className="mb-8 space-y-3">
           <Link
             href="/messages"
-            className="flex items-center justify-between bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] px-4 py-4 hover:border-[#F97316]/40 transition-colors"
+            className="flex items-center justify-between rounded-2xl px-4 py-4 hover:bg-white/5 transition-colors" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}
           >
-            <span className="font-semibold text-slate-900 dark:text-white text-sm">💬 Mes messages</span>
-            <span className="text-slate-400 text-xs">→</span>
+            <span className="font-semibold text-white text-sm">💬 Mes messages</span>
+            <span className="text-white/40 text-xs">→</span>
           </Link>
           <Link
             href="/favoris"
-            className="flex items-center justify-between bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] px-4 py-4 hover:border-[#F97316]/40 transition-colors"
+            className="flex items-center justify-between rounded-2xl px-4 py-4 hover:bg-white/5 transition-colors" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}
           >
-            <span className="font-semibold text-slate-900 dark:text-white text-sm">❤️ Mes favoris</span>
-            <span className="text-slate-400 text-xs">→</span>
+            <span className="font-semibold text-white text-sm">❤️ Mes favoris</span>
+            <span className="text-white/40 text-xs">→</span>
           </Link>
           <div className="bg-[#F97316]/5 dark:bg-[#F97316]/10 border border-[#F97316]/20 rounded-2xl px-4 py-4">
-            <p className="font-bold text-slate-900 dark:text-white text-sm mb-1">Vous êtes propriétaire ?</p>
-            <p className="text-slate-500 dark:text-slate-400 text-xs mb-3">Publiez vos annonces et gérez vos locations.</p>
+            <p className="font-bold text-white text-sm mb-1">Vous êtes propriétaire ?</p>
+            <p className="text-white/50 text-xs mb-3">Publiez vos annonces et gérez vos locations.</p>
             <button
               onClick={upgradeToProprietaire}
               disabled={upgrading}
@@ -295,10 +295,10 @@ export default function ComptePage() {
       ══════════════════════════════════════ */}
       {isProprietaire && <section className="mb-10">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+          <h2 className="text-lg font-bold text-white">
             Mes annonces
             {!listingsLoading && listings.length > 0 && (
-              <span className="ml-2 text-sm font-semibold text-slate-400">({listings.length})</span>
+              <span className="ml-2 text-sm font-semibold text-white/40">({listings.length})</span>
             )}
           </h2>
         </div>
@@ -306,14 +306,14 @@ export default function ComptePage() {
         {listingsLoading ? (
           <div className="space-y-3">
             {[1, 2].map((i) => (
-              <div key={i} className="h-28 bg-slate-100 dark:bg-[#1e2430] rounded-2xl animate-pulse" />
+              <div key={i} className="h-28 rounded-2xl animate-pulse" style={{ background: "rgba(255,255,255,0.06)" }} />
             ))}
           </div>
         ) : listings.length === 0 ? (
-          <div className="text-center py-14 border-2 border-dashed border-slate-200 dark:border-[#2a3040] rounded-2xl">
+          <div className="text-center py-14 border-2 border-dashed border-white/10 rounded-2xl">
             <div className="text-4xl mb-3">🏠</div>
-            <p className="font-bold text-slate-700 dark:text-slate-300 mb-1">Aucune annonce pour l&apos;instant</p>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">
+            <p className="font-bold text-white mb-1">Aucune annonce pour l&apos;instant</p>
+            <p className="text-white/50 text-sm mb-4">
               Publiez votre premier bien en quelques minutes.
             </p>
             <Link
@@ -335,13 +335,14 @@ export default function ComptePage() {
                 <div
                   key={listing.id}
                   className={cn(
-                    "bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] overflow-hidden transition-opacity",
+                    "rounded-2xl overflow-hidden transition-opacity",
                     busy && "opacity-60 pointer-events-none"
                   )}
+                  style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}
                 >
                   <div className="flex gap-3 p-3">
                     {/* Thumbnail */}
-                    <Link href={`/annonces/${listing.id}`} className="relative w-24 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-slate-100 dark:bg-[#151922]">
+                    <Link href={`/annonces/${listing.id}`} className="relative w-24 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-white/5">
                       {listing.primary_image ? (
                         <Image
                           src={listing.primary_image}
@@ -358,11 +359,11 @@ export default function ComptePage() {
                     {/* Info */}
                     <div className="flex-1 min-w-0">
                       <Link href={`/annonces/${listing.id}`}>
-                        <p className="font-bold text-slate-900 dark:text-white text-sm leading-snug line-clamp-2">
+                        <p className="font-bold text-white text-sm leading-snug line-clamp-2">
                           {listing.title}
                         </p>
                       </Link>
-                      <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-xs mt-0.5">
+                      <div className="flex items-center gap-1 text-white/50 text-xs mt-0.5">
                         <MapPin className="w-3 h-3 flex-shrink-0" />
                         {NEIGHBORHOOD_LABELS[listing.neighborhood] ?? listing.neighborhood}
                       </div>
@@ -382,7 +383,7 @@ export default function ComptePage() {
                           </span>
                         )}
                         {/* Views */}
-                        <span className="flex items-center gap-1 text-slate-400 text-[11px]">
+                        <span className="flex items-center gap-1 text-white/40 text-[11px]">
                           <Eye className="w-3 h-3" /> {listing.views} vue{listing.views !== 1 ? "s" : ""}
                         </span>
                       </div>
@@ -414,7 +415,7 @@ export default function ComptePage() {
                     {/* Edit */}
                     <Link
                       href={`/publier?edit=${listing.id}`}
-                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316] transition-colors"
+                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-white/60 hover:border-[#F97316] hover:text-[#F97316] transition-colors" style={{ border: "1px solid rgba(255,255,255,0.10)" }}
                     >
                       <Pencil className="w-3.5 h-3.5" />
                       Modifier
@@ -424,7 +425,7 @@ export default function ComptePage() {
                     <button
                       onClick={() => setDeleteTarget(listing)}
                       disabled={busy}
-                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold border border-slate-200 dark:border-[#2a3040] text-red-400 hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-red-400 hover:bg-red-500/10 transition-colors" style={{ border: "1px solid rgba(255,255,255,0.10)" }}
                     >
                       {isDeleteBusy ? (
                         <div className="w-3.5 h-3.5 border border-red-400 border-t-transparent rounded-full animate-spin" />
@@ -446,12 +447,12 @@ export default function ComptePage() {
           SECTION 2 — Mon profil
       ══════════════════════════════════════ */}
       <section>
-        <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Mon profil</h2>
+        <h2 className="text-lg font-bold text-white mb-4">Mon profil</h2>
 
-        <div className="bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] divide-y divide-slate-100 dark:divide-[#2a3040]">
+        <div className="rounded-2xl divide-y divide-white/8" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}>
           {/* Name field */}
           <div className="p-4">
-            <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-white/40 uppercase tracking-wider mb-2">
               Prénom &amp; Nom
             </label>
             <div className="flex gap-2">
@@ -460,7 +461,7 @@ export default function ComptePage() {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Votre nom complet"
-                className="flex-1 bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-slate-900 dark:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#F97316]/50"
+                className="flex-1 rounded-xl px-3 py-2.5 text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#F97316]/50" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
               />
               <button
                 onClick={saveProfile}
@@ -479,19 +480,19 @@ export default function ComptePage() {
           {/* Email (read-only) */}
           <div className="px-4 py-3 flex items-center justify-between">
             <div>
-              <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Email</p>
-              <p className="text-slate-700 dark:text-slate-300 text-sm font-medium mt-0.5 truncate max-w-[200px]">
+              <p className="text-xs font-bold text-white/40 uppercase tracking-wider">Email</p>
+              <p className="text-white/70 text-sm font-medium mt-0.5 truncate max-w-[200px]">
                 {user.email}
               </p>
             </div>
-            <span className="text-[11px] text-slate-400 font-medium bg-slate-100 dark:bg-[#2a3040] px-2.5 py-1 rounded-full">
+            <span className="text-[11px] text-white/40 font-medium px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.08)" }}>
               Non modifiable
             </span>
           </div>
 
           {/* Phone editable */}
           <div className="p-4">
-            <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-white/40 uppercase tracking-wider mb-2">
               Téléphone
             </label>
             <input
@@ -499,14 +500,14 @@ export default function ComptePage() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+224 620 00 00 00"
-              className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316]/50"
+              className="w-full rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316]/50" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
             />
           </div>
 
           {/* Agency name (agence only) */}
           {isAgence && (
             <div className="p-4">
-              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-bold text-white/40 uppercase tracking-wider mb-2">
                 Nom de l&apos;agence
               </label>
               <input
@@ -514,7 +515,7 @@ export default function ComptePage() {
                 value={agencyName}
                 onChange={(e) => setAgencyName(e.target.value)}
                 placeholder="Nom de votre agence"
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316]/50"
+                className="w-full rounded-xl px-3 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316]/50" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
               />
             </div>
           )}

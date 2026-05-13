@@ -292,12 +292,12 @@ export default function PublierPage() {
       {/* ── Progress ── */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-2">
-          <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
+          <p className="text-sm font-bold text-white">
             Étape {step}&nbsp;/&nbsp;4
           </p>
-          <p className="text-xs text-slate-400">{STEP_LABELS[step - 1]}</p>
+          <p className="text-xs text-white/40">{STEP_LABELS[step - 1]}</p>
         </div>
-        <div className="relative h-2 bg-slate-100 dark:bg-[#2a3040] rounded-full overflow-hidden">
+        <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
           <div
             className="absolute inset-y-0 left-0 bg-[#F97316] rounded-full transition-all duration-500"
             style={{ width: `${(step / 4) * 100}%` }}
@@ -309,7 +309,7 @@ export default function PublierPage() {
               key={n}
               className={cn(
                 "flex-1 h-1 rounded-full transition-colors duration-300",
-                n <= step ? "bg-[#F97316]" : "bg-slate-200 dark:bg-[#2a3040]"
+                n <= step ? "bg-[#F97316]" : "bg-white/10"
               )}
             />
           ))}
@@ -320,10 +320,10 @@ export default function PublierPage() {
       {step === 1 && (
         <div className="space-y-8 animate-fadeIn">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-1">
+            <h1 className="text-2xl font-black text-white mb-1">
               Quel type de bien ?
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm">
+            <p className="text-white/50 text-sm">
               Sélectionnez le type de logement
             </p>
           </div>
@@ -337,7 +337,7 @@ export default function PublierPage() {
                   "flex flex-col items-center gap-2 p-5 rounded-2xl border-2 font-semibold text-sm transition-all active:scale-95",
                   form.type === t.id
                     ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20 text-[#F97316]"
-                    : "border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#1e2430] text-slate-700 dark:text-slate-300 hover:border-[#F97316]/40"
+                    : "hover:border-[#F97316]/40 text-white"
                 )}
               >
                 <span className="text-4xl leading-none">{t.emoji}</span>
@@ -347,7 +347,7 @@ export default function PublierPage() {
           </div>
 
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-3">
+            <h2 className="text-lg font-bold text-white mb-3">
               Location ou vente ?
             </h2>
             <div className="grid grid-cols-2 gap-3">
@@ -362,13 +362,13 @@ export default function PublierPage() {
                     "flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all active:scale-95",
                     form.txType === tx.id
                       ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20"
-                      : "border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#1e2430] hover:border-[#F97316]/40"
+                      : "hover:border-[#F97316]/40"
                   )}
                 >
-                  <p className={cn("font-bold text-base", form.txType === tx.id ? "text-[#F97316]" : "text-slate-900 dark:text-white")}>
+                  <p className={cn("font-bold text-base", form.txType === tx.id ? "text-[#F97316]" : "text-white")}>
                     {tx.label}
                   </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{tx.sub}</p>
+                  <p className="text-xs text-white/50 mt-0.5">{tx.sub}</p>
                 </button>
               ))}
             </div>
@@ -380,10 +380,10 @@ export default function PublierPage() {
       {step === 2 && (
         <div className="space-y-7 animate-fadeIn">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-1">
+            <h1 className="text-2xl font-black text-white mb-1">
               Photos &amp; prix
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm">
+            <p className="text-white/50 text-sm">
               Minimum 1 photo obligatoire pour continuer
             </p>
           </div>
@@ -392,7 +392,7 @@ export default function PublierPage() {
           {photoPreviews.length > 0 && (
             <div className="grid grid-cols-3 gap-2">
               {photoPreviews.map((url, i) => (
-                <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-[#1e2430]">
+                <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-white/5">
                   <Image src={url} alt={`Photo ${i + 1}`} fill className="object-cover" sizes="120px" />
                   <button
                     onClick={() => removePhoto(i)}
@@ -414,14 +414,14 @@ export default function PublierPage() {
           <div className="flex gap-2">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316] transition-colors text-sm font-semibold"
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-white/20 text-white/70 hover:border-[#F97316] hover:text-[#F97316] transition-colors text-sm font-semibold"
             >
               <Upload className="w-4 h-4" />
               Galerie
             </button>
             <button
               onClick={() => cameraInputRef.current?.click()}
-              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-slate-300 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316] transition-colors text-sm font-semibold"
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-white/20 text-white/70 hover:border-[#F97316] hover:text-[#F97316] transition-colors text-sm font-semibold"
             >
               <Camera className="w-4 h-4" />
               Prendre une photo
@@ -447,7 +447,7 @@ export default function PublierPage() {
 
           {/* Price */}
           <div>
-            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+            <label className="block text-sm font-bold text-white mb-2">
               Prix {form.txType === "rent" ? "(par mois)" : ""} <span className="text-red-400">*</span>
             </label>
             <div className="relative">
@@ -459,7 +459,8 @@ export default function PublierPage() {
                 placeholder="Ex: 1500000"
                 value={form.price}
                 onChange={(e) => update("price", e.target.value)}
-                className="w-full bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 pr-12 text-slate-900 dark:text-white font-semibold text-base focus:outline-none focus:ring-2 focus:ring-[#F97316]/50"
+                className="w-full rounded-xl px-4 py-3 pr-12 text-white font-semibold text-base focus:outline-none focus:ring-2 focus:ring-[#F97316]/50"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
               />
               <button
                 onClick={() => toggleMic("price")}
@@ -468,7 +469,7 @@ export default function PublierPage() {
                   "absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-colors",
                   micActive && micField === "price"
                     ? "bg-red-500 text-white animate-pulse"
-                    : "bg-slate-100 dark:bg-[#2a3040] text-slate-500 dark:text-slate-400 hover:text-[#F97316]"
+                    : "bg-white/10 text-white/50 hover:text-[#F97316]"
                 )}
               >
                 {micActive && micField === "price"
@@ -491,7 +492,7 @@ export default function PublierPage() {
 
           {/* Rooms */}
           <div>
-            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+            <label className="block text-sm font-bold text-white mb-2">
               Nombre de chambres
             </label>
             <div className="flex gap-2 flex-wrap">
@@ -505,7 +506,7 @@ export default function PublierPage() {
                       "w-12 h-12 rounded-xl border-2 font-bold text-sm transition-all",
                       form.rooms === val
                         ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20 text-[#F97316]"
-                        : "border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 hover:border-[#F97316]/40"
+                        : "text-white/70 hover:border-[#F97316]/40"
                     )}
                   >
                     {r}
@@ -517,7 +518,7 @@ export default function PublierPage() {
 
           {/* Furnished */}
           <div>
-            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+            <label className="block text-sm font-bold text-white mb-2">
               Meublé ?
             </label>
             <div className="flex gap-3">
@@ -532,7 +533,7 @@ export default function PublierPage() {
                     "flex-1 py-3 rounded-xl border-2 font-bold text-sm transition-all",
                     form.furnished === f.val
                       ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20 text-[#F97316]"
-                      : "border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 hover:border-[#F97316]/40"
+                      : "text-white/70 hover:border-[#F97316]/40"
                   )}
                 >
                   {f.label}
@@ -547,17 +548,17 @@ export default function PublierPage() {
       {step === 3 && (
         <div className="space-y-7 animate-fadeIn">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-1">
+            <h1 className="text-2xl font-black text-white mb-1">
               Où se trouve le bien ?
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm">
+            <p className="text-white/50 text-sm">
               Sélectionnez le quartier à Conakry
             </p>
           </div>
 
           {/* Neighborhood select */}
           <div>
-            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+            <label className="block text-sm font-bold text-white mb-2">
               Quartier <span className="text-red-400">*</span>
             </label>
             <div className="relative">
@@ -567,7 +568,8 @@ export default function PublierPage() {
                 name="neighborhood"
                 value={form.neighborhood}
                 onChange={(e) => update("neighborhood", e.target.value)}
-                className="w-full bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl pl-9 pr-4 py-3 text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#F97316]/50 appearance-none"
+                className="w-full rounded-xl pl-9 pr-4 py-3 text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#F97316]/50 appearance-none"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
               >
                 <option value="">— Choisir un quartier —</option>
                 {COMMUNES.map((commune) => (
@@ -583,7 +585,7 @@ export default function PublierPage() {
 
           {/* GPS button */}
           <div>
-            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+            <label className="block text-sm font-bold text-white mb-2">
               Coordonnées GPS{" "}
               <span className="text-slate-400 font-normal">(optionnel — améliore la recherche)</span>
             </label>
@@ -597,7 +599,7 @@ export default function PublierPage() {
                   ? "border-green-400 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400"
                   : geoState === "error"
                   ? "border-red-300 bg-red-50 dark:bg-red-900/10 text-red-500"
-                  : "border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316]"
+                  : "text-white/70 hover:border-[#F97316] hover:text-[#F97316]"
               )}
             >
               {geoState === "loading" && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -612,7 +614,7 @@ export default function PublierPage() {
 
           {/* Location detail + mic */}
           <div>
-            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+            <label className="block text-sm font-bold text-white mb-2">
               Précision sur l&apos;emplacement{" "}
               <span className="text-slate-400 font-normal">(optionnel)</span>
             </label>
@@ -624,7 +626,8 @@ export default function PublierPage() {
                 onChange={(e) => update("locationDetail", e.target.value)}
                 placeholder="Ex : près du carrefour, derrière la mosquée…"
                 rows={3}
-                className="w-full bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 pr-12 text-slate-900 dark:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#F97316]/50 resize-none"
+                className="w-full rounded-xl px-4 py-3 pr-12 text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#F97316]/50 resize-none"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
               />
               <button
                 onClick={() => toggleMic("location")}
@@ -633,7 +636,7 @@ export default function PublierPage() {
                   "absolute right-3 top-3 w-8 h-8 rounded-full flex items-center justify-center transition-colors",
                   micActive && micField === "location"
                     ? "bg-red-500 text-white animate-pulse"
-                    : "bg-slate-100 dark:bg-[#2a3040] text-slate-500 dark:text-slate-400 hover:text-[#F97316]"
+                    : "bg-white/10 text-white/50 hover:text-[#F97316]"
                 )}
               >
                 {micActive && micField === "location"
@@ -655,10 +658,10 @@ export default function PublierPage() {
       {step === 4 && (
         <div className="space-y-7 animate-fadeIn">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-1">
+            <h1 className="text-2xl font-black text-white mb-1">
               Contact &amp; publication
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm">
+            <p className="text-white/50 text-sm">
               Le numéro que les locataires verront
             </p>
           </div>
@@ -670,32 +673,32 @@ export default function PublierPage() {
             </p>
             <div className="flex flex-wrap gap-2">
               {form.type && (
-                <span className="bg-white dark:bg-[#1e2430] text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-200 dark:border-[#2a3040]">
+                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}>
                   {typeEmoji} {typeLabel}
                 </span>
               )}
               {form.txType && (
-                <span className="bg-white dark:bg-[#1e2430] text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-200 dark:border-[#2a3040]">
+                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}>
                   {form.txType === "rent" ? "🔑 Location" : "💰 Vente"}
                 </span>
               )}
               {form.neighborhood && (
-                <span className="bg-white dark:bg-[#1e2430] text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-200 dark:border-[#2a3040]">
+                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}>
                   📍 {neighborhoodName}
                 </span>
               )}
               {priceFormatted && (
-                <span className="bg-white dark:bg-[#1e2430] text-[#F97316] text-xs font-bold px-3 py-1.5 rounded-full border border-orange-200 dark:border-orange-700/30">
+                <span className="text-[#F97316] text-xs font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(249,115,22,0.12)", border: "1px solid rgba(249,115,22,0.25)" }}>
                   {priceFormatted}{form.txType === "rent" ? "/mois" : ""}
                 </span>
               )}
               {form.photos.length > 0 && (
-                <span className="bg-white dark:bg-[#1e2430] text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-200 dark:border-[#2a3040]">
+                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}>
                   📸 {form.photos.length} photo{form.photos.length > 1 ? "s" : ""}
                 </span>
               )}
               {form.rooms > 0 && form.type !== "land" && (
-                <span className="bg-white dark:bg-[#1e2430] text-slate-700 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-slate-200 dark:border-[#2a3040]">
+                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}>
                   🛏️ {form.rooms === 5 ? "5+" : form.rooms} ch.
                 </span>
               )}
@@ -704,7 +707,7 @@ export default function PublierPage() {
 
           {/* Phone */}
           <div>
-            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+            <label className="block text-sm font-bold text-white mb-2">
               Numéro de téléphone <span className="text-red-400">*</span>
             </label>
             <div className="relative">
@@ -716,14 +719,15 @@ export default function PublierPage() {
                 value={form.phone}
                 onChange={(e) => update("phone", e.target.value)}
                 placeholder="+224 6XX XX XX XX"
-                className="w-full bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl pl-9 pr-4 py-3 text-slate-900 dark:text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#F97316]/50"
+                className="w-full rounded-xl pl-9 pr-4 py-3 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#F97316]/50"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
               />
             </div>
           </div>
 
           {/* Contact method */}
           <div>
-            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3">
+            <label className="block text-sm font-bold text-white mb-3">
               Comment souhaitez-vous être contacté ?
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -739,7 +743,7 @@ export default function PublierPage() {
                     "flex flex-col items-center gap-1.5 py-3.5 rounded-xl border-2 font-semibold text-xs transition-all",
                     form.contactMethod === c.id
                       ? "border-[#F97316] bg-orange-50 dark:bg-orange-900/20 text-[#F97316]"
-                      : "border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 hover:border-[#F97316]/40"
+                      : "text-white/70 hover:border-[#F97316]/40"
                   )}
                 >
                   <span className="text-2xl">{c.emoji}</span>
@@ -772,13 +776,13 @@ export default function PublierPage() {
       )}
 
       {/* ── Bottom navigation bar ── */}
-      <div className="fixed bottom-16 left-0 right-0 bg-white/95 dark:bg-[#111418]/95 backdrop-blur border-t border-slate-100 dark:border-[#2a3040] px-4 py-3 z-40">
+      <div className="fixed bottom-16 left-0 right-0 px-4 py-3 z-40" style={{ background: "rgba(10,10,15,0.95)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
         <div className="max-w-xl mx-auto flex gap-3">
           {step > 1 ? (
             <button
               onClick={() => setStep((s) => s - 1)}
               disabled={submitting}
-              className="flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 font-semibold text-sm hover:border-[#F97316] hover:text-[#F97316] transition-colors disabled:opacity-40"
+              className="flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-[#2a3040] text-white/70 font-semibold text-sm hover:border-[#F97316] hover:text-[#F97316] transition-colors disabled:opacity-40"
             >
               <ChevronLeft className="w-4 h-4" />
               Retour

@@ -36,39 +36,37 @@ export function PropertyCard({ property, variant = "default", className, index =
     : new Date(property.createdAt as unknown as string);
   const isNew = Date.now() - createdAt.getTime() < 7 * 24 * 60 * 60 * 1000;
 
-  // ── Horizontal variant (NearbySection, etc.) ────────────────────
+  // ── Horizontal variant ──────────────────────────────────────────
   if (variant === "horizontal") {
     return (
-      <div className={cn(
-        "group flex gap-3 bg-white rounded-2xl overflow-hidden",
-        "shadow-[0_2px_16px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_24px_rgba(0,0,0,0.12)]",
-        "transition-shadow duration-200",
-        className
-      )}>
+      <div
+        className={cn("group flex gap-3 rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5", className)}
+        style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.10)" }}
+      >
         <Link href={`/annonces/${property.id}`} className="relative w-28 flex-shrink-0">
           <div className="relative w-full h-full min-h-[100px]">
             {primaryImage ? (
               <Image src={primaryImage.url} alt={primaryImage.alt} fill className="object-cover" sizes="112px" />
             ) : (
-              <div className="w-full h-full bg-slate-100" />
+              <div className="w-full h-full bg-white/5" />
             )}
           </div>
         </Link>
         <div className="flex-1 p-3 min-w-0">
           <Link href={`/annonces/${property.id}`}>
-            <p className="font-bold text-sm text-[#1A1A1A] line-clamp-1">{property.title}</p>
-            <div className="flex items-center gap-1 text-[#6B7280] text-xs mt-0.5">
+            <p className="font-bold text-sm text-white line-clamp-1">{property.title}</p>
+            <div className="flex items-center gap-1 text-white/50 text-xs mt-0.5">
               <MapPin className="w-3 h-3 flex-shrink-0 text-[#F97316]" />
               <span>{neighborhoodLabel}</span>
             </div>
             <p className="text-[#F97316] font-bold text-sm mt-1">
               {formatPrice(property.price)}
               {property.pricePeriod === "month" && (
-                <span className="text-xs font-normal text-[#6B7280]">/mois</span>
+                <span className="text-xs font-normal text-white/40">/mois</span>
               )}
             </p>
           </Link>
-          <div className="flex items-center gap-2 mt-1.5 text-xs text-[#6B7280]">
+          <div className="flex items-center gap-2 mt-1.5 text-xs text-white/40">
             {(property.rooms ?? 0) > 0 && (
               <span className="flex items-center gap-0.5"><Bed className="w-3 h-3" />{property.rooms}</span>
             )}
@@ -86,12 +84,10 @@ export function PropertyCard({ property, variant = "default", className, index =
 
   // ── Default variant — pure overlay card ─────────────────────────
   return (
-    <div className={cn(
-      "group relative rounded-[20px] overflow-hidden bg-white",
-      "shadow-[0_4px_24px_rgba(0,0,0,0.10)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.18)]",
-      "hover:-translate-y-1 transition-all duration-300",
-      className
-    )}>
+    <div
+      className={cn("group relative rounded-3xl overflow-hidden hover:-translate-y-1 transition-all duration-300", className)}
+      style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.12)" }}
+    >
       <Link href={`/annonces/${property.id}`} className="block relative h-[220px]">
         {primaryImage ? (
           <Image
@@ -103,17 +99,17 @@ export function PropertyCard({ property, variant = "default", className, index =
             priority={index < 4}
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center">
-            <Square className="w-12 h-12 text-slate-400" />
+          <div className="w-full h-full bg-white/5 flex items-center justify-center">
+            <Square className="w-12 h-12 text-white/20" />
           </div>
         )}
 
-        {/* Gradient overlay — stronger at bottom */}
+        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
 
         {/* Top-left: type + badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
-          <span className="bg-white/90 backdrop-blur-sm text-[#1A1A1A] text-[11px] font-bold px-2.5 py-1 rounded-full leading-none">
+          <span className="bg-black/50 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full leading-none">
             {TYPE_LABELS[property.type] ?? property.type}
           </span>
           {isNew && (
@@ -141,15 +137,15 @@ export function PropertyCard({ property, variant = "default", className, index =
               "w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-md",
               fav
                 ? "bg-red-500 text-white"
-                : "bg-white/90 backdrop-blur-sm text-[#1A1A1A] hover:bg-white"
+                : "bg-black/40 backdrop-blur-sm text-white hover:bg-black/60"
             )}
           >
             <Heart className={cn("w-4 h-4", fav && "fill-white")} />
           </button>
-          <div className="bg-white rounded-xl shadow-md px-2.5 py-1.5 text-right">
-            <p className="text-[#F97316] font-bold text-xs leading-tight">{formatPrice(property.price)}</p>
+          <div className="bg-[#F97316] rounded-xl shadow-md px-2.5 py-1.5 text-right">
+            <p className="text-white font-bold text-xs leading-tight">{formatPrice(property.price)}</p>
             {property.pricePeriod === "month" && (
-              <p className="text-[#6B7280] text-[10px] leading-tight">/mois</p>
+              <p className="text-white/70 text-[10px] leading-tight">/mois</p>
             )}
           </div>
         </div>

@@ -1,7 +1,7 @@
 export function SkeletonCard() {
   return (
-    <div className="rounded-[20px] overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.10)] bg-white">
-      <div className="h-[220px] skeleton-light" />
+    <div className="rounded-3xl overflow-hidden border border-white/[0.08]">
+      <div className="h-[220px] skeleton" />
     </div>
   );
 }

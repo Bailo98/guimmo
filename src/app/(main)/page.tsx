@@ -106,7 +106,7 @@ export default async function HomePage() {
     : properties.slice(0, 6);
 
   return (
-    <div className="bg-[#FAFAF8]">
+    <div className="bg-[#0A0A0F]">
 
       {/* ── HERO ──────────────────────────────────────────────────── */}
       <section className="relative bg-[#0f1219] overflow-hidden min-h-[480px] flex items-center">
@@ -160,16 +160,17 @@ export default async function HomePage() {
 
       {/* ── CATEGORIES ────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 pt-10 pb-2">
-        <h2 className="text-xl font-black text-[#1A1A1A] mb-4">Chercher par type</h2>
+        <h2 className="text-xl font-black text-white mb-4">Chercher par type</h2>
         <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-hide snap-x snap-mandatory">
           {CATEGORIES.map((cat) => (
             <Link
               key={cat.id}
               href={`/annonces?type=${cat.id}`}
-              className="flex-none flex items-center gap-2.5 bg-white border border-[#E5E7EB] rounded-2xl px-4 py-3 shadow-sm hover:border-[#F97316] hover:shadow-md snap-start transition-all group"
+              className="flex-none flex items-center gap-2.5 rounded-2xl px-4 py-3 snap-start transition-all group hover:-translate-y-0.5"
+              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}
             >
               <span className="text-2xl">{cat.emoji}</span>
-              <span className="text-sm font-semibold text-[#1A1A1A] group-hover:text-[#F97316] whitespace-nowrap transition-colors">
+              <span className="text-sm font-semibold text-white group-hover:text-[#F97316] whitespace-nowrap transition-colors">
                 {cat.label}
               </span>
             </Link>
@@ -182,8 +183,8 @@ export default async function HomePage() {
         <section className="max-w-7xl mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h2 className="text-2xl font-black text-[#1A1A1A]">Annonces vedettes</h2>
-              <p className="text-[#6B7280] text-sm">Sélectionnées pour vous</p>
+              <h2 className="text-2xl font-black text-white">Annonces vedettes</h2>
+              <p className="text-white/50 text-sm">Sélectionnées pour vous</p>
             </div>
             <Link href="/annonces" className="flex items-center gap-1 text-[#F97316] text-sm font-semibold hover:underline">
               Voir tout <ChevronRight className="w-4 h-4" />
@@ -210,12 +211,12 @@ export default async function HomePage() {
 
       {/* ── ANNONCES RÉCENTES ─────────────────────────────────────── */}
       {recent.length > 0 && (
-        <section className="bg-white py-10">
+        <section className="py-10">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h2 className="text-2xl font-black text-[#1A1A1A]">Annonces récentes</h2>
-                <p className="text-[#6B7280] text-sm">Les dernières mises en ligne</p>
+                <h2 className="text-2xl font-black text-white">Annonces récentes</h2>
+                <p className="text-white/50 text-sm">Les dernières mises en ligne</p>
               </div>
               <Link href="/annonces" className="flex items-center gap-1 text-[#F97316] text-sm font-semibold hover:underline">
                 Voir tout <ChevronRight className="w-4 h-4" />
@@ -233,21 +234,22 @@ export default async function HomePage() {
       {/* ── QUARTIERS POPULAIRES ─────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 py-10">
         <div className="mb-5">
-          <h2 className="text-2xl font-black text-[#1A1A1A]">Quartiers populaires</h2>
-          <p className="text-[#6B7280] text-sm">Prix moyens à Conakry</p>
+          <h2 className="text-2xl font-black text-white">Quartiers populaires</h2>
+          <p className="text-white/50 text-sm">Prix moyens à Conakry</p>
         </div>
         <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-hide snap-x snap-mandatory">
           {POPULAR_NEIGHBORHOODS.map((n) => (
             <Link
               key={n.id}
               href={`/annonces?neighborhood=${n.id}`}
-              className="flex-none w-44 snap-start group bg-white rounded-2xl p-5 border border-[#E5E7EB] hover:border-[#F97316] hover:shadow-md hover:-translate-y-0.5 transition-all shadow-sm"
+              className="flex-none w-44 snap-start group rounded-2xl p-5 hover:-translate-y-0.5 transition-all"
+              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}
             >
-              <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center mb-3 group-hover:bg-[#F97316] transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-[#F97316]/20 flex items-center justify-center mb-3 group-hover:bg-[#F97316] transition-colors">
                 <MapPin className="w-5 h-5 text-[#F97316] group-hover:text-white transition-colors" />
               </div>
-              <p className="font-bold text-[#1A1A1A] group-hover:text-[#F97316] transition-colors text-sm">{n.name}</p>
-              <p className="text-xs text-[#6B7280] mt-1 leading-tight">{n.avgPrice}</p>
+              <p className="font-bold text-white group-hover:text-[#F97316] transition-colors text-sm">{n.name}</p>
+              <p className="text-xs text-white/50 mt-1 leading-tight">{n.avgPrice}</p>
               <p className="text-xs font-semibold text-[#F97316] mt-2">Voir les biens →</p>
             </Link>
           ))}

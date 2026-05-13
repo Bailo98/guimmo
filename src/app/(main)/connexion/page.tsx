@@ -81,7 +81,7 @@ function ConnexionForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111418] flex flex-col">
+    <div className="min-h-screen bg-[#0A0A0F] flex flex-col">
       <div className="p-4 flex items-center justify-between">
         <Logo />
         <Link href="/" className="text-sm text-slate-400 hover:text-white transition-colors">
@@ -91,7 +91,7 @@ function ConnexionForm() {
 
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-sm">
-          <div className="bg-[#1e2430] rounded-3xl p-8 border border-[#2a3040]">
+          <div className="rounded-3xl p-8" style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.12)" }}>
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-[#F97316]/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Lock className="w-8 h-8 text-[#F97316]" />
@@ -101,15 +101,16 @@ function ConnexionForm() {
             </div>
 
             {/* Mode toggle — outside <form> so it can never accidentally submit */}
-            <div className="flex rounded-xl overflow-hidden border border-[#2a3040] mb-4">
+            <div className="flex rounded-xl overflow-hidden mb-4" style={{ border: "1px solid rgba(255,255,255,0.10)" }}>
               <button
                 type="button"
                 onClick={() => switchMode("phone")}
                 className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
                   mode === "phone"
                     ? "bg-[#F97316] text-white"
-                    : "bg-[#151922] text-slate-400 hover:text-white"
+                    : "text-white/50 hover:text-white"
                 }`}
+                style={mode !== "phone" ? { background: "rgba(255,255,255,0.05)" } : {}}
               >
                 📱 Téléphone
               </button>
@@ -119,8 +120,9 @@ function ConnexionForm() {
                 className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
                   mode === "email"
                     ? "bg-[#F97316] text-white"
-                    : "bg-[#151922] text-slate-400 hover:text-white"
+                    : "text-white/50 hover:text-white"
                 }`}
+                style={mode !== "email" ? { background: "rgba(255,255,255,0.05)" } : {}}
               >
                 ✉️ Email
               </button>
@@ -141,7 +143,7 @@ function ConnexionForm() {
                       placeholder="+224 628 222 510 ou +1 438 000 0000"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className="w-full bg-[#151922] border border-[#2a3040] rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:border-transparent text-sm"
+                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                       required
                       autoComplete="tel"
                     />
@@ -161,7 +163,7 @@ function ConnexionForm() {
                       placeholder="vous@email.com"
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full bg-[#151922] border border-[#2a3040] rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:border-transparent text-sm"
+                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                       required
                       autoComplete="email"
                     />
@@ -182,7 +184,7 @@ function ConnexionForm() {
                     placeholder="••••••••"
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className="w-full bg-[#151922] border border-[#2a3040] rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#F97316] focus:border-transparent text-sm"
+                    className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#F97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                     required
                     autoComplete="current-password"
                   />
@@ -218,7 +220,7 @@ function ConnexionForm() {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-[#2a3040]" />
               </div>
-              <div className="relative flex justify-center text-xs text-slate-500 bg-[#1e2430] px-3">
+              <div className="relative flex justify-center text-xs text-white/40 bg-transparent px-3">
                 ou
               </div>
             </div>
@@ -253,7 +255,7 @@ function ConnexionForm() {
 
 export default function ConnexionPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#111418]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0A0A0F]" />}>
       <ConnexionForm />
     </Suspense>
   );

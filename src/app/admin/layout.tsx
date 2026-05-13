@@ -42,14 +42,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // Show spinner while verifying
   if (loading || !user || (profile !== null && profile.role !== "admin")) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-[#0d1014] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#F97316] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-[#0d1014]">
+    <div className="flex min-h-screen bg-[#0A0A0F]">
       {/* Sidebar — desktop */}
       <aside className="hidden md:flex w-56 flex-col bg-[#111418] border-r border-[#2a3040] fixed inset-y-0 z-30">
         <div className="p-5 border-b border-[#2a3040]">
