@@ -50,9 +50,18 @@
   --animate-toast-in: toastIn 0.25s ease-out;
 }
 
-/* Dark mode via class */
+/* GuImmo Design System tokens */
 :root {
-  color-scheme: light;
+  --guimmo-bg:          #111a14;
+  --guimmo-bg-alt:      #0d1610;
+  --guimmo-surface:     #1a2e1e;
+  --guimmo-amber:       #c8901e;
+  --guimmo-amber-light: #daa84a;
+  --guimmo-cream:       #f7f2e6;
+  --guimmo-cream-dim:   rgba(240,230,204,0.65);
+  --guimmo-border:      rgba(240,230,204,0.12);
+  --guimmo-green:       #6ec97a;
+  color-scheme: dark;
 }
 .dark {
   color-scheme: dark;
@@ -81,9 +90,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  background-color: #0F0F0F;
+  background-color: var(--guimmo-bg);
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  color: white;
+  color: var(--guimmo-cream);
 }
 
 /* Scrollbar */

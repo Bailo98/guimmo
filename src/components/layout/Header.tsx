@@ -75,7 +75,7 @@ export function Header() {
           {isProprietaire && (
             <Link
               href="/publier"
-              className="hidden md:flex items-center gap-1.5 bg-[#F97316] hover:bg-[#EA6C0A] text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
+              className="hidden md:flex items-center gap-1.5 bg-[#c8901e] hover:bg-[#b87c18] text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors shadow-[0_4px_20px_rgba(200,144,30,0.3)]"
             >
               <Plus className="w-4 h-4" />
               Publier
@@ -137,7 +137,7 @@ export function Header() {
                 Connexion
               </Link>
               <Link href="/inscription"
-                className="text-sm font-bold text-white bg-[#F97316] hover:bg-[#EA6C0A] transition-colors px-4 py-2 rounded-xl">
+                className="text-sm font-bold text-white bg-[#c8901e] hover:bg-[#b87c18] transition-colors px-4 py-2 rounded-xl">
                 S&apos;inscrire
               </Link>
             </div>
@@ -193,7 +193,7 @@ export function Header() {
           )}
           {isProprietaire && (
             <Link href="/publier" onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center gap-2 bg-[#F97316] text-white font-bold py-3 rounded-xl mt-2">
+              className="flex items-center justify-center gap-2 bg-[#c8901e] text-white font-bold py-3 rounded-xl mt-2">
               <Plus className="w-4 h-4" /> Publier une annonce
             </Link>
           )}

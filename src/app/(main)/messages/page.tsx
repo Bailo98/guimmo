@@ -81,18 +81,18 @@ function buildConversations(messages: DbMessage[], userId: string): Conversation
 function EmptyMessages() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
-      <div className="w-20 h-20 rounded-full bg-[#F97316]/10 flex items-center justify-center mb-5">
-        <MessageSquare className="w-9 h-9 text-[#F97316]" />
+      <div className="w-20 h-20 rounded-full bg-[#c8901e]/10 flex items-center justify-center mb-5">
+        <MessageSquare className="w-9 h-9 text-[#daa84a]" />
       </div>
-      <h1 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+      <h1 className="text-xl font-bold text-[#f7f2e6] mb-2">
         Vous n&apos;avez pas encore de messages.
       </h1>
-      <p className="text-slate-500 dark:text-slate-400 max-w-xs mb-6">
+      <p className="text-[rgba(240,230,204,0.50)] max-w-xs mb-6">
         Contactez un propriétaire directement depuis une annonce.
       </p>
       <Link
         href="/annonces"
-        className="bg-[#F97316] hover:bg-[#EA6C0A] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+        className="bg-[#c8901e] hover:bg-[#EA6C0A] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
       >
         Voir les annonces
       </Link>
@@ -300,17 +300,17 @@ export default function MessagesPage() {
 
   return (
     <div
-      className="flex overflow-hidden bg-slate-50 dark:bg-[#0f1117]"
+      className="flex overflow-hidden bg-[#111a14]"
       style={{ height: "calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))" }}
     >
       {/* ── Conversation list ───────────────────────────────────────────────── */}
       <aside
-        className={`w-full md:w-80 lg:w-96 flex-shrink-0 border-r border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#1e2430] flex flex-col ${activeKey ? "hidden md:flex" : "flex"}`}
+        className={`w-full md:w-80 lg:w-96 flex-shrink-0 border-r border-[rgba(240,230,204,0.12)] bg-[#1a2e1e] flex flex-col ${activeKey ? "hidden md:flex" : "flex"}`}
       >
-        <div className="px-4 py-4 border-b border-slate-100 dark:border-[#2a3040]">
-          <h1 className="text-lg font-bold text-slate-900 dark:text-white">Messages</h1>
+        <div className="px-4 py-4 border-b border-[rgba(240,230,204,0.12)]">
+          <h1 className="text-lg font-bold text-[#f7f2e6]">Messages</h1>
           {totalUnread > 0 && (
-            <p className="text-xs text-[#F97316] font-medium mt-0.5">
+            <p className="text-xs text-[#daa84a] font-medium mt-0.5">
               {totalUnread} non lu{totalUnread > 1 ? "s" : ""}
             </p>
           )}
@@ -321,7 +321,7 @@ export default function MessagesPage() {
             const lastMsg = conv.messages[conv.messages.length - 1];
             const initial = conv.otherUserName.charAt(0).toUpperCase();
             return (
-              <div key={conv.key} className="relative group border-b border-slate-50 dark:border-[#252d3d]">
+              <div key={conv.key} className="relative group border-b border-[rgba(240,230,204,0.08)]">
                 <button
                   onClick={() => openConversation(conv)}
                   onTouchStart={() => {
@@ -329,26 +329,26 @@ export default function MessagesPage() {
                   }}
                   onTouchEnd={() => { if (longPressTimer.current) clearTimeout(longPressTimer.current); }}
                   onTouchMove={() => { if (longPressTimer.current) clearTimeout(longPressTimer.current); }}
-                  className={`w-full text-left px-4 py-3.5 flex items-start gap-3 hover:bg-slate-50 dark:hover:bg-[#252d3d] transition-colors ${
-                    activeKey === conv.key ? "bg-[#F97316]/5 dark:bg-[#F97316]/10 border-l-2 border-l-[#F97316]" : ""
+                  className={`w-full text-left px-4 py-3.5 flex items-start gap-3 hover:bg-[rgba(240,230,204,0.05)] transition-colors ${
+                    activeKey === conv.key ? "bg-[#c8901e]/5 dark:bg-[#c8901e]/10 border-l-2 border-l-[#F97316]" : ""
                   }`}
                 >
-                  <div className="w-11 h-11 rounded-full bg-[#F97316] flex-shrink-0 flex items-center justify-center text-white font-bold text-base">
+                  <div className="w-11 h-11 rounded-full bg-[#c8901e] flex-shrink-0 flex items-center justify-center text-white font-bold text-base">
                     {initial}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
-                      <p className="font-semibold text-sm text-slate-900 dark:text-white truncate">{conv.otherUserName}</p>
-                      {lastMsg && <span className="text-[10px] text-slate-400 flex-shrink-0">{formatTime(lastMsg.created_at)}</span>}
+                      <p className="font-semibold text-sm text-[#f7f2e6] truncate">{conv.otherUserName}</p>
+                      {lastMsg && <span className="text-[10px] text-[rgba(240,230,204,0.40)] flex-shrink-0">{formatTime(lastMsg.created_at)}</span>}
                     </div>
                     <div className="flex items-center gap-1 mt-0.5">
-                      <Home className="w-3 h-3 text-slate-400 flex-shrink-0" />
-                      <p className="text-xs text-[#F97316] font-medium truncate">{conv.propertyTitle}</p>
+                      <Home className="w-3 h-3 text-[rgba(240,230,204,0.40)] flex-shrink-0" />
+                      <p className="text-xs text-[#daa84a] font-medium truncate">{conv.propertyTitle}</p>
                     </div>
                     <div className="flex items-center justify-between gap-2 mt-0.5">
-                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{lastMsg?.content ?? ""}</p>
+                      <p className="text-xs text-[rgba(240,230,204,0.50)] truncate">{lastMsg?.content ?? ""}</p>
                       {conv.unreadCount > 0 && (
-                        <span className="flex-shrink-0 w-5 h-5 bg-[#F97316] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                        <span className="flex-shrink-0 w-5 h-5 bg-[#c8901e] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                           {conv.unreadCount > 9 ? "9+" : conv.unreadCount}
                         </span>
                       )}
@@ -359,7 +359,7 @@ export default function MessagesPage() {
                 {/* Desktop: trash icon on hover */}
                 <button
                   onClick={(e) => { e.stopPropagation(); deleteConversation(conv); }}
-                  className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 items-center justify-center rounded-lg text-[rgba(240,230,204,0.40)] hover:text-red-500 hover:bg-red-50 hover:bg-red-900/20"
                   aria-label="Supprimer la conversation"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -372,19 +372,19 @@ export default function MessagesPage() {
                     onClick={() => setContextMenu(null)}
                   >
                     <div
-                      className="bg-white dark:bg-[#1e2430] rounded-2xl shadow-xl border border-slate-100 dark:border-[#2a3040] overflow-hidden min-w-[180px]"
+                      className="bg-[#1a2e1e] rounded-2xl shadow-xl border border-[rgba(240,230,204,0.12)] overflow-hidden min-w-[180px]"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <button
                         onClick={() => deleteConversation(conv)}
-                        className="flex items-center gap-2 w-full px-4 py-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 text-sm font-semibold"
+                        className="flex items-center gap-2 w-full px-4 py-3 text-red-500 hover:bg-red-50 hover:bg-red-900/20 text-sm font-semibold"
                       >
                         <Trash2 className="w-4 h-4" />
                         Supprimer
                       </button>
                       <button
                         onClick={() => setContextMenu(null)}
-                        className="flex items-center gap-2 w-full px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#252d3d] text-sm border-t border-slate-100 dark:border-[#2a3040]"
+                        className="flex items-center gap-2 w-full px-4 py-3 text-[rgba(240,230,204,0.50)] hover:bg-[rgba(240,230,204,0.05)] text-sm border-t border-[rgba(240,230,204,0.12)]"
                       >
                         Annuler
                       </button>
@@ -402,33 +402,33 @@ export default function MessagesPage() {
         {activeConv ? (
           <>
             {/* Thread header */}
-            <div className="bg-white dark:bg-[#1e2430] border-b border-slate-200 dark:border-[#2a3040] px-4 py-3 flex items-center gap-3">
+            <div className="bg-[#1a2e1e] border-b border-[rgba(240,230,204,0.12)] px-4 py-3 flex items-center gap-3">
               <button
                 onClick={() => setActiveKey(null)}
                 className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center hover:bg-slate-100 dark:hover:bg-[#252d3d] transition-colors"
               >
-                <ArrowLeft className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+                <ArrowLeft className="w-5 h-5 text-[#f7f2e6]" />
               </button>
-              <div className="w-10 h-10 rounded-full bg-[#F97316] flex-shrink-0 flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 rounded-full bg-[#c8901e] flex-shrink-0 flex items-center justify-center text-white font-bold">
                 {activeConv.otherUserName.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-bold text-slate-900 dark:text-white text-sm">{activeConv.otherUserName}</p>
+                <p className="font-bold text-[#f7f2e6] text-sm">{activeConv.otherUserName}</p>
                 <div className="flex items-center gap-1">
-                  <Home className="w-3 h-3 text-slate-400" />
-                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{activeConv.propertyTitle}</p>
+                  <Home className="w-3 h-3 text-[rgba(240,230,204,0.40)]" />
+                  <p className="text-xs text-[rgba(240,230,204,0.50)] truncate">{activeConv.propertyTitle}</p>
                 </div>
               </div>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-4 py-6 space-y-3 bg-slate-50 dark:bg-[#0f1117]">
+            <div className="flex-1 overflow-y-auto px-4 py-6 space-y-3 bg-[#111a14]">
               {activeConv.messages.map((msg) => {
                 const isMe = msg.sender_id === user.id;
                 return (
                   <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
                     {!isMe && (
-                      <div className="w-7 h-7 rounded-full bg-[#F97316] flex-shrink-0 flex items-center justify-center text-white text-xs font-bold mr-2 self-end mb-4">
+                      <div className="w-7 h-7 rounded-full bg-[#c8901e] flex-shrink-0 flex items-center justify-center text-white text-xs font-bold mr-2 self-end mb-4">
                         {activeConv.otherUserName.charAt(0).toUpperCase()}
                       </div>
                     )}
@@ -436,13 +436,13 @@ export default function MessagesPage() {
                       <div
                         className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
                           isMe
-                            ? "bg-[#F97316] text-white rounded-br-sm"
-                            : "bg-white dark:bg-[#1e2430] text-slate-900 dark:text-white border border-slate-100 dark:border-[#2a3040] rounded-bl-sm"
+                            ? "bg-[#c8901e] text-white rounded-br-sm"
+                            : "bg-[#1a2e1e] text-[#f7f2e6] border border-[rgba(240,230,204,0.12)] rounded-bl-sm"
                         }`}
                       >
                         {msg.content}
                       </div>
-                      <span className="text-[10px] text-slate-400 mt-1 px-1">{formatTime(msg.created_at)}</span>
+                      <span className="text-[10px] text-[rgba(240,230,204,0.40)] mt-1 px-1">{formatTime(msg.created_at)}</span>
                     </div>
                   </div>
                 );
@@ -453,7 +453,7 @@ export default function MessagesPage() {
             {/* Input */}
             <form
               onSubmit={handleSend}
-              className="bg-white dark:bg-[#1e2430] border-t border-slate-100 dark:border-[#2a3040] px-4 py-3"
+              className="bg-[#1a2e1e] border-t border-[rgba(240,230,204,0.12)] px-4 py-3"
             >
               <div className="flex items-end gap-3">
                 <textarea
@@ -463,26 +463,26 @@ export default function MessagesPage() {
                   onKeyDown={handleKeyDown}
                   placeholder="Écrire un message…"
                   rows={1}
-                  className="flex-1 resize-none bg-slate-100 dark:bg-[#252d3d] text-slate-900 dark:text-white placeholder-slate-400 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316]/50 max-h-32 overflow-y-auto"
+                  className="flex-1 resize-none bg-[rgba(240,230,204,0.07)] text-[#f7f2e6] placeholder-slate-400 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#c8901e]/50 max-h-32 overflow-y-auto"
                 />
                 <button
                   type="submit"
                   disabled={!input.trim() || sending}
-                  className="w-11 h-11 rounded-2xl flex items-center justify-center bg-[#F97316] hover:bg-[#ea6c0a] disabled:opacity-40 disabled:cursor-not-allowed text-white transition-all flex-shrink-0"
+                  className="w-11 h-11 rounded-2xl flex items-center justify-center bg-[#c8901e] hover:bg-[#b87c18] disabled:opacity-40 disabled:cursor-not-allowed text-white transition-all flex-shrink-0"
                 >
                   <Send className="w-4 h-4 -rotate-45 translate-x-0.5" />
                 </button>
               </div>
-              <p className="text-[10px] text-slate-400 text-center mt-1.5">Entrée pour envoyer · Maj+Entrée pour nouvelle ligne</p>
+              <p className="text-[10px] text-[rgba(240,230,204,0.40)] text-center mt-1.5">Entrée pour envoyer · Maj+Entrée pour nouvelle ligne</p>
             </form>
           </>
         ) : (
-          <div className="hidden md:flex flex-1 flex-col items-center justify-center text-center px-8 bg-slate-50 dark:bg-[#0f1117]">
-            <div className="w-20 h-20 rounded-full bg-[#F97316]/10 flex items-center justify-center mb-5">
-              <MessageSquare className="w-9 h-9 text-[#F97316]" />
+          <div className="hidden md:flex flex-1 flex-col items-center justify-center text-center px-8 bg-[#111a14]">
+            <div className="w-20 h-20 rounded-full bg-[#c8901e]/10 flex items-center justify-center mb-5">
+              <MessageSquare className="w-9 h-9 text-[#daa84a]" />
             </div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Vos messages</h2>
-            <p className="text-slate-500 dark:text-slate-400 max-w-xs">
+            <h2 className="text-xl font-bold text-[#f7f2e6] mb-2">Vos messages</h2>
+            <p className="text-[rgba(240,230,204,0.50)] max-w-xs">
               Sélectionnez une conversation à gauche pour lire et répondre.
             </p>
           </div>

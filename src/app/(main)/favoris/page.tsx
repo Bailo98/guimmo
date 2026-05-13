@@ -81,8 +81,8 @@ export default function FavorisPage() {
     <div className="max-w-5xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white">Mes favoris</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm">
+        <h1 className="text-2xl font-black text-[#f7f2e6]">Mes favoris</h1>
+        <p className="text-[rgba(240,230,204,0.55)] text-sm">
           {favProperties.length} annonce{favProperties.length !== 1 ? "s" : ""} sauvegardée{favProperties.length !== 1 ? "s" : ""}
           {" · "}
           {favoriteCollections.length} collection{favoriteCollections.length !== 1 ? "s" : ""}
@@ -90,14 +90,14 @@ export default function FavorisPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 bg-slate-100 dark:bg-[#1e2430] rounded-xl p-1 w-fit">
+      <div className="flex gap-1 mb-6 bg-[#1a2e1e] rounded-xl p-1 w-fit">
         <button
           onClick={() => setActiveTab("favoris")}
           className={cn(
             "px-5 py-2 rounded-lg text-sm font-semibold transition-all",
             activeTab === "favoris"
-              ? "bg-white dark:bg-[#2a3040] text-slate-900 dark:text-white shadow"
-              : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+              ? "bg-[#1a2e1e] text-[#f7f2e6] shadow"
+              : "text-[rgba(240,230,204,0.55)] hover:text-[#f7f2e6]"
           )}
         >
           Tous les favoris
@@ -107,13 +107,13 @@ export default function FavorisPage() {
           className={cn(
             "px-5 py-2 rounded-lg text-sm font-semibold transition-all",
             activeTab === "collections"
-              ? "bg-white dark:bg-[#2a3040] text-slate-900 dark:text-white shadow"
-              : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+              ? "bg-[#1a2e1e] text-[#f7f2e6] shadow"
+              : "text-[rgba(240,230,204,0.55)] hover:text-[#f7f2e6]"
           )}
         >
           Collections
           {favoriteCollections.length > 0 && (
-            <span className="ml-1.5 bg-[#F97316] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+            <span className="ml-1.5 bg-[#c8901e] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
               {favoriteCollections.length}
             </span>
           )}
@@ -125,14 +125,14 @@ export default function FavorisPage() {
         <>
           {favProperties.length === 0 ? (
             <div className="text-center py-20">
-              <Heart className="w-16 h-16 text-slate-200 dark:text-slate-700 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Aucun favori</h3>
-              <p className="text-slate-500 dark:text-slate-400 mb-6">
+              <Heart className="w-16 h-16 text-white/10 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-[#f7f2e6] mb-2">Aucun favori</h3>
+              <p className="text-[rgba(240,230,204,0.55)] mb-6">
                 Appuyez sur le cœur sur une annonce pour la sauvegarder ici
               </p>
               <Link
                 href="/annonces"
-                className="bg-[#F97316] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#EA6C0A] transition-colors inline-block"
+                className="bg-[#c8901e] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#b87c18] transition-colors inline-block"
               >
                 Parcourir les annonces
               </Link>
@@ -233,7 +233,7 @@ export default function FavorisPage() {
             </button>
           ) : (
             <div className="bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-2xl p-5">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">Nouvelle collection</h3>
+              <h3 className="text-sm font-bold text-[#f7f2e6] mb-3">Nouvelle collection</h3>
               <input
                 type="text"
                 placeholder="Nom de la collection"
@@ -241,10 +241,10 @@ export default function FavorisPage() {
                 onChange={(e) => setNewCollectionName(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleCreateCollection()}
                 autoFocus
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] mb-3"
+                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm text-[#f7f2e6] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] mb-3"
               />
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xs text-slate-500 dark:text-slate-400">Couleur :</span>
+                <span className="text-xs text-[rgba(240,230,204,0.55)]">Couleur :</span>
                 {PRESET_COLORS.map((color) => (
                   <button
                     key={color}
@@ -261,7 +261,7 @@ export default function FavorisPage() {
                 <button
                   onClick={handleCreateCollection}
                   disabled={!newCollectionName.trim()}
-                  className="flex-1 bg-[#F97316] disabled:opacity-50 text-white font-semibold py-2 px-4 rounded-xl text-sm hover:bg-[#EA6C0A] transition-colors"
+                  className="flex-1 bg-[#c8901e] disabled:opacity-50 text-white font-semibold py-2 px-4 rounded-xl text-sm hover:bg-[#b87c18] transition-colors"
                 >
                   Créer
                 </button>
@@ -281,9 +281,9 @@ export default function FavorisPage() {
           {/* Collections list */}
           {favoriteCollections.length === 0 && !showNewCollectionForm ? (
             <div className="text-center py-16">
-              <FolderPlus className="w-14 h-14 text-slate-200 dark:text-slate-700 mx-auto mb-3" />
-              <p className="text-slate-900 dark:text-white font-bold mb-1">Aucune collection</p>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">
+              <FolderPlus className="w-14 h-14 text-white/10 mx-auto mb-3" />
+              <p className="text-[#f7f2e6] font-bold mb-1">Aucune collection</p>
+              <p className="text-[rgba(240,230,204,0.55)] text-sm">
                 Organisez vos favoris en créant des collections thématiques
               </p>
             </div>
@@ -313,7 +313,7 @@ export default function FavorisPage() {
                           value={editingName}
                           onChange={(e) => setEditingName(e.target.value)}
                           autoFocus
-                          className="flex-1 bg-slate-50 dark:bg-[#151922] border border-[#F97316] rounded-lg px-3 py-1 text-sm text-slate-900 dark:text-white focus:outline-none"
+                          className="flex-1 bg-slate-50 dark:bg-[#151922] border border-[#F97316] rounded-lg px-3 py-1 text-sm text-[#f7f2e6] focus:outline-none"
                         />
                         <button type="submit" className="text-xs font-bold text-[#F97316] hover:underline">
                           OK
@@ -329,7 +329,7 @@ export default function FavorisPage() {
                     ) : (
                       <>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-slate-900 dark:text-white text-sm truncate">{collection.name}</h3>
+                          <h3 className="font-bold text-[#f7f2e6] text-sm truncate">{collection.name}</h3>
                           <p className="text-xs text-slate-400">
                             {collection.propertyIds.length} annonce{collection.propertyIds.length !== 1 ? "s" : ""}
                           </p>

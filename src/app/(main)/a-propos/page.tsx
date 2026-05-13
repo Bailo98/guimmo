@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import { MapPin, Users, Shield, TrendingUp, ArrowRight } from "lucide-react";
 import { StatsSection } from "./StatsSection";
+import { PageHero } from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
   title: "À propos de LogerBien",
@@ -18,31 +19,20 @@ const VALUES = [
 
 export default function AProposPage() {
   return (
+    <div style={{ background: "var(--guimmo-bg)" }}>
+      <PageHero
+        title="L'immobilier guinéen, enfin accessible"
+        subtitle="GuImmo est née d'un constat simple : trouver un logement à Conakry était trop difficile, trop opaque et trop risqué. Nous avons changé ça."
+        badge="✦ À propos de GuImmo"
+        align="center"
+      />
     <div className="max-w-4xl mx-auto px-4 py-10 pb-24">
-      <nav className="flex items-center gap-2 text-xs text-white/40 mb-8">
-        <Link href="/" className="hover:text-white">Accueil</Link>
-        <span>/</span>
-        <span className="text-white/60">À propos</span>
-      </nav>
-
-      {/* Hero */}
-      <div className="text-center mb-14">
-        <div className="flex justify-center mb-4">
-          <Logo size="lg" />
-        </div>
-        <h1 className="text-3xl md:text-4xl font-black text-white mb-4">
-          L&apos;immobilier guinéen,<br />enfin accessible à tous
-        </h1>
-        <p className="text-white/50 max-w-xl mx-auto leading-relaxed">
-          LogerBien est née d&apos;un constat simple : trouver un logement à Conakry était trop difficile, trop opaque et trop risqué. Nous avons changé ça.
-        </p>
-      </div>
 
       {/* Stats — chargées depuis Supabase */}
       <StatsSection />
 
       {/* Mission */}
-      <div className="rounded-2xl p-8 mb-14" style={{ background: "rgba(249,115,22,0.08)", border: "1px solid rgba(249,115,22,0.20)" }}>
+      <div className="rounded-2xl p-8 mb-14" style={{ background: "rgba(200,144,30,0.08)", border: "1px solid rgba(200,144,30,0.20)" }}>
         <h2 className="text-xl font-black text-white mb-3">Notre mission</h2>
         <p className="text-white/60 leading-relaxed">
           Rendre la recherche de logement en Guinée transparente, rapide et sécurisée. Que vous cherchiez un studio à Dixinn ou une villa à Hamdallaye, LogerBien vous connecte directement aux propriétaires vérifiés — sans intermédiaires abusifs, sans frais cachés.
@@ -78,11 +68,11 @@ export default function AProposPage() {
       </div>
 
       {/* CTA */}
-      <div className="bg-[#009460] rounded-2xl p-8 text-center text-white">
-        <h2 className="text-xl font-black mb-2">Rejoignez la communauté LogerBien</h2>
+      <div className="rounded-2xl p-8 text-center text-white" style={{ background: "linear-gradient(135deg, var(--guimmo-amber), #8a5e10)" }}>
+        <h2 className="text-xl font-black mb-2">Rejoignez la communauté GuImmo</h2>
         <p className="text-white/80 mb-6 text-sm">Publiez votre bien ou trouvez votre logement dès maintenant.</p>
         <div className="flex flex-wrap gap-3 justify-center">
-          <Link href="/annonces" className="flex items-center gap-2 bg-white text-[#009460] font-bold px-6 py-3 rounded-xl hover:bg-white/90 transition-colors text-sm">
+          <Link href="/annonces" className="flex items-center gap-2 bg-[#f7f2e6] text-[#111a14] font-bold px-6 py-3 rounded-xl hover:bg-white/90 transition-colors text-sm">
             Voir les annonces <ArrowRight className="w-4 h-4" />
           </Link>
           <Link href="/publier" className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm border border-white/30">
@@ -90,6 +80,7 @@ export default function AProposPage() {
           </Link>
         </div>
       </div>
+    </div>
     </div>
   );
 }

@@ -104,10 +104,10 @@ export default function InscriptionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0F0F0F] flex flex-col">
+    <div className="min-h-screen bg-[#111a14] flex flex-col">
       <div className="p-4 flex items-center justify-between">
         <Logo />
-        <Link href="/connexion" className="text-sm text-slate-400 hover:text-white transition-colors">
+        <Link href="/connexion" className="text-sm text-[rgba(240,230,204,0.50)] hover:text-white transition-colors">
           Déjà un compte ? Se connecter
         </Link>
       </div>
@@ -121,8 +121,8 @@ export default function InscriptionPage() {
                 key={s}
                 className={cn(
                   "h-1.5 rounded-full transition-all duration-300",
-                  s < step  ? "bg-[#F97316] w-12"
-                  : s === step ? "bg-[#F97316] w-16"
+                  s < step  ? "bg-[#c8901e] w-12"
+                  : s === step ? "bg-[#c8901e] w-16"
                   : "bg-[#2a3040] w-8"
                 )}
               />
@@ -136,7 +136,7 @@ export default function InscriptionPage() {
               <>
                 <div className="text-center mb-6">
                   <h1 className="text-2xl font-black text-white">Créer un compte</h1>
-                  <p className="text-slate-400 text-sm mt-1">Quel est votre profil ?</p>
+                  <p className="text-[rgba(240,230,204,0.50)] text-sm mt-1">Quel est votre profil ?</p>
                 </div>
 
                 {/* Google signup */}
@@ -169,7 +169,7 @@ export default function InscriptionPage() {
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-[#2a3040]" />
                   </div>
-                  <div className="relative flex justify-center text-xs text-slate-500 bg-[#1e2430] px-3">
+                  <div className="relative flex justify-center text-xs text-[rgba(240,230,204,0.50)] bg-[#1e2430] px-3">
                     ou avec téléphone / email
                   </div>
                 </div>
@@ -183,18 +183,18 @@ export default function InscriptionPage() {
                       className={cn(
                         "w-full flex items-center gap-3 p-4 rounded-2xl border transition-all text-left",
                         role === r.value
-                          ? "border-[#F97316] bg-[#F97316]/10"
+                          ? "border-[#c8901e] bg-[#c8901e]/10"
                           : "hover:border-white/20"
                       )}
                     >
                       <span className="text-2xl">{r.icon}</span>
                       <div className="flex-1">
-                        <p className={cn("font-semibold text-sm", role === r.value ? "text-[#F97316]" : "text-white")}>
+                        <p className={cn("font-semibold text-sm", role === r.value ? "text-[#daa84a]" : "text-white")}>
                           {r.label}
                         </p>
-                        <p className="text-slate-400 text-xs">{r.desc}</p>
+                        <p className="text-[rgba(240,230,204,0.50)] text-xs">{r.desc}</p>
                       </div>
-                      {role === r.value && <CheckCircle className="w-4 h-4 text-[#F97316] flex-shrink-0" />}
+                      {role === r.value && <CheckCircle className="w-4 h-4 text-[#daa84a] flex-shrink-0" />}
                     </button>
                   ))}
                 </div>
@@ -217,24 +217,24 @@ export default function InscriptionPage() {
                 <div className="text-center mb-6">
                   <button
                     onClick={() => { setStep(1); setError(null); }}
-                    className="text-slate-400 hover:text-white text-sm mb-2 flex items-center gap-1 mx-auto"
+                    className="text-[rgba(240,230,204,0.50)] hover:text-white text-sm mb-2 flex items-center gap-1 mx-auto"
                   >
                     ← Retour
                   </button>
                   <h1 className="text-2xl font-black text-white">Vos informations</h1>
-                  <p className="text-slate-400 text-sm mt-1">Presque terminé !</p>
+                  <p className="text-[rgba(240,230,204,0.50)] text-sm mt-1">Presque terminé !</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Name */}
                   <div>
-                    <label className="block text-sm font-semibold text-slate-300 mb-2">
+                    <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
                       {role === "agency" ? "Nom de l'agence" : "Votre nom complet"}
                     </label>
                     <div className="relative">
                       {role === "agency"
-                        ? <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                        : <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />}
+                        ? <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
+                        : <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />}
                       <input
                         id="name"
                         name="name"
@@ -252,11 +252,11 @@ export default function InscriptionPage() {
                   {/* Phone or email */}
                   {mode === "phone" ? (
                     <div>
-                      <label className="block text-sm font-semibold text-slate-300 mb-2">
+                      <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
                         Numéro de téléphone
                       </label>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
                         <input
                           id="phone"
                           name="phone"
@@ -272,18 +272,18 @@ export default function InscriptionPage() {
                       <button
                         type="button"
                         onClick={() => switchMode("email")}
-                        className="text-xs text-[#F97316] hover:underline mt-1.5 block"
+                        className="text-xs text-[#daa84a] hover:underline mt-1.5 block"
                       >
                         Utiliser mon email à la place →
                       </button>
                     </div>
                   ) : (
                     <div>
-                      <label className="block text-sm font-semibold text-slate-300 mb-2">
+                      <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
                         Adresse email
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
                         <input
                           id="email"
                           name="email"
@@ -299,7 +299,7 @@ export default function InscriptionPage() {
                       <button
                         type="button"
                         onClick={() => switchMode("phone")}
-                        className="text-xs text-[#F97316] hover:underline mt-1.5 block"
+                        className="text-xs text-[#daa84a] hover:underline mt-1.5 block"
                       >
                         ← Utiliser mon numéro de téléphone
                       </button>
@@ -308,11 +308,11 @@ export default function InscriptionPage() {
 
                   {/* Password */}
                   <div>
-                    <label className="block text-sm font-semibold text-slate-300 mb-2">
+                    <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
                       Mot de passe
                     </label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
                       <input
                         id="password"
                         name="password"
@@ -328,7 +328,7 @@ export default function InscriptionPage() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[rgba(240,230,204,0.50)] hover:text-white"
                       >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
@@ -346,9 +346,9 @@ export default function InscriptionPage() {
                   </Button>
                 </form>
 
-                <p className="text-slate-500 text-xs text-center mt-4">
+                <p className="text-[rgba(240,230,204,0.50)] text-xs text-center mt-4">
                   En créant un compte, vous acceptez nos{" "}
-                  <Link href="/cgv" className="text-[#F97316] hover:underline">
+                  <Link href="/cgv" className="text-[#daa84a] hover:underline">
                     conditions d&apos;utilisation
                   </Link>
                 </p>

@@ -150,7 +150,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   const phoneUrl = `tel:${phone}`;
 
   return (
-    <div className="bg-[#0F0F0F] pb-32 md:pb-12">
+    <div className="bg-[#111a14] pb-32 md:pb-12">
       {/* Back nav — absolute over hero */}
       <div className="absolute top-[64px] left-0 right-0 z-20 flex items-center gap-3 px-4 pt-4">
         <Link

@@ -248,7 +248,7 @@ export default function ComptePage() {
         {isProprietaire && (
           <Link
             href="/publier"
-            className="ml-auto flex-none flex items-center gap-1.5 bg-[#F97316] hover:bg-[#EA6C0A] text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-colors shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
+            className="ml-auto flex-none flex items-center gap-1.5 bg-[#c8901e] hover:bg-[#b87c18] text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-colors shadow-[0_4px_20px_rgba(200,144,30,0.3)]"
           >
             <Plus className="w-4 h-4" />
             Publier
@@ -281,7 +281,7 @@ export default function ComptePage() {
             <button
               onClick={upgradeToProprietaire}
               disabled={upgrading}
-              className="flex items-center gap-2 bg-[#F97316] hover:bg-[#EA6C0A] disabled:opacity-50 text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
+              className="flex items-center gap-2 bg-[#c8901e] hover:bg-[#b87c18] disabled:opacity-50 text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-colors"
             >
               {upgrading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Plus className="w-4 h-4" />}
               Devenir propriétaire
@@ -318,7 +318,7 @@ export default function ComptePage() {
             </p>
             <Link
               href="/publier"
-              className="inline-flex items-center gap-2 bg-[#F97316] hover:bg-[#EA6C0A] text-white font-bold px-5 py-2.5 rounded-xl transition-colors"
+              className="inline-flex items-center gap-2 bg-[#c8901e] hover:bg-[#b87c18] text-white font-bold px-5 py-2.5 rounded-xl transition-colors"
             >
               <Plus className="w-4 h-4" />
               Publier maintenant →
@@ -466,7 +466,7 @@ export default function ComptePage() {
               <button
                 onClick={saveProfile}
                 disabled={savingProfile || !fullName.trim()}
-                className="px-4 py-2.5 bg-[#F97316] hover:bg-[#EA6C0A] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-sm rounded-xl transition-colors"
+                className="px-4 py-2.5 bg-[#c8901e] hover:bg-[#b87c18] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-sm rounded-xl transition-colors"
               >
                 {savingProfile ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

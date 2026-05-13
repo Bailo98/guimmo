@@ -35,14 +35,14 @@ export function BottomNav() {
     return (
       <Link href={href} className="flex flex-col items-center justify-center gap-0.5 w-14 h-14">
         <div className="relative">
-          <Icon className={cn("w-[22px] h-[22px]", active ? "text-white" : "text-white/40")} />
+          <Icon className={cn("w-[22px] h-[22px]", active ? "text-[#daa84a]" : "text-white/40")} />
           {hasBadge && (
             <span className="absolute -top-1 -right-1.5 w-4 h-4 text-white text-[8px] font-bold rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.25)" }}>
               {favorites.length > 9 ? "9+" : favorites.length}
             </span>
           )}
         </div>
-        <span className={cn("text-[10px] font-semibold", active ? "text-white" : "text-white/40")}>
+        <span className={cn("text-[10px] font-semibold", active ? "text-[#daa84a]" : "text-white/40")}>
           {label}
         </span>
       </Link>
@@ -52,7 +52,7 @@ export function BottomNav() {
   return (
     <nav
       className="md:hidden fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom,0px)]"
-      style={{ background: "rgba(15,15,15,0.90)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderTop: "1px solid rgba(255,255,255,0.08)" }}
+      style={{ background: "var(--guimmo-bg-alt)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderTop: "1px solid var(--guimmo-border)" }}
     >
       <div className="flex items-center justify-around h-16 px-2">
         {LEFT_NAV.map((item) => (
