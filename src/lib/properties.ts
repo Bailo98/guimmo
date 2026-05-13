@@ -51,6 +51,8 @@ function mapRow(row: any): Property {
     boostExpiresAt: row.boost_expires_at ? new Date(row.boost_expires_at) : undefined,
     createdAt: new Date(row.created_at ?? Date.now()),
     updatedAt: new Date(row.updated_at ?? Date.now()),
+    latitude: row.latitude ?? undefined,
+    longitude: row.longitude ?? undefined,
   };
 }
 

@@ -76,6 +76,8 @@ export interface Property {
   updatedAt: Date;
   features: string[];
   virtualTourUrl?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface PropertyImage {

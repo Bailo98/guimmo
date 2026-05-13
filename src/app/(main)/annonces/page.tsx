@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { SkeletonCard } from "@/components/ui/SkeletonCard";
+import { NearbySection } from "@/components/ui/NearbySection";
 import { fetchProperties } from "@/lib/properties";
 import { cn } from "@/lib/utils";
 import type { Property } from "@/types";
@@ -242,6 +243,9 @@ function AnnoncesContent() {
         </div>
       ) : (
         <>
+          {/* Géolocalisation — section "Près de vous" */}
+          {!hasFilters && <NearbySection properties={allProperties} />}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {pageItems.map((p, i) => (
               <PropertyCard key={p.id} property={p} index={i} />
