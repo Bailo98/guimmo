@@ -14,14 +14,8 @@ export async function GET(request: Request) {
     ?? (cookieRedirect ? decodeURIComponent(cookieRedirect) : null)
     ?? "/compte";
 
-  console.log("[callback] origin:", origin);
-  console.log("[callback] code:", code ? `présent (${code.slice(0, 8)}…)` : "ABSENT");
-  console.log("[callback] error param:", oauthError ?? "aucun");
-  console.log("[callback] next:", next);
-
   if (oauthError) {
     const desc = searchParams.get("error_description") ?? oauthError;
-    console.log("[callback] OAuth provider error:", desc);
     return NextResponse.redirect(`${origin}/connexion?error=${encodeURIComponent(desc)}`);
   }
 
@@ -44,10 +38,8 @@ export async function GET(request: Request) {
     );
 
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    console.log("[callback] exchangeCodeForSession error:", JSON.stringify(error));
 
     if (!error) {
-      console.log("[callback] success → redirect to", next);
       const response = NextResponse.redirect(`${origin}${next}`);
       response.cookies.set("guimmo-auth", "supabase-session", {
         path: "/",
@@ -56,9 +48,6 @@ export async function GET(request: Request) {
       return response;
     }
 
-    console.log("[callback] exchange failed → redirect to /connexion?error=oauth");
-  } else {
-    console.log("[callback] no code → redirect to /connexion?error=oauth");
   }
 
   return NextResponse.redirect(`${origin}/connexion?error=oauth`);

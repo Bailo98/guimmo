@@ -1,28 +1,63 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { User, Phone, Lock, Bell, Shield, Moon, Sun, Globe, ChevronRight, Save, ArrowLeft, Camera, LogOut, Trash2, X, AlertTriangle } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { useAuth } from "@/lib/auth-context";
+import { toast } from "@/lib/toast";
 
 export default function ParametresPage() {
   const { theme, toggleTheme } = useAppStore();
+  const { user, refreshProfile } = useAuth();
 
+  const [profileLoading, setProfileLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [form, setForm] = useState({ name: "Mamadou Diallo", phone: "+224 620 000 001", email: "mamadou@email.com" });
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [form, setForm] = useState({ name: "", phone: "", email: "" });
   const [avatar, setAvatar] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    if (!user || !supabase) { setProfileLoading(false); return; }
+    supabase
+      .from("profiles")
+      .select("full_name, phone, avatar_url")
+      .eq("id", user.id)
+      .single()
+      .then(({ data }) => {
+        setForm({
+          name: data?.full_name ?? "",
+          phone: data?.phone ?? "",
+          email: user.email ?? "",
+        });
+        if (data?.avatar_url) setAvatar(data.avatar_url);
+        setProfileLoading(false);
+      });
+  }, [user]);
+
   async function handleSave() {
+    if (!user || !supabase) return;
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 800));
+    setSaveError(null);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ full_name: form.name.trim(), phone: form.phone.trim() })
+      .eq("id", user.id);
     setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    if (error) {
+      setSaveError("Erreur lors de la sauvegarde.");
+      toast("Erreur lors de la sauvegarde.", "error");
+    } else {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+      toast("Profil mis à jour.", "success");
+      await refreshProfile();
+    }
   }
 
   function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -74,13 +109,13 @@ export default function ParametresPage() {
       {/* Avatar */}
       <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-5 border border-slate-100 dark:border-[#2a3040] flex items-center gap-4">
         <div className="relative">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#F97316] to-[#EA6C0A] flex items-center justify-center overflow-hidden">
-            {avatar ? (
+          <div className={`w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden ${profileLoading ? "bg-slate-200 dark:bg-slate-700 animate-pulse" : "bg-gradient-to-br from-[#F97316] to-[#EA6C0A]"}`}>
+            {!profileLoading && (avatar ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
             ) : (
               <span className="text-white font-black text-3xl">{form.name.charAt(0)}</span>
-            )}
+            ))}
           </div>
           <button
             onClick={() => fileRef.current?.click()}
@@ -106,24 +141,45 @@ export default function ParametresPage() {
         <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <User className="w-4 h-4 text-[#F97316]" /> Profil
         </h2>
-        {[
-          { key: "name", label: "Nom complet", type: "text", icon: User },
-          { key: "phone", label: "Téléphone", type: "tel", icon: Phone },
-          { key: "email", label: "Email", type: "email", icon: Globe },
-        ].map((f) => (
-          <div key={f.key}>
-            <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 block">{f.label}</label>
-            <input
-              type={f.type}
-              value={form[f.key as keyof typeof form]}
-              onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-              className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]"
-            />
+        {profileLoading ? (
+          <div className="space-y-4 animate-pulse">
+            {[1, 2, 3].map((i) => (
+              <div key={i}>
+                <div className="h-3 w-24 bg-slate-200 dark:bg-slate-700 rounded mb-1.5" />
+                <div className="h-10 w-full bg-slate-100 dark:bg-[#151922] rounded-xl" />
+              </div>
+            ))}
+            <div className="h-9 w-full bg-slate-100 dark:bg-[#151922] rounded-xl" />
           </div>
-        ))}
-        <Button onClick={handleSave} loading={saving} variant="brand" size="sm" className="w-full">
-          {saved ? "✓ Enregistré !" : <><Save className="w-4 h-4" /> Enregistrer</>}
-        </Button>
+        ) : (
+          <>
+            {[
+              { key: "name", label: "Nom complet", type: "text" },
+              { key: "phone", label: "Téléphone", type: "tel" },
+              { key: "email", label: "Email", type: "email" },
+            ].map((f) => (
+              <div key={f.key}>
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 block">{f.label}</label>
+                <input
+                  type={f.type}
+                  value={form[f.key as keyof typeof form]}
+                  onChange={(e) => f.key !== "email" && setForm({ ...form, [f.key]: e.target.value })}
+                  readOnly={f.key === "email"}
+                  className={`w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none ${f.key === "email" ? "opacity-60 cursor-not-allowed" : "focus:ring-2 focus:ring-[#F97316]"}`}
+                />
+                {f.key === "email" && (
+                  <p className="text-xs text-slate-400 mt-1">L&apos;email ne peut pas être modifié ici.</p>
+                )}
+              </div>
+            ))}
+            {saveError && (
+              <p className="text-xs text-red-500">{saveError}</p>
+            )}
+            <Button onClick={handleSave} loading={saving} variant="brand" size="sm" className="w-full">
+              {saved ? "✓ Enregistré !" : <><Save className="w-4 h-4" /> Enregistrer</>}
+            </Button>
+          </>
+        )}
       </div>
 
       {/* Preferences */}
