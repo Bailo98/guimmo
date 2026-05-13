@@ -22,9 +22,10 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): nu
 
 interface Props {
   properties: Property[];
+  horizontal?: boolean;
 }
 
-export function NearbySection({ properties }: Props) {
+export function NearbySection({ properties, horizontal = false }: Props) {
   const [state, setState] = useState<"idle" | "loading" | "ready" | "denied">("idle");
   const [nearby, setNearby] = useState<(Property & { distanceKm: number })[]>([]);
 
@@ -65,20 +66,44 @@ export function NearbySection({ properties }: Props) {
 
   if (nearby.length === 0) return null;
 
+  const header = (
+    <div className="flex items-center gap-2 mb-4">
+      <div className="w-7 h-7 bg-[#F97316]/10 rounded-lg flex items-center justify-center">
+        <MapPin className="w-4 h-4 text-[#F97316]" />
+      </div>
+      <h2 className="font-black text-slate-900 dark:text-white text-lg">Près de vous</h2>
+      <span className="text-xs text-slate-400 ml-1">dans un rayon de {MAX_DISTANCE_KM} km</span>
+    </div>
+  );
+
+  if (horizontal) {
+    return (
+      <section className="mb-10">
+        {header}
+        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+          {nearby.map((p, i) => (
+            <div key={p.id} className="relative flex-none w-64 snap-start">
+              <PropertyCard property={p} index={i} />
+              <div className="absolute top-3 left-3 bg-[#F97316] text-white text-[10px] font-bold px-2 py-0.5 rounded-full pointer-events-none">
+                {p.distanceKm < 1
+                  ? `${Math.round(p.distanceKm * 1000)} m`
+                  : `${p.distanceKm.toFixed(1)} km`}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="mb-10">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-7 h-7 bg-[#F97316]/10 rounded-lg flex items-center justify-center">
-          <MapPin className="w-4 h-4 text-[#F97316]" />
-        </div>
-        <h2 className="font-black text-slate-900 dark:text-white text-lg">Près de vous</h2>
-        <span className="text-xs text-slate-400 ml-1">dans un rayon de {MAX_DISTANCE_KM} km</span>
-      </div>
+      {header}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {nearby.map((p, i) => (
           <div key={p.id} className="relative">
             <PropertyCard property={p} index={i} />
-            <div className="absolute top-3 left-3 bg-[#F97316] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+            <div className="absolute top-3 left-3 bg-[#F97316] text-white text-[10px] font-bold px-2 py-0.5 rounded-full pointer-events-none">
               {p.distanceKm < 1
                 ? `${Math.round(p.distanceKm * 1000)} m`
                 : `${p.distanceKm.toFixed(1)} km`}

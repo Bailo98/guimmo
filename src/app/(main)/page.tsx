@@ -5,6 +5,7 @@ import { MOCK_PROPERTIES } from "@/data/mock-properties";
 import { POPULAR_NEIGHBORHOODS } from "@/data/neighborhoods";
 import { SearchBar } from "@/components/search/SearchBar";
 import { RecentlyViewedSection } from "@/components/ui/RecentlyViewedSection";
+import { NearbySection } from "@/components/ui/NearbySection";
 import { createClient } from "@supabase/supabase-js";
 import type { Property } from "@/types";
 
@@ -175,6 +176,11 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* NEARBY — géolocalisation, client-side */}
+      <section className="max-w-7xl mx-auto px-4 pt-10">
+        <NearbySection properties={properties} horizontal />
+      </section>
 
       {/* RECENTLY VIEWED */}
       <RecentlyViewedSection />

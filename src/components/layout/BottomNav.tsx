@@ -16,6 +16,7 @@ const NAV_ITEMS = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
   const favorites = useAppStore((s) => s.favorites);
   const unreadMessages = useAppStore((s) => s.unreadMessages);
   const _hasHydrated = useAppStore((s) => s._hasHydrated);

@@ -452,6 +452,8 @@ export default function PublierPage() {
             </label>
             <div className="relative">
               <input
+                id="price"
+                name="price"
                 type="number"
                 inputMode="numeric"
                 placeholder="Ex: 1500000"
@@ -561,6 +563,8 @@ export default function PublierPage() {
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               <select
+                id="neighborhood"
+                name="neighborhood"
                 value={form.neighborhood}
                 onChange={(e) => update("neighborhood", e.target.value)}
                 className="w-full bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl pl-9 pr-4 py-3 text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#F97316]/50 appearance-none"
@@ -614,6 +618,8 @@ export default function PublierPage() {
             </label>
             <div className="relative">
               <textarea
+                id="locationDetail"
+                name="locationDetail"
                 value={form.locationDetail}
                 onChange={(e) => update("locationDetail", e.target.value)}
                 placeholder="Ex : près du carrefour, derrière la mosquée…"
@@ -704,6 +710,8 @@ export default function PublierPage() {
             <div className="relative">
               <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               <input
+                id="phone"
+                name="phone"
                 type="tel"
                 value={form.phone}
                 onChange={(e) => update("phone", e.target.value)}
