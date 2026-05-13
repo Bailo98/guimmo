@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
 import { toast } from "@/lib/toast";
+import { WhatsAppShare } from "@/components/ui/WhatsAppShare";
 import type { Property } from "@/types";
 
 interface PropertyCardProps {
@@ -31,6 +32,17 @@ export function PropertyCard({ property, variant = "default", className, index =
   const fav = _hasHydrated && isFavorite(property.id);
   const primaryImage = property.images.find((i) => i.isPrimary) ?? property.images[0];
   const neighborhoodLabel = NEIGHBORHOOD_LABELS[property.neighborhood] ?? property.neighborhood;
+
+  // Trust signals
+  const isVerifiedOwner = property.owner.verified;
+  const hasRealPhotos   = property.images.length >= 2;
+  const hasPhone        = !!(property.owner.phone || property.owner.whatsapp);
+
+  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://guimmo.gn";
+  const shareUrl = `${siteUrl}/annonces/${property.id}`;
+  const sharePrice = property.pricePeriod === "month"
+    ? `${formatPrice(property.price)}/mois`
+    : formatPrice(property.price);
   const createdAt = property.createdAt instanceof Date
     ? property.createdAt
     : new Date(property.createdAt as unknown as string);
@@ -172,6 +184,37 @@ export function PropertyCard({ property, variant = "default", className, index =
           </div>
         </div>
       </Link>
+      {/* Trust badges */}
+      {(isVerifiedOwner || hasRealPhotos || hasPhone) && (
+        <div className="px-3 pb-1 flex flex-wrap gap-1">
+          {isVerifiedOwner && (
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(110,201,122,0.15)", color: "#6ec97a", border: "1px solid rgba(110,201,122,0.25)" }}>
+              ✓ Vérifié
+            </span>
+          )}
+          {hasRealPhotos && (
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(200,144,30,0.15)", color: "#daa84a", border: "1px solid rgba(200,144,30,0.25)" }}>
+              📷 Photos réelles
+            </span>
+          )}
+          {hasPhone && (
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(96,165,250,0.15)", color: "#93c5fd", border: "1px solid rgba(96,165,250,0.25)" }}>
+              📞 Numéro vérifié
+            </span>
+          )}
+        </div>
+      )}
+      {/* WhatsApp share strip */}
+      <div className="px-3 pb-3 pt-1">
+        <WhatsAppShare
+          title={property.title}
+          neighborhood={neighborhoodLabel}
+          price={sharePrice}
+          url={shareUrl}
+          size="sm"
+          className="w-full"
+        />
+      </div>
     </div>
   );
 }

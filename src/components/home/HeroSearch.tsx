@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
+import { VoiceSearchButton } from "@/components/ui/VoiceSearchButton";
 
 const QUARTIERS = [
   { id: "kipe",       name: "Kipé" },
@@ -44,6 +45,18 @@ export function HeroSearch() {
   const [neighborhood, setNeighborhood] = useState("");
   const [type, setType]             = useState("");
   const router = useRouter();
+
+  function handleVoiceResult(text: string) {
+    // Map spoken neighborhood names to IDs
+    const lower = text.toLowerCase();
+    const match = QUARTIERS.find((q) => lower.includes(q.name.toLowerCase()));
+    if (match) { setNeighborhood(match.id); return; }
+    // Map spoken type names
+    const typeMatch = TYPES.find((t) => lower.includes(t.name.toLowerCase()));
+    if (typeMatch) { setType(typeMatch.id); return; }
+    // Navigate directly with raw query
+    router.push(`/annonces?q=${encodeURIComponent(text)}`);
+  }
 
   function handleSearch() {
     const params = new URLSearchParams();
@@ -140,17 +153,20 @@ export function HeroSearch() {
         </div>
       </div>
 
-      {/* Search button */}
-      <button
-        onClick={handleSearch}
-        className="w-full flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-colors"
-        style={{ background: "#c8901e", color: "#fff", minHeight: "52px" }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = "#b87c18"; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = "#c8901e"; }}
-      >
-        <Search className="w-4 h-4" />
-        Rechercher
-      </button>
+      {/* Search + mic row */}
+      <div className="flex gap-2">
+        <button
+          onClick={handleSearch}
+          className="flex-1 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-colors"
+          style={{ background: "#c8901e", color: "#fff", minHeight: "52px" }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "#b87c18"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "#c8901e"; }}
+        >
+          <Search className="w-4 h-4" />
+          Rechercher
+        </button>
+        <VoiceSearchButton onResult={handleVoiceResult} />
+      </div>
     </div>
   );
 }
