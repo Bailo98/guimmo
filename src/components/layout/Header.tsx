@@ -44,6 +44,8 @@ export function Header() {
   const isAdmin = role === "admin";
   const isProprietaire = ["proprietaire", "owner", "agent", "agence", "admin"].includes(role);
 
+  if (pathname === "/") return null;
+
   return (
     <header
       className="sticky top-0 z-40 transition-all duration-300"
