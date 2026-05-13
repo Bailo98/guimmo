@@ -32,7 +32,7 @@ const SELECT_BASE: React.CSSProperties = {
   color: "rgba(247,242,230,0.55)",
   borderRadius: "12px",
   padding: "10px 14px",
-  fontSize: "0.875rem",
+  fontSize: "16px",
   width: "100%",
   outline: "none",
   appearance: "none",
@@ -83,7 +83,7 @@ export function HeroSearch() {
       </div>
 
       {/* Selects */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
         <div>
           <label
             className="block text-xs font-semibold mb-1.5"
@@ -143,8 +143,8 @@ export function HeroSearch() {
       {/* Search button */}
       <button
         onClick={handleSearch}
-        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold transition-colors"
-        style={{ background: "#c8901e", color: "#fff" }}
+        className="w-full flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-colors"
+        style={{ background: "#c8901e", color: "#fff", minHeight: "52px" }}
         onMouseEnter={(e) => { e.currentTarget.style.background = "#b87c18"; }}
         onMouseLeave={(e) => { e.currentTarget.style.background = "#c8901e"; }}
       >

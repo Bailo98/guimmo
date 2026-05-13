@@ -56,6 +56,22 @@ export function PhotoGallery({ images, title }: Props) {
           {current + 1} / {images.length}
         </div>
 
+        {/* Dot indicators — inside image overlay */}
+        {images.length > 1 && (
+          <div className="absolute bottom-10 left-0 right-0 flex gap-1.5 justify-center pointer-events-none">
+            {images.map((_, i) => (
+              <span
+                key={i}
+                className={`rounded-full transition-all ${
+                  i === current
+                    ? "w-5 h-2 bg-white"
+                    : "w-2 h-2 bg-white/40"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+
         {/* Desktop arrows */}
         {images.length > 1 && (
           <>
@@ -75,26 +91,9 @@ export function PhotoGallery({ images, title }: Props) {
         )}
       </div>
 
-      {/* Dot indicators */}
+      {/* Thumbnail strip — desktop only */}
       {images.length > 1 && (
-        <div className="flex gap-1.5 justify-center py-2.5">
-          {images.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`rounded-full transition-all ${
-                i === current
-                  ? "w-5 h-2 bg-[#F97316]"
-                  : "w-2 h-2 bg-slate-300 dark:bg-slate-600"
-              }`}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Thumbnail strip */}
-      {images.length > 1 && (
-        <div className="flex gap-2 px-3 pb-3 overflow-x-auto scrollbar-hide">
+        <div className="hidden md:flex gap-2 px-3 pb-3 overflow-x-auto scrollbar-hide">
           {images.map((img, i) => (
             <button
               key={i}

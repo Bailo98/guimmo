@@ -205,7 +205,7 @@ export default async function HomePage() {
           HERO — full viewport, custom gradient
       ══════════════════════════════════════════════════════════ */}
       <section
-        className="relative min-h-screen flex flex-col overflow-hidden"
+        className="relative min-h-[100svh] flex flex-col overflow-hidden"
         style={{
           background:
             "radial-gradient(ellipse 70% 60% at 85% 45%, #c4871a 0%, transparent 55%), " +
@@ -235,7 +235,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-20 items-center w-full">
 
             {/* ── Left column ── */}
-            <div>
+            <div className="text-center lg:text-left">
               {/* Badge pill */}
               <div
                 className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-8"
@@ -255,7 +255,7 @@ export default async function HomePage() {
                 style={{
                   fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
                   fontWeight: 900,
-                  fontSize: "clamp(44px, 5.5vw, 88px)",
+                  fontSize: "clamp(36px, 8vw, 88px)",
                   lineHeight: 1.05,
                   color: "#f7f2e6",
                   marginBottom: "1.5rem",
@@ -276,6 +276,7 @@ export default async function HomePage() {
                   lineHeight: 1.7,
                   marginBottom: "2.5rem",
                   maxWidth: "500px",
+                  margin: "0 auto 2.5rem",
                   fontFamily: "var(--font-dm-sans), sans-serif",
                   fontWeight: 300,
                 }}

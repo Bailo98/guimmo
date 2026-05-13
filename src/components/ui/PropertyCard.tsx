@@ -85,7 +85,7 @@ export function PropertyCard({ property, variant = "default", className, index =
   // ── Default variant — pure overlay card ─────────────────────────
   return (
     <div
-      className={cn("group relative rounded-[20px] overflow-hidden hover:-translate-y-1 transition-all duration-300", className)}
+      className={cn("group relative rounded-[20px] overflow-hidden hover:-translate-y-1 active:scale-[0.99] transition-all duration-300", className)}
       style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", border: "1px solid rgba(255,255,255,0.10)" }}
     >
       <Link href={`/annonces/${property.id}`} className="block relative h-[220px]">
@@ -152,7 +152,7 @@ export function PropertyCard({ property, variant = "default", className, index =
 
         {/* Bottom overlay: title + location + specs */}
         <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className="font-bold text-white text-sm leading-snug line-clamp-1 mb-0.5">
+          <h3 className="font-bold text-white text-sm leading-snug line-clamp-2 mb-0.5">
             {property.title}
           </h3>
           <div className="flex items-center gap-1 text-white/80 mb-2">

@@ -13,7 +13,7 @@ export function HeroNavbar() {
   const { user } = useAuth();
 
   return (
-    <nav className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6 py-5 flex items-center justify-between">
+    <nav className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-5 flex items-center justify-between">
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2.5">
         <span
