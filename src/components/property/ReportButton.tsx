@@ -4,12 +4,11 @@ import { Flag, X, Loader2, CheckCircle2 } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 const REASONS = [
-  { id: "fake",         label: "Annonce frauduleuse / fausse" },
-  { id: "wrong_price",  label: "Prix incorrect ou trompeur" },
-  { id: "wrong_photos", label: "Photos ne correspondent pas" },
-  { id: "already_taken",label: "Déjà loué / vendu" },
-  { id: "scam",         label: "Tentative d'arnaque" },
-  { id: "other",        label: "Autre raison" },
+  { id: "fraud",        label: "Annonce frauduleuse / arnaque" },
+  { id: "already_taken",label: "Logement déjà loué / vendu" },
+  { id: "fake_photos",  label: "Photos fausses ou volées" },
+  { id: "wrong_price",  label: "Prix incorrect" },
+  { id: "other",        label: "Autre" },
 ];
 
 interface Props {
@@ -17,11 +16,12 @@ interface Props {
 }
 
 export function ReportButton({ propertyId }: Props) {
-  const [open, setOpen]       = useState(false);
-  const [reason, setReason]   = useState("");
-  const [details, setDetails] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [done, setDone]       = useState(false);
+  const [open, setOpen]             = useState(false);
+  const [reason, setReason]         = useState("");
+  const [details, setDetails]       = useState("");
+  const [reporterPhone, setReporterPhone] = useState("");
+  const [loading, setLoading]       = useState(false);
+  const [done, setDone]             = useState(false);
 
   async function submit() {
     if (!reason) return;
@@ -30,14 +30,14 @@ export function ReportButton({ propertyId }: Props) {
     try {
       if (isSupabaseConfigured && supabase) {
         await supabase.from("reports").insert({
-          property_id: propertyId,
+          property_id:   propertyId,
           reason,
-          details: details.trim() || null,
+          details:       details.trim() || null,
+          reporter_phone: reporterPhone.trim() || null,
         });
       }
       setDone(true);
     } catch {
-      // silent — report is best-effort
       setDone(true);
     } finally {
       setLoading(false);
@@ -65,10 +65,10 @@ export function ReportButton({ propertyId }: Props) {
         {done ? (
           <div className="text-center py-4 space-y-3">
             <CheckCircle2 className="w-12 h-12 text-green-400 mx-auto" />
-            <p className="text-white font-bold text-lg">Signalement envoyé</p>
-            <p className="text-white/50 text-sm">Merci de nous aider à maintenir la qualité de GuImmo.</p>
+            <p className="text-white font-bold text-lg">Merci pour votre signalement</p>
+            <p className="text-white/50 text-sm">Notre équipe va examiner cette annonce.</p>
             <button
-              onClick={() => { setOpen(false); setDone(false); setReason(""); setDetails(""); }}
+              onClick={() => { setOpen(false); setDone(false); setReason(""); setDetails(""); setReporterPhone(""); }}
               className="mt-2 px-5 py-2.5 rounded-xl text-white font-bold text-sm"
               style={{ background: "rgba(255,255,255,0.10)" }}
             >
@@ -81,7 +81,7 @@ export function ReportButton({ propertyId }: Props) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Flag className="w-5 h-5 text-red-400" />
-                <h2 className="text-white font-black text-base">Signaler cette annonce</h2>
+                <h2 className="text-white font-black text-base">Pourquoi signalez-vous cette annonce ?</h2>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -117,12 +117,22 @@ export function ReportButton({ propertyId }: Props) {
 
             {/* Optional details */}
             <textarea
-              placeholder="Détails supplémentaires (optionnel)…"
+              placeholder="Précisez (optionnel)…"
               value={details}
               onChange={(e) => setDetails(e.target.value)}
               rows={2}
               className="w-full rounded-xl px-4 py-3 text-white text-sm resize-none focus:outline-none"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", minHeight: 72 }}
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", minHeight: 64 }}
+            />
+
+            {/* Reporter phone */}
+            <input
+              type="tel"
+              placeholder="Votre numéro (optionnel — pour vous recontacter)"
+              value={reporterPhone}
+              onChange={(e) => setReporterPhone(e.target.value)}
+              className="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none"
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", minHeight: 52 }}
             />
 
             {/* Submit */}

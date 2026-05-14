@@ -57,9 +57,15 @@ export function Header() {
         <nav className="hidden md:flex items-center gap-1">
           <Link
             href="/annonces"
-            className={cn("px-3 py-2 rounded-xl text-sm font-medium transition-colors hover:text-white hover:bg-white/10", pathname === "/annonces" ? "text-white" : "text-white/70")}
+            className={cn("px-3 py-2 rounded-xl text-sm font-medium transition-colors hover:text-white hover:bg-white/10", pathname.startsWith("/annonces") ? "text-white" : "text-white/70")}
           >
             Annonces
+          </Link>
+          <Link
+            href="/agents"
+            className={cn("px-3 py-2 rounded-xl text-sm font-medium transition-colors hover:text-white hover:bg-white/10", pathname === "/agents" ? "text-white" : "text-white/70")}
+          >
+            Agents
           </Link>
         </nav>
 
@@ -160,6 +166,10 @@ export function Header() {
           <Link href="/annonces" onClick={() => setMenuOpen(false)}
             className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 hover:bg-white/8">
             Annonces
+          </Link>
+          <Link href="/agents" onClick={() => setMenuOpen(false)}
+            className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 hover:bg-white/8">
+            Agents
           </Link>
           {user ? (
             <>

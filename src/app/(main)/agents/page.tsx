@@ -3,6 +3,7 @@ import Image from "next/image";
 import { MapPin, MessageCircle, UserCheck } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { NEIGHBORHOODS } from "@/data/neighborhoods";
+import { AgentApplicationForm } from "./AgentApplicationForm";
 
 export const metadata: Metadata = {
   title: "Agents immobiliers — GuImmo",
@@ -16,32 +17,34 @@ interface Agent {
   name: string;
   neighborhood: string;
   whatsapp: string;
+  phone?: string | null;
   photo_url: string | null;
-  bio: string | null;
+  description: string | null;
+  listings_count: number;
 }
 
 async function fetchAgents(): Promise<Agent[]> {
   if (!isSupabaseConfigured || !supabase) return DEMO_AGENTS;
   const { data } = await supabase
     .from("agents")
-    .select("id, name, neighborhood, whatsapp, photo_url, bio")
+    .select("id, name, neighborhood, whatsapp, phone, photo_url, description, listings_count")
     .eq("is_active", true)
     .order("neighborhood");
   return (data as Agent[]) ?? DEMO_AGENTS;
 }
 
 const DEMO_AGENTS: Agent[] = [
-  { id: "1", name: "Mamadou Diallo", neighborhood: "kipe",       whatsapp: "+224628000001", photo_url: null, bio: "Spécialiste location Kipé & Ratoma depuis 5 ans." },
-  { id: "2", name: "Fatoumata Bah",  neighborhood: "hamdallaye", whatsapp: "+224628000002", photo_url: null, bio: "Expert vente villa haut standing." },
-  { id: "3", name: "Ibrahima Sow",   neighborhood: "matam",      whatsapp: "+224628000003", photo_url: null, bio: "Annonces vérifiées, réponse rapide." },
-  { id: "4", name: "Aissatou Barry", neighborhood: "dixinn",     whatsapp: "+224628000004", photo_url: null, bio: "Locations meublées et non meublées Dixinn." },
+  { id: "1", name: "Mamadou Diallo",  neighborhood: "kipe",       whatsapp: "+224628000001", photo_url: null, description: "Spécialiste location Kipé & Ratoma depuis 5 ans.", listings_count: 12 },
+  { id: "2", name: "Fatoumata Bah",   neighborhood: "hamdallaye", whatsapp: "+224628000002", photo_url: null, description: "Expert vente villa haut standing.", listings_count: 8 },
+  { id: "3", name: "Ibrahima Sow",    neighborhood: "matam",      whatsapp: "+224628000003", photo_url: null, description: "Annonces vérifiées, réponse rapide.", listings_count: 15 },
+  { id: "4", name: "Aissatou Barry",  neighborhood: "dixinn",     whatsapp: "+224628000004", photo_url: null, description: "Locations meublées et non meublées Dixinn.", listings_count: 6 },
 ];
 
 function nbLabel(id: string) {
   return NEIGHBORHOODS.find((n) => n.id === id)?.name ?? id;
 }
 
-function whatsappUrl(phone: string, name: string) {
+function whatsappLink(phone: string, name: string) {
   const text = encodeURIComponent(`Bonjour ${name}, je vous contacte via GuImmo. Pouvez-vous m'aider à trouver un bien ?`);
   return `https://wa.me/${phone.replace(/\D/g, "")}?text=${text}`;
 }
@@ -61,16 +64,16 @@ export default async function AgentsPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 pt-6 pb-28">
-      {/* Header */}
+      {/* Hero */}
       <div className="mb-8">
         <div
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-3"
           style={{ background: "rgba(200,144,30,0.15)", color: "var(--guimmo-amber-light)", border: "1px solid rgba(200,144,30,0.25)" }}
         >
-          <UserCheck className="w-3.5 h-3.5" /> Agents vérifiés
+          <UserCheck className="w-3.5 h-3.5" /> Agents certifiés
         </div>
-        <h1 className="text-2xl font-black text-white mb-1">Nos agents immobiliers</h1>
-        <p className="text-white/50 text-sm">Trouvez un agent de confiance dans votre quartier</p>
+        <h1 className="text-2xl font-black text-white mb-1">Agents GuImmo</h1>
+        <p className="text-white/50 text-sm">Votre quartier, votre expert — contactez un agent local de confiance</p>
       </div>
 
       {neighborhoods.length === 0 && (
@@ -95,8 +98,10 @@ export default async function AgentsPage() {
                   style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
                 >
                   {/* Avatar */}
-                  <div className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 flex items-center justify-center text-2xl font-black text-white/60"
-                    style={{ background: "rgba(200,144,30,0.15)", border: "1px solid rgba(200,144,30,0.20)" }}>
+                  <div
+                    className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 flex items-center justify-center text-2xl font-black text-white/60"
+                    style={{ background: "rgba(200,144,30,0.15)", border: "1px solid rgba(200,144,30,0.20)" }}
+                  >
                     {agent.photo_url ? (
                       <Image src={agent.photo_url} alt={agent.name} width={56} height={56} className="object-cover w-full h-full" />
                     ) : (
@@ -106,19 +111,32 @@ export default async function AgentsPage() {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-white text-sm">{agent.name}</p>
-                    <div className="flex items-center gap-1 text-white/40 text-xs mt-0.5">
-                      <MapPin className="w-3 h-3 flex-shrink-0" />
-                      <span>{nbLabel(agent.neighborhood)}</span>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="font-bold text-white text-sm">{agent.name}</p>
+                      {/* Agent Officiel badge */}
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(200,144,30,0.15)", color: "#daa84a", border: "1px solid rgba(200,144,30,0.25)" }}>
+                        ✓ Agent Officiel
+                      </span>
                     </div>
-                    {agent.bio && (
-                      <p className="text-white/50 text-xs mt-1 line-clamp-2">{agent.bio}</p>
+                    <div className="flex items-center gap-3 mt-0.5">
+                      <div className="flex items-center gap-1 text-white/40 text-xs">
+                        <MapPin className="w-3 h-3 flex-shrink-0" />
+                        <span>{nbLabel(agent.neighborhood)}</span>
+                      </div>
+                      {agent.listings_count > 0 && (
+                        <span className="text-white/40 text-xs">
+                          📋 {agent.listings_count} annonce{agent.listings_count > 1 ? "s" : ""}
+                        </span>
+                      )}
+                    </div>
+                    {agent.description && (
+                      <p className="text-white/50 text-xs mt-1 line-clamp-2">{agent.description}</p>
                     )}
                   </div>
 
                   {/* WhatsApp CTA */}
                   <a
-                    href={whatsappUrl(agent.whatsapp, agent.name)}
+                    href={whatsappLink(agent.whatsapp, agent.name)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1.5 px-3 rounded-xl font-bold text-white text-xs flex-shrink-0"
@@ -134,22 +152,14 @@ export default async function AgentsPage() {
         ))}
       </div>
 
-      {/* CTA to become an agent */}
+      {/* Devenir agent — form section */}
       <div
-        className="mt-10 rounded-2xl p-5 text-center"
-        style={{ background: "rgba(200,144,30,0.10)", border: "1px solid rgba(200,144,30,0.20)" }}
+        className="mt-12 rounded-2xl p-6"
+        style={{ background: "rgba(200,144,30,0.08)", border: "1px solid rgba(200,144,30,0.20)" }}
       >
-        <p className="text-white font-bold text-sm mb-1">Vous êtes agent immobilier ?</p>
-        <p className="text-white/50 text-xs mb-3">Rejoignez GuImmo et touchez des milliers de clients à Conakry</p>
-        <a
-          href={`https://wa.me/${(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "224000000000").replace(/\D/g, "")}?text=${encodeURIComponent("Bonjour, je souhaite devenir agent sur GuImmo.")}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-5 rounded-xl font-bold text-white text-sm"
-          style={{ minHeight: 44, background: "#25D366" }}
-        >
-          <MessageCircle className="w-4 h-4" /> Nous contacter
-        </a>
+        <h2 className="text-white font-black text-lg mb-1">Devenir agent GuImmo</h2>
+        <p className="text-white/50 text-sm mb-5">Rejoignez notre réseau et touchez des milliers de clients à Conakry</p>
+        <AgentApplicationForm />
       </div>
     </div>
   );

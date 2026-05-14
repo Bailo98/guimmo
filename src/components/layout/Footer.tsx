@@ -34,7 +34,8 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
                 { label: "Appartements", href: "/annonces?type=apartment" },
                 { label: "Maisons", href: "/annonces?type=house" },
                 { label: "Villas", href: "/annonces?type=villa" },
-                { label: "Publier une annonce", href: "/publier" },
+                { label: "Publication rapide", href: "/publier/rapide" },
+                { label: "Agents GuImmo", href: "/agents" },
               ].map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-sm transition-colors hover:text-[#f7f2e6]" style={{ color: "var(--guimmo-cream-dim)" }}>

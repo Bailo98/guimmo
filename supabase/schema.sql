@@ -166,14 +166,16 @@ create policy "Receivers can mark read" on messages for update
 
 -- ─── Agents ──────────────────────────────────────────────────────────────────
 create table if not exists agents (
-  id           uuid primary key default uuid_generate_v4(),
-  name         text not null,
-  neighborhood text not null,
-  whatsapp     text not null,
-  photo_url    text,
-  bio          text,
-  is_active    boolean not null default true,
-  created_at   timestamptz not null default now()
+  id             uuid primary key default uuid_generate_v4(),
+  name           text not null,
+  neighborhood   text not null,
+  whatsapp       text not null,
+  phone          text,
+  photo_url      text,
+  description    text,
+  is_active      boolean not null default true,
+  listings_count integer not null default 0,
+  created_at     timestamptz not null default now()
 );
 
 create index if not exists agents_neighborhood_idx on agents(neighborhood);
@@ -181,14 +183,38 @@ create index if not exists agents_neighborhood_idx on agents(neighborhood);
 alter table agents enable row level security;
 create policy "Agents are viewable by all" on agents for select using (is_active = true);
 
+-- Demo agents (run once)
+insert into agents (name, neighborhood, whatsapp, description, listings_count) values
+  ('Mamadou Diallo',  'kipe',       '+224628000001', 'Spécialiste location Kipé & Ratoma depuis 5 ans.', 12),
+  ('Fatoumata Bah',   'hamdallaye', '+224628000002', 'Expert vente villa haut standing.',               8),
+  ('Ibrahima Sow',    'matam',      '+224628000003', 'Annonces vérifiées, réponse rapide.',             15),
+  ('Aissatou Barry',  'dixinn',     '+224628000004', 'Locations meublées et non meublées Dixinn.',      6)
+on conflict do nothing;
+
+-- ─── Agent applications ───────────────────────────────────────────────────────
+create table if not exists agent_applications (
+  id           uuid primary key default uuid_generate_v4(),
+  name         text not null,
+  phone        text not null,
+  neighborhood text not null,
+  status       text not null default 'pending'
+                check (status in ('pending','approved','rejected')),
+  created_at   timestamptz not null default now()
+);
+
+alter table agent_applications enable row level security;
+create policy "Anyone can apply to be agent" on agent_applications for insert with check (true);
+create policy "Admins can read applications" on agent_applications for select
+  using (auth.uid() in (select id from profiles where role = 'admin'));
+
 -- ─── Reports ──────────────────────────────────────────────────────────────────
 create table if not exists reports (
-  id          uuid primary key default uuid_generate_v4(),
-  property_id uuid not null references properties(id) on delete cascade,
-  reason      text not null,
-  details     text,
-  reporter_id uuid references profiles(id) on delete set null,
-  created_at  timestamptz not null default now()
+  id             uuid primary key default uuid_generate_v4(),
+  property_id    uuid not null references properties(id) on delete cascade,
+  reason         text not null,
+  details        text,
+  reporter_phone text,
+  created_at     timestamptz not null default now()
 );
 
 create index if not exists reports_property_idx on reports(property_id);
