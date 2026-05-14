@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 
@@ -31,7 +31,7 @@ export function HeroNavbar() {
             letterSpacing: "-0.01em",
           }}
         >
-          GuImmo
+          BienLoger
         </span>
       </Link>
 

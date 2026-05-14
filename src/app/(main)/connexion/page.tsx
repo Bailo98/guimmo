@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -49,7 +49,7 @@ function ConnexionForm() {
       const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
       const email =
         mode === "phone"
-          ? `${normalized}@guimmo.gn`
+          ? `${normalized}@BienLoger.gn`
           : form.email;
 
       const { error: authError } = await supabase.auth.signInWithPassword({
@@ -67,11 +67,11 @@ function ConnexionForm() {
         return;
       }
 
-      document.cookie = `guimmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+      document.cookie = `BienLoger-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
       router.push(redirect);
     } else {
       await new Promise((r) => setTimeout(r, 1000));
-      document.cookie = `guimmo-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+      document.cookie = `BienLoger-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
       router.push(redirect);
     }
   }
@@ -99,7 +99,7 @@ function ConnexionForm() {
                 <Lock className="w-8 h-8 text-white/70" />
               </div>
               <h1 className="text-2xl font-black text-white">Connexion</h1>
-              <p className="text-[rgba(240,230,204,0.50)] text-sm mt-1">Accédez à votre compte GuImmo</p>
+              <p className="text-[rgba(240,230,204,0.50)] text-sm mt-1">Accédez à votre compte BienLoger</p>
             </div>
 
             {/* Mode toggle — outside <form> so it can never accidentally submit */}

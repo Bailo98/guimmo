@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import { Save, Globe, Phone, Mail, Link, Video, MessageCircle, Users, FileText, Info } from "lucide-react";
 
@@ -10,20 +10,20 @@ const TABS = [
 ];
 
 const INITIAL_CONTACT = {
-  email: "contact@guimmo.gn",
-  emailSupport: "support@guimmo.gn",
+  email: "contact@BienLoger.gn",
+  emailSupport: "support@BienLoger.gn",
   phone: "+224 628 222 510",
   whatsapp: "+224 628 222 510",
-  facebook: "https://facebook.com/guimmo",
-  instagram: "https://instagram.com/guimmo",
+  facebook: "https://facebook.com/BienLoger",
+  instagram: "https://instagram.com/BienLoger",
   youtube: "",
   address: "Kipé, Conakry, Guinée",
-  website: "https://guimmo-orcin.vercel.app",
+  website: "https://BienLoger-orcin.vercel.app",
 };
 
 const INITIAL_ABOUT = {
   title: "La plateforme immobilière de confiance en Guinée",
-  subtitle: "GuImmo connecte propriétaires et locataires en toute sécurité.",
+  subtitle: "BienLoger connecte propriétaires et locataires en toute sécurité.",
   mission: "Notre mission est de simplifier la recherche immobilière en Guinée en offrant une plateforme fiable, transparente et accessible à tous.",
   vision: "Devenir la référence de l'immobilier en Afrique de l'Ouest.",
   founded: "2024",
@@ -40,16 +40,16 @@ export default function AdminContenuPage() {
 
   useEffect(() => {
     try {
-      const c = localStorage.getItem("guimmo-contact");
+      const c = localStorage.getItem("BienLoger-contact");
       if (c) setContact((prev) => ({ ...prev, ...JSON.parse(c) }));
-      const a = localStorage.getItem("guimmo-about");
+      const a = localStorage.getItem("BienLoger-about");
       if (a) setAbout((prev) => ({ ...prev, ...JSON.parse(a) }));
     } catch { /* ignore */ }
   }, []);
 
   function handleSave() {
-    localStorage.setItem("guimmo-contact", JSON.stringify(contact));
-    localStorage.setItem("guimmo-about", JSON.stringify(about));
+    localStorage.setItem("BienLoger-contact", JSON.stringify(contact));
+    localStorage.setItem("BienLoger-about", JSON.stringify(about));
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   }
@@ -94,18 +94,18 @@ export default function AdminContenuPage() {
       {/* Contact tab */}
       {tab === "contact" && (
         <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-6 border border-slate-100 dark:border-[#2a3040] space-y-5">
-          <h2 className="font-bold text-slate-900 dark:text-white">Coordonnées de GuImmo</h2>
+          <h2 className="font-bold text-slate-900 dark:text-white">Coordonnées de BienLoger</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              { key: "email", label: "Email principal", icon: Mail, placeholder: "contact@guimmo.gn" },
-              { key: "emailSupport", label: "Email support", icon: Mail, placeholder: "support@guimmo.gn" },
+              { key: "email", label: "Email principal", icon: Mail, placeholder: "contact@BienLoger.gn" },
+              { key: "emailSupport", label: "Email support", icon: Mail, placeholder: "support@BienLoger.gn" },
               { key: "phone", label: "Téléphone", icon: Phone, placeholder: "+224 620 000 000" },
               { key: "whatsapp", label: "WhatsApp support", icon: MessageCircle, placeholder: "+224 620 000 000" },
-              { key: "facebook", label: "Page Facebook", icon: Link, placeholder: "https://facebook.com/guimmo" },
-              { key: "instagram", label: "Instagram", icon: Link, placeholder: "https://instagram.com/guimmo" },
-              { key: "youtube", label: "YouTube", icon: Video, placeholder: "https://youtube.com/@guimmo" },
-              { key: "website", label: "Site web", icon: Globe, placeholder: "https://guimmo.gn" },
+              { key: "facebook", label: "Page Facebook", icon: Link, placeholder: "https://facebook.com/BienLoger" },
+              { key: "instagram", label: "Instagram", icon: Link, placeholder: "https://instagram.com/BienLoger" },
+              { key: "youtube", label: "YouTube", icon: Video, placeholder: "https://youtube.com/@BienLoger" },
+              { key: "website", label: "Site web", icon: Globe, placeholder: "https://BienLoger.gn" },
             ].map((f) => {
               const Icon = f.icon;
               return (
@@ -219,14 +219,14 @@ function TeamEditor() {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("guimmo-team");
+      const saved = localStorage.getItem("BienLoger-team");
       if (saved) setMembers(JSON.parse(saved));
     } catch { /* ignore */ }
   }, []);
 
   function save(next: typeof members) {
     setMembers(next);
-    try { localStorage.setItem("guimmo-team", JSON.stringify(next)); } catch { /* ignore */ }
+    try { localStorage.setItem("BienLoger-team", JSON.stringify(next)); } catch { /* ignore */ }
   }
 
   function addMember() {
@@ -296,14 +296,14 @@ function BlogEditor() {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("guimmo-blog-posts");
+      const saved = localStorage.getItem("BienLoger-blog-posts");
       if (saved) setPosts(JSON.parse(saved));
     } catch { /* ignore */ }
   }, []);
 
   function savePosts(next: typeof posts) {
     setPosts(next);
-    try { localStorage.setItem("guimmo-blog-posts", JSON.stringify(next)); } catch { /* ignore */ }
+    try { localStorage.setItem("BienLoger-blog-posts", JSON.stringify(next)); } catch { /* ignore */ }
   }
 
   function addPost() {

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 
@@ -14,8 +14,8 @@ export default function AdminLoginPage() {
 
     // Small delay for UX feel
     setTimeout(() => {
-      if (password === "GuImmo@2025") {
-        localStorage.setItem("guimmo-admin-session", "authenticated");
+      if (password === "BienLoger@2025") {
+        localStorage.setItem("BienLoger-admin-session", "authenticated");
         window.location.href = "/admin";
       } else {
         setError("Mot de passe incorrect");
@@ -163,7 +163,7 @@ export default function AdminLoginPage() {
             marginBottom: 0,
           }}
         >
-          Accès réservé aux administrateurs GuImmo
+          Accès réservé aux administrateurs BienLoger
         </p>
       </div>
     </div>

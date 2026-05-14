@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -89,7 +89,7 @@ export default function PublierRapidePage() {
         // Create a temporary account
         const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
         const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
-        const tempEmail = `temp_${normalized}_${Date.now()}@guimmo.gn`;
+        const tempEmail = `temp_${normalized}_${Date.now()}@BienLoger.gn`;
         const tempPassword = Math.random().toString(36).slice(2, 12) + "Aa1!";
 
         const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
@@ -171,13 +171,13 @@ export default function PublierRapidePage() {
   // ── Success screen ──────────────────────────────────────────────
   if (published) {
     return (
-      <div className="max-w-lg mx-auto px-4 pt-12 pb-32 text-center" style={{ background: "var(--guimmo-bg)" }}>
+      <div className="max-w-lg mx-auto px-4 pt-12 pb-32 text-center" style={{ background: "var(--BienLoger-bg)" }}>
         <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl" style={{ background: "rgba(110,201,122,0.15)", border: "2px solid rgba(110,201,122,0.35)" }}>
           ✅
         </div>
         <h1 className="text-2xl font-black text-white mb-3">Annonce publiée !</h1>
         <p className="text-white/60 text-sm leading-relaxed mb-6">
-          Votre annonce est maintenant visible sur GuImmo.<br />
+          Votre annonce est maintenant visible sur BienLoger.<br />
           <span className="text-white font-semibold">Retenez votre numéro {form.phone} pour vous connecter plus tard.</span>
         </p>
         <button
@@ -198,11 +198,11 @@ export default function PublierRapidePage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto px-4 pt-6 pb-32 min-h-screen" style={{ background: "var(--guimmo-bg)" }}>
+    <div className="max-w-lg mx-auto px-4 pt-6 pb-32 min-h-screen" style={{ background: "var(--BienLoger-bg)" }}>
       {/* Header */}
       <div className="mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-3"
-          style={{ background: "rgba(200,144,30,0.15)", color: "var(--guimmo-amber-light)", border: "1px solid rgba(200,144,30,0.25)" }}>
+          style={{ background: "rgba(200,144,30,0.15)", color: "var(--BienLoger-amber-light)", border: "1px solid rgba(200,144,30,0.25)" }}>
           ⚡ Publication rapide
         </div>
         <h1 className="text-2xl font-black text-white mb-1">Publie ton bien</h1>

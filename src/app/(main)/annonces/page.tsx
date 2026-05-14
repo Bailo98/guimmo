@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight, LocateFixed } from "lucide-react";
@@ -143,7 +143,7 @@ function AnnoncesContent() {
         if (nearest && nearest.dist <= 5) {
           setParam("neighborhood", nearest.id);
         } else {
-          setGpsMessage("Aucun quartier GuImmo à moins de 5 km de vous.");
+          setGpsMessage("Aucun quartier BienLoger à moins de 5 km de vous.");
           setTimeout(() => setGpsMessage(null), 4000);
         }
       },

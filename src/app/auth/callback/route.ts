@@ -1,4 +1,4 @@
-import { createServerClient } from "@supabase/ssr";
+﻿import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -41,7 +41,7 @@ export async function GET(request: Request) {
 
     if (!error) {
       const response = NextResponse.redirect(`${origin}${next}`);
-      response.cookies.set("guimmo-auth", "supabase-session", {
+      response.cookies.set("BienLoger-auth", "supabase-session", {
         path: "/",
         maxAge: 60 * 60 * 24 * 30,
       });

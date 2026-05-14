@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useRef, useEffect } from "react";
 import { User, Phone, Lock, Bell, Shield, Moon, Sun, Globe, ChevronRight, Save, ArrowLeft, Camera, LogOut, Trash2, X, AlertTriangle } from "lucide-react";
 import { useAppStore } from "@/lib/store";
@@ -73,8 +73,8 @@ export default function ParametresPage() {
       await supabase.auth.signOut();
     }
     // Clear cookie
-    document.cookie = "guimmo-auth=; path=/; max-age=0";
-    localStorage.removeItem("guimmo-store");
+    document.cookie = "BienLoger-auth=; path=/; max-age=0";
+    localStorage.removeItem("BienLoger-store");
     localStorage.removeItem("logerbien-store");
     window.location.href = "/";
   }
@@ -84,8 +84,8 @@ export default function ParametresPage() {
     if (isSupabaseConfigured && supabase) {
       await supabase.auth.signOut();
     }
-    document.cookie = "guimmo-auth=; path=/; max-age=0";
-    localStorage.removeItem("guimmo-store");
+    document.cookie = "BienLoger-auth=; path=/; max-age=0";
+    localStorage.removeItem("BienLoger-store");
     localStorage.removeItem("logerbien-store");
     window.location.href = "/";
   }

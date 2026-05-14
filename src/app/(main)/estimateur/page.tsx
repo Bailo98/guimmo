@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -319,7 +319,7 @@ export default function EstimateurPage() {
                     <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
                     <p>
                       Ces résultats sont des estimations basées sur les annonces actuelles
-                      sur GuImmo. Les prix réels peuvent varier selon l&apos;état du bien
+                      sur BienLoger. Les prix réels peuvent varier selon l&apos;état du bien
                       et les négociations.
                     </p>
                   </div>

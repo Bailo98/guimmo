@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Search, Heart, Plus, User } from "lucide-react";
@@ -52,7 +52,7 @@ export function BottomNav() {
   return (
     <nav
       className="md:hidden fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom,0px)]"
-      style={{ background: "var(--guimmo-bg-alt)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderTop: "1px solid var(--guimmo-border)" }}
+      style={{ background: "var(--BienLoger-bg-alt)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderTop: "1px solid var(--BienLoger-border)" }}
     >
       <div className="flex items-center justify-around h-16 px-2">
         {LEFT_NAV.map((item) => (

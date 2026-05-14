@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X } from "lucide-react";
@@ -31,7 +31,7 @@ const NEIGHBORHOOD_SLUGS: Record<string, string> = {
 
 const INITIAL_MESSAGE: Message = {
   from: "bot",
-  text: "Bonjour ! 👋 Je suis l'assistant GuImmo. Que cherchez-vous ?",
+  text: "Bonjour ! 👋 Je suis l'assistant BienLoger. Que cherchez-vous ?",
   options: [
     "Louer un appartement",
     "Acheter une maison",
@@ -91,7 +91,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
         setStep("publish-done");
         addBotMessage({
           from: "bot",
-          text: "Publiez gratuitement votre annonce sur GuImmo !",
+          text: "Publiez gratuitement votre annonce sur BienLoger !",
           link: { label: "Publier maintenant", href: "/publier" },
         });
       } else if (option === "Autre chose") {
@@ -101,7 +101,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
           text: "Contactez notre équipe sur WhatsApp pour toute autre question !",
           link: {
             label: "Ouvrir WhatsApp",
-            href: `https://wa.me/${whatsappNumber}?text=Bonjour%20GuImmo%2C%20j%27ai%20besoin%20d%27aide`,
+            href: `https://wa.me/${whatsappNumber}?text=Bonjour%20BienLoger%2C%20j%27ai%20besoin%20d%27aide`,
           },
         });
       }
@@ -159,7 +159,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
                   </span>
                   <div>
                     <p className="text-sm font-semibold text-white leading-none">
-                      Assistant GuImmo
+                      Assistant BienLoger
                     </p>
                     <div className="flex items-center gap-1 mt-0.5">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-300 animate-pulse" />

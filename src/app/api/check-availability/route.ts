@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 // ─── Auth guard ───────────────────────────────────────────────────────────────
@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
 
     // ── 2. Build & log WhatsApp reminder link ─────────────────────────────
     if (phone) {
-      const message = `Bonjour ! Votre annonce "${listing.title}" sur GuImmo est toujours disponible ? Répondez OUI pour la garder en ligne, sinon elle sera automatiquement marquée comme louée. Merci !`;
+      const message = `Bonjour ! Votre annonce "${listing.title}" sur BienLoger est toujours disponible ? Répondez OUI pour la garder en ligne, sinon elle sera automatiquement marquée comme louée. Merci !`;
       const waUrl = buildWhatsAppUrl(phone, message);
       whatsappLinks.push(waUrl);
       console.log(`[check-availability] Reminder for listing ${listing.id}: ${waUrl}`);

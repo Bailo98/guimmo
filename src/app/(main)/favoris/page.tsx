@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useCallback } from "react";
 import { Heart, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -117,8 +117,8 @@ export default function FavorisPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 pb-24">
       <div className="mb-6">
-        <h1 className="text-2xl font-black" style={{ color: "var(--guimmo-cream)" }}>Mes favoris</h1>
-        <p className="text-sm mt-1" style={{ color: "var(--guimmo-cream-dim)" }}>
+        <h1 className="text-2xl font-black" style={{ color: "var(--BienLoger-cream)" }}>Mes favoris</h1>
+        <p className="text-sm mt-1" style={{ color: "var(--BienLoger-cream-dim)" }}>
           {properties.length} annonce{properties.length !== 1 ? "s" : ""} sauvegardée{properties.length !== 1 ? "s" : ""}
         </p>
       </div>
@@ -126,14 +126,14 @@ export default function FavorisPage() {
       {properties.length === 0 ? (
         <div className="text-center py-24">
           <Heart className="w-16 h-16 mx-auto mb-4" style={{ color: "rgba(255,255,255,0.08)" }} />
-          <h3 className="text-xl font-bold mb-2" style={{ color: "var(--guimmo-cream)" }}>Aucun favori</h3>
-          <p className="text-sm mb-6" style={{ color: "var(--guimmo-cream-dim)" }}>
+          <h3 className="text-xl font-bold mb-2" style={{ color: "var(--BienLoger-cream)" }}>Aucun favori</h3>
+          <p className="text-sm mb-6" style={{ color: "var(--BienLoger-cream-dim)" }}>
             Appuyez sur le cœur d&apos;une annonce pour la sauvegarder ici
           </p>
           <Link
             href="/annonces"
             className="inline-block font-semibold px-6 py-3 rounded-xl transition-colors hover:opacity-90"
-            style={{ background: "var(--guimmo-amber)", color: "#fff" }}
+            style={{ background: "var(--BienLoger-amber)", color: "#fff" }}
           >
             Parcourir les annonces
           </Link>

@@ -1,4 +1,4 @@
-import { create } from "zustand";
+﻿import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { SearchFilters } from "@/types";
 
@@ -483,7 +483,7 @@ export const useAppStore = create<AppState>()(
       },
     }),
     {
-      name: "guimmo-store",
+      name: "BienLoger-store",
       partialize: (s) => ({
         theme: s.theme,
         lang: s.lang,

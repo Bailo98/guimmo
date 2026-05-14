@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { Plus, Pencil, Trash2, Check, X, Loader2, ToggleLeft, ToggleRight } from "lucide-react";
@@ -123,7 +123,7 @@ export default function AdminAgentsPage() {
     <div className="p-4 md:p-6 space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">Agents GuImmo</h1>
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white">Agents BienLoger</h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm">
             {loading ? "Chargement…" : `${agents.length} agent(s)`}
           </p>

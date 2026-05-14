@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import {
@@ -416,7 +416,7 @@ export default function AdminPage() {
               </div>
               <div>
                 <p className="font-bold text-slate-900 dark:text-white text-sm">Gérer les agents</p>
-                <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Agents certifiés GuImmo</p>
+                <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Agents certifiés BienLoger</p>
               </div>
             </Link>
             <Link

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -835,7 +835,7 @@ export default function PublierPage() {
           </button>
 
           <p className="text-slate-400 text-xs text-center leading-relaxed">
-            En publiant, vous acceptez que votre annonce soit visible par tous les visiteurs de GuImmo.
+            En publiant, vous acceptez que votre annonce soit visible par tous les visiteurs de BienLoger.
           </p>
         </div>
       )}

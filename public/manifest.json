@@ -1,6 +1,6 @@
 {
-  "name": "GuImmo",
-  "short_name": "GuImmo",
+  "name": "BienLoger",
+  "short_name": "BienLoger",
   "description": "Trouvez votre logement en Guinée",
   "start_url": "/",
   "display": "standalone",

@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { Star, MapPin, Users, Building2, BarChart3 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Témoignages | GuImmo",
+  title: "Témoignages | BienLoger",
   description:
-    "Découvrez les avis et témoignages de locataires et propriétaires qui ont trouvé leur logement grâce à GuImmo en Guinée.",
+    "Découvrez les avis et témoignages de locataires et propriétaires qui ont trouvé leur logement grâce à BienLoger en Guinée.",
 };
 
 const TESTIMONIALS = [
@@ -13,7 +13,7 @@ const TESTIMONIALS = [
     name: "Mamadou Kouyaté",
     role: "Locataire • Kipé",
     rating: 5,
-    text: "J'ai trouvé mon appartement en 3 jours grâce à GuImmo. Les photos correspondaient exactement à la réalité, et le propriétaire était très réactif sur WhatsApp.",
+    text: "J'ai trouvé mon appartement en 3 jours grâce à BienLoger. Les photos correspondaient exactement à la réalité, et le propriétaire était très réactif sur WhatsApp.",
     neighborhood: "Kipé",
     saved: "500 000 GNF/mois",
   },
@@ -37,7 +37,7 @@ const TESTIMONIALS = [
     name: "Aissatou Camara",
     role: "Agent immobilier",
     rating: 5,
-    text: "En tant qu'agent, GuImmo m'a permis de multiplier mes annonces et mes clients. L'interface est simple et mes clients trouvent facilement.",
+    text: "En tant qu'agent, BienLoger m'a permis de multiplier mes annonces et mes clients. L'interface est simple et mes clients trouvent facilement.",
     neighborhood: "Conakry",
     saved: null,
   },
@@ -53,7 +53,7 @@ const TESTIMONIALS = [
     name: "Mariama Sylla",
     role: "Propriétaire • Lambanyi",
     rating: 4,
-    text: "Ma villa était vide depuis 6 mois. Après publication sur GuImmo, j'ai trouvé des locataires sérieux en moins de 2 semaines.",
+    text: "Ma villa était vide depuis 6 mois. Après publication sur BienLoger, j'ai trouvé des locataires sérieux en moins de 2 semaines.",
     neighborhood: "Lambanyi",
     saved: null,
   },
@@ -69,7 +69,7 @@ const TESTIMONIALS = [
     name: "Kadiatou Konaté",
     role: "Agence immobilière",
     rating: 5,
-    text: "Notre agence gère 30+ annonces sur GuImmo. La plateforme est fiable, les annonceurs sérieux et le support réactif.",
+    text: "Notre agence gère 30+ annonces sur BienLoger. La plateforme est fiable, les annonceurs sérieux et le support réactif.",
     neighborhood: "Conakry",
     saved: null,
   },
@@ -112,7 +112,7 @@ export default function TemoignagesPage() {
             Ils nous font confiance
           </div>
           <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight">
-            Ils ont trouvé leur logement<br className="hidden md:block" /> grâce à GuImmo
+            Ils ont trouvé leur logement<br className="hidden md:block" /> grâce à BienLoger
           </h1>
           <p className="text-white/80 text-lg">
             Des milliers de Guinéens nous font confiance pour leur projet immobilier.
@@ -182,7 +182,7 @@ export default function TemoignagesPage() {
       <div className="bg-white dark:bg-[#1e2430] border-t border-slate-100 dark:border-[#2a3040]">
         <div className="max-w-2xl mx-auto px-4 py-16 text-center">
           <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-3">
-            Rejoignez la communauté GuImmo
+            Rejoignez la communauté BienLoger
           </h2>
           <p className="text-slate-500 dark:text-slate-400 mb-8">
             Des milliers de Guinéens ont déjà trouvé leur logement idéal. À votre tour !

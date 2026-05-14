@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef } from "react";
 import Papa from "papaparse";
@@ -134,7 +134,7 @@ export default function AdminImportPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "modele-import-guimmo.csv";
+    a.download = "modele-import-BienLoger.csv";
     a.click();
     URL.revokeObjectURL(url);
   }

@@ -1,4 +1,4 @@
-export const PROPERTY_TYPES = [
+﻿export const PROPERTY_TYPES = [
   { value: "apartment", label: "Appartement" },
   { value: "house", label: "Maison" },
   { value: "studio", label: "Studio" },
@@ -43,7 +43,7 @@ export const BADGE_CONFIG = {
   visit_confirmed: { label: "Visite confirmée", color: "green", icon: "map-pin" },
 } as const;
 
-export const SITE_NAME = "GuImmo";
+export const SITE_NAME = "BienLoger";
 export const SITE_TAGLINE = "L'immobilier guinéen simplifié";
-export const SITE_DESCRIPTION = "GuImmo est la plateforme immobilière de confiance en Guinée. Trouvez rapidement un appartement, une maison ou un studio à Conakry et partout en Guinée.";
-export const WHATSAPP_DEFAULT_MESSAGE = "Bonjour, je viens de GuImmo. Je suis intéressé(e) par votre annonce. Est-elle toujours disponible ?";
+export const SITE_DESCRIPTION = "BienLoger est la plateforme immobilière de confiance en Guinée. Trouvez rapidement un appartement, une maison ou un studio à Conakry et partout en Guinée.";
+export const WHATSAPP_DEFAULT_MESSAGE = "Bonjour, je viens de BienLoger. Je suis intéressé(e) par votre annonce. Est-elle toujours disponible ?";

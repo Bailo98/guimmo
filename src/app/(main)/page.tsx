@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { MapPin, ChevronRight, Bed, Square, CheckCircle2 } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { MOCK_PROPERTIES } from "@/data/mock-properties";
@@ -67,7 +67,7 @@ const POPULAR_NEIGHBORHOODS = [
   { id: "sonfonia",   name: "Sonfonia",   avgPrice: "1 200 000 GNF/mois" },
 ];
 
-const WHY_GUIMMO = [
+const WHY_BienLoger = [
   { icon: "🏠", title: "Annonces vérifiées",       desc: "Chaque bien est contrôlé avant publication pour garantir des informations fiables." },
   { icon: "💬", title: "Contact direct WhatsApp",  desc: "Contactez le propriétaire directement, sans intermédiaire ni commission cachée." },
   { icon: "🔍", title: "Recherche intelligente",   desc: "Filtrez par quartier, budget et type de bien pour trouver votre logement idéal." },
@@ -496,7 +496,7 @@ export default async function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          POURQUOI GUIMMO — cream background
+          POURQUOI BienLoger — cream background
       ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#efe9d9" }} className="py-16">
         <div className="max-w-7xl mx-auto px-4">
@@ -505,7 +505,7 @@ export default async function HomePage() {
               className="text-2xl md:text-3xl font-black"
               style={{ color: "#111a14", fontFamily: "var(--font-playfair), serif" }}
             >
-              Pourquoi choisir GuImmo ?
+              Pourquoi choisir BienLoger ?
             </h2>
             <p
               className="mt-2 text-sm max-w-md mx-auto"
@@ -515,7 +515,7 @@ export default async function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {WHY_GUIMMO.map((item) => (
+            {WHY_BienLoger.map((item) => (
               <div
                 key={item.title}
                 className="rounded-2xl p-6"

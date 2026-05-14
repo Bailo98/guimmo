@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from "next";
+﻿import type { Metadata, Viewport } from "next";
 import { Inter, Nunito, Playfair_Display, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
@@ -35,35 +35,35 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://guimmo.gn";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://BienLoger.gn";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "GuImmo — Trouvez votre logement en Guinée",
-    template: "%s | GuImmo",
+    default: "BienLoger — Trouvez votre logement en Guinée",
+    template: "%s | BienLoger",
   },
   description:
-    "GuImmo est la plateforme immobilière de confiance en Guinée. Trouvez rapidement un appartement, une maison ou un studio à Conakry.",
-  keywords: ["immobilier Guinée", "appartement Conakry", "location Conakry", "maison Guinée", "GuImmo"],
+    "BienLoger est la plateforme immobilière de confiance en Guinée. Trouvez rapidement un appartement, une maison ou un studio à Conakry.",
+  keywords: ["immobilier Guinée", "appartement Conakry", "location Conakry", "maison Guinée", "BienLoger"],
   openGraph: {
-    title: "GuImmo — Immobilier Guinée",
+    title: "BienLoger — Immobilier Guinée",
     description: "La plateforme immobilière de confiance en Guinée",
     type: "website",
     locale: "fr_GN",
     url: SITE_URL,
-    siteName: "GuImmo",
+    siteName: "BienLoger",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GuImmo — Immobilier Guinée",
+    title: "BienLoger — Immobilier Guinée",
     description: "La plateforme immobilière de confiance en Guinée",
   },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "GuImmo",
+    title: "BienLoger",
   },
 };
 
@@ -82,19 +82,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=JSON.parse(localStorage.getItem('guimmo-store')||localStorage.getItem('logerbien-store')||'{}');var t=s&&s.state&&s.state.theme?s.state.theme:'dark';if(t!=='light')document.documentElement.classList.add('dark');}catch(e){document.documentElement.classList.add('dark');}})();`,
+            __html: `(function(){try{var s=JSON.parse(localStorage.getItem('BienLoger-store')||localStorage.getItem('logerbien-store')||'{}');var t=s&&s.state&&s.state.theme?s.state.theme:'dark';if(t!=='light')document.documentElement.classList.add('dark');}catch(e){document.documentElement.classList.add('dark');}})();`,
           }}
         />
         {/* TODO: remove after diagnosing #418 */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var orig=console.error;console.error=function(){var a=Array.prototype.slice.call(arguments);if(a.some(function(x){return typeof x==='string'&&(x.indexOf('418')>-1||x.indexOf('Hydration')>-1||x.toLowerCase().indexOf('hydrat')>-1);})){console.trace('[GuImmo] Hydration/#418 source');}orig.apply(console,a);};})();`,
+            __html: `(function(){var orig=console.error;console.error=function(){var a=Array.prototype.slice.call(arguments);if(a.some(function(x){return typeof x==='string'&&(x.indexOf('418')>-1||x.indexOf('Hydration')>-1||x.toLowerCase().indexOf('hydrat')>-1);})){console.trace('[BienLoger] Hydration/#418 source');}orig.apply(console,a);};})();`,
           }}
         />
         <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="preconnect" href="https://kqshknfrtlbjaufkdeeg.supabase.co" />
       </head>
-      <body className={`${inter.variable} ${nunito.variable} ${playfair.variable} ${dmSans.variable} font-sans min-h-screen`} style={{ backgroundColor: "var(--guimmo-bg)", color: "var(--guimmo-cream)" }}>
+      <body className={`${inter.variable} ${nunito.variable} ${playfair.variable} ${dmSans.variable} font-sans min-h-screen`} style={{ backgroundColor: "var(--BienLoger-bg)", color: "var(--BienLoger-cream)" }}>
         <QueryProvider>
           <AuthProvider>
             <ThemeProvider>{children}</ThemeProvider>

@@ -1,4 +1,4 @@
-import type { MetadataRoute } from "next";
+﻿import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin/", "/compte/", "/api/"],
     },
-    sitemap: "https://guimmo.gn/sitemap.xml",
+    sitemap: "https://BienLoger.gn/sitemap.xml",
   };
 }

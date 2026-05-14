@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
 import type { User } from "@supabase/supabase-js";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
@@ -53,9 +53,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
       // Mock session for dev without Supabase
-      const cookie = document.cookie.includes("guimmo-auth=mock-session");
+      const cookie = document.cookie.includes("BienLoger-auth=mock-session");
       if (cookie) {
-        setUser({ id: "mock-user", email: "demo@guimmo.gn" } as User);
+        setUser({ id: "mock-user", email: "demo@BienLoger.gn" } as User);
       }
       loadingRef.current = false;
       setLoading(false);
@@ -109,7 +109,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(async () => {
     if (supabase) await supabase.auth.signOut();
-    document.cookie = "guimmo-auth=; path=/; max-age=0";
+    document.cookie = "BienLoger-auth=; path=/; max-age=0";
     setUser(null);
     setProfile(null);
   }, []);

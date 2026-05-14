@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { Share2, Check } from "lucide-react";
 import { toast } from "@/lib/toast";
@@ -15,7 +15,7 @@ export function ShareButton({ title, className = "flex items-center gap-1 hover:
     const url = window.location.href;
     if (navigator.share) {
       try {
-        await navigator.share({ title, text: `Découvrez "${title}" sur GuImmo`, url });
+        await navigator.share({ title, text: `Découvrez "${title}" sur BienLoger`, url });
       } catch {
         // user cancelled
       }

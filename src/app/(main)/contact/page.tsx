@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import Link from "next/link";
 import { MessageCircle, Phone, Mail, MapPin, Send, CheckCircle } from "lucide-react";
@@ -68,8 +68,8 @@ export default function ContactPage() {
             <div>
               <p className="font-bold text-slate-900 dark:text-white text-sm mb-0.5">Email</p>
               <p className="text-slate-500 dark:text-slate-400 text-xs mb-2">Réponse sous 24h</p>
-              <a href="mailto:contact@guimmo.gn" className="text-sm font-semibold text-[#009460] hover:underline">
-                contact@guimmo.gn
+              <a href="mailto:contact@BienLoger.gn" className="text-sm font-semibold text-[#009460] hover:underline">
+                contact@BienLoger.gn
               </a>
             </div>
           </div>

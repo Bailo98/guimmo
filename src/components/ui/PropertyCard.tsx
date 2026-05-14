@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, MapPin, Bed, Bath, Square, Star } from "lucide-react";
@@ -39,7 +39,7 @@ export function PropertyCard({ property, variant = "default", className, index =
   const hasPhone        = !!(property.owner.phone || property.owner.whatsapp);
   const hasVideo        = !!property.videoUrl;
 
-  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://guimmo.gn";
+  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://BienLoger.gn";
   const shareUrl = `${siteUrl}/annonces/${property.id}`;
   const sharePrice = property.pricePeriod === "month"
     ? `${formatPrice(property.price)}/mois`

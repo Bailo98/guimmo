@@ -1,8 +1,8 @@
-import type { MetadataRoute } from "next";
+﻿import type { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
 import { POPULAR_NEIGHBORHOODS } from "@/data/neighborhoods";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://guimmo.gn";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://BienLoger.gn";
 
 const STATIC_PAGES = [
   "/", "/annonces", "/tarifs", "/comment-ca-marche",

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 
 export function WhatsAppWidget({ whatsappNumber }: { whatsappNumber: string }) {
@@ -18,7 +18,7 @@ export function WhatsAppWidget({ whatsappNumber }: { whatsappNumber: string }) {
         </div>
       </div>
       <a
-        href={`https://wa.me/${whatsappNumber}?text=Bonjour%20GuImmo%2C%20j%27ai%20besoin%20d%27aide`}
+        href={`https://wa.me/${whatsappNumber}?text=Bonjour%20BienLoger%2C%20j%27ai%20besoin%20d%27aide`}
         target="_blank"
         rel="noopener noreferrer"
         className="relative flex w-14 h-14 items-center justify-center rounded-full bg-[#25D366] shadow-[0_4px_24px_rgba(37,211,102,0.5)] transition-transform hover:scale-110 active:scale-95"

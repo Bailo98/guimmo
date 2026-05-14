@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { Share2, Copy, Check } from "lucide-react";
 
@@ -22,7 +22,7 @@ const WA_SVG = (
 export function PropertyShareButton({ title, neighborhood, price, rooms, bathrooms, surface, shortRef, propertyId }: Props) {
   const [copied, setCopied] = useState(false);
 
-  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://guimmo.gn";
+  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://BienLoger.gn";
   const shortUrl = shortRef ? `${siteUrl}/a/${shortRef}` : `${siteUrl}/annonces/${propertyId}`;
 
   const specs = [

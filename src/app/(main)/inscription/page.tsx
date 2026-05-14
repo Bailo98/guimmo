@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -30,13 +30,13 @@ export default function InscriptionPage() {
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase || !GOOGLE_CLIENT_ID) return;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).__guimmoGoogleCallback = async (response: { credential: string }) => {
+    (window as any).__BienLogerGoogleCallback = async (response: { credential: string }) => {
       const { error: signInError } = await supabase!.auth.signInWithIdToken({
         provider: "google",
         token: response.credential,
       });
       if (!signInError) {
-        document.cookie = `guimmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+        document.cookie = `BienLoger-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
         router.push("/compte");
       }
     };
@@ -49,7 +49,7 @@ export default function InscriptionPage() {
       document.head.appendChild(script);
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return () => { delete (window as any).__guimmoGoogleCallback; };
+    return () => { delete (window as any).__BienLogerGoogleCallback; };
   }, [GOOGLE_CLIENT_ID, router]);
 
   function switchMode(next: "phone" | "email") {
@@ -70,7 +70,7 @@ export default function InscriptionPage() {
       const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
       const email =
         mode === "phone"
-          ? `${normalized}@guimmo.gn`
+          ? `${normalized}@BienLoger.gn`
           : form.email;
 
       const { error: authError } = await supabase.auth.signUp({
@@ -95,10 +95,10 @@ export default function InscriptionPage() {
         return;
       }
 
-      document.cookie = `guimmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+      document.cookie = `BienLoger-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
     } else {
       await new Promise((r) => setTimeout(r, 800));
-      document.cookie = `guimmo-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+      document.cookie = `BienLoger-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
     }
 
     setLoading(false);
@@ -147,7 +147,7 @@ export default function InscriptionPage() {
                     id="g_id_onload"
                     data-client_id={GOOGLE_CLIENT_ID}
                     data-context="signup"
-                    data-callback="__guimmoGoogleCallback"
+                    data-callback="__BienLogerGoogleCallback"
                     data-auto_prompt="false"
                   />
                 )}
