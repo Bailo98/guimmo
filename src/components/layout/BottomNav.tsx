@@ -1,9 +1,11 @@
 ﻿"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Heart, Plus, User } from "lucide-react";
+import { Home, Search, Plus, User, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAppStore } from "@/lib/store";
+import { useAuth } from "@/lib/auth-context";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { useState, useEffect, useRef } from "react";
 
 const LEFT_NAV = [
   { href: "/", icon: Home, label: "Accueil" },
@@ -11,34 +13,69 @@ const LEFT_NAV = [
 ];
 
 const RIGHT_NAV = [
-  { href: "/favoris", icon: Heart, label: "Favoris", showFavBadge: true },
+  { href: "/messages", icon: MessageSquare, label: "Messages", showMsgBadge: true },
   { href: "/compte", icon: User, label: "Profil" },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
-  if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
+  const { user } = useAuth();
+  const [unreadCount, setUnreadCount] = useState(0);
+  const channelRef = useRef<ReturnType<NonNullable<typeof supabase>["channel"]> | null>(null);
 
-  const favorites = useAppStore((s) => s.favorites);
-  const _hasHydrated = useAppStore((s) => s._hasHydrated);
+  useEffect(() => {
+    if (!user || !isSupabaseConfigured || !supabase) return;
+
+    async function fetchUnread() {
+      if (!user || !supabase) return;
+      const { count } = await supabase
+        .from("messages")
+        .select("id", { count: "exact", head: true })
+        .eq("receiver_id", user.id)
+        .eq("is_read", false);
+      setUnreadCount(count ?? 0);
+    }
+
+    fetchUnread();
+
+    // Realtime: update badge instantly when a new message or read-update arrives
+    if (channelRef.current) supabase.removeChannel(channelRef.current);
+    channelRef.current = supabase
+      .channel(`unread_badge_${user.id}`)
+      .on("postgres_changes", {
+        event: "*",
+        schema: "public",
+        table: "messages",
+        filter: `receiver_id=eq.${user.id}`,
+      }, () => fetchUnread())
+      .subscribe();
+
+    const interval = setInterval(fetchUnread, 30_000);
+    return () => {
+      clearInterval(interval);
+      if (channelRef.current && supabase) supabase.removeChannel(channelRef.current);
+    };
+  }, [user]);
+
+  if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   }
 
-  function NavItem({ href, icon: Icon, label, showFavBadge }: {
-    href: string; icon: React.ElementType; label: string; showFavBadge?: boolean;
+  function NavItem({ href, icon: Icon, label, showMsgBadge }: {
+    href: string; icon: React.ElementType; label: string; showMsgBadge?: boolean;
   }) {
     const active = isActive(href);
-    const hasBadge = showFavBadge && _hasHydrated && favorites.length > 0;
+    const hasBadge = showMsgBadge && unreadCount > 0;
     return (
       <Link href={href} className="flex flex-col items-center justify-center gap-0.5 w-14 h-14">
         <div className="relative">
           <Icon className={cn("w-[22px] h-[22px]", active ? "text-[#daa84a]" : "text-white/40")} />
           {hasBadge && (
-            <span className="absolute -top-1 -right-1.5 w-4 h-4 text-white text-[8px] font-bold rounded-full flex items-center justify-center" style={{ background: "rgba(255,255,255,0.25)" }}>
-              {favorites.length > 9 ? "9+" : favorites.length}
+            <span className="absolute -top-1 -right-1.5 min-w-[16px] h-4 px-1 bg-[#c8901e] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
+              {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
         </div>

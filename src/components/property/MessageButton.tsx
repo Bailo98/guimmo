@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MessageSquare, Send, X } from "lucide-react";
+import { MessageSquare, Send, X, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
@@ -14,20 +14,51 @@ interface Props {
   className?: string;
 }
 
-export function MessageButton({ propertyId, ownerId, propertyTitle, isOwner = false, className }: Props) {
+function buildConvId(propId: string, uid1: string, uid2: string): string {
+  const sorted = [uid1, uid2].sort();
+  return `${propId}__${sorted[0]}__${sorted[1]}`;
+}
+
+export function MessageButton({
+  propertyId, ownerId, propertyTitle, isOwner = false, className,
+}: Props) {
   const { user } = useAuth();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const [content, setContent] = useState("");
-  const [sending, setSending] = useState(false);
+  const [open,     setOpen]     = useState(false);
+  const [content,  setContent]  = useState("");
+  const [sending,  setSending]  = useState(false);
+  const [checking, setChecking] = useState(false);
 
   if (isOwner) return null;
 
-  function handleClick() {
+  async function handleClick() {
     if (!user) {
       router.push(`/connexion?redirect=/annonces/${propertyId}`);
       return;
     }
+
+    const convId = buildConvId(propertyId, user.id, ownerId);
+
+    // Check if a conversation already exists
+    if (isSupabaseConfigured && supabase) {
+      setChecking(true);
+      const { data } = await supabase
+        .from("messages")
+        .select("id")
+        .eq("property_id", propertyId)
+        .or(
+          `and(sender_id.eq.${user.id},receiver_id.eq.${ownerId}),` +
+          `and(sender_id.eq.${ownerId},receiver_id.eq.${user.id})`
+        )
+        .limit(1);
+      setChecking(false);
+
+      if (data && data.length > 0) {
+        router.push(`/messages/${convId}`);
+        return;
+      }
+    }
+
     setOpen(true);
   }
 
@@ -36,16 +67,17 @@ export function MessageButton({ propertyId, ownerId, propertyTitle, isOwner = fa
     if (!content.trim() || !user) return;
     setSending(true);
 
+    const convId = buildConvId(propertyId, user.id, ownerId);
+
     if (isSupabaseConfigured && supabase) {
-      const payload = {
-        sender_id: user.id,
+      const { error } = await supabase.from("messages").insert({
+        sender_id:   user.id,
         receiver_id: ownerId,
         property_id: propertyId,
-        content: content.trim(),
-      };
-      console.log("Sending message:", payload);
-      const { error } = await supabase.from("messages").insert(payload);
+        content:     content.trim(),
+      });
       if (error) {
+        console.error("MessageButton send error:", JSON.stringify(error, null, 2));
         toast("Erreur lors de l'envoi. Réessayez.", "error");
         setSending(false);
         return;
@@ -56,31 +88,41 @@ export function MessageButton({ propertyId, ownerId, propertyTitle, isOwner = fa
     setContent("");
     setOpen(false);
     setSending(false);
+    router.push(`/messages/${convId}`);
   }
 
   return (
     <>
       <button
         onClick={handleClick}
-        className={className ?? "flex items-center justify-center gap-2 w-full bg-[#1e2430] hover:bg-[#2a3040] text-white font-semibold py-3 px-4 rounded-xl transition-colors border border-[#2a3040] text-sm"}
+        disabled={checking}
+        className={
+          className ??
+          "flex items-center justify-center gap-2 w-full bg-[#1a2e1e] hover:bg-[#203a24] text-[#f7f2e6] font-semibold py-3 px-4 rounded-xl transition-colors border border-[rgba(240,230,204,0.08)] text-sm disabled:opacity-60"
+        }
       >
-        <MessageSquare className="w-4 h-4" />
-        Envoyer un message
+        {checking
+          ? <Loader2 className="w-4 h-4 animate-spin" />
+          : <MessageSquare className="w-4 h-4" />
+        }
+        {checking ? "Vérification…" : "Envoyer un message"}
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-white dark:bg-[#1e2430] rounded-3xl border border-slate-100 dark:border-[#2a3040] shadow-2xl">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-[#2a3040]">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-[#111a14] rounded-3xl border border-[rgba(240,230,204,0.10)] shadow-2xl">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-[rgba(240,230,204,0.08)]">
               <div>
-                <h2 className="font-bold text-slate-900 dark:text-white text-base">Envoyer un message</h2>
-                <p className="text-xs text-slate-400 truncate mt-0.5 max-w-[260px]">{propertyTitle}</p>
+                <h2 className="font-bold text-[#f7f2e6] text-base">Envoyer un message</h2>
+                <p className="text-xs text-[rgba(240,230,204,0.50)] truncate mt-0.5 max-w-[260px]">
+                  {propertyTitle}
+                </p>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-[#2a3040] transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[rgba(240,230,204,0.08)] transition-colors"
               >
-                <X className="w-4 h-4 text-slate-500" />
+                <X className="w-4 h-4 text-[rgba(240,230,204,0.50)]" />
               </button>
             </div>
 
@@ -88,19 +130,20 @@ export function MessageButton({ propertyId, ownerId, propertyTitle, isOwner = fa
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="Bonjour, je suis intéressé(e) par votre annonce..."
+                placeholder="Bonjour, je suis intéressé(e) par votre annonce…"
                 rows={4}
                 maxLength={2000}
                 required
                 autoFocus
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] resize-none"
+                style={{ fontSize: 16 }}
+                className="w-full bg-[#1a2e1e] border border-[rgba(240,230,204,0.10)] rounded-xl px-4 py-3 text-sm text-[#f7f2e6] placeholder:text-[rgba(240,230,204,0.35)] focus:outline-none focus:ring-2 focus:ring-[#c8901e]/50 resize-none"
               />
               <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-400">{content.length}/2000</span>
+                <span className="text-xs text-[rgba(240,230,204,0.40)]">{content.length}/2000</span>
                 <button
                   type="submit"
                   disabled={!content.trim() || sending}
-                  className="flex items-center gap-2 bg-[#F97316] hover:bg-[#EA6C0A] disabled:opacity-50 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm"
+                  className="flex items-center gap-2 bg-[#c8901e] hover:bg-[#b87c18] disabled:opacity-50 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm"
                 >
                   <Send className="w-4 h-4" />
                   {sending ? "Envoi…" : "Envoyer"}

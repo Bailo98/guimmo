@@ -287,3 +287,39 @@ create policy "Auth users can upload listing videos" on storage.objects for inse
   with check (bucket_id = 'listings' and auth.role() = 'authenticated');
 create policy "Users can delete own listing video" on storage.objects for delete
   using (bucket_id = 'listings' and auth.uid()::text = (storage.foldername(name))[1]);
+
+-- ─── Messages: performance indexes ───────────────────────────────────────────
+-- IMPORTANT: activer Realtime sur la table messages dans
+-- Supabase Dashboard → Database → Replication → ajouter "messages"
+
+create index if not exists idx_messages_receiver_unread
+  on messages(receiver_id, is_read);
+create index if not exists idx_messages_conversation
+  on messages(property_id, sender_id, receiver_id, created_at desc);
+
+-- ─── Virtual tour ─────────────────────────────────────────────────────────────
+alter table properties add column if not exists has_virtual_tour boolean not null default false;
+
+create table if not exists virtual_tour_images (
+  id          uuid primary key default gen_random_uuid(),
+  property_id uuid not null references properties(id) on delete cascade,
+  url         text not null,
+  room_name   text not null,
+  sort_order  integer not null default 0,
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists vt_images_property_idx
+  on virtual_tour_images(property_id, sort_order);
+
+alter table virtual_tour_images enable row level security;
+
+create policy "vt_select" on virtual_tour_images for select using (true);
+create policy "vt_insert" on virtual_tour_images for insert
+  with check (
+    auth.uid() = (select owner_id from properties where id = property_id)
+  );
+create policy "vt_delete" on virtual_tour_images for delete
+  using (
+    auth.uid() = (select owner_id from properties where id = property_id)
+  );
