@@ -6,6 +6,7 @@ import { PhotoGallery } from "./PhotoGallery";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { MessageButton } from "@/components/property/MessageButton";
 import { ReportButton } from "@/components/property/ReportButton";
+import { PropertyShareButton } from "@/components/property/PropertyShareButton";
 import { getNeighborhoodName } from "@/data/neighborhoods";
 import type { Metadata } from "next";
 import type { Property } from "@/types";
@@ -75,6 +76,8 @@ function mapRow(row: any): Property {
     boostExpiresAt: row.boost_expires_at ? new Date(row.boost_expires_at) : undefined,
     createdAt: new Date(row.created_at ?? Date.now()),
     updatedAt: new Date(row.updated_at ?? Date.now()),
+    videoUrl: row.video_url ?? undefined,
+    shortRef: row.short_ref ?? undefined,
   };
 }
 
@@ -123,7 +126,8 @@ export default async function PropertyDetailPage({ params }: Props) {
   }
 
   const property = mapRow({ ...row, profiles: profileData });
-  const videoUrl: string | null = (row as Record<string, unknown>).video_url as string | null ?? null;
+  const videoUrl = property.videoUrl ?? null;
+  const shortRef = property.shortRef ?? null;
 
   // Increment views — fire and forget
   void db
@@ -171,6 +175,22 @@ export default async function PropertyDetailPage({ params }: Props) {
           <span className="text-white/60 truncate">{property.title}</span>
         </nav>
       </div>
+
+      {/* Video — shown BEFORE photos if available */}
+      {videoUrl && (
+        <div style={{ background: "#000" }}>
+          <video
+            src={videoUrl}
+            controls
+            muted
+            playsInline
+            preload="metadata"
+            poster={property.images[0]?.url}
+            className="w-full"
+            style={{ maxHeight: 360, objectFit: "contain", borderRadius: 0 }}
+          />
+        </div>
+      )}
 
       {/* Hero gallery — full width, h-72 */}
       <div className="relative h-72 md:h-96 overflow-hidden">
@@ -270,22 +290,6 @@ export default async function PropertyDetailPage({ params }: Props) {
                 </div>
               </div>
 
-              {/* Video player */}
-              {videoUrl && (
-                <div className="rounded-2xl overflow-hidden" style={{ background: "#000", border: "1px solid rgba(255,255,255,0.10)" }}>
-                  <p className="text-white/50 text-xs font-bold px-4 pt-3 pb-1">🎥 Visite vidéo</p>
-                  <video
-                    src={videoUrl}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    controls
-                    className="w-full max-h-64 object-cover"
-                  />
-                </div>
-              )}
-
               {/* Description */}
               <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}>
                 <h2 className="font-bold text-white mb-3">Description</h2>
@@ -304,6 +308,52 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </div>
                   </div>
                 )}
+              </div>
+
+              {/* Trust badges */}
+              {(property.owner.verified || property.images.length > 0 || property.owner.whatsapp) && (
+                <div className="rounded-2xl p-4 space-y-3" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                  {property.owner.verified && (
+                    <p className="text-white font-bold text-sm mb-2">Pourquoi faire confiance à cette annonce</p>
+                  )}
+                  <div className="flex flex-wrap gap-2">
+                    {property.owner.verified && (
+                      <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(110,201,122,0.15)", color: "#6ec97a", border: "1px solid rgba(110,201,122,0.25)" }}>
+                        ✓ Propriétaire vérifié GuImmo
+                      </span>
+                    )}
+                    {property.images.length > 0 && (
+                      <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(200,144,30,0.15)", color: "#daa84a", border: "1px solid rgba(200,144,30,0.25)" }}>
+                        📷 Photos réelles
+                      </span>
+                    )}
+                    {property.owner.whatsapp && (
+                      <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(37,211,102,0.12)", color: "#25D366", border: "1px solid rgba(37,211,102,0.25)" }}>
+                        💬 Contact direct WhatsApp
+                      </span>
+                    )}
+                    {videoUrl && (
+                      <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(139,92,246,0.15)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.25)" }}>
+                        🎥 Visite vidéo disponible
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Share */}
+              <div>
+                <p className="text-white/40 text-xs font-bold uppercase tracking-wide mb-2">Partager cette annonce</p>
+                <PropertyShareButton
+                  title={property.title}
+                  neighborhood={neighborhoodLabel}
+                  price={formatGNF(property.price, property.pricePeriod)}
+                  rooms={property.rooms}
+                  bathrooms={property.bathrooms}
+                  surface={property.surface}
+                  shortRef={shortRef ?? undefined}
+                  propertyId={property.id}
+                />
               </div>
 
               {/* Report */}

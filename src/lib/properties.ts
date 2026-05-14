@@ -53,6 +53,8 @@ function mapRow(row: any): Property {
     updatedAt: new Date(row.updated_at ?? Date.now()),
     latitude: row.latitude ?? undefined,
     longitude: row.longitude ?? undefined,
+    videoUrl: row.video_url ?? undefined,
+    shortRef: row.short_ref ?? undefined,
   };
 }
 

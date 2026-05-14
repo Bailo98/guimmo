@@ -35,8 +35,9 @@ export function PropertyCard({ property, variant = "default", className, index =
 
   // Trust signals
   const isVerifiedOwner = property.owner.verified;
-  const hasRealPhotos   = property.images.length >= 2;
+  const hasRealPhotos   = property.images.length > 0;
   const hasPhone        = !!(property.owner.phone || property.owner.whatsapp);
+  const hasVideo        = !!property.videoUrl;
 
   const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://guimmo.gn";
   const shareUrl = `${siteUrl}/annonces/${property.id}`;
@@ -124,6 +125,11 @@ export function PropertyCard({ property, variant = "default", className, index =
           <span className="text-white/80 text-[11px] font-bold px-2.5 py-1 rounded-full leading-none" style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
             {TYPE_LABELS[property.type] ?? property.type}
           </span>
+          {hasVideo && (
+            <span className="text-white text-[11px] font-bold px-2.5 py-1 rounded-full leading-none" style={{ background: "rgba(139,92,246,0.70)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
+              🎥 Vidéo
+            </span>
+          )}
           {isNew && (
             <span className="text-white text-[11px] font-bold px-2.5 py-1 rounded-full leading-none" style={{ background: "rgba(255,255,255,0.20)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
               Nouveau
@@ -185,7 +191,7 @@ export function PropertyCard({ property, variant = "default", className, index =
         </div>
       </Link>
       {/* Trust badges */}
-      {(isVerifiedOwner || hasRealPhotos || hasPhone) && (
+      {(isVerifiedOwner || hasRealPhotos || hasPhone || hasVideo) && (
         <div className="px-3 pb-1 flex flex-wrap gap-1">
           {isVerifiedOwner && (
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(110,201,122,0.15)", color: "#6ec97a", border: "1px solid rgba(110,201,122,0.25)" }}>
@@ -198,8 +204,13 @@ export function PropertyCard({ property, variant = "default", className, index =
             </span>
           )}
           {hasPhone && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(96,165,250,0.15)", color: "#93c5fd", border: "1px solid rgba(96,165,250,0.25)" }}>
-              📞 Numéro vérifié
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(37,211,102,0.12)", color: "#25D366", border: "1px solid rgba(37,211,102,0.25)" }}>
+              💬 Contact direct
+            </span>
+          )}
+          {hasVideo && (
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(139,92,246,0.15)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.25)" }}>
+              🎥 Vidéo
             </span>
           )}
         </div>

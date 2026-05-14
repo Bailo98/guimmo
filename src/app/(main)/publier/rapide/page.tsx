@@ -10,6 +10,17 @@ import { cn } from "@/lib/utils";
 
 const COMMUNES = ["Ratoma", "Dixinn", "Matam", "Kaloum", "Matoto", "Coyah"];
 
+const TYPE_OPTIONS = [
+  { id: "apartment", label: "Appart.",  emoji: "🏢" },
+  { id: "house",     label: "Maison",   emoji: "🏠" },
+  { id: "villa",     label: "Villa",    emoji: "🏡" },
+  { id: "studio",    label: "Studio",   emoji: "🛋️" },
+  { id: "room",      label: "Chambre",  emoji: "🚪" },
+  { id: "land",      label: "Terrain",  emoji: "🌿" },
+] as const;
+
+type PType = typeof TYPE_OPTIONS[number]["id"];
+
 function formatGNF(raw: string): string {
   const n = parseInt(raw.replace(/\D/g, ""), 10);
   if (isNaN(n) || n === 0) return "";
@@ -23,16 +34,18 @@ export default function PublierRapidePage() {
   const [submitting, setSubmitting] = useState(false);
   const [previews, setPreviews]     = useState<string[]>([]);
   const [files, setFiles]           = useState<File[]>([]);
+  const [published, setPublished]   = useState<{ id: string; phone: string } | null>(null);
   const [form, setForm] = useState({
     price:        "",
     neighborhood: "",
     phone:        "",
     txType:       "rent" as "rent" | "sale",
+    type:         "" as PType | "",
   });
 
   function addPhotos(fl: FileList | null) {
     if (!fl) return;
-    const imgs = Array.from(fl).filter((f) => f.type.startsWith("image/")).slice(0, 5 - files.length);
+    const imgs = Array.from(fl).filter((f) => f.type.startsWith("image/")).slice(0, 4 - files.length);
     setFiles((p) => [...p, ...imgs]);
     setPreviews((p) => [...p, ...imgs.map((f) => URL.createObjectURL(f))]);
   }
@@ -52,82 +65,136 @@ export default function PublierRapidePage() {
     setSubmitting(true);
 
     try {
-      const priceNum = parseInt(form.price.replace(/\D/g, ""), 10);
-      const nbName   = NEIGHBORHOODS.find((n) => n.id === form.neighborhood)?.name ?? form.neighborhood;
-      const title    = `Bien à ${nbName}`;
-      const shortRef = "GUI-" + Math.random().toString(36).substring(2, 6).toUpperCase();
-
-      let uploadedUrls: string[] = [];
-
-      if (isSupabaseConfigured && supabase) {
-        // Guest session: use anon upload (bucket must allow anon inserts)
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          const ext  = file.name.split(".").pop() ?? "jpg";
-          const path = `guest/${Date.now()}-${i}.${ext}`;
-          const { error } = await supabase.storage
-            .from("property-images")
-            .upload(path, file, { upsert: false, contentType: file.type });
-          if (!error) {
-            const { data: { publicUrl } } = supabase.storage.from("property-images").getPublicUrl(path);
-            uploadedUrls.push(publicUrl);
-          }
-        }
-
-        const { data: prop, error: insertErr } = await supabase
-          .from("properties")
-          .insert({
-            title,
-            description:       "",
-            type:              "house",
-            transaction_type:  form.txType,
-            price:             priceNum,
-            price_period:      form.txType === "rent" ? "month" : "total",
-            rooms:             1,
-            bathrooms:         0,
-            furnished:         false,
-            available_now:     true,
-            neighborhood:      form.neighborhood,
-            city:              "Conakry",
-            status:            "active",
-            contact_phone:     form.phone,
-            contact_preference: "both",
-            short_ref:         shortRef,
-            features:          [],
-            is_boosted:        false,
-            views:             0,
-            whatsapp_clicks:   0,
-          })
-          .select("id")
-          .single();
-
-        if (insertErr || !prop) throw new Error("insert failed");
-
-        if (uploadedUrls.length > 0) {
-          await supabase.from("property_images").insert(
-            uploadedUrls.map((url, i) => ({
-              property_id: prop.id,
-              url,
-              alt: title,
-              is_primary: i === 0,
-              sort_order: i,
-            }))
-          );
-        }
-
-        toast("✅ Annonce publiée !", "success");
-        router.push(`/annonces/${prop.id}`);
-      } else {
-        // Mock mode (no Supabase)
+      if (!isSupabaseConfigured || !supabase) {
+        // Mock mode
         await new Promise((r) => setTimeout(r, 1200));
         toast("✅ Annonce soumise (mode demo)", "success");
         router.push("/annonces");
+        return;
       }
+
+      const priceNum = parseInt(form.price.replace(/\D/g, ""), 10);
+      const nbName   = NEIGHBORHOODS.find((n) => n.id === form.neighborhood)?.name ?? form.neighborhood;
+      const propType = form.type || "house";
+      const title    = `${TYPE_OPTIONS.find((t) => t.id === propType)?.label ?? "Bien"} à ${nbName}`;
+      const shortRef = "GUI-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+      // ── 1. Get or create user ──────────────────────────────────────
+      let userId: string;
+      const { data: { user: existing } } = await supabase.auth.getUser();
+
+      if (existing) {
+        userId = existing.id;
+      } else {
+        // Create a temporary account
+        const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
+        const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
+        const tempEmail = `temp_${normalized}_${Date.now()}@guimmo.gn`;
+        const tempPassword = Math.random().toString(36).slice(2, 12) + "Aa1!";
+
+        const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
+          email: tempEmail,
+          password: tempPassword,
+          options: { data: { phone: form.phone, role: "owner" } },
+        });
+
+        if (signUpErr || !signUpData.user) throw new Error("Création compte échouée");
+        userId = signUpData.user.id;
+      }
+
+      // ── 2. Upload photos ───────────────────────────────────────────
+      const uploadedUrls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const ext  = file.name.split(".").pop() ?? "jpg";
+        const path = `${userId}/${Date.now()}-${i}.${ext}`;
+        const { error } = await supabase.storage
+          .from("property-images")
+          .upload(path, file, { upsert: false, contentType: file.type });
+        if (!error) {
+          const { data: { publicUrl } } = supabase.storage.from("property-images").getPublicUrl(path);
+          uploadedUrls.push(publicUrl);
+        }
+      }
+
+      // ── 3. Insert property ─────────────────────────────────────────
+      const { data: prop, error: insertErr } = await supabase
+        .from("properties")
+        .insert({
+          owner_id:          userId,
+          title,
+          description:       "",
+          type:              propType,
+          transaction_type:  form.txType,
+          price:             priceNum,
+          price_period:      form.txType === "rent" ? "month" : "total",
+          rooms:             1,
+          bathrooms:         0,
+          furnished:         false,
+          available_now:     true,
+          neighborhood:      form.neighborhood,
+          city:              "Conakry",
+          status:            "active",
+          contact_phone:     form.phone,
+          contact_preference: "both",
+          short_ref:         shortRef,
+          features:          [],
+          is_boosted:        false,
+          views:             0,
+          whatsapp_clicks:   0,
+        })
+        .select("id")
+        .single();
+
+      if (insertErr || !prop) throw new Error("insert failed");
+
+      if (uploadedUrls.length > 0) {
+        await supabase.from("property_images").insert(
+          uploadedUrls.map((url, i) => ({
+            property_id: prop.id,
+            url,
+            alt: title,
+            is_primary: i === 0,
+            sort_order: i,
+          }))
+        );
+      }
+
+      setPublished({ id: prop.id, phone: form.phone });
     } catch (err) {
       console.error(err);
       toast("Erreur lors de la publication", "error");
       setSubmitting(false);
     }
+  }
+
+  // ── Success screen ──────────────────────────────────────────────
+  if (published) {
+    return (
+      <div className="max-w-lg mx-auto px-4 pt-12 pb-32 text-center" style={{ background: "var(--guimmo-bg)" }}>
+        <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl" style={{ background: "rgba(110,201,122,0.15)", border: "2px solid rgba(110,201,122,0.35)" }}>
+          ✅
+        </div>
+        <h1 className="text-2xl font-black text-white mb-3">Annonce publiée !</h1>
+        <p className="text-white/60 text-sm leading-relaxed mb-6">
+          Votre annonce est maintenant visible sur GuImmo.<br />
+          <span className="text-white font-semibold">Retenez votre numéro {form.phone} pour vous connecter plus tard.</span>
+        </p>
+        <button
+          onClick={() => router.push(`/annonces/${published.id}`)}
+          className="w-full flex items-center justify-center gap-2 rounded-2xl font-black text-white mb-3"
+          style={{ minHeight: 52, background: "#c8901e" }}
+        >
+          <CheckCircle2 className="w-5 h-5" /> Voir mon annonce
+        </button>
+        <button
+          onClick={() => router.push("/annonces")}
+          className="w-full text-white/50 text-sm py-3"
+        >
+          Voir toutes les annonces
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -148,23 +215,23 @@ export default function PublierRapidePage() {
         <div>
           <label className="block text-sm font-bold text-white mb-3">
             📸 Photos <span className="text-red-400">*</span>
-            <span className="text-white/40 font-normal ml-1">(min. 1, max. 5)</span>
+            <span className="text-white/40 font-normal ml-1">(min. 1, max. 4)</span>
           </label>
           {previews.length > 0 && (
-            <div className="grid grid-cols-3 gap-2 mb-3">
+            <div className="grid grid-cols-4 gap-2 mb-3">
               {previews.map((url, i) => (
                 <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-white/5">
-                  <Image src={url} alt="" fill className="object-cover" sizes="120px" />
+                  <Image src={url} alt="" fill className="object-cover" sizes="80px" />
                   <button type="button" onClick={() => removePhoto(i)}
-                    className="absolute top-1 right-1 w-6 h-6 bg-black/60 rounded-full flex items-center justify-center text-white">
-                    <X className="w-3.5 h-3.5" />
+                    className="absolute top-1 right-1 w-5 h-5 bg-black/60 rounded-full flex items-center justify-center text-white">
+                    <X className="w-3 h-3" />
                   </button>
-                  {i === 0 && <span className="absolute bottom-1 left-1 text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ background: "rgba(255,255,255,0.25)" }}>Principale</span>}
+                  {i === 0 && <span className="absolute bottom-1 left-1 text-[9px] font-bold px-1 py-0.5 rounded text-white" style={{ background: "rgba(255,255,255,0.25)" }}>Princ.</span>}
                 </div>
               ))}
             </div>
           )}
-          {files.length < 5 && (
+          {files.length < 4 && (
             <div className="flex gap-2">
               <button type="button" onClick={() => fileRef.current?.click()}
                 className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed border-white/20 text-white/60 hover:border-white/40 hover:text-white transition-colors text-sm font-semibold"
@@ -182,15 +249,40 @@ export default function PublierRapidePage() {
           <input ref={cameraRef} type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }} />
         </div>
 
+        {/* Type de bien */}
+        <div>
+          <label className="block text-sm font-bold text-white mb-3">🏠 Type de bien</label>
+          <div className="grid grid-cols-3 gap-2">
+            {TYPE_OPTIONS.map((t) => (
+              <button key={t.id} type="button" onClick={() => setForm((f) => ({ ...f, type: t.id }))}
+                className={cn("flex flex-col items-center gap-1 py-3 rounded-xl border-2 font-semibold text-xs transition-all")}
+                style={{
+                  minHeight: 60,
+                  borderColor: form.type === t.id ? "#c8901e" : "rgba(255,255,255,0.12)",
+                  background: form.type === t.id ? "rgba(200,144,30,0.12)" : "rgba(255,255,255,0.04)",
+                  color: form.type === t.id ? "#daa84a" : "rgba(255,255,255,0.60)",
+                }}>
+                <span className="text-xl">{t.emoji}</span>
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Transaction type */}
         <div>
           <label className="block text-sm font-bold text-white mb-3">🔑 Location ou vente ?</label>
           <div className="grid grid-cols-2 gap-3">
             {(["rent", "sale"] as const).map((t) => (
               <button key={t} type="button" onClick={() => setForm((f) => ({ ...f, txType: t }))}
-                className={cn("py-3 rounded-xl border-2 font-bold text-sm transition-all", { minHeight: 52 })}
-                style={{ minHeight: 52, borderColor: form.txType === t ? "#c8901e" : "rgba(255,255,255,0.12)", color: form.txType === t ? "#daa84a" : "rgba(255,255,255,0.50)" }}>
-                {t === "rent" ? "🔑 Location" : "💰 Vente"}
+                className="py-4 rounded-xl border-2 font-bold text-sm transition-all"
+                style={{
+                  minHeight: 52,
+                  borderColor: form.txType === t ? "#c8901e" : "rgba(255,255,255,0.12)",
+                  background: form.txType === t ? "rgba(200,144,30,0.12)" : "rgba(255,255,255,0.04)",
+                  color: form.txType === t ? "#daa84a" : "rgba(255,255,255,0.50)",
+                }}>
+                {t === "rent" ? "🔑 À Louer" : "💰 À Vendre"}
               </button>
             ))}
           </div>

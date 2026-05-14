@@ -59,11 +59,12 @@ export function BottomNav() {
           <NavItem key={item.href} {...item} />
         ))}
 
-        {/* FAB */}
-        <Link href="/publier" className="flex flex-col items-center justify-center -mt-6">
-          <span className="w-14 h-14 rounded-full flex items-center justify-center active:scale-95 transition-transform" style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.20)" }}>
+        {/* FAB — Publication rapide */}
+        <Link href="/publier/rapide" className="flex flex-col items-center justify-center -mt-6">
+          <span className="w-14 h-14 rounded-full flex items-center justify-center active:scale-95 transition-transform" style={{ background: "#c8901e", border: "1px solid rgba(200,144,30,0.50)", boxShadow: "0 4px 20px rgba(200,144,30,0.40)" }}>
             <Plus className="w-7 h-7 text-white" strokeWidth={2.5} />
           </span>
+          <span className="text-[9px] font-bold mt-1" style={{ color: "#daa84a" }}>Publier</span>
         </Link>
 
         {RIGHT_NAV.map((item) => (
