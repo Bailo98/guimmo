@@ -103,6 +103,8 @@ export default function AdminUtilisateursPage() {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
         <input
+          id="search-users"
+          aria-label="Rechercher un utilisateur"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Rechercher par nom, email, téléphone, rôle…"

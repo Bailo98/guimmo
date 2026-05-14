@@ -4,7 +4,9 @@ import Image from "next/image";
 import {
   LayoutDashboard, FileText, Users, Eye, CheckCircle, XCircle,
   Trash2, RotateCcw, Star, AlertTriangle, ChevronLeft, ChevronRight,
+  Flag, UserCheck, Plus,
 } from "lucide-react";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
@@ -20,6 +22,8 @@ interface Stats {
   rented: number;
   users: number;
   thisWeek: number;
+  pendingVerif: number;
+  reports: number;
 }
 
 interface AdminProp {
@@ -151,19 +155,23 @@ export default function AdminPage() {
     async function loadStats() {
       const db = supabase!;
       const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-      const [a, b, c, d, e] = await Promise.all([
+      const [a, b, c, d, e, f, g] = await Promise.all([
         db.from("properties").select("*", { count: "exact", head: true }),
         db.from("properties").select("*", { count: "exact", head: true }).eq("available_now", true),
         db.from("properties").select("*", { count: "exact", head: true }).eq("available_now", false),
         db.from("profiles").select("*", { count: "exact", head: true }),
         db.from("properties").select("*", { count: "exact", head: true }).gte("created_at", oneWeekAgo),
+        db.from("profiles").select("*", { count: "exact", head: true }).eq("is_verified", false),
+        db.from("reports").select("*", { count: "exact", head: true }),
       ]);
       setStats({
-        total:    a.count ?? 0,
-        available: b.count ?? 0,
-        rented:   c.count ?? 0,
-        users:    d.count ?? 0,
-        thisWeek: e.count ?? 0,
+        total:       a.count ?? 0,
+        available:   b.count ?? 0,
+        rented:      c.count ?? 0,
+        users:       d.count ?? 0,
+        thisWeek:    e.count ?? 0,
+        pendingVerif: f.count ?? 0,
+        reports:     g.count ?? 0,
       });
     }
     loadStats();
@@ -351,16 +359,18 @@ export default function AdminPage() {
         <div className="space-y-6">
           <h1 className="text-2xl font-black text-slate-900 dark:text-white">Tableau de bord</h1>
 
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-            <StatCard label="Total annonces"   value={stats?.total ?? null}    color="text-slate-900 dark:text-white" />
-            <StatCard label="Disponibles"      value={stats?.available ?? null} color="text-green-600 dark:text-green-400" />
-            <StatCard label="Déjà louées"      value={stats?.rented ?? null}    color="text-red-500" />
-            <StatCard label="Utilisateurs"     value={stats?.users ?? null}     color="text-blue-600 dark:text-blue-400" />
-            <StatCard label="Cette semaine"    value={stats?.thisWeek ?? null}  color="text-[#F97316]" sub="nouvelles annonces" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3">
+            <StatCard label="Total annonces"   value={stats?.total ?? null}        color="text-slate-900 dark:text-white" />
+            <StatCard label="Disponibles"      value={stats?.available ?? null}    color="text-green-600 dark:text-green-400" />
+            <StatCard label="Déjà louées"      value={stats?.rented ?? null}       color="text-red-500" />
+            <StatCard label="Utilisateurs"     value={stats?.users ?? null}        color="text-blue-600 dark:text-blue-400" />
+            <StatCard label="Cette semaine"    value={stats?.thisWeek ?? null}     color="text-[#F97316]" sub="nouvelles annonces" />
+            <StatCard label="À vérifier"       value={stats?.pendingVerif ?? null} color="text-orange-500" sub="profils non vérifiés" />
+            <StatCard label="Signalements"     value={stats?.reports ?? null}      color="text-red-600 dark:text-red-400" sub="en attente" />
           </div>
 
           {/* Quick links */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             <button
               onClick={() => setTab("annonces")}
               className="flex items-center gap-4 bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] p-5 hover:border-[#F97316]/50 transition-colors text-left"
@@ -385,6 +395,47 @@ export default function AdminPage() {
                 <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Rôles, comptes, accès</p>
               </div>
             </button>
+            <Link
+              href="/admin/annonces/nouvelle"
+              className="flex items-center gap-4 bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] p-5 hover:border-green-400/50 transition-colors text-left"
+            >
+              <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
+                <Plus className="w-5 h-5 text-green-600 dark:text-green-400" />
+              </div>
+              <div>
+                <p className="font-bold text-slate-900 dark:text-white text-sm">Ajouter une annonce</p>
+                <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Publier manuellement</p>
+              </div>
+            </Link>
+            <Link
+              href="/admin/agents"
+              className="flex items-center gap-4 bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] p-5 hover:border-amber-400/50 transition-colors text-left"
+            >
+              <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+                <UserCheck className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              </div>
+              <div>
+                <p className="font-bold text-slate-900 dark:text-white text-sm">Gérer les agents</p>
+                <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Agents certifiés GuImmo</p>
+              </div>
+            </Link>
+            <Link
+              href="/admin/signalements"
+              className="flex items-center gap-4 bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] p-5 hover:border-red-400/50 transition-colors text-left"
+            >
+              <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0 relative">
+                <Flag className="w-5 h-5 text-red-500" />
+                {(stats?.reports ?? 0) > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                    {stats!.reports}
+                  </span>
+                )}
+              </div>
+              <div>
+                <p className="font-bold text-slate-900 dark:text-white text-sm">Signalements</p>
+                <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Annonces signalées</p>
+              </div>
+            </Link>
           </div>
         </div>
       )}
@@ -642,6 +693,7 @@ export default function AdminPage() {
                           {/* Role select */}
                           <td className="px-4 py-3 whitespace-nowrap">
                             <select
+                              aria-label={`Rôle de ${u.full_name ?? "l'utilisateur"}`}
                               value={u.role}
                               disabled={!!busy}
                               onChange={(e) => changeRole(u, e.target.value)}

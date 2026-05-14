@@ -224,6 +224,10 @@ create policy "Anyone can submit a report" on reports for insert with check (tru
 create policy "Admins can read reports" on reports for select
   using (auth.uid() in (select id from profiles where role = 'admin'));
 
+-- Admin can delete reports (for masquer/ignorer actions)
+create policy "Admins can delete reports" on reports for delete
+  using (auth.uid() in (select id from profiles where role = 'admin'));
+
 -- ─── Utility functions ───────────────────────────────────────────────────────
 create or replace function increment_views(property_id uuid)
 returns void language sql security definer as $$

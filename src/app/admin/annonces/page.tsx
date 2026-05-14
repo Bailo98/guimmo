@@ -169,6 +169,8 @@ export default function AdminAnnoncesPage() {
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
           <input
+            id="search-annonces"
+            aria-label="Rechercher une annonce"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher par titre ou propriétaire…"
@@ -176,6 +178,7 @@ export default function AdminAnnoncesPage() {
           />
         </div>
         <select
+          aria-label="Filtrer par statut"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
           className="bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]"
