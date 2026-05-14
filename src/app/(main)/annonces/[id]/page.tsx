@@ -7,6 +7,8 @@ import { PropertyCard } from "@/components/ui/PropertyCard";
 import { MessageButton } from "@/components/property/MessageButton";
 import { ReportButton } from "@/components/property/ReportButton";
 import { PropertyShareButton } from "@/components/property/PropertyShareButton";
+import { VirtualTour } from "@/components/VirtualTour";
+import type { VTRoom } from "@/components/VirtualTour";
 import { getNeighborhoodName } from "@/data/neighborhoods";
 import type { Metadata } from "next";
 import type { Property } from "@/types";
@@ -157,6 +159,21 @@ export default async function PropertyDetailPage({ params }: Props) {
     .neq("id", id)
     .limit(3);
   const similar = (similarRows ?? []).map(mapRow);
+
+  // Virtual tour images (table added via migration; handle missing gracefully)
+  let vtRooms: VTRoom[] = [];
+  if (row.has_virtual_tour) {
+    try {
+      const { data: vtData } = await db
+        .from("virtual_tour_images")
+        .select("id, url, room_name, sort_order")
+        .eq("property_id", id)
+        .order("sort_order");
+      vtRooms = (vtData ?? []) as VTRoom[];
+    } catch {
+      // table not yet migrated — silently skip
+    }
+  }
 
   const neighborhoodLabel = getNeighborhoodName(property.neighborhood);
   const phone = property.owner.phone;
@@ -419,6 +436,9 @@ export default async function PropertyDetailPage({ params }: Props) {
                   </div>
                 )}
               </div>
+
+              {/* Virtual tour */}
+              {vtRooms.length > 0 && <VirtualTour rooms={vtRooms} />}
 
               {/* Trust badges */}
               {(property.owner.verified || property.images.length > 0 || property.owner.whatsapp) && (

@@ -29,6 +29,13 @@ const ROOM_OPTIONS = [0, 1, 2, 3, 4, "5+"] as const;
 const COMMUNES = ["Ratoma", "Dixinn", "Matam", "Kaloum", "Matoto", "Coyah"];
 const STEP_LABELS = ["Type & transaction", "Photos & prix", "Quartier", "Contact"];
 
+interface TourRoom {
+  id: string;
+  name: string;
+  file: File | null;
+  preview: string | null;
+}
+
 interface FormState {
   type: PType | "";
   txType: TxType | "";
@@ -51,6 +58,8 @@ interface FormState {
   hasAc: boolean;
   kitchenEquipped: boolean;
   floorNumber: number;
+  hasVirtualTour: boolean;
+  tourRooms: TourRoom[];
 }
 
 
@@ -88,6 +97,7 @@ export default function PublierPage() {
   const [videoFile, setVideoFile]         = useState<File | null>(null);
   const [videoPreview, setVideoPreview]   = useState<string | null>(null);
   const [videoUploading, setVideoUploading] = useState(false);
+  const tourInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
 
@@ -100,6 +110,8 @@ export default function PublierPage() {
     waterSource: "robinet", electricity: "edg", internet: "none",
     hasParking: false, hasSecurity: false, hasFence: false,
     hasAc: false, kitchenEquipped: false, floorNumber: 0,
+    hasVirtualTour: false,
+    tourRooms: [{ id: crypto.randomUUID(), name: "Salon", file: null, preview: null }],
   });
   const [geoState, setGeoState] = useState<"idle" | "loading" | "done" | "error">("idle");
 
@@ -202,8 +214,62 @@ export default function PublierPage() {
     e.target.value = "";
   }
 
+  function addTourRoom() {
+    if (form.tourRooms.length >= 10) return;
+    setForm((f) => ({
+      ...f,
+      tourRooms: [...f.tourRooms, { id: crypto.randomUUID(), name: "", file: null, preview: null }],
+    }));
+  }
+
+  function removeTourRoom(id: string) {
+    setForm((f) => {
+      const room = f.tourRooms.find((r) => r.id === id);
+      if (room?.preview) URL.revokeObjectURL(room.preview);
+      return { ...f, tourRooms: f.tourRooms.filter((r) => r.id !== id) };
+    });
+  }
+
+  function updateTourRoomName(id: string, name: string) {
+    setForm((f) => ({
+      ...f,
+      tourRooms: f.tourRooms.map((r) => (r.id === id ? { ...r, name } : r)),
+    }));
+  }
+
+  function handleTourRoomFile(id: string, file: File | null) {
+    if (!file) return;
+    setForm((f) => {
+      const room = f.tourRooms.find((r) => r.id === id);
+      if (room?.preview) URL.revokeObjectURL(room.preview);
+      return {
+        ...f,
+        tourRooms: f.tourRooms.map((r) =>
+          r.id === id ? { ...r, file, preview: URL.createObjectURL(file) } : r
+        ),
+      };
+    });
+  }
+
   async function handleSubmit() {
-    if (!user || !supabase) return;
+    if (!user) {
+      toast("Vous devez être connecté pour publier", "error");
+      return;
+    }
+    if (!supabase) {
+      toast("Service non disponible, réessayez plus tard", "error");
+      return;
+    }
+    if (form.photos.length === 0) {
+      toast("Veuillez ajouter au moins une photo", "error");
+      return;
+    }
+    const priceNum = parseInt(form.price.replace(/\D/g, ""), 10);
+    if (!priceNum || isNaN(priceNum) || priceNum <= 0) {
+      toast("Veuillez saisir un prix valide", "error");
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -217,9 +283,8 @@ export default function PublierPage() {
           .from("property-images")
           .upload(path, file, { upsert: false, contentType: file.type });
         if (upErr) {
-          console.error("[upload] error:", JSON.stringify(upErr));
-          const msg = upErr.message ?? JSON.stringify(upErr);
-          toast(`Erreur upload : ${msg}`, "error");
+          console.error("[upload photo] error:", JSON.stringify(upErr, null, 2));
+          toast(`Erreur upload photo : ${upErr.message ?? "réessayez"}`, "error");
           setSubmitting(false);
           return;
         }
@@ -232,7 +297,7 @@ export default function PublierPage() {
         return;
       }
 
-      // 1b. Upload video if present
+      // 1b. Upload video if present (non-blocking — failure skips video)
       let videoUrl: string | null = null;
       if (videoFile) {
         setVideoUploading(true);
@@ -242,66 +307,73 @@ export default function PublierPage() {
           .from("listings")
           .upload(path, videoFile, { upsert: false, contentType: videoFile.type });
         setVideoUploading(false);
-        if (!vErr) {
+        if (vErr) {
+          console.error("[upload video] error:", JSON.stringify(vErr, null, 2));
+          toast(`Erreur upload vidéo (annonce publiée sans vidéo) : ${vErr.message ?? ""}`, "error");
+        } else {
           const { data: { publicUrl } } = supabase.storage.from("listings").getPublicUrl(path);
           videoUrl = publicUrl;
         }
       }
 
       // 2. Insert into properties
-      const priceNum = parseInt(form.price.replace(/\D/g, ""), 10);
       const title    = generateTitle(form.type, form.rooms, form.neighborhood);
       const shortRef = "GUI-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+      const payload = {
+        title,
+        description:         form.locationDetail || "",
+        type:                form.type,
+        transaction_type:    form.txType,
+        price:               priceNum,
+        price_period:        form.txType === "rent" ? "month" : "total",
+        rooms:               form.rooms,
+        bathrooms:           0,
+        surface:             null,
+        furnished:           form.furnished ?? false,
+        available_now:       true,
+        neighborhood:        form.neighborhood,
+        city:                "Conakry",
+        status:              "active",
+        contact_phone:       form.phone,
+        contact_preference:  form.contactMethod,
+        short_ref:           shortRef,
+        video_url:           videoUrl,
+        owner_id:            user.id,
+        features:            [],
+        is_boosted:          false,
+        views:               0,
+        whatsapp_clicks:     0,
+        latitude:            form.latitude,
+        longitude:           form.longitude,
+        water_source:        form.waterSource || "robinet",
+        electricity:         form.electricity || "edg",
+        internet:            form.internet || "none",
+        has_parking:         form.hasParking,
+        has_security:        form.hasSecurity,
+        has_fence:           form.hasFence,
+        has_ac:              form.hasAc,
+        kitchen_equipped:    form.kitchenEquipped,
+        floor_number:        form.floorNumber,
+      };
+
       const { data: property, error: insertErr } = await supabase
         .from("properties")
-        .insert({
-          title,
-          description:         form.locationDetail || "",
-          type:                form.type,
-          transaction_type:    form.txType,
-          price:               priceNum,
-          price_period:        form.txType === "rent" ? "month" : "total",
-          rooms:               form.rooms,
-          bathrooms:           0,
-          surface:             null,
-          furnished:           form.furnished ?? false,
-          available_now:       true,
-          neighborhood:        form.neighborhood,
-          city:                "Conakry",
-          status:              "active",
-          contact_phone:       form.phone,
-          contact_preference:  form.contactMethod,
-          short_ref:           shortRef,
-          video_url:           videoUrl,
-          owner_id:            user.id,
-          features:            [],
-          is_boosted:          false,
-          views:               0,
-          whatsapp_clicks:     0,
-          latitude:            form.latitude,
-          longitude:           form.longitude,
-          water_source:        form.waterSource,
-          electricity:         form.electricity,
-          internet:            form.internet,
-          has_parking:         form.hasParking,
-          has_security:        form.hasSecurity,
-          has_fence:           form.hasFence,
-          has_ac:              form.hasAc,
-          kitchen_equipped:    form.kitchenEquipped,
-          floor_number:        form.floorNumber,
-        })
+        .insert(payload)
         .select("id")
         .single();
 
       if (insertErr || !property) {
-        console.error(insertErr);
-        toast("Erreur lors de la publication", "error");
+        console.error("ERREUR SUPABASE INSERT:", JSON.stringify(insertErr, null, 2));
+        console.error("PAYLOAD ENVOYÉ:", JSON.stringify(payload, null, 2));
+        const detail = insertErr?.message ?? insertErr?.details ?? "réessayez";
+        toast(`Erreur lors de la publication : ${detail}`, "error");
         setSubmitting(false);
         return;
       }
 
       // 3. Insert images
-      await supabase.from("property_images").insert(
+      const { error: imgErr } = await supabase.from("property_images").insert(
         uploadedUrls.map((url, i) => ({
           property_id: property.id,
           url,
@@ -310,12 +382,45 @@ export default function PublierPage() {
           sort_order: i,
         }))
       );
+      if (imgErr) {
+        console.error("ERREUR INSERT IMAGES:", JSON.stringify(imgErr, null, 2));
+      }
+
+      // 4. Virtual tour upload (non-blocking — failure skips VT gracefully)
+      if (form.hasVirtualTour) {
+        const roomsWithFile = form.tourRooms.filter((r) => r.file && r.name.trim());
+        if (roomsWithFile.length > 0) {
+          const vtRecords: { property_id: string; url: string; room_name: string; sort_order: number }[] = [];
+          for (let i = 0; i < roomsWithFile.length; i++) {
+            const room = roomsWithFile[i];
+            const ext  = room.file!.name.split(".").pop() ?? "jpg";
+            const path = `virtual_tours/${property.id}/${i}-${room.id}.${ext}`;
+            const { error: vtUpErr } = await supabase.storage
+              .from("listings")
+              .upload(path, room.file!, { upsert: false, contentType: room.file!.type });
+            if (vtUpErr) {
+              console.error("[VT upload] error:", JSON.stringify(vtUpErr, null, 2));
+              continue;
+            }
+            const { data: { publicUrl } } = supabase.storage.from("listings").getPublicUrl(path);
+            vtRecords.push({ property_id: property.id, url: publicUrl, room_name: room.name.trim(), sort_order: i });
+          }
+          if (vtRecords.length > 0) {
+            const { error: vtInsErr } = await supabase.from("virtual_tour_images").insert(vtRecords);
+            if (vtInsErr) {
+              console.error("ERREUR INSERT VT:", JSON.stringify(vtInsErr, null, 2));
+            } else {
+              await supabase.from("properties").update({ has_virtual_tour: true }).eq("id", property.id);
+            }
+          }
+        }
+      }
 
       toast("✅ Votre annonce est en ligne !", "success");
       router.push(`/annonces/${property.id}`);
     } catch (err) {
-      console.error(err);
-      toast("Une erreur est survenue", "error");
+      console.error("ERREUR INATTENDUE:", err);
+      toast("Une erreur inattendue est survenue", "error");
       setSubmitting(false);
     }
   }
@@ -543,6 +648,123 @@ export default function PublierPage() {
                 🎥 Ajouter une vidéo
               </button>
             )}
+          </div>
+
+          {/* Virtual Tour */}
+          <div>
+            <div style={{
+              background: "linear-gradient(135deg, #1a2e1e 0%, #0d1610 100%)",
+              border: "1px solid rgba(200,144,30,0.30)",
+              borderRadius: 14, padding: "14px 16px",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: form.hasVirtualTour ? 14 : 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontSize: 20 }}>🏠</span>
+                  <div>
+                    <p style={{ color: "#f7f2e6", fontWeight: 700, fontSize: 13, marginBottom: 1 }}>Visite virtuelle</p>
+                    <p style={{ color: "rgba(240,230,204,0.45)", fontSize: 11 }}>Photos par pièce · max 10 pièces</p>
+                  </div>
+                </div>
+                {/* Toggle */}
+                <button
+                  type="button"
+                  onClick={() => setForm((f) => ({ ...f, hasVirtualTour: !f.hasVirtualTour }))}
+                  style={{
+                    width: 44, height: 24, borderRadius: 12, border: "none",
+                    background: form.hasVirtualTour ? "#c8901e" : "rgba(255,255,255,0.12)",
+                    position: "relative", cursor: "pointer", flexShrink: 0, transition: "background 0.2s",
+                  }}
+                >
+                  <span style={{
+                    position: "absolute", top: 3, width: 18, height: 18, borderRadius: 9,
+                    background: "#fff", transition: "left 0.2s",
+                    left: form.hasVirtualTour ? 23 : 3,
+                  }} />
+                </button>
+              </div>
+
+              {form.hasVirtualTour && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {form.tourRooms.map((room, i) => (
+                    <div key={room.id} style={{
+                      background: "rgba(240,230,204,0.04)", border: "1px solid rgba(240,230,204,0.10)",
+                      borderRadius: 10, padding: "10px 12px",
+                      display: "flex", alignItems: "center", gap: 10,
+                    }}>
+                      {/* Thumb or upload button */}
+                      <button
+                        type="button"
+                        onClick={() => tourInputRefs.current[room.id]?.click()}
+                        style={{
+                          width: 52, height: 52, borderRadius: 8, flexShrink: 0,
+                          background: room.preview ? "transparent" : "rgba(200,144,30,0.10)",
+                          border: room.preview ? "none" : "1px dashed rgba(200,144,30,0.40)",
+                          overflow: "hidden", cursor: "pointer", position: "relative",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                        }}
+                      >
+                        {room.preview
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          ? <img src={room.preview} alt={room.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          : <span style={{ fontSize: 20 }}>📷</span>
+                        }
+                      </button>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        className="hidden"
+                        ref={(el) => { tourInputRefs.current[room.id] = el; }}
+                        onChange={(e) => { handleTourRoomFile(room.id, e.target.files?.[0] ?? null); e.target.value = ""; }}
+                      />
+
+                      {/* Room name */}
+                      <input
+                        type="text"
+                        value={room.name}
+                        placeholder={`Pièce ${i + 1} (ex: Salon)`}
+                        maxLength={30}
+                        onChange={(e) => updateTourRoomName(room.id, e.target.value)}
+                        style={{
+                          flex: 1, background: "rgba(255,255,255,0.06)",
+                          border: "1px solid rgba(255,255,255,0.10)", borderRadius: 8,
+                          padding: "8px 10px", color: "#f7f2e6", fontSize: 13,
+                          outline: "none",
+                        }}
+                      />
+
+                      {/* Remove */}
+                      {form.tourRooms.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeTourRoom(room.id)}
+                          style={{
+                            width: 28, height: 28, borderRadius: 14, flexShrink: 0,
+                            background: "rgba(239,68,68,0.15)", border: "none",
+                            cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                          }}
+                        >
+                          <X style={{ width: 14, height: 14, color: "#ef4444" }} />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+
+                  {form.tourRooms.length < 10 && (
+                    <button
+                      type="button"
+                      onClick={addTourRoom}
+                      style={{
+                        width: "100%", background: "transparent", border: "1px dashed rgba(200,144,30,0.30)",
+                        borderRadius: 10, padding: "10px", color: "#daa84a", fontSize: 13, fontWeight: 600,
+                        cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                      }}
+                    >
+                      + Ajouter une pièce ({form.tourRooms.length}/10)
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Price */}
