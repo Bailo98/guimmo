@@ -20,7 +20,7 @@ interface Property {
   views: number;
   created_at: string;
   profiles: { full_name: string | null }[] | null;
-  property_images: { url: string; position: number }[];
+  property_images: { url: string; is_primary: boolean; sort_order: number }[];
 }
 
 const STATUS_LABELS: Record<DbStatus, { label: string; classes: string }> = {
@@ -72,7 +72,7 @@ export default function AdminAnnoncesPage() {
     setLoading(true);
     const { data, error } = await supabase
       .from("properties")
-      .select("id, title, status, price, price_period, type, neighborhood, views, created_at, profiles(full_name), property_images(url, position)")
+      .select("id, title, status, price, price_period, type, neighborhood, views, created_at, profiles(full_name), property_images(url, is_primary, sort_order)")
       .order("created_at", { ascending: false });
     if (error) {
       toast("Erreur lors du chargement des annonces.", "error");
@@ -141,7 +141,10 @@ export default function AdminAnnoncesPage() {
   }, [properties, search, statusFilter]);
 
   const firstImage = (p: Property) => {
-    const sorted = [...p.property_images].sort((a, b) => a.position - b.position);
+    const imgs = p.property_images ?? [];
+    const primary = imgs.find((i) => i.is_primary);
+    if (primary) return primary.url;
+    const sorted = [...imgs].sort((a, b) => a.sort_order - b.sort_order);
     return sorted[0]?.url ?? null;
   };
 

@@ -60,7 +60,7 @@ export default function AdminSignalementsPage() {
     setBusy(r.id + "-masquer");
     await supabase.from("reports").delete().eq("id", r.id);
     if (r.property_id) {
-      await supabase.from("properties").update({ status: "archived" }).eq("id", r.property_id);
+      await supabase.from("properties").update({ status: "paused" }).eq("id", r.property_id);
     }
     setReports((prev) => prev.filter((x) => x.id !== r.id));
     toast("✅ Annonce masquée et signalement supprimé", "success");
