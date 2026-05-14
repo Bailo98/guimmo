@@ -1,10 +1,31 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { Plus, Pencil, Trash2, Check, X, Loader2, ToggleLeft, ToggleRight } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
 import { NEIGHBORHOODS } from "@/data/neighborhoods";
+
+// ─── Tokens ──────────────────────────────────────────────────────────────────
+const SURFACE  = "#1a2e1e";
+const BORDER   = "rgba(240,230,204,0.08)";
+const TEXT_PRI = "#f7f2e6";
+const TEXT_SEC = "rgba(240,230,204,0.55)";
+const ACCENT   = "#c8901e";
+
+const INPUT_STYLE: React.CSSProperties = {
+  width: "100%", background: "rgba(240,230,204,0.06)", border: `1px solid ${BORDER}`,
+  color: TEXT_PRI, borderRadius: 10, height: 44, padding: "0 14px",
+  fontSize: 13, outline: "none", boxSizing: "border-box",
+};
+const SELECT_STYLE: React.CSSProperties = { ...INPUT_STYLE, appearance: "none" as const };
+
+function focusInput(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  (e.target as HTMLElement).style.borderColor = ACCENT;
+}
+function blurInput(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  (e.target as HTMLElement).style.borderColor = BORDER;
+}
 
 interface Agent {
   id: string;
@@ -29,6 +50,15 @@ function nbLabel(id: string) {
   return NEIGHBORHOODS.find((n) => n.id === id)?.name ?? id;
 }
 
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <label style={{ fontSize: 12, color: TEXT_SEC, fontWeight: 500 }}>{label}</label>
+      {children}
+    </div>
+  );
+}
+
 export default function AdminAgentsPage() {
   const [agents, setAgents]     = useState<Agent[]>([]);
   const [loading, setLoading]   = useState(true);
@@ -41,10 +71,7 @@ export default function AdminAgentsPage() {
   const load = useCallback(async () => {
     if (!supabase) return;
     setLoading(true);
-    const { data, error } = await supabase
-      .from("agents")
-      .select("*")
-      .order("name");
+    const { data, error } = await supabase.from("agents").select("*").order("name");
     if (error) { toast("Erreur de chargement", "error"); }
     else { setAgents(data ?? []); }
     setLoading(false);
@@ -72,20 +99,17 @@ export default function AdminAgentsPage() {
     if (!supabase || !form.name || !form.neighborhood || !form.whatsapp) return;
     setSaving(true);
     const payload = {
-      name: form.name.trim(),
-      neighborhood: form.neighborhood,
-      whatsapp: form.whatsapp.trim(),
-      phone: form.phone?.trim() || null,
+      name: form.name.trim(), neighborhood: form.neighborhood,
+      whatsapp: form.whatsapp.trim(), phone: form.phone?.trim() || null,
       description: form.description?.trim() || null,
-      is_active: form.is_active,
-      listings_count: Number(form.listings_count) || 0,
+      is_active: form.is_active, listings_count: Number(form.listings_count) || 0,
     };
     if (editing) {
       const { error } = await supabase.from("agents").update(payload).eq("id", editing.id);
       if (error) { toast("Erreur", "error"); }
       else {
         setAgents((prev) => prev.map((a) => a.id === editing.id ? { ...a, ...payload } : a));
-        toast("✅ Agent mis à jour", "success");
+        toast("Agent mis à jour", "success");
         setShowForm(false);
       }
     } else {
@@ -93,7 +117,7 @@ export default function AdminAgentsPage() {
       if (error) { toast("Erreur", "error"); }
       else {
         setAgents((prev) => [...prev, data as Agent]);
-        toast("✅ Agent ajouté", "success");
+        toast("Agent ajouté", "success");
         setShowForm(false);
       }
     }
@@ -113,58 +137,65 @@ export default function AdminAgentsPage() {
     if (error) { toast("Erreur", "error"); }
     else {
       setAgents((prev) => prev.filter((x) => x.id !== a.id));
-      toast("✅ Agent supprimé", "success");
+      toast("Agent supprimé", "success");
     }
   }
 
   const canSave = !!form.name && !!form.neighborhood && !!form.whatsapp;
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <div className="flex items-center justify-between gap-4">
+    <div style={{ padding: "28px 24px 40px", maxWidth: 1200 }} className="px-4 md:px-6">
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 24 }}>
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">Agents BienLoger</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
+          <h1 style={{ color: TEXT_PRI, fontWeight: 900, fontSize: "clamp(20px,4vw,26px)" }}>Agents BienLoger</h1>
+          <p style={{ color: TEXT_SEC, fontSize: 13, marginTop: 2 }}>
             {loading ? "Chargement…" : `${agents.length} agent(s)`}
           </p>
         </div>
         <button
           onClick={openNew}
-          className="flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-xl bg-[#c8901e] hover:bg-[#b87c18] text-white transition-colors"
+          style={{
+            display: "flex", alignItems: "center", gap: 8,
+            padding: "10px 18px", borderRadius: 10,
+            border: "none", background: ACCENT, color: "white",
+            fontSize: 13, fontWeight: 700, cursor: "pointer",
+          }}
         >
-          <Plus className="w-4 h-4" /> Ajouter
+          <Plus size={15} /> Ajouter
         </button>
       </div>
 
       {/* Form */}
       {showForm && (
-        <div className="bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-200 dark:border-[#2a3040] p-5 space-y-4">
-          <h2 className="font-bold text-slate-900 dark:text-white text-base">
+        <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 16, padding: 24, marginBottom: 20 }}>
+          <h2 style={{ color: TEXT_PRI, fontWeight: 700, fontSize: 15, marginBottom: 16 }}>
             {editing ? "Modifier l'agent" : "Nouvel agent"}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label htmlFor="agent-name" className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Nom *</label>
-              <input id="agent-name" aria-label="Nom de l'agent" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(200px,1fr))", gap: 12, marginBottom: 12 }}>
+            <Field label="Nom *">
+              <input aria-label="Nom de l'agent" value={form.name}
+                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                 placeholder="Mamadou Diallo"
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]" />
-            </div>
-            <div className="space-y-1">
-              <label htmlFor="agent-whatsapp" className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">WhatsApp *</label>
-              <input id="agent-whatsapp" aria-label="Numéro WhatsApp" value={form.whatsapp} onChange={(e) => setForm((f) => ({ ...f, whatsapp: e.target.value }))}
+                style={INPUT_STYLE} onFocus={focusInput} onBlur={blurInput} />
+            </Field>
+            <Field label="WhatsApp *">
+              <input aria-label="Numéro WhatsApp" value={form.whatsapp}
+                onChange={(e) => setForm((f) => ({ ...f, whatsapp: e.target.value }))}
                 placeholder="+224 6XX XXX XXX"
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]" />
-            </div>
-            <div className="space-y-1">
-              <label htmlFor="agent-phone" className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Téléphone</label>
-              <input id="agent-phone" aria-label="Numéro de téléphone" value={form.phone ?? ""} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                style={INPUT_STYLE} onFocus={focusInput} onBlur={blurInput} />
+            </Field>
+            <Field label="Téléphone">
+              <input aria-label="Numéro de téléphone" value={form.phone ?? ""}
+                onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
                 placeholder="+224 6XX XXX XXX"
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]" />
-            </div>
-            <div className="space-y-1">
-              <label htmlFor="agent-nb" className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Quartier *</label>
-              <select id="agent-nb" aria-label="Quartier de l'agent" value={form.neighborhood} onChange={(e) => setForm((f) => ({ ...f, neighborhood: e.target.value }))}
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316] appearance-none">
+                style={INPUT_STYLE} onFocus={focusInput} onBlur={blurInput} />
+            </Field>
+            <Field label="Quartier *">
+              <select aria-label="Quartier de l'agent" value={form.neighborhood}
+                onChange={(e) => setForm((f) => ({ ...f, neighborhood: e.target.value }))}
+                style={SELECT_STYLE} onFocus={focusInput} onBlur={blurInput}>
                 <option value="">— Choisir —</option>
                 {COMMUNES.map((c) => (
                   <optgroup key={c} label={c}>
@@ -174,99 +205,107 @@ export default function AdminAgentsPage() {
                   </optgroup>
                 ))}
               </select>
-            </div>
-            <div className="space-y-1">
-              <label htmlFor="agent-listings" className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Nb annonces</label>
-              <input id="agent-listings" aria-label="Nombre d'annonces" type="number" min={0} value={form.listings_count}
+            </Field>
+            <Field label="Nb annonces">
+              <input aria-label="Nombre d'annonces" type="number" min={0} value={form.listings_count}
                 onChange={(e) => setForm((f) => ({ ...f, listings_count: Number(e.target.value) }))}
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]" />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Actif</label>
+                style={INPUT_STYLE} onFocus={focusInput} onBlur={blurInput} />
+            </Field>
+            <Field label="Statut">
               <button type="button" onClick={() => setForm((f) => ({ ...f, is_active: !f.is_active }))}
-                className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium border transition-colors ${form.is_active ? "bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700 text-green-700 dark:text-green-400" : "bg-slate-50 dark:bg-[#151922] border-slate-200 dark:border-[#2a3040] text-slate-500"}`}>
-                {form.is_active ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
+                style={{
+                  display: "flex", alignItems: "center", gap: 8, height: 44,
+                  padding: "0 14px", borderRadius: 10, fontSize: 13, fontWeight: 500,
+                  border: `1px solid ${form.is_active ? "#6ec97a" : BORDER}`,
+                  background: form.is_active ? "rgba(110,201,122,0.10)" : "transparent",
+                  color: form.is_active ? "#6ec97a" : TEXT_SEC, cursor: "pointer",
+                }}>
+                {form.is_active ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
                 {form.is_active ? "Actif" : "Inactif"}
               </button>
-            </div>
+            </Field>
           </div>
-          <div className="space-y-1">
-            <label htmlFor="agent-desc" className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Description</label>
-            <textarea id="agent-desc" aria-label="Description de l'agent" value={form.description ?? ""} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+          <Field label="Description">
+            <textarea aria-label="Description de l'agent" value={form.description ?? ""}
+              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               rows={2} placeholder="Spécialiste location…"
-              className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316] resize-none" />
-          </div>
-          <div className="flex gap-3 justify-end">
+              style={{ ...INPUT_STYLE, height: "auto", padding: "10px 14px", resize: "none", marginBottom: 16 }}
+              onFocus={focusInput} onBlur={blurInput} />
+          </Field>
+          <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
             <button onClick={() => setShowForm(false)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-[#2a3040]">
-              <X className="w-4 h-4" /> Annuler
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 10, border: `1px solid ${BORDER}`, background: "transparent", color: TEXT_PRI, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+              <X size={14} /> Annuler
             </button>
             <button onClick={saveAgent} disabled={!canSave || saving}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#c8901e] hover:bg-[#b87c18] text-white text-sm font-bold disabled:opacity-40 transition-colors">
-              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 10, border: "none", background: canSave && !saving ? ACCENT : "rgba(200,144,30,0.4)", color: "white", fontSize: 13, fontWeight: 700, cursor: canSave && !saving ? "pointer" : "not-allowed" }}>
+              {saving ? <Loader2 size={14} style={{ animation: "spin 0.8s linear infinite" }} /> : <Check size={14} />}
               {editing ? "Enregistrer" : "Ajouter"}
             </button>
           </div>
         </div>
       )}
 
+      {/* Loading */}
+      {loading && (
+        <div style={{ display: "flex", justifyContent: "center", padding: "64px 0" }}>
+          <div style={{ width: 28, height: 28, borderRadius: "50%", border: "2px solid #c8901e", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
+        </div>
+      )}
+
+      {/* Empty */}
+      {!loading && agents.length === 0 && (
+        <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 48, textAlign: "center" }}>
+          <p style={{ color: TEXT_SEC, fontSize: 14 }}>Aucun agent. Cliquez sur Ajouter.</p>
+        </div>
+      )}
+
       {/* Table */}
-      {loading ? (
-        <div className="flex items-center justify-center py-16">
-          <div className="w-7 h-7 border-2 border-[#F97316] border-t-transparent rounded-full animate-spin" />
-        </div>
-      ) : agents.length === 0 ? (
-        <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-12 border border-slate-100 dark:border-[#2a3040] text-center">
-          <p className="text-slate-400 text-sm">Aucun agent. Cliquez sur Ajouter.</p>
-        </div>
-      ) : (
-        <div className="bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px]">
+      {!loading && agents.length > 0 && (
+        <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden" }}>
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", minWidth: 640, borderCollapse: "collapse" }}>
               <thead>
-                <tr className="border-b border-slate-100 dark:border-[#2a3040]">
+                <tr style={{ borderBottom: `1px solid ${BORDER}` }}>
                   {["Nom", "Quartier", "WhatsApp", "Annonces", "Statut", "Actions"].map((h) => (
-                    <th key={h} className="text-left px-4 py-3 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider whitespace-nowrap">
+                    <th key={h} style={{ textAlign: "left", padding: "12px 16px", fontSize: 11, fontWeight: 700, color: TEXT_SEC, textTransform: "uppercase", letterSpacing: "1px", whiteSpace: "nowrap" }}>
                       {h}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50 dark:divide-[#2a3040]">
-                {agents.map((a) => (
-                  <tr key={a.id} className="hover:bg-slate-50 dark:hover:bg-[#151922] transition-colors">
-                    <td className="px-4 py-3">
-                      <p className="font-semibold text-slate-900 dark:text-white text-sm">{a.name}</p>
-                      {a.description && <p className="text-xs text-slate-400 line-clamp-1">{a.description}</p>}
+              <tbody>
+                {agents.map((a, i) => (
+                  <tr key={a.id} style={{ borderTop: i === 0 ? "none" : `1px solid ${BORDER}` }}>
+                    <td style={{ padding: "12px 16px" }}>
+                      <p style={{ color: TEXT_PRI, fontWeight: 600, fontSize: 13 }}>{a.name}</p>
+                      {a.description && <p style={{ color: TEXT_SEC, fontSize: 11, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 200 }}>{a.description}</p>}
                     </td>
-                    <td className="px-4 py-3 text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">
-                      {nbLabel(a.neighborhood)}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">
-                      {a.whatsapp}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-slate-600 dark:text-slate-300 text-center">
-                      {a.listings_count}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <button
-                        onClick={() => toggleActive(a)}
-                        title={a.is_active ? "Désactiver" : "Activer"}
-                        className={`text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 transition-colors ${a.is_active ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400" : "bg-slate-100 dark:bg-[#2a3040] text-slate-400"}`}
-                      >
-                        {a.is_active ? <ToggleRight className="w-3 h-3" /> : <ToggleLeft className="w-3 h-3" />}
+                    <td style={{ padding: "12px 16px", fontSize: 13, color: TEXT_SEC, whiteSpace: "nowrap" }}>{nbLabel(a.neighborhood)}</td>
+                    <td style={{ padding: "12px 16px", fontSize: 13, color: TEXT_SEC, whiteSpace: "nowrap" }}>{a.whatsapp}</td>
+                    <td style={{ padding: "12px 16px", fontSize: 13, color: TEXT_SEC, textAlign: "center" }}>{a.listings_count}</td>
+                    <td style={{ padding: "12px 16px", whiteSpace: "nowrap" }}>
+                      <button onClick={() => toggleActive(a)} title={a.is_active ? "Désactiver" : "Activer"}
+                        style={{
+                          display: "flex", alignItems: "center", gap: 4,
+                          padding: "4px 10px", borderRadius: 999, fontSize: 11, fontWeight: 700,
+                          border: "none", cursor: "pointer",
+                          background: a.is_active ? "rgba(110,201,122,0.15)" : "rgba(240,230,204,0.06)",
+                          color: a.is_active ? "#6ec97a" : TEXT_SEC,
+                        }}>
+                        {a.is_active ? <ToggleRight size={12} /> : <ToggleLeft size={12} />}
                         {a.is_active ? "Actif" : "Inactif"}
                       </button>
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-1.5">
+                    <td style={{ padding: "12px 16px" }}>
+                      <div style={{ display: "flex", gap: 6 }}>
                         <button onClick={() => openEdit(a)} title="Modifier"
-                          className="w-7 h-7 rounded-lg border border-slate-200 dark:border-[#2a3040] text-slate-400 hover:border-[#F97316] hover:text-[#F97316] flex items-center justify-center transition-colors">
-                          <Pencil className="w-3.5 h-3.5" />
+                          style={{ width: 30, height: 30, borderRadius: 8, border: `1px solid ${BORDER}`, background: "transparent", color: TEXT_SEC, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <Pencil size={13} />
                         </button>
                         <button onClick={() => setDeleteTarget(a)} title="Supprimer"
-                          className="w-7 h-7 rounded-lg border border-slate-200 dark:border-[#2a3040] text-slate-400 hover:border-red-300 hover:text-red-500 flex items-center justify-center transition-colors">
-                          <Trash2 className="w-3.5 h-3.5" />
+                          style={{ width: 30, height: 30, borderRadius: 8, border: `1px solid ${BORDER}`, background: "transparent", color: "#ef4444", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <Trash2 size={13} />
                         </button>
                       </div>
                     </td>
@@ -280,23 +319,29 @@ export default function AdminAgentsPage() {
 
       {/* Delete confirm */}
       {deleteTarget && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-6 max-w-sm w-full border border-red-200 dark:border-red-900/40">
-            <p className="font-bold text-slate-900 dark:text-white mb-1">Supprimer {deleteTarget.name} ?</p>
-            <p className="text-xs text-red-500 mb-5">Cette action est irréversible.</p>
-            <div className="flex gap-3">
+        <div
+          style={{ position: "fixed", inset: 0, zIndex: 50, background: "rgba(0,0,0,0.72)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
+          onClick={() => setDeleteTarget(null)}
+        >
+          <div style={{ background: "#1a2e1e", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 340, width: "100%" }}
+            onClick={(e) => e.stopPropagation()}>
+            <p style={{ color: TEXT_PRI, fontWeight: 700, marginBottom: 6 }}>Supprimer {deleteTarget.name} ?</p>
+            <p style={{ color: "#ef4444", fontSize: 12, marginBottom: 20 }}>Cette action est irréversible.</p>
+            <div style={{ display: "flex", gap: 10 }}>
               <button onClick={() => setDeleteTarget(null)}
-                className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 text-sm font-semibold">
+                style={{ flex: 1, padding: "10px 0", borderRadius: 10, border: `1px solid ${BORDER}`, background: "transparent", color: TEXT_PRI, fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
                 Annuler
               </button>
               <button onClick={() => deleteAgent(deleteTarget)}
-                className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-bold transition-colors">
+                style={{ flex: 1, padding: "10px 0", borderRadius: 10, border: "none", background: "#ef4444", color: "white", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
                 Supprimer
               </button>
             </div>
           </div>
         </div>
       )}
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

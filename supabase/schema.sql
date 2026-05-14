@@ -130,12 +130,18 @@ create policy "Users can update own profile" on profiles for update using (auth.
 -- properties
 create policy "Active properties are viewable" on properties for select
   using (status = 'active' or auth.uid() = owner_id);
+create policy "Admins can read all properties" on properties for select
+  using (auth.uid() in (select id from profiles where role = 'admin'));
 create policy "Owners can insert" on properties for insert
   with check (auth.uid() = owner_id);
 create policy "Owners can update own" on properties for update
   using (auth.uid() = owner_id);
+create policy "Admins can update any property" on properties for update
+  using (auth.uid() in (select id from profiles where role = 'admin'));
 create policy "Owners can delete own" on properties for delete
   using (auth.uid() = owner_id);
+create policy "Admins can delete any property" on properties for delete
+  using (auth.uid() in (select id from profiles where role = 'admin'));
 
 -- property_images
 create policy "Images viewable" on property_images for select using (true);

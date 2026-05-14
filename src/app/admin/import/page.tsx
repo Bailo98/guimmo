@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useRef } from "react";
 import Papa from "papaparse";
@@ -6,6 +6,13 @@ import { Upload, X, CheckCircle, Loader2, AlertTriangle, Download } from "lucide
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
 import { useAuth } from "@/lib/auth-context";
+
+// ─── Tokens ──────────────────────────────────────────────────────────────────
+const SURFACE  = "#1a2e1e";
+const BORDER   = "rgba(240,230,204,0.08)";
+const TEXT_PRI = "#f7f2e6";
+const TEXT_SEC = "rgba(240,230,204,0.55)";
+const ACCENT   = "#c8901e";
 
 interface CsvRow {
   title: string;
@@ -30,9 +37,9 @@ interface ImportRow {
   error?: string;
 }
 
-const REQUIRED = ["title", "type", "transaction_type", "price", "neighborhood"];
+const REQUIRED   = ["title", "type", "transaction_type", "price", "neighborhood"];
 const VALID_TYPES = ["apartment", "house", "studio", "villa", "room", "land"];
-const VALID_TX   = ["rent", "sale"];
+const VALID_TX    = ["rent", "sale"];
 
 function validateRow(row: CsvRow, index: number): ImportRow {
   for (const key of REQUIRED) {
@@ -40,15 +47,12 @@ function validateRow(row: CsvRow, index: number): ImportRow {
       return { index, data: row, valid: false, error: `Champ requis manquant: ${key}` };
     }
   }
-  if (!VALID_TYPES.includes(row.type?.toLowerCase())) {
+  if (!VALID_TYPES.includes(row.type?.toLowerCase()))
     return { index, data: row, valid: false, error: `Type invalide: ${row.type}` };
-  }
-  if (!VALID_TX.includes(row.transaction_type?.toLowerCase())) {
+  if (!VALID_TX.includes(row.transaction_type?.toLowerCase()))
     return { index, data: row, valid: false, error: `Transaction invalide: ${row.transaction_type}` };
-  }
-  if (isNaN(Number(row.price)) || Number(row.price) <= 0) {
+  if (isNaN(Number(row.price)) || Number(row.price) <= 0)
     return { index, data: row, valid: false, error: "Prix invalide" };
-  }
   return { index, data: row, valid: true };
 }
 
@@ -62,10 +66,10 @@ export default function AdminImportPage() {
   const { user } = useAuth();
   const fileRef  = useRef<HTMLInputElement>(null);
 
-  const [rows, setRows]         = useState<ImportRow[]>([]);
-  const [fileName, setFileName] = useState("");
+  const [rows, setRows]           = useState<ImportRow[]>([]);
+  const [fileName, setFileName]   = useState("");
   const [importing, setImporting] = useState(false);
-  const [done, setDone]         = useState(0);
+  const [done, setDone]           = useState(0);
 
   function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -73,22 +77,15 @@ export default function AdminImportPage() {
     setFileName(file.name);
     setRows([]);
     setDone(0);
-
     Papa.parse<CsvRow>(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: (result) => {
-        const validated = result.data.map((row, i) => validateRow(row, i + 1));
-        setRows(validated);
-      },
+      header: true, skipEmptyLines: true,
+      complete: (result) => setRows(result.data.map((row, i) => validateRow(row, i + 1))),
       error: () => toast("Erreur lors du parsing CSV", "error"),
     });
   }
 
   function clearFile() {
-    setRows([]);
-    setFileName("");
-    setDone(0);
+    setRows([]); setFileName(""); setDone(0);
     if (fileRef.current) fileRef.current.value = "";
   }
 
@@ -97,7 +94,6 @@ export default function AdminImportPage() {
     const valid = rows.filter((r) => r.valid);
     if (valid.length === 0) return;
     setImporting(true);
-
     const payload = valid.map((r) => ({
       owner_id:         user.id,
       title:            r.data.title.trim(),
@@ -117,7 +113,6 @@ export default function AdminImportPage() {
       status:           "active",
       features:         [],
     }));
-
     const { error } = await supabase.from("properties").insert(payload);
     setImporting(false);
     if (error) {
@@ -125,17 +120,15 @@ export default function AdminImportPage() {
       console.error(error);
     } else {
       setDone(payload.length);
-      toast(`✅ ${payload.length} annonce(s) importée(s)`, "success");
+      toast(`${payload.length} annonce(s) importée(s)`, "success");
     }
   }
 
   function downloadTemplate() {
     const blob = new Blob([TEMPLATE_CSV], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "modele-import-BienLoger.csv";
-    a.click();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href = url; a.download = "modele-import-BienLoger.csv"; a.click();
     URL.revokeObjectURL(url);
   }
 
@@ -143,93 +136,102 @@ export default function AdminImportPage() {
   const invalidCount = rows.filter((r) => !r.valid).length;
 
   return (
-    <div className="p-4 md:p-6 max-w-3xl mx-auto space-y-6">
-      <div className="flex items-center justify-between gap-4">
+    <div style={{ padding: "28px 24px 40px", maxWidth: 800, margin: "0 auto" }} className="px-4 md:px-6">
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 28 }}>
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">Importer CSV</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">Importez des annonces en masse depuis un fichier CSV</p>
+          <h1 style={{ color: TEXT_PRI, fontWeight: 900, fontSize: "clamp(20px,4vw,26px)" }}>Importer CSV</h1>
+          <p style={{ color: TEXT_SEC, fontSize: 13, marginTop: 2 }}>Importez des annonces en masse depuis un fichier CSV</p>
         </div>
-        <button
-          onClick={downloadTemplate}
-          className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#c8901e] hover:text-[#c8901e] transition-colors"
-        >
-          <Download className="w-4 h-4" /> Modèle CSV
+        <button onClick={downloadTemplate}
+          style={{
+            display: "flex", alignItems: "center", gap: 8,
+            padding: "10px 16px", borderRadius: 10,
+            border: `1px solid ${BORDER}`, background: "transparent",
+            color: TEXT_SEC, fontSize: 13, fontWeight: 600, cursor: "pointer", flexShrink: 0,
+          }}>
+          <Download size={15} /> Modèle CSV
         </button>
       </div>
 
       {/* Upload zone */}
       <div
-        className="rounded-2xl border-2 border-dashed border-slate-200 dark:border-[#2a3040] p-8 flex flex-col items-center gap-3 cursor-pointer hover:border-[#c8901e] transition-colors"
+        style={{
+          background: SURFACE, border: `2px dashed ${BORDER}`, borderRadius: 14,
+          padding: 40, display: "flex", flexDirection: "column", alignItems: "center", gap: 12,
+          cursor: "pointer", marginBottom: 20,
+        }}
         onClick={() => fileRef.current?.click()}
+        onMouseEnter={(e) => (e.currentTarget.style.borderColor = ACCENT)}
+        onMouseLeave={(e) => (e.currentTarget.style.borderColor = BORDER)}
       >
-        <Upload className="w-8 h-8 text-slate-400" />
+        <Upload size={32} color={TEXT_SEC} />
         {fileName ? (
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-slate-700 dark:text-white">{fileName}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 14, fontWeight: 600, color: TEXT_PRI }}>{fileName}</span>
             <button type="button" onClick={(e) => { e.stopPropagation(); clearFile(); }}
-              className="text-slate-400 hover:text-red-500 transition-colors">
-              <X className="w-4 h-4" />
+              style={{ background: "none", border: "none", color: TEXT_SEC, cursor: "pointer", display: "flex", alignItems: "center" }}>
+              <X size={16} />
             </button>
           </div>
         ) : (
           <>
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Cliquez pour choisir un fichier CSV</p>
-            <p className="text-xs text-slate-400">ou glissez-déposez ici</p>
+            <p style={{ fontSize: 14, fontWeight: 600, color: TEXT_PRI }}>Cliquez pour choisir un fichier CSV</p>
+            <p style={{ fontSize: 12, color: TEXT_SEC }}>ou glissez-déposez ici</p>
           </>
         )}
-        <input
-          ref={fileRef}
-          type="file"
-          accept=".csv"
-          aria-label="Fichier CSV à importer"
-          onChange={onFile}
-          className="hidden"
-        />
+        <input ref={fileRef} type="file" accept=".csv" aria-label="Fichier CSV à importer" onChange={onFile} style={{ display: "none" }} />
       </div>
 
       {/* Summary + preview */}
       {rows.length > 0 && (
         <>
-          <div className="flex gap-4 flex-wrap">
-            <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-900/30 rounded-xl px-4 py-2.5">
-              <CheckCircle className="w-4 h-4 text-green-500" />
-              <span className="text-sm font-bold text-green-600 dark:text-green-400">{validCount} ligne(s) valides</span>
+          {/* Counts */}
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(110,201,122,0.10)", border: "1px solid rgba(110,201,122,0.20)", borderRadius: 10, padding: "8px 14px" }}>
+              <CheckCircle size={15} color="#6ec97a" />
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#6ec97a" }}>{validCount} ligne(s) valides</span>
             </div>
             {invalidCount > 0 && (
-              <div className="flex items-center gap-2 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-xl px-4 py-2.5">
-                <AlertTriangle className="w-4 h-4 text-red-500" />
-                <span className="text-sm font-bold text-red-600 dark:text-red-400">{invalidCount} erreur(s)</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.20)", borderRadius: 10, padding: "8px 14px" }}>
+                <AlertTriangle size={15} color="#ef4444" />
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#ef4444" }}>{invalidCount} erreur(s)</span>
               </div>
             )}
           </div>
 
           {/* Preview table */}
-          <div className="bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[600px] text-sm">
+          <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", marginBottom: 16 }}>
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", minWidth: 600, borderCollapse: "collapse", fontSize: 13 }}>
                 <thead>
-                  <tr className="border-b border-slate-100 dark:border-[#2a3040]">
+                  <tr style={{ borderBottom: `1px solid ${BORDER}` }}>
                     {["#", "Titre", "Type", "Transaction", "Prix", "Quartier", "Statut"].map((h) => (
-                      <th key={h} className="text-left px-3 py-2.5 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider whitespace-nowrap">
+                      <th key={h} style={{ textAlign: "left", padding: "10px 12px", fontSize: 11, fontWeight: 700, color: TEXT_SEC, textTransform: "uppercase", letterSpacing: "1px", whiteSpace: "nowrap" }}>
                         {h}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50 dark:divide-[#2a3040]">
-                  {rows.map((r) => (
-                    <tr key={r.index} className={r.valid ? "" : "bg-red-50 dark:bg-red-900/10"}>
-                      <td className="px-3 py-2 text-slate-400 text-xs">{r.index}</td>
-                      <td className="px-3 py-2 font-medium text-slate-900 dark:text-white max-w-[180px] truncate">{r.data.title}</td>
-                      <td className="px-3 py-2 text-slate-500 dark:text-slate-400 whitespace-nowrap">{r.data.type}</td>
-                      <td className="px-3 py-2 text-slate-500 dark:text-slate-400 whitespace-nowrap">{r.data.transaction_type}</td>
-                      <td className="px-3 py-2 text-[#F97316] font-bold whitespace-nowrap">{Number(r.data.price).toLocaleString("fr-FR")} GNF</td>
-                      <td className="px-3 py-2 text-slate-500 dark:text-slate-400 whitespace-nowrap">{r.data.neighborhood}</td>
-                      <td className="px-3 py-2 whitespace-nowrap">
+                <tbody>
+                  {rows.map((r, i) => (
+                    <tr key={r.index}
+                      style={{
+                        borderTop: i === 0 ? "none" : `1px solid ${BORDER}`,
+                        background: r.valid ? "transparent" : "rgba(239,68,68,0.06)",
+                      }}>
+                      <td style={{ padding: "8px 12px", color: TEXT_SEC, fontSize: 12 }}>{r.index}</td>
+                      <td style={{ padding: "8px 12px", color: TEXT_PRI, fontWeight: 500, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.data.title}</td>
+                      <td style={{ padding: "8px 12px", color: TEXT_SEC, whiteSpace: "nowrap" }}>{r.data.type}</td>
+                      <td style={{ padding: "8px 12px", color: TEXT_SEC, whiteSpace: "nowrap" }}>{r.data.transaction_type}</td>
+                      <td style={{ padding: "8px 12px", color: ACCENT, fontWeight: 700, whiteSpace: "nowrap" }}>{Number(r.data.price).toLocaleString("fr-FR")} GNF</td>
+                      <td style={{ padding: "8px 12px", color: TEXT_SEC, whiteSpace: "nowrap" }}>{r.data.neighborhood}</td>
+                      <td style={{ padding: "8px 12px", whiteSpace: "nowrap" }}>
                         {r.valid ? (
-                          <span className="text-[10px] font-bold text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">✓ OK</span>
+                          <span style={{ fontSize: 10, fontWeight: 700, color: "#6ec97a", background: "rgba(110,201,122,0.15)", padding: "3px 8px", borderRadius: 999 }}>✓ OK</span>
                         ) : (
-                          <span className="text-[10px] font-bold text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded-full" title={r.error}>⚠ Erreur</span>
+                          <span style={{ fontSize: 10, fontWeight: 700, color: "#ef4444", background: "rgba(239,68,68,0.15)", padding: "3px 8px", borderRadius: 999 }} title={r.error}>⚠ Erreur</span>
                         )}
                       </td>
                     </tr>
@@ -241,9 +243,9 @@ export default function AdminImportPage() {
 
           {/* Success banner */}
           {done > 0 && (
-            <div className="flex items-center gap-3 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-900/30 rounded-2xl p-4">
-              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-              <p className="text-sm font-semibold text-green-700 dark:text-green-400">
+            <div style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(110,201,122,0.10)", border: "1px solid rgba(110,201,122,0.20)", borderRadius: 12, padding: 16, marginBottom: 16 }}>
+              <CheckCircle size={20} color="#6ec97a" />
+              <p style={{ fontSize: 14, fontWeight: 600, color: "#6ec97a" }}>
                 {done} annonce(s) importée(s) avec succès !
               </p>
             </div>
@@ -251,25 +253,28 @@ export default function AdminImportPage() {
 
           {/* Import button */}
           {done === 0 && validCount > 0 && (
-            <button
-              onClick={importRows}
-              disabled={importing}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#c8901e] hover:bg-[#b87c18] text-white font-bold text-sm transition-colors disabled:opacity-50"
-            >
-              {importing ? (
-                <><Loader2 className="w-4 h-4 animate-spin" />Import en cours…</>
-              ) : (
-                <><Upload className="w-4 h-4" />Importer {validCount} annonce(s)</>
-              )}
+            <button onClick={importRows} disabled={importing}
+              style={{
+                width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                height: 52, borderRadius: 12, border: "none",
+                background: importing ? "rgba(200,144,30,0.4)" : ACCENT,
+                color: "white", fontWeight: 600, fontSize: 14,
+                cursor: importing ? "not-allowed" : "pointer",
+              }}>
+              {importing
+                ? <><Loader2 size={16} style={{ animation: "spin 0.8s linear infinite" }} />Import en cours…</>
+                : <><Upload size={16} />Importer {validCount} annonce(s)</>}
             </button>
           )}
         </>
       )}
 
       {/* Format guide */}
-      <div className="bg-slate-50 dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] p-4 space-y-2">
-        <p className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wide">Format attendu</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
+      <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 20, marginTop: 24 }}>
+        <p style={{ fontSize: 11, fontWeight: 700, color: TEXT_SEC, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 12 }}>
+          Format attendu
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))", gap: "6px 24px" }}>
           {[
             ["title", "Texte libre *"],
             ["type", "apartment / house / studio / villa / room / land *"],
@@ -284,13 +289,15 @@ export default function AdminImportPage() {
             ["furnished", "true / false"],
             ["available_now", "true / false"],
           ].map(([col, desc]) => (
-            <div key={col} className="flex gap-2 text-xs">
-              <span className="font-mono font-bold text-[#F97316] flex-shrink-0">{col}</span>
-              <span className="text-slate-500 dark:text-slate-400">{desc}</span>
+            <div key={col} style={{ display: "flex", gap: 8, fontSize: 12 }}>
+              <span style={{ fontFamily: "monospace", fontWeight: 700, color: ACCENT, flexShrink: 0 }}>{col}</span>
+              <span style={{ color: TEXT_SEC }}>{desc}</span>
             </div>
           ))}
         </div>
       </div>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

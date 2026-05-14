@@ -2,11 +2,19 @@
 
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { CheckCircle, XCircle, Eye, Search, Download, Trash2, X } from "lucide-react";
+import { CheckCircle, XCircle, Eye, Search, Download, Trash2, X, Plus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { formatPrice, timeAgo } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 
+// ─── Tokens ──────────────────────────────────────────────────────────────────
+const SURFACE  = "#1a2e1e";
+const BORDER   = "rgba(240,230,204,0.08)";
+const TEXT_PRI = "#f7f2e6";
+const TEXT_SEC = "rgba(240,230,204,0.55)";
+const ACCENT   = "#c8901e";
+
+// ─── Types ───────────────────────────────────────────────────────────────────
 type DbStatus = "active" | "pending" | "paused" | "sold";
 
 interface Property {
@@ -18,48 +26,51 @@ interface Property {
   type: string;
   neighborhood: string;
   views: number;
+  contact_phone: string | null;
+  owner_id: string;
   created_at: string;
-  profiles: { full_name: string | null }[] | null;
   property_images: { url: string; is_primary: boolean; sort_order: number }[];
 }
 
-const STATUS_LABELS: Record<DbStatus, { label: string; classes: string }> = {
-  active:  { label: "Actif",       classes: "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400" },
-  pending: { label: "En attente",  classes: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-500" },
-  paused:  { label: "Suspendu",    classes: "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400" },
-  sold:    { label: "Vendu",       classes: "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400" },
+const STATUS_LABELS: Record<DbStatus, { label: string; color: string; bg: string }> = {
+  active:  { label: "Actif",      color: "#6ec97a", bg: "rgba(110,201,122,0.15)" },
+  pending: { label: "En attente", color: "#fb923c", bg: "rgba(251,146,60,0.15)" },
+  paused:  { label: "Suspendu",   color: "#ef4444", bg: "rgba(239,68,68,0.15)" },
+  sold:    { label: "Vendu",      color: TEXT_SEC,  bg: "rgba(240,230,204,0.06)" },
 };
 
-const STATUS_FILTER_OPTIONS = [
+const STATUS_OPTIONS = [
   { value: "all",     label: "Tous" },
-  { value: "active",  label: "Actif" },
+  { value: "active",  label: "Actifs" },
   { value: "pending", label: "En attente" },
-  { value: "paused",  label: "Suspendu" },
-  { value: "sold",    label: "Vendu" },
+  { value: "paused",  label: "Suspendus" },
+  { value: "sold",    label: "Vendus" },
 ];
 
+const NEIGHBORHOOD_LABELS: Record<string, string> = {
+  kipe: "Kipé", lambanyi: "Lambanyi", ratoma: "Ratoma", sonfonia: "Sonfonia",
+  cosa: "Cosa", hamdallaye: "Hamdallaye", nongo: "Nongo", taouyah: "Taouyah",
+  dixinn: "Dixinn", matam: "Matam", madina: "Madina", kaloum: "Kaloum",
+};
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 function exportCSV(properties: Property[]) {
-  const headers = ["Titre", "Propriétaire", "Type", "Prix", "Quartier", "Statut", "Vues"];
+  const headers = ["Titre", "Type", "Prix", "Quartier", "Statut", "Vues", "Date"];
   const rows = properties.map((p) => [
     `"${p.title.replace(/"/g, '""')}"`,
-    `"${(p.profiles?.[0]?.full_name ?? "—").replace(/"/g, '""')}"`,
-    p.type,
-    p.price,
-    p.neighborhood,
-    p.status,
-    p.views,
+    p.type, p.price, p.neighborhood, p.status, p.views,
+    new Date(p.created_at).toLocaleDateString("fr-FR"),
   ]);
   const csv = [headers, ...rows].map((r) => r.join(",")).join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "annonces-logerbien.csv";
-  a.click();
+  const a = document.createElement("a"); a.href = url;
+  a.download = "annonces-bienloger.csv"; a.click();
   URL.revokeObjectURL(url);
   toast("Export CSV téléchargé !", "success");
 }
 
+// ─── Page ─────────────────────────────────────────────────────────────────────
 export default function AdminAnnoncesPage() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,9 +81,10 @@ export default function AdminAnnoncesPage() {
   const fetchProperties = useCallback(async () => {
     if (!supabase) return;
     setLoading(true);
+    // Corrected query: use * so admin can see all columns + images join
     const { data, error } = await supabase
       .from("properties")
-      .select("id, title, status, price, price_period, type, neighborhood, views, created_at, profiles(full_name), property_images(url, is_primary, sort_order)")
+      .select("*, property_images(url, is_primary, sort_order)")
       .order("created_at", { ascending: false });
     if (error) {
       toast("Erreur lors du chargement des annonces.", "error");
@@ -86,41 +98,25 @@ export default function AdminAnnoncesPage() {
 
   async function handleApprove(id: string) {
     if (!supabase) return;
-    const { error } = await supabase
-      .from("properties")
-      .update({ status: "active" })
-      .eq("id", id);
-    if (error) {
-      toast("Erreur lors de l'approbation.", "error");
-    } else {
-      setProperties((prev) => prev.map((p) => p.id === id ? { ...p, status: "active" } : p));
-      toast("Annonce approuvée.", "success");
-    }
+    const { error } = await supabase.from("properties").update({ status: "active" }).eq("id", id);
+    if (error) { toast("Erreur lors de l'approbation.", "error"); return; }
+    setProperties((prev) => prev.map((p) => p.id === id ? { ...p, status: "active" as DbStatus } : p));
+    toast("Annonce approuvée.", "success");
   }
 
   async function handleSuspend(id: string) {
     if (!supabase) return;
-    const { error } = await supabase
-      .from("properties")
-      .update({ status: "paused" })
-      .eq("id", id);
-    if (error) {
-      toast("Erreur lors de la suspension.", "error");
-    } else {
-      setProperties((prev) => prev.map((p) => p.id === id ? { ...p, status: "paused" } : p));
-      toast("Annonce suspendue.", "success");
-    }
+    const { error } = await supabase.from("properties").update({ status: "paused" }).eq("id", id);
+    if (error) { toast("Erreur lors de la suspension.", "error"); return; }
+    setProperties((prev) => prev.map((p) => p.id === id ? { ...p, status: "paused" as DbStatus } : p));
+    toast("Annonce suspendue.", "success");
   }
 
   async function handleDelete(id: string) {
     if (!supabase) return;
-    const { error } = await supabase
-      .from("properties")
-      .delete()
-      .eq("id", id);
-    if (error) {
-      toast("Erreur lors de la suppression.", "error");
-    } else {
+    const { error } = await supabase.from("properties").delete().eq("id", id);
+    if (error) { toast("Erreur lors de la suppression.", "error"); }
+    else {
       setProperties((prev) => prev.filter((p) => p.id !== id));
       toast("Annonce supprimée.", "success");
     }
@@ -129,189 +125,240 @@ export default function AdminAnnoncesPage() {
 
   const filtered = useMemo(() => {
     return properties.filter((p) => {
-      const ownerName = p.profiles?.[0]?.full_name ?? "";
-      const matchesSearch =
-        search === "" ||
-        p.title.toLowerCase().includes(search.toLowerCase()) ||
-        ownerName.toLowerCase().includes(search.toLowerCase());
-
-      const matchesStatus = statusFilter === "all" || p.status === statusFilter;
-      return matchesSearch && matchesStatus;
+      const matchSearch = search === "" || p.title.toLowerCase().includes(search.toLowerCase());
+      const matchStatus = statusFilter === "all" || p.status === statusFilter;
+      return matchSearch && matchStatus;
     });
   }, [properties, search, statusFilter]);
 
-  const firstImage = (p: Property) => {
+  function firstImage(p: Property) {
     const imgs = p.property_images ?? [];
     const primary = imgs.find((i) => i.is_primary);
     if (primary) return primary.url;
-    const sorted = [...imgs].sort((a, b) => a.sort_order - b.sort_order);
-    return sorted[0]?.url ?? null;
-  };
+    return [...imgs].sort((a, b) => a.sort_order - b.sort_order)[0]?.url ?? null;
+  }
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <div className="flex items-center justify-between gap-4">
+    <div className="px-4 md:px-6" style={{ paddingTop: 28, paddingBottom: 40, maxWidth: 1200 }}>
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 24, flexWrap: "wrap" }}>
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">Gestion des annonces</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
+          <h1 style={{ color: TEXT_PRI, fontWeight: 900, fontSize: "clamp(20px,4vw,26px)" }}>Annonces</h1>
+          <p style={{ color: TEXT_SEC, fontSize: 13, marginTop: 2 }}>
             {loading ? "Chargement…" : `${filtered.length} annonce(s) affichée(s)`}
           </p>
         </div>
-        <button
-          onClick={() => exportCSV(properties)}
-          disabled={loading || properties.length === 0}
-          className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316] transition-colors flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          <Download className="w-4 h-4" />
-          Exporter CSV
-        </button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Link
+            href="/admin/annonces/nouvelle"
+            style={{
+              display: "flex", alignItems: "center", gap: 6,
+              background: ACCENT, color: "white", fontSize: 13, fontWeight: 600,
+              padding: "8px 14px", borderRadius: 10, textDecoration: "none", border: "none",
+            }}
+          >
+            <Plus size={15} /> Ajouter
+          </Link>
+          <button
+            onClick={() => exportCSV(properties)}
+            disabled={loading || properties.length === 0}
+            style={{
+              display: "flex", alignItems: "center", gap: 6,
+              background: "transparent", border: `1px solid ${BORDER}`,
+              color: TEXT_SEC, fontSize: 13, fontWeight: 500, padding: "8px 14px",
+              borderRadius: 10, cursor: "pointer", transition: "border-color 0.15s, color 0.15s",
+              opacity: (loading || properties.length === 0) ? 0.4 : 1,
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = ACCENT;
+              (e.currentTarget as HTMLButtonElement).style.color = ACCENT;
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = BORDER;
+              (e.currentTarget as HTMLButtonElement).style.color = TEXT_SEC;
+            }}
+          >
+            <Download size={15} /> CSV
+          </button>
+        </div>
       </div>
 
-      {/* Search + Status filter */}
-      <div className="flex gap-3 flex-wrap">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+      {/* Filters */}
+      <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+        <div style={{ position: "relative", flex: 1, minWidth: 200 }}>
+          <Search size={15} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: TEXT_SEC, pointerEvents: "none" }} />
           <input
-            id="search-annonces"
             aria-label="Rechercher une annonce"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Rechercher par titre ou propriétaire…"
-            className="w-full bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl pl-9 pr-4 py-2.5 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+            placeholder="Rechercher par titre…"
+            style={{
+              width: "100%", background: SURFACE, border: `1px solid ${BORDER}`,
+              color: TEXT_PRI, borderRadius: 10, padding: "10px 12px 10px 36px",
+              fontSize: 14, outline: "none", boxSizing: "border-box",
+            }}
+            onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = ACCENT; }}
+            onBlur={(e) => { (e.target as HTMLInputElement).style.borderColor = BORDER; }}
           />
         </div>
         <select
           aria-label="Filtrer par statut"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+          style={{
+            background: SURFACE, border: `1px solid ${BORDER}`,
+            color: TEXT_PRI, borderRadius: 10, padding: "10px 14px",
+            fontSize: 14, outline: "none", cursor: "pointer",
+          }}
         >
-          {STATUS_FILTER_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          {STATUS_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
           ))}
         </select>
       </div>
 
-      <div className="space-y-3">
-        {/* Loading skeleton */}
-        {loading && Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-slate-100 dark:border-[#2a3040] flex items-center gap-3 animate-pulse">
-            <div className="w-16 h-12 rounded-xl bg-slate-200 dark:bg-slate-700 flex-shrink-0" />
-            <div className="flex-1 space-y-2">
-              <div className="h-3 w-48 bg-slate-200 dark:bg-slate-700 rounded" />
-              <div className="h-3 w-32 bg-slate-100 dark:bg-slate-800 rounded" />
-            </div>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4].map((j) => (
-                <div key={j} className="w-8 h-8 bg-slate-100 dark:bg-slate-800 rounded-lg" />
-              ))}
-            </div>
-          </div>
-        ))}
-
-        {/* Empty state */}
-        {!loading && filtered.length === 0 && (
-          <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-8 border border-slate-100 dark:border-[#2a3040] text-center">
-            <p className="text-slate-400 text-sm">Aucune annonce trouvée.</p>
-          </div>
-        )}
-
-        {/* Property rows */}
-        {!loading && filtered.map((p) => {
-          const img = firstImage(p);
-          const statusInfo = STATUS_LABELS[p.status] ?? STATUS_LABELS.pending;
-          return (
-            <div
-              key={p.id}
-              className={`bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-slate-100 dark:border-[#2a3040] flex items-center gap-3 ${p.status === "paused" ? "opacity-60" : ""}`}
-            >
-              <div className="relative w-16 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-[#151922]">
-                {img && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={img} alt="" className="w-full h-full object-cover" />
-                )}
+      {/* Loading skeletons */}
+      {loading && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 14, display: "flex", gap: 12, alignItems: "center", opacity: 1 - i * 0.15 }}>
+              <div style={{ width: 60, height: 44, borderRadius: 8, background: "rgba(240,230,204,0.06)" }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ height: 12, width: 200, background: "rgba(240,230,204,0.06)", borderRadius: 4, marginBottom: 6 }} />
+                <div style={{ height: 10, width: 120, background: "rgba(240,230,204,0.04)", borderRadius: 4 }} />
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <p className="font-semibold text-slate-900 dark:text-white text-sm line-clamp-1">{p.title}</p>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${statusInfo.classes}`}>
-                    {statusInfo.label}
-                  </span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Empty */}
+      {!loading && filtered.length === 0 && (
+        <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 40, textAlign: "center" }}>
+          <p style={{ color: TEXT_SEC, fontSize: 14 }}>Aucune annonce trouvée.</p>
+        </div>
+      )}
+
+      {/* List */}
+      {!loading && filtered.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {filtered.map((p) => {
+            const img = firstImage(p);
+            const s = STATUS_LABELS[p.status] ?? STATUS_LABELS.pending;
+            const hood = NEIGHBORHOOD_LABELS[p.neighborhood] ?? p.neighborhood;
+            return (
+              <div
+                key={p.id}
+                style={{
+                  background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12,
+                  padding: "12px 14px",
+                  opacity: p.status === "paused" ? 0.65 : 1,
+                }}
+              >
+                {/* Desktop row / Mobile stacked */}
+                <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                  {/* Thumbnail */}
+                  <div style={{ width: 60, height: 44, borderRadius: 8, overflow: "hidden", flexShrink: 0, background: "rgba(240,230,204,0.06)" }}>
+                    {img && <img src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                  </div>
+
+                  {/* Info */}
+                  <div style={{ flex: 1, minWidth: 160 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                      <p style={{ color: TEXT_PRI, fontWeight: 600, fontSize: 14 }}>{p.title}</p>
+                      <span style={{
+                        fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999,
+                        color: s.color, background: s.bg,
+                      }}>
+                        {s.label}
+                      </span>
+                    </div>
+                    <p style={{ color: TEXT_SEC, fontSize: 12, marginTop: 2 }}>
+                      {hood} · {formatPrice(p.price)}{p.price_period === "month" ? "/mois" : ""} · {timeAgo(p.created_at)}
+                    </p>
+                  </div>
+
+                  {/* Actions */}
+                  <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+                    <Link
+                      href={`/annonces/${p.id}`}
+                      target="_blank"
+                      title="Voir l'annonce"
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(240,230,204,0.06)", color: TEXT_SEC, textDecoration: "none", transition: "background 0.12s" }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(200,144,30,0.18)"; (e.currentTarget as HTMLAnchorElement).style.color = ACCENT; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(240,230,204,0.06)"; (e.currentTarget as HTMLAnchorElement).style.color = TEXT_SEC; }}
+                    >
+                      <Eye size={15} />
+                    </Link>
+                    <button
+                      onClick={() => handleApprove(p.id)}
+                      disabled={p.status === "active"}
+                      title="Approuver"
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(110,201,122,0.12)", color: "#6ec97a", border: "none", cursor: "pointer", opacity: p.status === "active" ? 0.35 : 1, transition: "background 0.12s" }}
+                      onMouseEnter={(e) => { if (p.status !== "active") (e.currentTarget as HTMLButtonElement).style.background = "rgba(110,201,122,0.25)"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(110,201,122,0.12)"; }}
+                    >
+                      <CheckCircle size={15} />
+                    </button>
+                    <button
+                      onClick={() => handleSuspend(p.id)}
+                      disabled={p.status === "paused"}
+                      title="Suspendre"
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: `rgba(200,144,30,0.12)`, color: ACCENT, border: "none", cursor: "pointer", opacity: p.status === "paused" ? 0.35 : 1, transition: "background 0.12s" }}
+                      onMouseEnter={(e) => { if (p.status !== "paused") (e.currentTarget as HTMLButtonElement).style.background = "rgba(200,144,30,0.25)"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(200,144,30,0.12)"; }}
+                    >
+                      <XCircle size={15} />
+                    </button>
+                    <button
+                      onClick={() => setConfirmDelete(p)}
+                      title="Supprimer"
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(239,68,68,0.12)", color: "#ef4444", border: "none", cursor: "pointer", transition: "background 0.12s" }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(239,68,68,0.25)"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(239,68,68,0.12)"; }}
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
                 </div>
-                <p className="text-xs text-slate-400 truncate">
-                  {p.profiles?.[0]?.full_name ?? "—"} · {formatPrice(p.price)} · {timeAgo(p.created_at)}
-                </p>
               </div>
-              <div className="flex gap-2 flex-shrink-0">
-                <Link
-                  href={`/annonces/${p.id}`}
-                  className="w-8 h-8 bg-slate-100 dark:bg-[#2a3040] rounded-lg flex items-center justify-center text-slate-500 hover:text-[#F97316] transition-colors"
-                  title="Voir l'annonce"
-                >
-                  <Eye className="w-3.5 h-3.5" />
-                </Link>
-                <button
-                  onClick={() => handleApprove(p.id)}
-                  disabled={p.status === "active"}
-                  title="Approuver"
-                  className="w-8 h-8 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center text-green-600 hover:bg-green-500 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <CheckCircle className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => handleSuspend(p.id)}
-                  disabled={p.status === "paused"}
-                  title="Suspendre"
-                  className="w-8 h-8 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center text-orange-500 hover:bg-orange-500 hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <XCircle className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => setConfirmDelete(p)}
-                  title="Supprimer"
-                  className="w-8 h-8 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-colors"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
-      {/* Delete confirmation modal */}
+      {/* Delete modal */}
       {confirmDelete && (
         <div
-          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4"
+          style={{ position: "fixed", inset: 0, zIndex: 50, background: "rgba(0,0,0,0.72)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
           onClick={() => setConfirmDelete(null)}
         >
           <div
-            className="bg-white dark:bg-[#1e2430] rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-red-200 dark:border-red-900/40"
+            style={{ background: "#1a2e1e", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
-                <Trash2 className="w-5 h-5 text-red-600" />
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(239,68,68,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Trash2 size={20} color="#ef4444" />
               </div>
-              <button onClick={() => setConfirmDelete(null)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
+              <button onClick={() => setConfirmDelete(null)} style={{ border: "none", background: "transparent", color: TEXT_SEC, cursor: "pointer" }}>
+                <X size={18} />
               </button>
             </div>
-            <h3 className="font-black text-slate-900 dark:text-white mb-1">Supprimer cette annonce ?</h3>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mb-1 line-clamp-2 font-semibold">
-              {confirmDelete.title}
-            </p>
-            <p className="text-xs text-red-500 mb-5">Cette action est irréversible.</p>
-            <div className="flex gap-3">
+            <h3 style={{ color: TEXT_PRI, fontWeight: 700, marginBottom: 6 }}>Supprimer cette annonce ?</h3>
+            <p style={{ color: TEXT_SEC, fontSize: 13, marginBottom: 4, fontWeight: 500 }} className="line-clamp-2">{confirmDelete.title}</p>
+            <p style={{ color: "#ef4444", fontSize: 12, marginBottom: 20 }}>Cette action est irréversible.</p>
+            <div style={{ display: "flex", gap: 10 }}>
               <button
                 onClick={() => setConfirmDelete(null)}
-                className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-[#151922]"
+                style={{ flex: 1, padding: "10px 0", borderRadius: 10, border: `1px solid ${BORDER}`, background: "transparent", color: TEXT_PRI, fontWeight: 600, fontSize: 13, cursor: "pointer" }}
               >
                 Annuler
               </button>
               <button
                 onClick={() => handleDelete(confirmDelete.id)}
-                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors"
+                style={{ flex: 1, padding: "10px 0", borderRadius: 10, border: "none", background: "#ef4444", color: "white", fontWeight: 700, fontSize: 13, cursor: "pointer" }}
               >
                 Supprimer
               </button>

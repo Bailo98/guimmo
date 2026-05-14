@@ -5,6 +5,14 @@ import { CheckCircle, Shield, Search, Trash2, X } from "lucide-react";
 import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabase";
 
+// ─── Tokens ──────────────────────────────────────────────────────────────────
+const SURFACE  = "#1a2e1e";
+const BORDER   = "rgba(240,230,204,0.08)";
+const TEXT_PRI = "#f7f2e6";
+const TEXT_SEC = "rgba(240,230,204,0.55)";
+const ACCENT   = "#c8901e";
+
+// ─── Types ───────────────────────────────────────────────────────────────────
 interface Profile {
   id: string;
   full_name: string | null;
@@ -15,11 +23,22 @@ interface Profile {
   is_verified: boolean;
 }
 
+const ROLE_LABELS: Record<string, string> = {
+  buyer: "Chercheur", owner: "Propriétaire", agent: "Agent",
+  agency: "Agence", admin: "Admin",
+};
+
+const ROLE_COLORS: Record<string, string> = {
+  buyer: TEXT_SEC, owner: "#6ec97a", agent: "#60a5fa",
+  agency: "#a78bfa", admin: ACCENT,
+};
+
 function formatDate(iso: string | null) {
   if (!iso) return "—";
   return new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
 }
 
+// ─── Page ─────────────────────────────────────────────────────────────────────
 export default function AdminUtilisateursPage() {
   const [users, setUsers] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,27 +64,17 @@ export default function AdminUtilisateursPage() {
 
   async function handleVerify(id: string) {
     if (!supabase) return;
-    const { error } = await supabase
-      .from("profiles")
-      .update({ is_verified: true })
-      .eq("id", id);
-    if (error) {
-      toast("Erreur lors de la vérification.", "error");
-    } else {
-      setUsers((prev) => prev.map((u) => u.id === id ? { ...u, is_verified: true } : u));
-      toast("Utilisateur vérifié.", "success");
-    }
+    const { error } = await supabase.from("profiles").update({ is_verified: true }).eq("id", id);
+    if (error) { toast("Erreur lors de la vérification.", "error"); return; }
+    setUsers((prev) => prev.map((u) => u.id === id ? { ...u, is_verified: true } : u));
+    toast("Utilisateur vérifié.", "success");
   }
 
   async function handleDelete(id: string) {
     if (!supabase) return;
-    const { error } = await supabase
-      .from("profiles")
-      .delete()
-      .eq("id", id);
-    if (error) {
-      toast("Erreur lors de la suppression.", "error");
-    } else {
+    const { error } = await supabase.from("profiles").delete().eq("id", id);
+    if (error) { toast("Erreur lors de la suppression.", "error"); }
+    else {
       setUsers((prev) => prev.filter((u) => u.id !== id));
       toast("Utilisateur supprimé.", "success");
     }
@@ -75,160 +84,159 @@ export default function AdminUtilisateursPage() {
   const filtered = useMemo(() => {
     if (!search.trim()) return users;
     const q = search.toLowerCase();
-    return users.filter(
-      (u) =>
-        (u.full_name ?? "").toLowerCase().includes(q) ||
-        (u.email ?? "").toLowerCase().includes(q) ||
-        (u.phone ?? "").includes(q) ||
-        (u.role ?? "").toLowerCase().includes(q)
+    return users.filter((u) =>
+      (u.full_name ?? "").toLowerCase().includes(q) ||
+      (u.email ?? "").toLowerCase().includes(q) ||
+      (u.phone ?? "").includes(q) ||
+      (u.role ?? "").toLowerCase().includes(q)
     );
   }, [users, search]);
 
-  const ROLE_LABELS: Record<string, string> = {
-    buyer: "Chercheur",
-    owner: "Propriétaire",
-    agent: "Agent",
-    agency: "Agence",
-  };
-
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-black text-slate-900 dark:text-white">Utilisateurs</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm">
+    <div className="px-4 md:px-6" style={{ paddingTop: 28, paddingBottom: 40, maxWidth: 1200 }}>
+
+      {/* Header */}
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ color: TEXT_PRI, fontWeight: 900, fontSize: "clamp(20px,4vw,26px)" }}>Utilisateurs</h1>
+        <p style={{ color: TEXT_SEC, fontSize: 13, marginTop: 2 }}>
           {loading ? "Chargement…" : `${filtered.length} utilisateur(s)`}
         </p>
       </div>
 
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+      {/* Search */}
+      <div style={{ position: "relative", marginBottom: 16 }}>
+        <Search size={15} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: TEXT_SEC, pointerEvents: "none" }} />
         <input
-          id="search-users"
           aria-label="Rechercher un utilisateur"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Rechercher par nom, email, téléphone, rôle…"
-          className="w-full bg-white dark:bg-[#1e2430] border border-slate-200 dark:border-[#2a3040] rounded-xl pl-9 pr-4 py-2.5 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+          style={{
+            width: "100%", background: SURFACE, border: `1px solid ${BORDER}`,
+            color: TEXT_PRI, borderRadius: 10, padding: "10px 12px 10px 36px",
+            fontSize: 14, outline: "none", boxSizing: "border-box",
+          }}
+          onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = ACCENT; }}
+          onBlur={(e) => { (e.target as HTMLInputElement).style.borderColor = BORDER; }}
         />
       </div>
 
-      <div className="space-y-3">
-        {/* Loading skeleton */}
-        {loading && (
-          Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-slate-100 dark:border-[#2a3040] flex items-center gap-3 animate-pulse">
-              <div className="w-10 h-10 bg-slate-200 dark:bg-slate-700 rounded-2xl flex-shrink-0" />
-              <div className="flex-1 space-y-2">
-                <div className="h-3 w-40 bg-slate-200 dark:bg-slate-700 rounded" />
-                <div className="h-3 w-64 bg-slate-100 dark:bg-slate-800 rounded" />
-              </div>
-              <div className="flex gap-2">
-                <div className="w-8 h-8 bg-slate-100 dark:bg-slate-800 rounded-lg" />
-                <div className="w-8 h-8 bg-slate-100 dark:bg-slate-800 rounded-lg" />
+      {/* Skeletons */}
+      {loading && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 14, display: "flex", gap: 12, alignItems: "center", opacity: 1 - i * 0.15 }}>
+              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(240,230,204,0.06)" }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ height: 12, width: 160, background: "rgba(240,230,204,0.06)", borderRadius: 4, marginBottom: 6 }} />
+                <div style={{ height: 10, width: 240, background: "rgba(240,230,204,0.04)", borderRadius: 4 }} />
               </div>
             </div>
-          ))
-        )}
+          ))}
+        </div>
+      )}
 
-        {/* Empty state */}
-        {!loading && filtered.length === 0 && (
-          <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-8 border border-slate-100 dark:border-[#2a3040] text-center">
-            <p className="text-slate-400 text-sm">Aucun utilisateur trouvé.</p>
-          </div>
-        )}
+      {/* Empty */}
+      {!loading && filtered.length === 0 && (
+        <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 40, textAlign: "center" }}>
+          <p style={{ color: TEXT_SEC, fontSize: 14 }}>Aucun utilisateur trouvé.</p>
+        </div>
+      )}
 
-        {/* User rows */}
-        {!loading && filtered.map((u) => (
-          <div
-            key={u.id}
-            className="bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-slate-100 dark:border-[#2a3040] flex items-center gap-3"
-          >
-            <div className="w-10 h-10 bg-gradient-to-br from-[#F97316] to-[#EA6C0A] rounded-2xl flex items-center justify-center text-white font-bold flex-shrink-0">
-              {(u.full_name ?? u.email ?? "?").charAt(0).toUpperCase()}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-semibold text-slate-900 dark:text-white text-sm">
-                  {u.full_name || "Sans nom"}
-                </p>
-                {u.is_verified && (
-                  <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
-                )}
-                {u.role && (
-                  <span className="text-[10px] font-bold bg-slate-100 dark:bg-[#2a3040] text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-full">
-                    {ROLE_LABELS[u.role] ?? u.role}
-                  </span>
-                )}
+      {/* List */}
+      {!loading && filtered.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {filtered.map((u) => {
+            const roleColor = ROLE_COLORS[u.role ?? ""] ?? TEXT_SEC;
+            const initials = (u.full_name ?? u.email ?? "?").charAt(0).toUpperCase();
+            return (
+              <div key={u.id} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "12px 14px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                  {/* Avatar */}
+                  <div style={{
+                    width: 40, height: 40, borderRadius: "50%", flexShrink: 0,
+                    background: "rgba(200,144,30,0.20)", color: ACCENT,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontWeight: 700, fontSize: 16,
+                  }}>
+                    {initials}
+                  </div>
+
+                  {/* Info */}
+                  <div style={{ flex: 1, minWidth: 160 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                      <p style={{ color: TEXT_PRI, fontWeight: 600, fontSize: 14 }}>
+                        {u.full_name || "Sans nom"}
+                      </p>
+                      {u.is_verified && (
+                        <CheckCircle size={14} color="#6ec97a" />
+                      )}
+                      {u.role && (
+                        <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, color: roleColor, background: `${roleColor}18` }}>
+                          {ROLE_LABELS[u.role] ?? u.role}
+                        </span>
+                      )}
+                    </div>
+                    <p style={{ color: TEXT_SEC, fontSize: 12, marginTop: 2 }}>
+                      {u.email ?? "—"}{u.phone ? ` · ${u.phone}` : ""} · {formatDate(u.created_at)}
+                    </p>
+                  </div>
+
+                  {/* Actions */}
+                  <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+                    <button
+                      onClick={() => !u.is_verified && handleVerify(u.id)}
+                      disabled={u.is_verified}
+                      title={u.is_verified ? "Déjà vérifié" : "Vérifier"}
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(96,165,250,0.12)", color: "#60a5fa", border: "none", cursor: u.is_verified ? "default" : "pointer", opacity: u.is_verified ? 0.35 : 1 }}
+                    >
+                      <Shield size={15} />
+                    </button>
+                    <button
+                      onClick={() => setConfirmDelete(u)}
+                      title="Supprimer"
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(239,68,68,0.12)", color: "#ef4444", border: "none", cursor: "pointer" }}
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                </div>
               </div>
-              <p className="text-xs text-slate-400 truncate">
-                {u.email ?? "—"}{u.phone ? ` · ${u.phone}` : ""} · Inscrit le {formatDate(u.created_at)}
-              </p>
-            </div>
-            <div className="flex gap-2 flex-shrink-0">
-              {!u.is_verified && (
-                <button
-                  onClick={() => handleVerify(u.id)}
-                  title="Vérifier"
-                  className="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center text-blue-600 hover:bg-blue-500 hover:text-white transition-colors"
-                >
-                  <Shield className="w-3.5 h-3.5" />
-                </button>
-              )}
-              {u.is_verified && (
-                <button
-                  disabled
-                  title="Déjà vérifié"
-                  className="w-8 h-8 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center text-green-600 opacity-50 cursor-not-allowed"
-                >
-                  <Shield className="w-3.5 h-3.5" />
-                </button>
-              )}
-              <button
-                onClick={() => setConfirmDelete(u)}
-                title="Supprimer"
-                className="w-8 h-8 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-colors"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
-      {/* Delete confirmation modal */}
+      <p style={{ color: TEXT_SEC, fontSize: 11, marginTop: 16 }}>
+        * La suppression retire le profil de la plateforme.
+      </p>
+
+      {/* Delete modal */}
       {confirmDelete && (
         <div
-          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4"
+          style={{ position: "fixed", inset: 0, zIndex: 50, background: "rgba(0,0,0,0.72)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
           onClick={() => setConfirmDelete(null)}
         >
           <div
-            className="bg-white dark:bg-[#1e2430] rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-red-200 dark:border-red-900/40"
+            style={{ background: "#1a2e1e", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
-                <Trash2 className="w-5 h-5 text-red-600" />
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: "rgba(239,68,68,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Trash2 size={20} color="#ef4444" />
               </div>
-              <button onClick={() => setConfirmDelete(null)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
+              <button onClick={() => setConfirmDelete(null)} style={{ border: "none", background: "transparent", color: TEXT_SEC, cursor: "pointer" }}>
+                <X size={18} />
               </button>
             </div>
-            <h3 className="font-black text-slate-900 dark:text-white mb-1">Supprimer cet utilisateur ?</h3>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">
-              <span className="font-semibold text-slate-700 dark:text-slate-200">{confirmDelete.full_name || confirmDelete.email}</span>
-            </p>
-            <p className="text-xs text-red-500 mb-5">Cette action est irréversible. Le profil sera définitivement supprimé.</p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setConfirmDelete(null)}
-                className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-[#151922]"
-              >
+            <h3 style={{ color: TEXT_PRI, fontWeight: 700, marginBottom: 6 }}>Supprimer cet utilisateur ?</h3>
+            <p style={{ color: TEXT_SEC, fontSize: 13, marginBottom: 4 }}>{confirmDelete.full_name || confirmDelete.email}</p>
+            <p style={{ color: "#ef4444", fontSize: 12, marginBottom: 20 }}>Cette action est irréversible.</p>
+            <div style={{ display: "flex", gap: 10 }}>
+              <button onClick={() => setConfirmDelete(null)} style={{ flex: 1, padding: "10px 0", borderRadius: 10, border: `1px solid ${BORDER}`, background: "transparent", color: TEXT_PRI, fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
                 Annuler
               </button>
-              <button
-                onClick={() => handleDelete(confirmDelete.id)}
-                className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-colors"
-              >
+              <button onClick={() => handleDelete(confirmDelete.id)} style={{ flex: 1, padding: "10px 0", borderRadius: 10, border: "none", background: "#ef4444", color: "white", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
                 Supprimer
               </button>
             </div>

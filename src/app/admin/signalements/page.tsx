@@ -5,6 +5,12 @@ import { AlertTriangle, CheckCircle, EyeOff, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
 
+// ─── Tokens ──────────────────────────────────────────────────────────────────
+const SURFACE  = "#1a2e1e";
+const BORDER   = "rgba(240,230,204,0.08)";
+const TEXT_PRI = "#f7f2e6";
+const TEXT_SEC = "rgba(240,230,204,0.55)";
+
 interface Report {
   id: string;
   property_id: string | null;
@@ -16,11 +22,11 @@ interface Report {
 }
 
 const REASON_LABELS: Record<string, string> = {
-  fraud:        "Annonce frauduleuse / arnaque",
-  already_taken:"Logement déjà loué / vendu",
-  fake_photos:  "Photos fausses ou volées",
-  wrong_price:  "Prix incorrect",
-  other:        "Autre",
+  fraud:         "Annonce frauduleuse / arnaque",
+  already_taken: "Logement déjà loué / vendu",
+  fake_photos:   "Photos fausses ou volées",
+  wrong_price:   "Prix incorrect",
+  other:         "Autre",
 };
 
 function formatDate(iso: string) {
@@ -28,9 +34,9 @@ function formatDate(iso: string) {
 }
 
 export default function AdminSignalementsPage() {
-  const [reports, setReports]   = useState<Report[]>([]);
-  const [loading, setLoading]   = useState(true);
-  const [busy, setBusy]         = useState<string | null>(null);
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy]       = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!supabase) return;
@@ -42,13 +48,8 @@ export default function AdminSignalementsPage() {
     if (error) {
       toast("Erreur de chargement", "error");
     } else {
-      setReports(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (data ?? []).map((r: any) => ({
-          ...r,
-          property_title: r.properties?.title ?? null,
-        }))
-      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setReports((data ?? []).map((r: any) => ({ ...r, property_title: r.properties?.title ?? null })));
     }
     setLoading(false);
   }, []);
@@ -63,7 +64,7 @@ export default function AdminSignalementsPage() {
       await supabase.from("properties").update({ status: "paused" }).eq("id", r.property_id);
     }
     setReports((prev) => prev.filter((x) => x.id !== r.id));
-    toast("✅ Annonce masquée et signalement supprimé", "success");
+    toast("Annonce masquée et signalement supprimé", "success");
     setBusy(null);
   }
 
@@ -71,9 +72,8 @@ export default function AdminSignalementsPage() {
     if (!supabase) return;
     setBusy(r.id + "-ignorer");
     const { error } = await supabase.from("reports").delete().eq("id", r.id);
-    if (error) {
-      toast("Erreur", "error");
-    } else {
+    if (error) { toast("Erreur", "error"); }
+    else {
       setReports((prev) => prev.filter((x) => x.id !== r.id));
       toast("Signalement ignoré", "success");
     }
@@ -90,11 +90,13 @@ export default function AdminSignalementsPage() {
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <div className="flex items-start justify-between gap-4">
+    <div style={{ padding: "28px 24px 40px", maxWidth: 1200 }} className="px-4 md:px-6">
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 24 }}>
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">Signalements</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
+          <h1 style={{ color: TEXT_PRI, fontWeight: 900, fontSize: "clamp(20px,4vw,26px)" }}>Signalements</h1>
+          <p style={{ color: TEXT_SEC, fontSize: 13, marginTop: 2 }}>
             {loading ? "Chargement…" : `${reports.length} signalement(s)`}
           </p>
         </div>
@@ -102,82 +104,122 @@ export default function AdminSignalementsPage() {
           <button
             onClick={handleIgnoreAll}
             disabled={busy === "all"}
-            className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-xl bg-slate-200 dark:bg-[#2a3040] text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-[#3a4050] transition-colors flex-shrink-0"
+            style={{
+              display: "flex", alignItems: "center", gap: 6,
+              padding: "8px 16px", borderRadius: 10,
+              border: `1px solid ${BORDER}`, background: "transparent",
+              color: TEXT_PRI, fontSize: 13, fontWeight: 600,
+              cursor: "pointer", flexShrink: 0,
+              opacity: busy === "all" ? 0.5 : 1,
+            }}
           >
-            <CheckCircle className="w-4 h-4" /> Ignorer tout
+            <CheckCircle size={15} /> Ignorer tout
           </button>
         )}
       </div>
 
-      {/* Stats bar */}
-      <div className="flex gap-4">
-        <div className="flex items-center gap-2 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-xl px-4 py-2.5">
-          <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
-          <span className="text-sm font-bold text-red-600 dark:text-red-400">{reports.length} en attente</span>
+      {/* Stats badge */}
+      {!loading && reports.length > 0 && (
+        <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
+          <div style={{
+            display: "flex", alignItems: "center", gap: 8,
+            background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.20)",
+            borderRadius: 10, padding: "8px 14px",
+          }}>
+            <AlertTriangle size={15} color="#ef4444" />
+            <span style={{ fontSize: 13, fontWeight: 700, color: "#ef4444" }}>{reports.length} en attente</span>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Loading */}
+      {loading && (
+        <div style={{ display: "flex", justifyContent: "center", padding: "64px 0" }}>
+          <div style={{ width: 28, height: 28, borderRadius: "50%", border: "2px solid #c8901e", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
+        </div>
+      )}
+
+      {/* Empty */}
+      {!loading && reports.length === 0 && (
+        <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 48, textAlign: "center" }}>
+          <CheckCircle size={40} color="#6ec97a" style={{ margin: "0 auto 12px" }} />
+          <p style={{ color: TEXT_SEC, fontWeight: 600, fontSize: 14 }}>Aucun signalement en attente</p>
+        </div>
+      )}
 
       {/* List */}
-      {loading ? (
-        <div className="flex items-center justify-center py-16">
-          <div className="w-7 h-7 border-2 border-[#F97316] border-t-transparent rounded-full animate-spin" />
-        </div>
-      ) : reports.length === 0 ? (
-        <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-12 border border-slate-100 dark:border-[#2a3040] text-center">
-          <CheckCircle className="w-10 h-10 text-green-400 mx-auto mb-3" />
-          <p className="text-slate-500 dark:text-slate-400 font-semibold">Aucun signalement en attente</p>
-        </div>
-      ) : (
-        <div className="space-y-3">
+      {!loading && reports.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {reports.map((r) => {
             const isBusy = busy?.startsWith(r.id);
             return (
               <div
                 key={r.id}
-                className={`bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-red-200 dark:border-red-900/40 transition-opacity ${isBusy ? "opacity-50" : ""}`}
+                style={{
+                  background: SURFACE, border: "1px solid rgba(239,68,68,0.20)",
+                  borderRadius: 12, padding: 16,
+                  opacity: isBusy ? 0.5 : 1, transition: "opacity 0.2s",
+                }}
               >
-                <div className="flex items-start gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-red-100 dark:bg-red-900/20 flex items-center justify-center flex-shrink-0">
-                    <AlertTriangle className="w-4 h-4 text-red-500" />
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                  {/* Icon */}
+                  <div style={{
+                    width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                    background: "rgba(239,68,68,0.12)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
+                    <AlertTriangle size={16} color="#ef4444" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-slate-900 dark:text-white text-sm">
+
+                  {/* Content */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ color: TEXT_PRI, fontWeight: 600, fontSize: 14 }}>
                       {r.property_title ?? "Annonce inconnue"}
                     </p>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      {formatDate(r.created_at)}
-                      {r.reporter_phone && ` · ${r.reporter_phone}`}
+                    <p style={{ color: TEXT_SEC, fontSize: 12, marginTop: 2 }}>
+                      {formatDate(r.created_at)}{r.reporter_phone ? ` · ${r.reporter_phone}` : ""}
                     </p>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 font-medium">
+                    <p style={{ color: TEXT_PRI, fontSize: 13, marginTop: 6, fontWeight: 500 }}>
                       {REASON_LABELS[r.reason] ?? r.reason}
                     </p>
                     {r.details && (
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 italic">{r.details}</p>
+                      <p style={{ color: TEXT_SEC, fontSize: 12, marginTop: 4, fontStyle: "italic" }}>{r.details}</p>
                     )}
 
-                    <div className="flex gap-2 mt-3">
+                    {/* Actions */}
+                    <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
                       <button
                         onClick={() => handleMasquer(r)}
                         disabled={!!busy}
-                        className="flex items-center gap-1.5 text-xs font-semibold py-1.5 px-3 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-40"
+                        style={{
+                          display: "flex", alignItems: "center", gap: 6,
+                          padding: "6px 12px", borderRadius: 8,
+                          border: "none", background: "#ef4444",
+                          color: "white", fontSize: 12, fontWeight: 600,
+                          cursor: busy ? "not-allowed" : "pointer",
+                          opacity: busy ? 0.5 : 1,
+                        }}
                       >
-                        {busy === r.id + "-masquer" ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                        ) : (
-                          <EyeOff className="w-3 h-3" />
-                        )}
+                        {busy === r.id + "-masquer"
+                          ? <Loader2 size={12} style={{ animation: "spin 0.8s linear infinite" }} />
+                          : <EyeOff size={12} />}
                         Masquer l&apos;annonce
                       </button>
                       <button
                         onClick={() => handleIgnorer(r)}
                         disabled={!!busy}
-                        className="flex items-center gap-1.5 text-xs font-semibold py-1.5 px-3 rounded-lg border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-green-500 hover:text-green-500 transition-colors disabled:opacity-40"
+                        style={{
+                          display: "flex", alignItems: "center", gap: 6,
+                          padding: "6px 12px", borderRadius: 8,
+                          border: `1px solid ${BORDER}`, background: "transparent",
+                          color: TEXT_PRI, fontSize: 12, fontWeight: 600,
+                          cursor: busy ? "not-allowed" : "pointer",
+                          opacity: busy ? 0.5 : 1,
+                        }}
                       >
-                        {busy === r.id + "-ignorer" ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                        ) : (
-                          <CheckCircle className="w-3 h-3" />
-                        )}
+                        {busy === r.id + "-ignorer"
+                          ? <Loader2 size={12} style={{ animation: "spin 0.8s linear infinite" }} />
+                          : <CheckCircle size={12} />}
                         Ignorer
                       </button>
                     </div>
@@ -188,6 +230,8 @@ export default function AdminSignalementsPage() {
           })}
         </div>
       )}
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }
