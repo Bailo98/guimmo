@@ -264,3 +264,26 @@ create policy "Auth users can upload avatars" on storage.objects for insert
   with check (bucket_id = 'avatars' and auth.role() = 'authenticated');
 create policy "Users can delete own avatar" on storage.objects for delete
   using (bucket_id = 'avatars' and auth.uid()::text = (storage.foldername(name))[1]);
+
+-- ─── New property attribute columns ──────────────────────────────────────────
+alter table properties add column if not exists water_source  text    default 'robinet';
+alter table properties add column if not exists electricity   text    default 'edg';
+alter table properties add column if not exists internet      text    default 'none';
+alter table properties add column if not exists has_parking   boolean default false;
+alter table properties add column if not exists has_security  boolean default false;
+alter table properties add column if not exists has_fence     boolean default false;
+alter table properties add column if not exists floor_number  integer default 0;
+alter table properties add column if not exists has_ac        boolean default false;
+alter table properties add column if not exists kitchen_equipped boolean default false;
+
+-- ─── Listings bucket (videos) ─────────────────────────────────────────────────
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('listings', 'listings', true, 52428800, array['video/mp4','video/webm','video/quicktime'])
+on conflict (id) do nothing;
+
+create policy "Listing videos are public" on storage.objects for select
+  using (bucket_id = 'listings');
+create policy "Auth users can upload listing videos" on storage.objects for insert
+  with check (bucket_id = 'listings' and auth.role() = 'authenticated');
+create policy "Users can delete own listing video" on storage.objects for delete
+  using (bucket_id = 'listings' and auth.uid()::text = (storage.foldername(name))[1]);

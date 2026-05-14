@@ -42,6 +42,15 @@ interface FormState {
   contactMethod: ContactMethod;
   latitude: number | null;
   longitude: number | null;
+  waterSource: string;
+  electricity: string;
+  internet: string;
+  hasParking: boolean;
+  hasSecurity: boolean;
+  hasFence: boolean;
+  hasAc: boolean;
+  kitchenEquipped: boolean;
+  floorNumber: number;
 }
 
 
@@ -76,8 +85,9 @@ export default function PublierPage() {
   const fileInputRef   = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef  = useRef<HTMLInputElement>(null);
-  const [videoFile, setVideoFile]     = useState<File | null>(null);
-  const [videoPreview, setVideoPreview] = useState<string | null>(null);
+  const [videoFile, setVideoFile]         = useState<File | null>(null);
+  const [videoPreview, setVideoPreview]   = useState<string | null>(null);
+  const [videoUploading, setVideoUploading] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
 
@@ -87,6 +97,9 @@ export default function PublierPage() {
     neighborhood: "", locationDetail: "",
     phone: "", contactMethod: "both",
     latitude: null, longitude: null,
+    waterSource: "robinet", electricity: "edg", internet: "none",
+    hasParking: false, hasSecurity: false, hasFence: false,
+    hasAc: false, kitchenEquipped: false, floorNumber: 0,
   });
   const [geoState, setGeoState] = useState<"idle" | "loading" | "done" | "error">("idle");
 
@@ -182,7 +195,7 @@ export default function PublierPage() {
   function handleVideoSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 100 * 1024 * 1024) { toast("Vidéo trop lourde (max 100 Mo)", "error"); return; }
+    if (file.size > 50 * 1024 * 1024) { toast("Vidéo trop lourde (max 50 Mo)", "error"); return; }
     if (videoPreview) URL.revokeObjectURL(videoPreview);
     setVideoFile(file);
     setVideoPreview(URL.createObjectURL(file));
@@ -222,13 +235,15 @@ export default function PublierPage() {
       // 1b. Upload video if present
       let videoUrl: string | null = null;
       if (videoFile) {
+        setVideoUploading(true);
         const ext  = videoFile.name.split(".").pop() ?? "mp4";
-        const path = `${user.id}/video-${Date.now()}.${ext}`;
+        const path = `videos/${user.id}/${Date.now()}.${ext}`;
         const { error: vErr } = await supabase.storage
-          .from("property-images")
+          .from("listings")
           .upload(path, videoFile, { upsert: false, contentType: videoFile.type });
+        setVideoUploading(false);
         if (!vErr) {
-          const { data: { publicUrl } } = supabase.storage.from("property-images").getPublicUrl(path);
+          const { data: { publicUrl } } = supabase.storage.from("listings").getPublicUrl(path);
           videoUrl = publicUrl;
         }
       }
@@ -265,6 +280,15 @@ export default function PublierPage() {
           whatsapp_clicks:     0,
           latitude:            form.latitude,
           longitude:           form.longitude,
+          water_source:        form.waterSource,
+          electricity:         form.electricity,
+          internet:            form.internet,
+          has_parking:         form.hasParking,
+          has_security:        form.hasSecurity,
+          has_fence:           form.hasFence,
+          has_ac:              form.hasAc,
+          kitchen_equipped:    form.kitchenEquipped,
+          floor_number:        form.floorNumber,
         })
         .select("id")
         .single();
@@ -485,8 +509,19 @@ export default function PublierPage() {
           {/* Video upload */}
           <div>
             <label className="block text-sm font-bold text-white mb-2">
-              🎥 Vidéo de présentation <span className="text-white/40 font-normal">(optionnel — max 60 s, 100 Mo)</span>
+              🎥 Vidéo de visite <span className="text-white/40 font-normal">(optionnel — max 60 s, 50 Mo)</span>
             </label>
+            {videoUploading && (
+              <div style={{ background: "rgba(200,144,30,0.10)", border: "1px solid rgba(200,144,30,0.25)", borderRadius: 10, padding: "10px 14px", marginBottom: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                  <div style={{ width: 14, height: 14, border: "2px solid #c8901e", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
+                  <span style={{ fontSize: 13, color: "#c8901e", fontWeight: 600 }}>Upload vidéo en cours…</span>
+                </div>
+                <div style={{ height: 4, background: "rgba(200,144,30,0.15)", borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: "60%", background: "#c8901e", borderRadius: 4, animation: "progressPulse 1.5s ease-in-out infinite" }} />
+                </div>
+              </div>
+            )}
             {videoPreview ? (
               <div className="relative rounded-xl overflow-hidden bg-black aspect-video">
                 <video src={videoPreview} autoPlay muted loop playsInline className="w-full h-full object-cover" />
@@ -604,6 +639,133 @@ export default function PublierPage() {
                   {f.label}
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* ── Équipements essentiels ── */}
+          <div>
+            <p className="text-sm font-bold text-white mb-4">Équipements essentiels</p>
+
+            {/* Eau */}
+            <div className="mb-4">
+              <label className="block text-xs font-bold text-white/50 uppercase tracking-wider mb-3">💧 Source d&apos;eau</label>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8 }}>
+                {([
+                  { id: "robinet", icon: "💧", label: "Robinet" },
+                  { id: "forage",  icon: "💧", label: "Forage" },
+                  { id: "citerne", icon: "💧", label: "Citerne" },
+                  { id: "none",    icon: "❌", label: "Aucune" },
+                ] as const).map((opt) => (
+                  <button key={opt.id} type="button" onClick={() => update("waterSource", opt.id)}
+                    style={{
+                      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                      gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70, minWidth: 70,
+                      border: form.waterSource === opt.id ? "2px solid #c8901e" : "1px solid rgba(240,230,204,0.12)",
+                      background: form.waterSource === opt.id ? "rgba(200,144,30,0.12)" : "#1a2e1e",
+                      color: form.waterSource === opt.id ? "#c8901e" : "rgba(240,230,204,0.60)",
+                      fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
+                    }}>
+                    <span style={{ fontSize: 24 }}>{opt.icon}</span>
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Électricité */}
+            <div className="mb-4">
+              <label className="block text-xs font-bold text-white/50 uppercase tracking-wider mb-3">⚡ Électricité</label>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8 }}>
+                {([
+                  { id: "edg",     icon: "⚡", label: "EDG" },
+                  { id: "solaire", icon: "☀️", label: "Solaire" },
+                  { id: "groupe",  icon: "🔋", label: "Groupe" },
+                  { id: "none",    icon: "❌", label: "Aucune" },
+                ] as const).map((opt) => (
+                  <button key={opt.id} type="button" onClick={() => update("electricity", opt.id)}
+                    style={{
+                      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                      gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70, minWidth: 70,
+                      border: form.electricity === opt.id ? "2px solid #c8901e" : "1px solid rgba(240,230,204,0.12)",
+                      background: form.electricity === opt.id ? "rgba(200,144,30,0.12)" : "#1a2e1e",
+                      color: form.electricity === opt.id ? "#c8901e" : "rgba(240,230,204,0.60)",
+                      fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
+                    }}>
+                    <span style={{ fontSize: 24 }}>{opt.icon}</span>
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Internet */}
+            <div className="mb-4">
+              <label className="block text-xs font-bold text-white/50 uppercase tracking-wider mb-3">📶 Internet <span className="text-white/25 font-normal normal-case tracking-normal">(optionnel)</span></label>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 8 }}>
+                {([
+                  { id: "wifi", icon: "📶", label: "WiFi / Fibre" },
+                  { id: "none", icon: "❌", label: "Aucun" },
+                ] as const).map((opt) => (
+                  <button key={opt.id} type="button" onClick={() => update("internet", opt.id)}
+                    style={{
+                      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                      gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70,
+                      border: form.internet === opt.id ? "2px solid #c8901e" : "1px solid rgba(240,230,204,0.12)",
+                      background: form.internet === opt.id ? "rgba(200,144,30,0.12)" : "#1a2e1e",
+                      color: form.internet === opt.id ? "#c8901e" : "rgba(240,230,204,0.60)",
+                      fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
+                    }}>
+                    <span style={{ fontSize: 24 }}>{opt.icon}</span>
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Autres équipements */}
+            <div className="mb-4">
+              <label className="block text-xs font-bold text-white/50 uppercase tracking-wider mb-3">Autres équipements <span className="text-white/25 font-normal normal-case tracking-normal">(optionnel)</span></label>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8 }}>
+                {([
+                  { key: "hasParking",      icon: "🚗", label: "Parking" },
+                  { key: "hasSecurity",     icon: "👮", label: "Gardien" },
+                  { key: "hasFence",        icon: "🧱", label: "Clôture" },
+                  { key: "hasAc",           icon: "❄️", label: "Climatisation" },
+                  { key: "kitchenEquipped", icon: "🍳", label: "Cuisine équipée" },
+                ] as { key: "hasParking" | "hasSecurity" | "hasFence" | "hasAc" | "kitchenEquipped"; icon: string; label: string }[]).map((opt) => {
+                  const active = form[opt.key];
+                  return (
+                    <button key={opt.key} type="button" onClick={() => update(opt.key, !active)}
+                      style={{
+                        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                        gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70,
+                        border: active ? "2px solid #c8901e" : "1px solid rgba(240,230,204,0.12)",
+                        background: active ? "rgba(200,144,30,0.12)" : "#1a2e1e",
+                        color: active ? "#c8901e" : "rgba(240,230,204,0.60)",
+                        fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
+                      }}>
+                      <span style={{ fontSize: 24 }}>{opt.icon}</span>
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Étage */}
+            <div>
+              <label className="block text-xs font-bold text-white/50 uppercase tracking-wider mb-2">Étage</label>
+              <select
+                value={form.floorNumber}
+                onChange={(e) => update("floorNumber", Number(e.target.value))}
+                className="w-full rounded-xl px-4 py-3 text-white font-medium focus:outline-none focus:ring-2 focus:ring-white/20 appearance-none"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+              >
+                <option value={0}>RDC (rez-de-chaussée)</option>
+                <option value={1}>1er étage</option>
+                <option value={2}>2ème étage</option>
+                <option value={3}>3ème étage et plus</option>
+              </select>
             </div>
           </div>
         </div>

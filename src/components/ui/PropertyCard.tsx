@@ -240,6 +240,29 @@ export function PropertyCard({ property, variant = "default", className, index =
           </div>
         )}
 
+        {/* Micro-badges eau / électricité */}
+        {((property.waterSource && property.waterSource !== "none") ||
+          (property.electricity && property.electricity !== "none") ||
+          property.internet === "wifi") && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 10 }}>
+            {property.waterSource && property.waterSource !== "none" && (
+              <span style={{ fontSize: 10, fontWeight: 600, color: "rgba(240,230,204,0.60)", background: "rgba(240,230,204,0.07)", border: "1px solid rgba(240,230,204,0.12)", borderRadius: 999, padding: "3px 8px" }}>
+                💧 {property.waterSource === "robinet" ? "Robinet" : property.waterSource === "forage" ? "Forage" : "Citerne"}
+              </span>
+            )}
+            {property.electricity && property.electricity !== "none" && (
+              <span style={{ fontSize: 10, fontWeight: 600, color: "rgba(240,230,204,0.60)", background: "rgba(240,230,204,0.07)", border: "1px solid rgba(240,230,204,0.12)", borderRadius: 999, padding: "3px 8px" }}>
+                ⚡ {property.electricity === "edg" ? "EDG" : property.electricity === "solaire" ? "Solaire" : "Groupe"}
+              </span>
+            )}
+            {property.internet === "wifi" && (
+              <span style={{ fontSize: 10, fontWeight: 600, color: "rgba(240,230,204,0.60)", background: "rgba(240,230,204,0.07)", border: "1px solid rgba(240,230,204,0.12)", borderRadius: 999, padding: "3px 8px" }}>
+                📶 WiFi
+              </span>
+            )}
+          </div>
+        )}
+
         {/* WhatsApp contact button */}
         <div className="mt-auto pt-1">
           {phone ? (

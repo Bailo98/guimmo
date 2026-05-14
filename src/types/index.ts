@@ -80,6 +80,15 @@ export interface Property {
   shortRef?: string;
   latitude?: number;
   longitude?: number;
+  waterSource?: "robinet" | "forage" | "citerne" | "none";
+  electricity?: "edg" | "solaire" | "groupe" | "none";
+  internet?: "wifi" | "none";
+  hasParking?: boolean;
+  hasSecurity?: boolean;
+  hasFence?: boolean;
+  floorNumber?: number;
+  hasAc?: boolean;
+  kitchenEquipped?: boolean;
 }
 
 export interface PropertyImage {
