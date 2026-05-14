@@ -60,17 +60,16 @@ export function PWAInstallBanner() {
 
   return (
     <div
-      className="fixed bottom-20 left-4 right-4 z-50 rounded-2xl p-4 flex items-center gap-3 shadow-2xl"
+      className="md:hidden fixed top-0 left-0 right-0 z-[60] flex items-center gap-3 px-4 shadow-2xl"
       style={{
-        background: "rgba(17,26,20,0.97)",
-        border: "1px solid rgba(255,255,255,0.12)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
+        height: 60,
+        background: "#1a2e1e",
+        borderBottom: "1px solid rgba(255,255,255,0.10)",
       }}
     >
       {/* App icon */}
       <div
-        className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-xl"
+        className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-lg"
         style={{ background: "rgba(200,144,30,0.20)", border: "1px solid rgba(200,144,30,0.30)" }}
       >
         🏠
@@ -78,26 +77,26 @@ export function PWAInstallBanner() {
 
       {/* Text */}
       <div className="flex-1 min-w-0">
-        <p className="text-white font-bold text-sm leading-tight">Installer GuImmo</p>
-        <p className="text-white/50 text-xs mt-0.5">Accès rapide depuis votre écran d&apos;accueil</p>
+        <p className="text-white font-bold text-xs leading-tight">📱 Installer GuImmo sur votre téléphone</p>
+        <p className="text-white/50 text-[10px] mt-0.5">Accès rapide depuis l&apos;écran d&apos;accueil</p>
       </div>
 
       {/* Actions */}
       <div className="flex items-center gap-2 flex-shrink-0">
         <button
           onClick={install}
-          className="flex items-center gap-1.5 px-3 rounded-xl font-bold text-white text-sm"
-          style={{ minHeight: 40, background: "#c8901e" }}
+          className="flex items-center gap-1 px-3 rounded-lg font-bold text-white text-xs"
+          style={{ height: 32, background: "#c8901e" }}
         >
-          <Download className="w-3.5 h-3.5" />
+          <Download className="w-3 h-3" />
           Installer
         </button>
         <button
           onClick={dismiss}
-          className="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:text-white transition-colors"
-          style={{ background: "rgba(255,255,255,0.08)" }}
+          className="text-white/40 hover:text-white/70 transition-colors text-xs font-medium px-2"
+          style={{ height: 32 }}
         >
-          <X className="w-4 h-4" />
+          Plus tard
         </button>
       </div>
     </div>

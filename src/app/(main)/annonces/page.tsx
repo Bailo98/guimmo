@@ -92,6 +92,7 @@ function AnnoncesContent() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [nearbyCoords, setNearbyCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [gpsLoading, setGpsLoading] = useState(false);
+  const [gpsMessage, setGpsMessage] = useState<string | null>(null);
 
   const neighborhood = searchParams.get("neighborhood") ?? "";
   const type = searchParams.get("type") ?? "";
@@ -108,13 +109,43 @@ function AnnoncesContent() {
     if (typeMatch) { setParam("type", typeMatch.id); }
   }
 
+  const QUARTIER_COORDS: Record<string, { lat: number; lng: number }> = {
+    kipe:       { lat: 9.5370, lng: -13.6773 },
+    hamdallaye: { lat: 9.5780, lng: -13.6420 },
+    dixinn:     { lat: 9.5140, lng: -13.6890 },
+    ratoma:     { lat: 9.5650, lng: -13.6600 },
+    taouyah:    { lat: 9.5490, lng: -13.6510 },
+    lambanyi:   { lat: 9.5580, lng: -13.6680 },
+    sonfonia:   { lat: 9.6100, lng: -13.6200 },
+    matam:      { lat: 9.5200, lng: -13.7100 },
+    madina:     { lat: 9.5350, lng: -13.6950 },
+    kaloum:     { lat: 9.5100, lng: -13.7050 },
+    cosa:       { lat: 9.5300, lng: -13.6800 },
+  };
+
   function handleNearby() {
     if (!navigator.geolocation) return;
     setGpsLoading(true);
+    setGpsMessage(null);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setNearbyCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        const userLat = pos.coords.latitude;
+        const userLng = pos.coords.longitude;
+        setNearbyCoords({ lat: userLat, lng: userLng });
         setGpsLoading(false);
+
+        // Find nearest quartier within 5km
+        let nearest: { id: string; dist: number } | null = null;
+        for (const [id, coords] of Object.entries(QUARTIER_COORDS)) {
+          const dist = haversineKm(userLat, userLng, coords.lat, coords.lng);
+          if (!nearest || dist < nearest.dist) nearest = { id, dist };
+        }
+        if (nearest && nearest.dist <= 5) {
+          setParam("neighborhood", nearest.id);
+        } else {
+          setGpsMessage("Aucun quartier GuImmo à moins de 5 km de vous.");
+          setTimeout(() => setGpsMessage(null), 4000);
+        }
       },
       () => setGpsLoading(false),
       { timeout: 8000, maximumAge: 60000 }
@@ -275,6 +306,12 @@ function AnnoncesContent() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-6">
+        {/* GPS message */}
+        {gpsMessage && (
+          <div className="mb-4 rounded-xl px-4 py-3 text-sm font-semibold text-white/70" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}>
+            📍 {gpsMessage}
+          </div>
+        )}
         {/* Results count */}
         <div className="flex items-center justify-between mb-5">
           <p className="text-sm text-[#6B7280]">
