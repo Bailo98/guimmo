@@ -20,7 +20,7 @@ export function HeroNavbar() {
           className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0"
           style={{ background: "#f7f2e6", color: "#111a14" }}
         >
-          GI
+          BL
         </span>
         <span
           style={{

@@ -93,9 +93,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const db = await getDB();
   const { data } = await db.from("properties").select("title, description").eq("id", id).single();
-  if (!data) return { title: "Annonce introuvable — GuImmo" };
+  if (!data) return { title: "Annonce introuvable — BienLoger" };
   return {
-    title: `${data.title} — GuImmo`,
+    title: `${data.title} — BienLoger`,
     description: (data.description ?? "").slice(0, 160),
   };
 }
@@ -152,7 +152,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   const phone = property.owner.phone;
   const whatsappPhone = phone.replace(/\D/g, "");
   const whatsappMessage = encodeURIComponent(
-    `Bonjour, je suis intéressé par votre annonce "${property.title}" sur GuImmo`
+    `Bonjour, je suis intéressé par votre annonce "${property.title}" sur BienLoger`
   );
   const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${whatsappMessage}`;
   const phoneUrl = `tel:${phone}`;
@@ -319,7 +319,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <div className="flex flex-wrap gap-2">
                     {property.owner.verified && (
                       <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(110,201,122,0.15)", color: "#6ec97a", border: "1px solid rgba(110,201,122,0.25)" }}>
-                        ✓ Propriétaire vérifié GuImmo
+                        ✓ Propriétaire vérifié BienLoger
                       </span>
                     )}
                     {property.images.length > 0 && (
@@ -403,11 +403,11 @@ export default async function PropertyDetailPage({ params }: Props) {
 
                 <MessageButton propertyId={property.id} ownerId={property.owner.id} propertyTitle={property.title} />
 
-                <p className="text-white/40 text-[11px] text-center">Mentionnez GuImmo lors de votre contact</p>
+                <p className="text-white/40 text-[11px] text-center">Mentionnez BienLoger lors de votre contact</p>
 
                 <div className="pt-3 border-t border-white/8">
                   <p className="text-white/30 text-xs leading-relaxed">
-                    🔒 Ne payez jamais avant de visiter le logement. GuImmo ne demande aucun paiement direct.
+                    🔒 Ne payez jamais avant de visiter le logement. BienLoger ne demande aucun paiement direct.
                   </p>
                 </div>
               </div>

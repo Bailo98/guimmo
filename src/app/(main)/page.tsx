@@ -1,62 +1,64 @@
 ﻿import Link from "next/link";
+import Image from "next/image";
 import { MapPin, ChevronRight, Bed, Square, CheckCircle2 } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
-import { MOCK_PROPERTIES } from "@/data/mock-properties";
 import { RecentlyViewedSection } from "@/components/ui/RecentlyViewedSection";
 import { HeroNavbar } from "@/components/home/HeroNavbar";
 import { HeroSearch } from "@/components/home/HeroSearch";
+import { formatPrice } from "@/lib/utils";
 import { createClient } from "@supabase/supabase-js";
 import type { Property } from "@/types";
 
 // ─── data ─────────────────────────────────────────────────────────────────────
 
-const PREVIEW_CARDS = [
-  {
-    title: "Appartement 3 chambres",
-    neighborhood: "Kipé",
-    price: "3 500 000 GNF/mois",
-    rooms: 3, surface: 85,
-    gradientFrom: "#2a5c38", gradientTo: "#3d7a50",
-    badge: "Disponible",
-  },
-  {
-    title: "Villa moderne 4 chambres",
-    neighborhood: "Hamdallaye",
-    price: "8 000 000 GNF/mois",
-    rooms: 4, surface: 180,
-    gradientFrom: "#c4871a", gradientTo: "#8a5e10",
-    badge: "Vérifié",
-  },
-  {
-    title: "Studio meublé",
-    neighborhood: "Dixinn",
-    price: "1 200 000 GNF/mois",
-    rooms: 1, surface: 35,
-    gradientFrom: "#1a3d28", gradientTo: "#c4871a",
-    badge: "Nouveau",
-  },
-];
-
-type Stats = { listings: number; owners: number };
+type Stats = { listings: number; owners: number; users: number; thisWeek: number };
 
 async function fetchStats(): Promise<Stats> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return { listings: 120, owners: 80 };
+  if (!url || !key) return { listings: 0, owners: 0, users: 0, thisWeek: 0 };
   try {
     const db = createClient(url, key);
-    const [listingsRes, ownersRes] = await Promise.all([
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const [listingsRes, ownersRes, usersRes, weekRes] = await Promise.all([
       db.from("properties").select("id", { count: "exact", head: true }).eq("status", "active"),
       db.from("profiles").select("id", { count: "exact", head: true }).in("role", ["owner", "agent", "agency"]),
+      db.from("profiles").select("id", { count: "exact", head: true }),
+      db.from("properties").select("id", { count: "exact", head: true }).eq("status", "active").gte("created_at", weekAgo),
     ]);
     return {
-      listings: listingsRes.count ?? 120,
-      owners: ownersRes.count ?? 80,
+      listings:  listingsRes.count ?? 0,
+      owners:    ownersRes.count   ?? 0,
+      users:     usersRes.count    ?? 0,
+      thisWeek:  weekRes.count     ?? 0,
     };
   } catch {
-    return { listings: 120, owners: 80 };
+    return { listings: 0, owners: 0, users: 0, thisWeek: 0 };
   }
 }
+
+function statFmt(n: number, suffix = "+"): string {
+  if (n < 5) return "Nouveau";
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k${suffix}`;
+  return `${n}${suffix}`;
+}
+
+const TYPE_GRADIENTS: Record<string, [string, string]> = {
+  apartment: ["#2a5c38", "#3d7a50"],
+  villa:     ["#c4871a", "#8a5e10"],
+  house:     ["#1a3d28", "#2a5c38"],
+  studio:    ["#1a3d28", "#c4871a"],
+  room:      ["#2a4a30", "#3d6b45"],
+  land:      ["#8a5e10", "#6b4a0d"],
+  office:    ["#1a2e45", "#2a4a6b"],
+  shop:      ["#451a1a", "#6b2a2a"],
+};
+
+const HERO_GRADIENTS: [string, string][] = [
+  ["#2a5c38", "#3d7a50"],
+  ["#c4871a", "#8a5e10"],
+  ["#1a3d28", "#c4871a"],
+];
 
 const POPULAR_NEIGHBORHOODS = [
   { id: "kipe",       name: "Kipé",       avgPrice: "2 500 000 GNF/mois" },
@@ -120,6 +122,7 @@ function mapRow(row: any): Property {
     boostExpiresAt: row.boost_expires_at ? new Date(row.boost_expires_at) : undefined,
     createdAt: new Date(row.created_at ?? Date.now()),
     updatedAt: new Date(row.updated_at ?? Date.now()),
+    shortRef: row.short_ref ?? undefined,
     latitude: row.latitude ?? undefined,
     longitude: row.longitude ?? undefined,
   };
@@ -128,7 +131,7 @@ function mapRow(row: any): Property {
 async function fetchHomeProperties(): Promise<Property[]> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return MOCK_PROPERTIES;
+  if (!url || !key) return [];
   try {
     const db = createClient(url, key);
     const { data, error } = await db
@@ -138,30 +141,42 @@ async function fetchHomeProperties(): Promise<Property[]> {
       .order("is_boosted", { ascending: false })
       .order("created_at", { ascending: false })
       .limit(12);
-    if (error || !data || data.length === 0) return MOCK_PROPERTIES;
+    if (error || !data) return [];
     return data.map(mapRow);
   } catch {
-    return MOCK_PROPERTIES;
+    return [];
   }
 }
 
-// ─── static preview card (decorative) ─────────────────────────────────────────
+// ─── hero preview card (decorative, uses real data) ───────────────────────────
+
+const NEIGHBORHOOD_LABELS_HERO: Record<string, string> = {
+  kipe: "Kipé", lambanyi: "Lambanyi", ratoma: "Ratoma", sonfonia: "Sonfonia",
+  cosa: "Cosa", hamdallaye: "Hamdallaye", nongo: "Nongo", taouyah: "Taouyah",
+  dixinn: "Dixinn", matam: "Matam", madina: "Madina", kaloum: "Kaloum",
+};
 
 interface PreviewCardProps {
-  title: string; neighborhood: string; price: string;
-  rooms: number; surface: number;
-  gradientFrom: string; gradientTo: string;
-  badge: string; index: number;
+  property: Property;
+  index: number;
 }
 
 const CARD_POSITIONS = [
-  { top: "0px",    right: "0px",  rotate: "2deg",   zIndex: 3, opacity: 1    },
-  { top: "155px",  right: "28px", rotate: "-1.2deg", zIndex: 2, opacity: 0.96 },
-  { top: "295px",  right: "54px", rotate: "1.8deg",  zIndex: 1, opacity: 0.88 },
+  { top: "0px",   right: "0px",  rotate: "2deg",    zIndex: 3, opacity: 1    },
+  { top: "155px", right: "28px", rotate: "-1.2deg", zIndex: 2, opacity: 0.96 },
+  { top: "295px", right: "54px", rotate: "1.8deg",  zIndex: 1, opacity: 0.88 },
 ];
 
-function PreviewCard({ title, neighborhood, price, rooms, surface, gradientFrom, gradientTo, badge, index }: PreviewCardProps) {
+function PreviewCard({ property, index }: PreviewCardProps) {
   const pos = CARD_POSITIONS[index];
+  const primaryImg = property.images.find((i) => i.isPrimary) ?? property.images[0];
+  const [gradFrom, gradTo] = TYPE_GRADIENTS[property.type] ?? HERO_GRADIENTS[index % 3];
+  const neighborhoodLabel = NEIGHBORHOOD_LABELS_HERO[property.neighborhood] ?? property.neighborhood;
+  const priceStr = property.pricePeriod === "month"
+    ? `${formatPrice(property.price)}/mois`
+    : formatPrice(property.price);
+  const badge = property.transactionType === "rent" ? "Location" : "Vente";
+
   return (
     <div
       className="absolute w-[260px] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-1"
@@ -173,29 +188,37 @@ function PreviewCard({ title, neighborhood, price, rooms, surface, gradientFrom,
         boxShadow: "0 8px 32px rgba(10,20,12,0.45)",
       }}
     >
-      {/* Image placeholder */}
-      <div
-        className="h-36 flex items-end p-3"
-        style={{ background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})` }}
-      >
-        <span
-          className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-          style={{ background: "rgba(10,20,12,0.45)", color: "#f7f2e6" }}
-        >
-          {badge}
-        </span>
+      {/* Image */}
+      <div className="relative h-36">
+        {primaryImg ? (
+          <Image src={primaryImg.url} alt={primaryImg.alt || property.title} fill className="object-cover" sizes="260px" />
+        ) : (
+          <div className="w-full h-full" style={{ background: `linear-gradient(135deg, ${gradFrom}, ${gradTo})` }} />
+        )}
+        <div className="absolute inset-0 flex items-end p-3" style={{ background: primaryImg ? "linear-gradient(to top, rgba(0,0,0,0.55), transparent)" : "none" }}>
+          <span
+            className="text-[11px] font-bold px-2.5 py-1 rounded-full"
+            style={{ background: "rgba(10,20,12,0.50)", color: "#f7f2e6" }}
+          >
+            {badge}
+          </span>
+        </div>
       </div>
       {/* Content */}
       <div className="p-3.5" style={{ color: "#111a14" }}>
-        <p className="font-bold text-sm leading-snug line-clamp-1">{title}</p>
+        <p className="font-bold text-sm leading-snug line-clamp-1">{property.title}</p>
         <div className="flex items-center gap-1 text-xs mt-1" style={{ color: "rgba(17,26,20,0.50)" }}>
           <MapPin className="w-3 h-3 flex-shrink-0" />
-          <span>{neighborhood}</span>
+          <span>{neighborhoodLabel}</span>
         </div>
-        <p className="font-black text-sm mt-2" style={{ color: "#c8901e" }}>{price}</p>
+        <p className="font-black text-sm mt-2" style={{ color: "#c8901e" }}>{priceStr}</p>
         <div className="flex items-center gap-3 mt-1.5 text-xs" style={{ color: "rgba(17,26,20,0.45)" }}>
-          <span className="flex items-center gap-1"><Bed className="w-3 h-3" />{rooms} ch.</span>
-          <span className="flex items-center gap-1"><Square className="w-3 h-3" />{surface} m²</span>
+          {(property.rooms ?? 0) > 0 && (
+            <span className="flex items-center gap-1"><Bed className="w-3 h-3" />{property.rooms} ch.</span>
+          )}
+          {(property.surface ?? 0) > 0 && (
+            <span className="flex items-center gap-1"><Square className="w-3 h-3" />{property.surface} m²</span>
+          )}
         </div>
       </div>
     </div>
@@ -206,6 +229,7 @@ function PreviewCard({ title, neighborhood, price, rooms, surface, gradientFrom,
 
 export default async function HomePage() {
   const [properties, stats] = await Promise.all([fetchHomeProperties(), fetchStats()]);
+  const heroPreview = properties.slice(0, 3);
   const featured = properties.filter((p) => p.isBoosted).slice(0, 6).length > 0
     ? properties.filter((p) => p.isBoosted).slice(0, 6)
     : properties.slice(0, 6);
@@ -303,12 +327,14 @@ export default async function HomePage() {
               <HeroSearch />
             </div>
 
-            {/* ── Right column — preview cards (desktop only) ── */}
-            <div className="hidden lg:block relative" style={{ height: "480px" }}>
-              {PREVIEW_CARDS.map((card, i) => (
-                <PreviewCard key={i} {...card} index={i} />
-              ))}
-            </div>
+            {/* ── Right column — preview cards (desktop only, only if real data) ── */}
+            {heroPreview.length > 0 && (
+              <div className="hidden lg:block relative" style={{ height: "480px" }}>
+                {heroPreview.map((p, i) => (
+                  <PreviewCard key={p.id} property={p} index={i} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -336,10 +362,10 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 py-10 md:py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
             {[
-              { value: `${stats.listings}+`, label: "Annonces actives" },
-              { value: `${stats.owners}+`,   label: "Propriétaires vérifiés" },
-              { value: "3 000+",             label: "Utilisateurs" },
-              { value: "98%",                label: "Satisfaction" },
+              { value: statFmt(stats.listings), label: "Annonces actives" },
+              { value: statFmt(stats.owners),   label: "Propriétaires" },
+              { value: statFmt(stats.users),    label: "Utilisateurs" },
+              { value: statFmt(stats.thisWeek), label: "Nouvelles / semaine" },
             ].map((s) => (
               <div key={s.label} className="text-center">
                 <p

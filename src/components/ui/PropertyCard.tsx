@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, MapPin, Bed, Bath, Square, Star } from "lucide-react";
@@ -27,23 +27,23 @@ const NEIGHBORHOOD_LABELS: Record<string, string> = {
   dixinn: "Dixinn", matam: "Matam", madina: "Madina", kaloum: "Kaloum",
 };
 
+const WA_ICON_SM = (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+  </svg>
+);
+
 export function PropertyCard({ property, variant = "default", className, index = 0 }: PropertyCardProps) {
   const { toggleFavorite, isFavorite, _hasHydrated } = useAppStore();
   const fav = _hasHydrated && isFavorite(property.id);
   const primaryImage = property.images.find((i) => i.isPrimary) ?? property.images[0];
   const neighborhoodLabel = NEIGHBORHOOD_LABELS[property.neighborhood] ?? property.neighborhood;
-
-  // Trust signals
-  const isVerifiedOwner = property.owner.verified;
-  const hasRealPhotos   = property.images.length > 0;
-  const hasPhone        = !!(property.owner.phone || property.owner.whatsapp);
-  const hasVideo        = !!property.videoUrl;
-
-  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://BienLoger.gn";
-  const shareUrl = `${siteUrl}/annonces/${property.id}`;
+  const phone = property.owner.whatsapp || property.owner.phone;
   const sharePrice = property.pricePeriod === "month"
     ? `${formatPrice(property.price)}/mois`
     : formatPrice(property.price);
+  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://bienloger.gn";
+  const shareUrl = `${siteUrl}/annonces/${property.id}`;
   const createdAt = property.createdAt instanceof Date
     ? property.createdAt
     : new Date(property.createdAt as unknown as string);
@@ -95,13 +95,18 @@ export function PropertyCard({ property, variant = "default", className, index =
     );
   }
 
-  // ── Default variant — pure overlay card ─────────────────────────
+  // ── Default variant — redesigned dark card ──────────────────────
   return (
     <div
-      className={cn("group relative rounded-[20px] overflow-hidden hover:-translate-y-1 active:scale-[0.99] transition-all duration-300", className)}
-      style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", border: "1px solid rgba(255,255,255,0.10)" }}
+      className={cn("group flex flex-col rounded-[14px] overflow-hidden transition-all duration-200 hover:-translate-y-1", className)}
+      style={{
+        background: "#1a2e1e",
+        border: "1px solid rgba(240,230,204,0.10)",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+      }}
     >
-      <Link href={`/annonces/${property.id}`} className="block relative h-[220px]">
+      {/* Image */}
+      <Link href={`/annonces/${property.id}`} className="relative block flex-shrink-0" style={{ height: 200 }}>
         {primaryImage ? (
           <Image
             src={primaryImage.url}
@@ -112,37 +117,35 @@ export function PropertyCard({ property, variant = "default", className, index =
             priority={index < 4}
           />
         ) : (
-          <div className="w-full h-full bg-white/5 flex items-center justify-center">
-            <Square className="w-12 h-12 text-white/20" />
+          <div className="w-full h-full flex items-center justify-center" style={{ background: "#0d1a10" }}>
+            <Square className="w-10 h-10" style={{ color: "rgba(240,230,204,0.15)" }} />
           </div>
         )}
 
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+        {/* Gradient overlay at bottom */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(26,46,30,0.85) 0%, transparent 50%)" }} />
 
-        {/* Top-left: type + badges */}
+        {/* Top-left: type badge */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
-          <span className="text-white/80 text-[11px] font-bold px-2.5 py-1 rounded-full leading-none" style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
+          <span
+            className="text-white text-[11px] font-bold px-2.5 py-1 rounded-full leading-none"
+            style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}
+          >
             {TYPE_LABELS[property.type] ?? property.type}
           </span>
-          {hasVideo && (
-            <span className="text-white text-[11px] font-bold px-2.5 py-1 rounded-full leading-none" style={{ background: "rgba(139,92,246,0.70)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
-              🎥 Vidéo
-            </span>
-          )}
-          {isNew && (
-            <span className="text-white text-[11px] font-bold px-2.5 py-1 rounded-full leading-none" style={{ background: "rgba(255,255,255,0.20)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}>
-              Nouveau
-            </span>
-          )}
           {property.isBoosted && (
-            <span className="bg-amber-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 leading-none">
-              <Star className="w-2.5 h-2.5 fill-white" /> Sponsorisé
+            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full leading-none flex items-center gap-1" style={{ background: "rgba(200,144,30,0.20)", color: "#daa84a", border: "1px solid rgba(200,144,30,0.30)" }}>
+              <Star className="w-2.5 h-2.5 fill-current" /> Sponsorisé
+            </span>
+          )}
+          {isNew && !property.isBoosted && (
+            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full leading-none" style={{ background: "rgba(0,0,0,0.45)", color: "#f7f2e6" }}>
+              Nouveau
             </span>
           )}
         </div>
 
-        {/* Top-right: heart + price badge */}
+        {/* Top-right: favorite + price badge */}
         <div className="absolute top-3 right-3 flex flex-col items-end gap-2">
           <button
             onClick={(e) => {
@@ -153,78 +156,124 @@ export function PropertyCard({ property, variant = "default", className, index =
             }}
             className={cn(
               "w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-md",
-              fav
-                ? "bg-red-500 text-white"
-                : "bg-black/40 backdrop-blur-sm text-white hover:bg-black/60"
+              fav ? "bg-red-500 text-white" : "bg-black/50 backdrop-blur-sm text-white hover:bg-black/70"
             )}
           >
             <Heart className={cn("w-4 h-4", fav && "fill-white")} />
           </button>
-          <div className="rounded-xl shadow-md px-2.5 py-1.5 text-right" style={{ background: "rgba(255,255,255,0.15)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.20)" }}>
+          <div className="rounded-xl shadow-md px-2.5 py-1.5 text-right" style={{ background: "#c8901e" }}>
             <p className="text-white font-bold text-xs leading-tight">{formatPrice(property.price)}</p>
             {property.pricePeriod === "month" && (
-              <p className="text-white/60 text-[10px] leading-tight">/mois</p>
+              <p className="text-white/70 text-[10px] leading-tight">/mois</p>
             )}
           </div>
         </div>
 
-        {/* Bottom overlay: title + location + specs */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className="font-bold text-white text-sm leading-snug line-clamp-2 mb-0.5">
-            {property.title}
-          </h3>
-          <div className="flex items-center gap-1 text-white/80 mb-2">
-            <MapPin className="w-3 h-3 flex-shrink-0" />
-            <span className="text-[11px] truncate">{neighborhoodLabel}, {property.city}</span>
-          </div>
-          <div className="flex items-center gap-3 text-white/70 text-[11px]">
-            {(property.rooms ?? 0) > 0 && (
-              <span className="flex items-center gap-1"><Bed className="w-3 h-3" />{property.rooms} ch.</span>
-            )}
-            {(property.bathrooms ?? 0) > 0 && (
-              <span className="flex items-center gap-1"><Bath className="w-3 h-3" />{property.bathrooms} sdb</span>
-            )}
-            {(property.surface ?? 0) > 0 && (
-              <span className="flex items-center gap-1"><Square className="w-3 h-3" />{property.surface}m²</span>
-            )}
-          </div>
-        </div>
-      </Link>
-      {/* Trust badges */}
-      {(isVerifiedOwner || hasRealPhotos || hasPhone || hasVideo) && (
-        <div className="px-3 pb-1 flex flex-wrap gap-1">
-          {isVerifiedOwner && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(110,201,122,0.15)", color: "#6ec97a", border: "1px solid rgba(110,201,122,0.25)" }}>
-              ✓ Vérifié
-            </span>
-          )}
-          {hasRealPhotos && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(200,144,30,0.15)", color: "#daa84a", border: "1px solid rgba(200,144,30,0.25)" }}>
-              📷 Photos réelles
-            </span>
-          )}
-          {hasPhone && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(37,211,102,0.12)", color: "#25D366", border: "1px solid rgba(37,211,102,0.25)" }}>
-              💬 Contact direct
-            </span>
-          )}
-          {hasVideo && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(139,92,246,0.15)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.25)" }}>
+        {/* Video badge bottom-left */}
+        {property.videoUrl && (
+          <div className="absolute bottom-3 left-3">
+            <span className="text-white text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "rgba(139,92,246,0.70)", backdropFilter: "blur(6px)" }}>
               🎥 Vidéo
             </span>
+          </div>
+        )}
+      </Link>
+
+      {/* Content */}
+      <div className="flex flex-col flex-1 p-3.5 gap-0">
+        {/* Badges row */}
+        {(property.owner.verified || property.isBoosted) && (
+          <div className="flex flex-wrap gap-1.5 mb-2">
+            {property.owner.verified && (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ color: "#6ec97a", background: "rgba(110,201,122,0.12)", border: "1px solid rgba(110,201,122,0.20)" }}>
+                ✓ Vérifié
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Title */}
+        <Link href={`/annonces/${property.id}`}>
+          <h3
+            className="font-semibold line-clamp-2 leading-snug mb-1"
+            style={{ fontSize: 15, color: "#f7f2e6" }}
+          >
+            {property.title}
+          </h3>
+        </Link>
+
+        {/* Neighborhood */}
+        <div className="flex items-center gap-1 mb-2.5" style={{ color: "rgba(240,230,204,0.60)", fontSize: 13 }}>
+          <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+          <span className="truncate">{neighborhoodLabel}, {property.city}</span>
+        </div>
+
+        {/* Specs */}
+        {((property.rooms ?? 0) > 0 || (property.bathrooms ?? 0) > 0 || (property.surface ?? 0) > 0) && (
+          <div
+            className="flex items-center gap-4 py-2.5 mb-2.5"
+            style={{
+              borderTop: "1px solid rgba(240,230,204,0.08)",
+              borderBottom: "1px solid rgba(240,230,204,0.08)",
+              fontSize: 13,
+              color: "rgba(240,230,204,0.70)",
+            }}
+          >
+            {(property.rooms ?? 0) > 0 && (
+              <span className="flex items-center gap-1.5">
+                <Bed className="w-3.5 h-3.5 flex-shrink-0" />
+                {property.rooms} ch.
+              </span>
+            )}
+            {(property.bathrooms ?? 0) > 0 && (
+              <span className="flex items-center gap-1.5">
+                <Bath className="w-3.5 h-3.5 flex-shrink-0" />
+                {property.bathrooms} sdb
+              </span>
+            )}
+            {(property.surface ?? 0) > 0 && (
+              <span className="flex items-center gap-1.5">
+                <Square className="w-3.5 h-3.5 flex-shrink-0" />
+                {property.surface} m²
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* WhatsApp contact button */}
+        <div className="mt-auto pt-1">
+          {phone ? (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                const cleaned = phone.replace(/\D/g, "");
+                const ref = property.shortRef ? ` (${property.shortRef})` : "";
+                const msg = `Bonjour, je suis intéressé par votre annonce : ${property.title}${ref}`;
+                window.open(`https://wa.me/${cleaned}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+              }}
+              className="w-full flex items-center justify-center gap-2 font-bold text-white transition-opacity hover:opacity-85"
+              style={{
+                background: "#25D366",
+                minHeight: 48,
+                borderRadius: 10,
+                fontSize: 13,
+              }}
+            >
+              {WA_ICON_SM}
+              Contacter sur WhatsApp
+            </button>
+          ) : (
+            <WhatsAppShare
+              title={property.title}
+              neighborhood={neighborhoodLabel}
+              price={sharePrice}
+              url={shareUrl}
+              size="sm"
+              className="w-full"
+            />
           )}
         </div>
-      )}
-      {/* WhatsApp share strip */}
-      <div className="px-3 pb-3 pt-1">
-        <WhatsAppShare
-          title={property.title}
-          neighborhood={neighborhoodLabel}
-          price={sharePrice}
-          url={shareUrl}
-          size="sm"
-          className="w-full"
-        />
       </div>
     </div>
   );

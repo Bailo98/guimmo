@@ -38,8 +38,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const db = getDB();
   const { data } = await db.from("profiles").select("full_name, role").eq("id", id).single();
-  if (!data) return { title: "Profil introuvable — GuImmo" };
-  return { title: `${data.full_name ?? "Utilisateur"} — GuImmo` };
+  if (!data) return { title: "Profil introuvable — BienLoger" };
+  return { title: `${data.full_name ?? "Utilisateur"} — BienLoger` };
 }
 
 export default async function ProfilPage({ params }: Props) {
