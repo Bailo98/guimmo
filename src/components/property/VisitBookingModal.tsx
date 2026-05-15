@@ -44,13 +44,13 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
   function handleConfirm() {
     if (!date || !time || !name) return;
     const msg = `Bonjour, je souhaite réserver une visite pour ${property.title} le ${date} à ${time}. Mon nom: ${name}. Réf: #${property.id}`;
-    const url = buildWhatsAppUrl(property.owner.whatsapp ?? property.owner.phone, msg);
+    const url = buildWhatsAppUrl(property.contact_phone ?? "", msg);
     window.open(url, "_blank");
   }
 
   function handleContactWhatsApp() {
     const msg = `Bonjour, je suis intéressé(e) par la visite virtuelle de ${property.title}. Réf: #${property.id}`;
-    const url = buildWhatsAppUrl(property.owner.whatsapp ?? property.owner.phone, msg);
+    const url = buildWhatsAppUrl(property.contact_phone ?? "", msg);
     window.open(url, "_blank");
   }
 
@@ -211,16 +211,8 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
             </div>
           ) : (
             <div className="space-y-4">
-              {property.virtualTourUrl ? (
-                <div className="w-full aspect-video rounded-xl overflow-hidden bg-slate-100 dark:bg-[#151922]">
-                  <iframe
-                    src={property.virtualTourUrl}
-                    title="Visite virtuelle 360°"
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
+              {false ? (
+                <div className="w-full aspect-video rounded-xl overflow-hidden bg-slate-100 dark:bg-[#151922]" />
               ) : (
                 <div className="w-full aspect-video rounded-xl bg-slate-100 dark:bg-[#151922] flex flex-col items-center justify-center gap-3 text-center px-6">
                   <div className="w-16 h-16 bg-slate-200 dark:bg-[#2a3040] rounded-2xl flex items-center justify-center">

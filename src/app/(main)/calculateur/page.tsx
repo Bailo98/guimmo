@@ -24,7 +24,7 @@ export default function CalculateurPage() {
 
   const filteredProperties = useMemo(() => {
     return MOCK_PROPERTIES.filter(
-      (p) => p.transactionType === "rent" && p.price <= budgetMax
+      (p) => p.transaction_type === "rent" && p.price <= budgetMax
     );
   }, [budgetMax]);
 

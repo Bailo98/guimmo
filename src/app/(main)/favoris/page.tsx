@@ -9,54 +9,6 @@ import { MOCK_PROPERTIES } from "@/data/mock-properties";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import type { Property } from "@/types";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapRow(row: any): Property {
-  return {
-    id: row.id,
-    title: row.title,
-    description: row.description ?? "",
-    type: row.type,
-    transactionType: row.transaction_type,
-    status: row.status ?? "active",
-    price: row.price,
-    pricePeriod: row.price_period ?? "month",
-    surface: row.surface,
-    rooms: row.rooms,
-    bathrooms: row.bathrooms,
-    furnished: row.furnished ?? false,
-    availableNow: row.available_now ?? true,
-    neighborhood: row.neighborhood,
-    city: row.city ?? "Conakry",
-    features: row.features ?? [],
-    images: (row.property_images ?? []).map((img: { id: string; url: string; alt: string; is_primary: boolean }) => ({
-      id: img.id,
-      url: img.url,
-      alt: img.alt ?? "",
-      isPrimary: img.is_primary ?? false,
-    })),
-    owner: {
-      id: row.profiles?.id ?? row.owner_id,
-      name: row.profiles?.full_name ?? row.profiles?.name ?? "Propriétaire",
-      email: "",
-      phone: row.profiles?.phone ?? "",
-      whatsapp: row.profiles?.phone ?? "",
-      role: row.profiles?.role ?? "owner",
-      verified: row.profiles?.is_verified ?? false,
-      badges: [],
-      trustScore: 50,
-      totalListings: 1,
-      avgRating: 4.5,
-      reviewCount: 0,
-      createdAt: new Date(row.profiles?.created_at ?? Date.now()),
-    },
-    badges: [],
-    views: row.views ?? 0,
-    whatsappClicks: row.whatsapp_clicks ?? 0,
-    isBoosted: row.is_boosted ?? false,
-    createdAt: new Date(row.created_at ?? Date.now()),
-    updatedAt: new Date(row.updated_at ?? Date.now()),
-  };
-}
 
 export default function FavorisPage() {
   const { user, loading: authLoading } = useAuth();
@@ -87,7 +39,7 @@ export default function FavorisPage() {
 
     if (data) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const props = data.map((row: any) => row.properties).filter(Boolean).map(mapRow);
+      const props = data.map((row: any) => row.properties as Property).filter(Boolean);
       setProperties(props);
     }
     setLoading(false);

@@ -14,16 +14,16 @@ function getSortedProperties() {
   return [...MOCK_PROPERTIES]
     .filter((p) => p.status === "active")
     .sort((a, b) => {
-      if (a.isBoosted && !b.isBoosted) return -1;
-      if (!a.isBoosted && b.isBoosted) return 1;
-      return b.views - a.views;
+      if (a.is_boosted && !b.is_boosted) return -1;
+      if (!a.is_boosted && b.is_boosted) return 1;
+      return (b.views ?? 0) - (a.views ?? 0);
     });
 }
 
 export default function SelectionPage() {
   const sorted = getSortedProperties();
-  const boosted = sorted.filter((p) => p.isBoosted);
-  const regular = sorted.filter((p) => !p.isBoosted);
+  const boosted = sorted.filter((p) => p.is_boosted);
+  const regular = sorted.filter((p) => !p.is_boosted);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0f1117]">

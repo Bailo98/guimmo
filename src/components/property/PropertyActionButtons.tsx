@@ -35,7 +35,7 @@ export function PropertyActionButtons({ property }: Props) {
       </button>
 
       {/* Bouton visite 360° (si disponible) */}
-      {property.virtualTourUrl && (
+      {property.has_virtual_tour && (
         <button
           onClick={openVirtual}
           className="w-full border border-[#F97316] text-[#F97316] hover:bg-orange-50 dark:hover:bg-orange-900/10 active:scale-95 font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm transition-all"

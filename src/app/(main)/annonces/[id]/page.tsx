@@ -45,63 +45,6 @@ function formatGNF(amount: number, period?: string | null): string {
   return period === "month" ? `${base}/mois` : base;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapRow(row: any): Property {
-  return {
-    id: row.id,
-    title: row.title,
-    description: row.description ?? "",
-    type: row.type,
-    transactionType: row.transaction_type,
-    status: row.status ?? "active",
-    price: row.price,
-    pricePeriod: row.price_period ?? "month",
-    surface: row.surface,
-    rooms: row.rooms,
-    bathrooms: row.bathrooms,
-    furnished: row.furnished ?? false,
-    availableNow: row.available_now ?? true,
-    neighborhood: row.neighborhood,
-    city: row.city ?? "Conakry",
-    features: row.features ?? [],
-    images: (row.property_images ?? []).map((img: { id: string; url: string; alt: string; is_primary: boolean }) => ({
-      id: img.id, url: img.url, alt: img.alt ?? "", isPrimary: img.is_primary ?? false,
-    })),
-    owner: {
-      id: row.profiles?.id ?? row.owner_id ?? "unknown",
-      name: row.profiles?.full_name ?? "Propriétaire",
-      email: "",
-      phone: row.contact_phone ?? row.profiles?.phone ?? "+224 620 00 00 00",
-      whatsapp: row.contact_phone ?? row.profiles?.phone ?? "+224 620 00 00 00",
-      role: row.profiles?.role ?? "owner",
-      verified: row.profiles?.is_verified ?? false,
-      badges: [],
-      trustScore: 50,
-      totalListings: 1,
-      avgRating: 4.5,
-      reviewCount: 0,
-      createdAt: new Date(row.profiles?.created_at ?? Date.now()),
-    },
-    badges: [],
-    views: row.views ?? 0,
-    whatsappClicks: row.whatsapp_clicks ?? 0,
-    isBoosted: row.is_boosted ?? false,
-    boostExpiresAt: row.boost_expires_at ? new Date(row.boost_expires_at) : undefined,
-    createdAt: new Date(row.created_at ?? Date.now()),
-    updatedAt: new Date(row.updated_at ?? Date.now()),
-    videoUrl: row.video_url ?? undefined,
-    shortRef: row.short_ref ?? undefined,
-    waterSource: row.water_source ?? "robinet",
-    electricity: row.electricity ?? "edg",
-    internet: row.internet ?? "none",
-    hasParking: row.has_parking ?? false,
-    hasSecurity: row.has_security ?? false,
-    hasFence: row.has_fence ?? false,
-    floorNumber: row.floor_number ?? 0,
-    hasAc: row.has_ac ?? false,
-    kitchenEquipped: row.kitchen_equipped ?? false,
-  };
-}
 
 export const revalidate = 60;
 
@@ -144,9 +87,9 @@ export default async function PropertyDetailPage({ params }: Props) {
     profileData = data;
   }
 
-  const property = mapRow({ ...row, profiles: profileData });
-  const videoUrl = property.videoUrl ?? null;
-  const shortRef = property.shortRef ?? null;
+  const property = row as Property;
+  const videoUrl = property.video_url ?? null;
+  const shortRef = property.short_ref ?? null;
 
   void db.from("properties").update({ views: (row.views ?? 0) + 1 }).eq("id", id).then(() => {});
 
@@ -158,7 +101,7 @@ export default async function PropertyDetailPage({ params }: Props) {
     .eq("status", "active")
     .neq("id", id)
     .limit(3);
-  const similar = (similarRows ?? []).map(mapRow);
+  const similar = (similarRows ?? []) as Property[];
 
   // Virtual tour images (table added via migration; handle missing gracefully)
   let vtRooms: VTRoom[] = [];
@@ -176,7 +119,8 @@ export default async function PropertyDetailPage({ params }: Props) {
   }
 
   const neighborhoodLabel = getNeighborhoodName(property.neighborhood);
-  const phone = property.owner.phone;
+  type ProfileData = { phone?: string } | null;
+  const phone = property.contact_phone ?? (profileData as ProfileData)?.phone ?? "+224 620 00 00 00";
   const whatsappPhone = phone.replace(/\D/g, "");
   const contactMsg = encodeURIComponent(
     `Bonjour, je suis intéressé par votre annonce "${property.title}" sur BienLoger`
@@ -189,7 +133,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   const phoneUrl    = `tel:${phone}`;
 
   // ── Derived essentials ──────────────────────────────────────────────────────
-  const waterKey = (property.waterSource ?? "robinet") as string;
+  const waterKey = (property.water_source ?? "robinet") as string;
   const elecKey  = (property.electricity ?? "edg") as string;
   const inetKey  = (property.internet ?? "none") as string;
 
@@ -199,13 +143,13 @@ export default async function PropertyDetailPage({ params }: Props) {
 
   // ── Other equipment pills ──────────────────────────────────────────────────
   const otherEquip: { icon: string; label: string }[] = [];
-  if (property.hasParking)      otherEquip.push({ icon: "🚗", label: "Parking" });
-  if (property.hasSecurity)     otherEquip.push({ icon: "👮", label: "Gardien" });
-  if (property.hasFence)        otherEquip.push({ icon: "🧱", label: "Clôture" });
-  if (property.hasAc)           otherEquip.push({ icon: "❄️", label: "Climatisation" });
-  if (property.kitchenEquipped) otherEquip.push({ icon: "🍳", label: "Cuisine équipée" });
-  if ((property.floorNumber ?? 0) > 0)
-    otherEquip.push({ icon: "🏢", label: `Étage ${property.floorNumber}` });
+  if (property.has_parking)      otherEquip.push({ icon: "🚗", label: "Parking" });
+  if (property.has_security)     otherEquip.push({ icon: "👮", label: "Gardien" });
+  if (property.has_fence)        otherEquip.push({ icon: "🧱", label: "Clôture" });
+  if (property.has_ac)           otherEquip.push({ icon: "❄️", label: "Climatisation" });
+  if (property.kitchen_equipped) otherEquip.push({ icon: "🍳", label: "Cuisine équipée" });
+  if ((property.floor_number ?? 0) > 0)
+    otherEquip.push({ icon: "🏢", label: `Étage ${property.floor_number}` });
   else
     otherEquip.push({ icon: "🏠", label: "RDC" });
 
@@ -245,7 +189,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               muted
               playsInline
               preload="metadata"
-              poster={property.images[0]?.url}
+              poster={property.property_images?.[0]?.url}
               style={{ width: "100%", borderRadius: 12, display: "block" }}
             />
           </div>
@@ -255,7 +199,7 @@ export default async function PropertyDetailPage({ params }: Props) {
       {/* Hero gallery */}
       <div className="relative h-72 md:h-96 overflow-hidden">
         <PhotoGallery
-          images={property.images.map((i) => ({ url: i.url, alt: i.alt }))}
+          images={(property.property_images ?? []).map((i) => ({ url: i.url, alt: property.title }))}
           title={property.title}
         />
       </div>
@@ -265,7 +209,7 @@ export default async function PropertyDetailPage({ params }: Props) {
         <div className="max-w-5xl mx-auto px-4 pt-6">
 
           {/* Déjà loué banner */}
-          {!property.availableNow && (
+          {!property.available_now && (
             <div className="mb-4 rounded-2xl px-4 py-3 flex items-center justify-between gap-3" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
               <div className="flex items-center gap-2">
                 <XCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
@@ -285,7 +229,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* Status + type badges */}
               <div className="flex items-center gap-2 flex-wrap">
-                {property.availableNow ? (
+                {property.available_now ? (
                   <span className="inline-flex items-center gap-1.5 bg-green-500/20 text-green-400 font-bold text-sm px-3 py-1.5 rounded-full">
                     <CheckCircle className="w-4 h-4" /> Disponible
                   </span>
@@ -298,7 +242,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   {TYPE_LABELS[property.type] ?? property.type}
                 </span>
                 <span className="text-xs font-semibold bg-blue-500/20 text-blue-400 px-2.5 py-1.5 rounded-full">
-                  {property.transactionType === "rent" ? "Location" : "Vente"}
+                  {property.transaction_type === "rent" ? "Location" : "Vente"}
                 </span>
               </div>
 
@@ -313,7 +257,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <PropertyShareButton
                       title={property.title}
                       neighborhood={neighborhoodLabel}
-                      price={formatGNF(property.price, property.pricePeriod)}
+                      price={formatGNF(property.price, property.price_period)}
                       rooms={property.rooms}
                       bathrooms={property.bathrooms}
                       surface={property.surface}
@@ -327,7 +271,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <span className="text-white/60">{neighborhoodLabel}, {property.city}</span>
                 </div>
                 <p className="text-2xl md:text-3xl font-black text-white mt-3">
-                  {formatGNF(property.price, property.pricePeriod)}
+                  {formatGNF(property.price, property.price_period)}
                 </p>
               </div>
 
@@ -423,11 +367,11 @@ export default async function PropertyDetailPage({ params }: Props) {
                 <p className="text-white/60 text-sm leading-relaxed whitespace-pre-line">
                   {property.description}
                 </p>
-                {property.features.length > 0 && (
+                {(property.features?.length ?? 0) > 0 && (
                   <div className="mt-4 pt-4 border-t border-white/8">
                     <h3 className="font-semibold text-white text-sm mb-3">Équipements</h3>
                     <div className="flex flex-wrap gap-2">
-                      {property.features.map((f: string) => (
+                      {(property.features ?? []).map((f: string) => (
                         <span key={f} className="text-white/60 text-xs font-medium px-3 py-1.5 rounded-lg" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}>
                           {f}
                         </span>
@@ -441,23 +385,23 @@ export default async function PropertyDetailPage({ params }: Props) {
               {vtRooms.length > 0 && <VirtualTour rooms={vtRooms} />}
 
               {/* Trust badges */}
-              {(property.owner.verified || property.images.length > 0 || property.owner.whatsapp) && (
+              {((profileData as {is_verified?: boolean} | null)?.is_verified || (property.property_images?.length ?? 0) > 0 || property.contact_phone) && (
                 <div className="rounded-2xl p-4 space-y-3" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                  {property.owner.verified && (
+                  {(profileData as {is_verified?: boolean} | null)?.is_verified && (
                     <p className="text-white font-bold text-sm mb-2">Pourquoi faire confiance à cette annonce</p>
                   )}
                   <div className="flex flex-wrap gap-2">
-                    {property.owner.verified && (
+                    {(profileData as {is_verified?: boolean} | null)?.is_verified && (
                       <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(110,201,122,0.15)", color: "#6ec97a", border: "1px solid rgba(110,201,122,0.25)" }}>
                         ✓ Propriétaire vérifié BienLoger
                       </span>
                     )}
-                    {property.images.length > 0 && (
+                    {(property.property_images?.length ?? 0) > 0 && (
                       <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(200,144,30,0.15)", color: "#daa84a", border: "1px solid rgba(200,144,30,0.25)" }}>
                         📷 Photos réelles
                       </span>
                     )}
-                    {property.owner.whatsapp && (
+                    {property.contact_phone && (
                       <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(37,211,102,0.12)", color: "#25D366", border: "1px solid rgba(37,211,102,0.25)" }}>
                         💬 Contact direct WhatsApp
                       </span>
@@ -497,7 +441,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               <div className="sticky top-20 rounded-2xl p-5 space-y-3" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", border: "1px solid rgba(255,255,255,0.10)" }}>
                 <div className="text-center pb-3 border-b border-white/8">
                   <p className="text-3xl font-black text-white">
-                    {formatGNF(property.price, property.pricePeriod)}
+                    {formatGNF(property.price, property.price_period)}
                   </p>
                   <p className="text-white/50 text-sm mt-1">
                     {neighborhoodLabel} · {TYPE_LABELS[property.type] ?? property.type}
@@ -526,7 +470,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   📞 Appeler le propriétaire
                 </a>
 
-                <MessageButton propertyId={property.id} ownerId={property.owner.id} propertyTitle={property.title} />
+                <MessageButton propertyId={property.id} ownerId={property.owner_id} propertyTitle={property.title} />
 
                 <p className="text-white/40 text-[11px] text-center">Mentionnez BienLoger lors de votre contact</p>
 

@@ -13,26 +13,26 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
+const MOCK_OWNERS: User[] = [
+  { id: "user-001", name: "Mamadou Diallo", email: "", phone: "+224620000001", role: "owner", verified: true, badges: [], createdAt: new Date(), trustScore: 85 },
+  { id: "user-002", name: "Fatoumata Bah", email: "", phone: "+224628000002", role: "owner", verified: false, badges: [], createdAt: new Date(), trustScore: 70 },
+  { id: "user-003", name: "Ibrahim Camara", email: "", phone: "+224622000003", role: "owner", verified: false, badges: [], createdAt: new Date(), trustScore: 60 },
+  { id: "user-004", name: "Aissatou Sow", email: "", phone: "+224624000004", role: "agent", verified: true, badges: [], createdAt: new Date(), trustScore: 90 },
+  { id: "user-005", name: "Oumar Barry", email: "", phone: "+224626000005", role: "owner", verified: false, badges: [], createdAt: new Date(), trustScore: 65 },
+];
+
 function getUniqueOwners(): User[] {
-  const seen = new Set<string>();
-  const owners: User[] = [];
-  for (const p of MOCK_PROPERTIES) {
-    if (!seen.has(p.owner.id)) {
-      seen.add(p.owner.id);
-      owners.push(p.owner);
-    }
-  }
-  return owners;
+  const ownerIds = [...new Set(MOCK_PROPERTIES.map((p) => p.owner_id))];
+  return ownerIds.map((id) => MOCK_OWNERS.find((o) => o.id === id)).filter(Boolean) as User[];
 }
 
 export async function generateStaticParams() {
-  const owners = getUniqueOwners();
-  return owners.map((o) => ({ id: o.id }));
+  return getUniqueOwners().map((o) => ({ id: o.id }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const owner = getUniqueOwners().find((o) => o.id === id);
+  const owner = MOCK_OWNERS.find((o) => o.id === id);
   if (!owner) return { title: "Propriétaire introuvable" };
   return {
     title: `${owner.name} — BienLoger`,
@@ -50,12 +50,12 @@ const ROLE_LABELS: Record<string, string> = {
 
 export default async function ProprietaireProfilePage({ params }: Props) {
   const { id } = await params;
-  const owner = getUniqueOwners().find((o) => o.id === id);
+  const owner = MOCK_OWNERS.find((o) => o.id === id);
   if (!owner) notFound();
 
-  const ownerProperties = MOCK_PROPERTIES.filter((p) => p.owner.id === id);
-  const totalViews = ownerProperties.reduce((sum, p) => sum + p.views, 0);
-  const totalWhatsapp = ownerProperties.reduce((sum, p) => sum + p.whatsappClicks, 0);
+  const ownerProperties = MOCK_PROPERTIES.filter((p) => p.owner_id === id);
+  const totalViews = ownerProperties.reduce((sum, p) => sum + (p.views ?? 0), 0);
+  const totalWhatsapp = ownerProperties.reduce((sum, p) => sum + (p.whatsapp_clicks ?? 0), 0);
 
   return (
     <div className="max-w-5xl mx-auto px-4 pb-16 pt-4">

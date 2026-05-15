@@ -101,10 +101,10 @@ export default function ComparerPage() {
                   <div className="bg-white dark:bg-[#1e2430] rounded-2xl overflow-hidden border border-slate-100 dark:border-[#2a3040]">
                     {/* Image */}
                     <div className="relative aspect-[4/3] overflow-hidden">
-                      {p.images[0] ? (
+                      {p.property_images?.[0] ? (
                         <Image
-                          src={p.images[0].url}
-                          alt={p.images[0].alt}
+                          src={p.property_images[0].url}
+                          alt={p.title}
                           fill
                           className="object-cover"
                           sizes="300px"
@@ -116,7 +116,7 @@ export default function ComparerPage() {
                     <div className="p-3">
                       <p className="font-bold text-slate-900 dark:text-white text-sm line-clamp-2 text-left">{p.title}</p>
                       <p className="text-[#F97316] font-black text-lg text-left mt-1">{formatPrice(p.price)}</p>
-                      {p.pricePeriod === "month" && (
+                      {p.price_period === "month" && (
                         <p className="text-slate-400 text-xs text-left">/mois</p>
                       )}
                       <div className="flex gap-1 mt-2">
@@ -145,7 +145,7 @@ export default function ComparerPage() {
               values={properties.map((p) => p ? (
                 <span>
                   {formatPrice(p.price)}
-                  {p.pricePeriod === "month" && <span className="text-xs font-normal text-slate-400">/mois</span>}
+                  {p.price_period === "month" && <span className="text-xs font-normal text-slate-400">/mois</span>}
                 </span>
               ) : null)}
               highlight={minPriceIndex}
@@ -192,7 +192,7 @@ export default function ComparerPage() {
             />
             <CompareRow
               label="Disponible"
-              values={properties.map((p) => p?.availableNow ? (
+              values={properties.map((p) => p?.available_now ? (
                 <span className="text-green-600 dark:text-green-400 text-xs font-semibold">Oui</span>
               ) : (
                 <span className="text-slate-400 text-xs">Non</span>
@@ -202,10 +202,11 @@ export default function ComparerPage() {
               label="Badges"
               values={properties.map((p) => p ? (
                 <div className="flex flex-wrap gap-1 justify-center">
-                  {p.badges.slice(0, 2).map((b) => (
-                    <TrustBadge key={b.id} badge={b} size="sm" />
-                  ))}
-                  {p.badges.length === 0 && <span className="text-slate-300 dark:text-slate-600">—</span>}
+                  {p.is_boosted ? (
+                    <TrustBadge key="boosted" badge={{ id: "boosted", type: "listing_verified", label: "Sponsorisé", color: "gold" }} size="sm" />
+                  ) : (
+                    <span className="text-slate-300 dark:text-slate-600">—</span>
+                  )}
                 </div>
               ) : null)}
             />

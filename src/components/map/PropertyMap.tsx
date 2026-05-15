@@ -58,7 +58,7 @@ function buildMarkers(
       const popup = L.popup({ maxWidth: 240, className: "leaflet-popup-custom" }).setContent(`
         <div style="font-family:system-ui,sans-serif;padding:4px 0;">
           <p style="font-weight:700;font-size:13px;margin:0 0 4px;color:#111;line-height:1.3;">${property.title}</p>
-          <p style="font-size:12px;color:#F97316;font-weight:600;margin:0 0 8px;">${formattedPrice}${property.pricePeriod === "month" ? "/mois" : ""}</p>
+          <p style="font-size:12px;color:#F97316;font-weight:600;margin:0 0 8px;">${formattedPrice}${property.price_period === "month" ? "/mois" : ""}</p>
           <a href="/annonces/${property.id}" style="display:inline-block;background:#F97316;color:#fff;font-size:12px;font-weight:600;padding:5px 12px;border-radius:8px;text-decoration:none;">Voir →</a>
         </div>
       `);

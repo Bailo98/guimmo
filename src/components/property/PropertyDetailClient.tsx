@@ -16,7 +16,7 @@ export function PropertyDetailClient({ property }: Props) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const { toggleFavorite, isFavorite, _hasHydrated } = useAppStore();
   const fav = _hasHydrated && isFavorite(property.id);
-  const images = property.images;
+  const images = property.property_images ?? [];
   const touchStartX = useRef<number | null>(null);
 
   function prev() {
@@ -56,7 +56,7 @@ export function PropertyDetailClient({ property }: Props) {
         >
           <Image
             src={images[activeIndex].url}
-            alt={images[activeIndex].alt}
+            alt={property.title}
             fill
             className="object-cover"
             sizes="(max-width: 1024px) 100vw, 66vw"
@@ -107,7 +107,7 @@ export function PropertyDetailClient({ property }: Props) {
           )}
 
           {/* Boosted badge */}
-          {property.isBoosted && (
+          {property.is_boosted && (
             <div className="absolute top-3 left-3 bg-[#F97316] text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
               ⚡ Annonce boostée
             </div>
@@ -119,14 +119,14 @@ export function PropertyDetailClient({ property }: Props) {
           <div className="flex gap-2 p-2 bg-black/20 overflow-x-auto scrollbar-none">
             {images.map((img, i) => (
               <button
-                key={img.id}
+                key={img.url}
                 onClick={() => setActiveIndex(i)}
                 className={cn(
                   "relative w-16 h-12 flex-shrink-0 rounded-lg overflow-hidden transition-all",
                   i === activeIndex ? "ring-2 ring-[#F97316] opacity-100" : "opacity-60 hover:opacity-80"
                 )}
               >
-                <Image src={img.url} alt={img.alt} fill className="object-cover" sizes="64px" />
+                <Image src={img.url} alt={property.title} fill className="object-cover" sizes="64px" />
               </button>
             ))}
           </div>
@@ -150,7 +150,7 @@ export function PropertyDetailClient({ property }: Props) {
             </>
           )}
           <div className="relative w-full max-w-4xl mx-8 aspect-[16/9]">
-            <Image src={images[activeIndex].url} alt={images[activeIndex].alt} fill className="object-contain" sizes="100vw" />
+            <Image src={images[activeIndex].url} alt={property.title} fill className="object-contain" sizes="100vw" />
           </div>
           <div className="absolute bottom-4 text-white/60 text-sm">{activeIndex + 1} / {images.length}</div>
         </div>

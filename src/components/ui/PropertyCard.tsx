@@ -36,17 +36,15 @@ const WA_ICON_SM = (
 export function PropertyCard({ property, variant = "default", className, index = 0 }: PropertyCardProps) {
   const { toggleFavorite, isFavorite, _hasHydrated } = useAppStore();
   const fav = _hasHydrated && isFavorite(property.id);
-  const primaryImage = property.images.find((i) => i.isPrimary) ?? property.images[0];
+  const primaryImage = property.property_images?.find((i) => i.is_primary) ?? property.property_images?.[0];
   const neighborhoodLabel = NEIGHBORHOOD_LABELS[property.neighborhood] ?? property.neighborhood;
-  const phone = property.owner.whatsapp || property.owner.phone;
-  const sharePrice = property.pricePeriod === "month"
+  const phone = property.contact_phone;
+  const sharePrice = property.price_period === "month"
     ? `${formatPrice(property.price)}/mois`
     : formatPrice(property.price);
   const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://bienloger.gn";
   const shareUrl = `${siteUrl}/annonces/${property.id}`;
-  const createdAt = property.createdAt instanceof Date
-    ? property.createdAt
-    : new Date(property.createdAt as unknown as string);
+  const createdAt = new Date(property.created_at ?? Date.now());
   const isNew = Date.now() - createdAt.getTime() < 7 * 24 * 60 * 60 * 1000;
 
   // ── Horizontal variant ──────────────────────────────────────────
@@ -59,7 +57,7 @@ export function PropertyCard({ property, variant = "default", className, index =
         <Link href={`/annonces/${property.id}`} className="relative w-28 flex-shrink-0">
           <div className="relative w-full h-full min-h-[100px]">
             {primaryImage ? (
-              <Image src={primaryImage.url} alt={primaryImage.alt} fill className="object-cover" sizes="112px" />
+              <Image src={primaryImage.url} alt={property.title} fill className="object-cover" sizes="112px" />
             ) : (
               <div className="w-full h-full bg-white/5" />
             )}
@@ -74,7 +72,7 @@ export function PropertyCard({ property, variant = "default", className, index =
             </div>
             <p className="text-white font-bold text-sm mt-1">
               {formatPrice(property.price)}
-              {property.pricePeriod === "month" && (
+              {property.price_period === "month" && (
                 <span className="text-xs font-normal text-white/40">/mois</span>
               )}
             </p>
@@ -110,7 +108,7 @@ export function PropertyCard({ property, variant = "default", className, index =
         {primaryImage ? (
           <Image
             src={primaryImage.url}
-            alt={primaryImage.alt}
+            alt={property.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -133,12 +131,12 @@ export function PropertyCard({ property, variant = "default", className, index =
           >
             {TYPE_LABELS[property.type] ?? property.type}
           </span>
-          {property.isBoosted && (
+          {property.is_boosted && (
             <span className="text-[11px] font-bold px-2.5 py-1 rounded-full leading-none flex items-center gap-1" style={{ background: "rgba(200,144,30,0.20)", color: "#daa84a", border: "1px solid rgba(200,144,30,0.30)" }}>
               <Star className="w-2.5 h-2.5 fill-current" /> Sponsorisé
             </span>
           )}
-          {isNew && !property.isBoosted && (
+          {isNew && !property.is_boosted && (
             <span className="text-[11px] font-bold px-2.5 py-1 rounded-full leading-none" style={{ background: "rgba(0,0,0,0.45)", color: "#f7f2e6" }}>
               Nouveau
             </span>
@@ -163,14 +161,14 @@ export function PropertyCard({ property, variant = "default", className, index =
           </button>
           <div className="rounded-xl shadow-md px-2.5 py-1.5 text-right" style={{ background: "#c8901e" }}>
             <p className="text-white font-bold text-xs leading-tight">{formatPrice(property.price)}</p>
-            {property.pricePeriod === "month" && (
+            {property.price_period === "month" && (
               <p className="text-white/70 text-[10px] leading-tight">/mois</p>
             )}
           </div>
         </div>
 
         {/* Video badge bottom-left */}
-        {property.videoUrl && (
+        {property.video_url && (
           <div className="absolute bottom-3 left-3">
             <span className="text-white text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "rgba(139,92,246,0.70)", backdropFilter: "blur(6px)" }}>
               🎥 Vidéo
@@ -181,17 +179,6 @@ export function PropertyCard({ property, variant = "default", className, index =
 
       {/* Content */}
       <div className="flex flex-col flex-1 p-3.5 gap-0">
-        {/* Badges row */}
-        {(property.owner.verified || property.isBoosted) && (
-          <div className="flex flex-wrap gap-1.5 mb-2">
-            {property.owner.verified && (
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ color: "#6ec97a", background: "rgba(110,201,122,0.12)", border: "1px solid rgba(110,201,122,0.20)" }}>
-                ✓ Vérifié
-              </span>
-            )}
-          </div>
-        )}
-
         {/* Title */}
         <Link href={`/annonces/${property.id}`}>
           <h3
@@ -241,13 +228,13 @@ export function PropertyCard({ property, variant = "default", className, index =
         )}
 
         {/* Micro-badges eau / électricité */}
-        {((property.waterSource && property.waterSource !== "none") ||
+        {((property.water_source && property.water_source !== "none") ||
           (property.electricity && property.electricity !== "none") ||
           property.internet === "wifi") && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 10 }}>
-            {property.waterSource && property.waterSource !== "none" && (
+            {property.water_source && property.water_source !== "none" && (
               <span style={{ fontSize: 10, fontWeight: 600, color: "rgba(240,230,204,0.60)", background: "rgba(240,230,204,0.07)", border: "1px solid rgba(240,230,204,0.12)", borderRadius: 999, padding: "3px 8px" }}>
-                💧 {property.waterSource === "robinet" ? "Robinet" : property.waterSource === "forage" ? "Forage" : "Citerne"}
+                💧 {property.water_source === "robinet" ? "Robinet" : property.water_source === "forage" ? "Forage" : "Citerne"}
               </span>
             )}
             {property.electricity && property.electricity !== "none" && (
@@ -271,7 +258,7 @@ export function PropertyCard({ property, variant = "default", className, index =
               onClick={(e) => {
                 e.stopPropagation();
                 const cleaned = phone.replace(/\D/g, "");
-                const ref = property.shortRef ? ` (${property.shortRef})` : "";
+                const ref = property.short_ref ? ` (${property.short_ref})` : "";
                 const msg = `Bonjour, je suis intéressé par votre annonce : ${property.title}${ref}`;
                 window.open(`https://wa.me/${cleaned}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
               }}

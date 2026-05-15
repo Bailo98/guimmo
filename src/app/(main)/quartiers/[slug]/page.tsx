@@ -36,13 +36,13 @@ export default async function QuartierPage({ params }: PageProps) {
     (p) => p.neighborhood === slug && p.status === "active"
   );
 
-  const availableNow = properties.filter((p) => p.availableNow).length;
+  const availableNow = properties.filter((p) => p.available_now).length;
   const avgPrice =
     properties.length
       ? Math.round(properties.reduce((s, p) => s + p.price, 0) / properties.length)
       : 0;
-  const rentCount = properties.filter((p) => p.transactionType === "rent").length;
-  const saleCount = properties.filter((p) => p.transactionType === "sale").length;
+  const rentCount = properties.filter((p) => p.transaction_type === "rent").length;
+  const saleCount = properties.filter((p) => p.transaction_type === "sale").length;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0f1117]">

@@ -141,7 +141,7 @@ export default function HistoriquePage() {
           {/* Timeline list */}
           <div className="bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] overflow-hidden mb-8">
             {recentProperties.map((property, index) => {
-              const primaryImage = property.images.find((i) => i.isPrimary) ?? property.images[0];
+              const primaryImage = property.property_images?.find((i) => i.is_primary) ?? property.property_images?.[0];
               const neighborhoodLabel = NEIGHBORHOOD_LABELS[property.neighborhood] ?? property.neighborhood;
               const timeLabel = MOCK_TIME_LABELS[index] ?? "Récemment";
 
@@ -172,7 +172,7 @@ export default function HistoriquePage() {
                     {primaryImage ? (
                       <Image
                         src={primaryImage.url}
-                        alt={primaryImage.alt}
+                        alt={property.title}
                         fill
                         className="object-cover"
                         sizes="64px"
@@ -195,7 +195,7 @@ export default function HistoriquePage() {
                     </div>
                     <p className="text-[#F97316] font-bold text-sm mt-1">
                       {formatPrice(property.price)}
-                      {property.pricePeriod === "month" && (
+                      {property.price_period === "month" && (
                         <span className="text-xs font-normal text-slate-400">/mois</span>
                       )}
                     </p>

@@ -11,16 +11,16 @@ const DAYS_THRESHOLD = 90;
 function getRecentProperties() {
   const cutoff = Date.now() - DAYS_THRESHOLD * 24 * 60 * 60 * 1000;
   return MOCK_PROPERTIES.filter(
-    (p) => p.status === "active" && new Date(p.createdAt).getTime() >= cutoff
+    (p) => p.status === "active" && new Date(p.created_at ?? 0).getTime() >= cutoff
   ).sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    (a, b) => new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime()
   );
 }
 
 function getThisWeekCount(properties: typeof MOCK_PROPERTIES) {
   const weekCutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
   return properties.filter(
-    (p) => new Date(p.createdAt).getTime() >= weekCutoff
+    (p) => new Date(p.created_at ?? 0).getTime() >= weekCutoff
   ).length;
 }
 

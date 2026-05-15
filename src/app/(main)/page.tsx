@@ -78,55 +78,6 @@ const WHY_BienLoger = [
 
 // ─── server data fetching ──────────────────────────────────────────────────────
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mapRow(row: any): Property {
-  return {
-    id: row.id,
-    title: row.title,
-    description: row.description ?? "",
-    type: row.type,
-    transactionType: row.transaction_type,
-    status: row.status ?? "active",
-    price: row.price,
-    pricePeriod: row.price_period ?? "month",
-    surface: row.surface,
-    rooms: row.rooms,
-    bathrooms: row.bathrooms,
-    furnished: row.furnished ?? false,
-    availableNow: row.available_now ?? true,
-    neighborhood: row.neighborhood,
-    city: row.city ?? "Conakry",
-    features: row.features ?? [],
-    images: (row.property_images ?? []).map((img: { id: string; url: string; alt: string; is_primary: boolean }) => ({
-      id: img.id, url: img.url, alt: img.alt ?? "", isPrimary: img.is_primary ?? false,
-    })),
-    owner: {
-      id: row.owner_id ?? "unknown",
-      name: "Propriétaire",
-      email: "",
-      phone: row.contact_phone ?? "",
-      whatsapp: row.contact_phone ?? "",
-      role: "owner",
-      verified: false,
-      badges: [],
-      trustScore: 50,
-      totalListings: 1,
-      avgRating: 4.5,
-      reviewCount: 0,
-      createdAt: new Date(Date.now()),
-    },
-    badges: [],
-    views: row.views ?? 0,
-    whatsappClicks: row.whatsapp_clicks ?? 0,
-    isBoosted: row.is_boosted ?? false,
-    boostExpiresAt: row.boost_expires_at ? new Date(row.boost_expires_at) : undefined,
-    createdAt: new Date(row.created_at ?? Date.now()),
-    updatedAt: new Date(row.updated_at ?? Date.now()),
-    shortRef: row.short_ref ?? undefined,
-    latitude: row.latitude ?? undefined,
-    longitude: row.longitude ?? undefined,
-  };
-}
 
 async function fetchHomeProperties(): Promise<Property[]> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -142,7 +93,7 @@ async function fetchHomeProperties(): Promise<Property[]> {
       .order("created_at", { ascending: false })
       .limit(12);
     if (error || !data) return [];
-    return data.map(mapRow);
+    return data as Property[];
   } catch {
     return [];
   }
@@ -169,13 +120,13 @@ const CARD_POSITIONS = [
 
 function PreviewCard({ property, index }: PreviewCardProps) {
   const pos = CARD_POSITIONS[index];
-  const primaryImg = property.images.find((i) => i.isPrimary) ?? property.images[0];
+  const primaryImg = property.property_images?.find((i) => i.is_primary) ?? property.property_images?.[0];
   const [gradFrom, gradTo] = TYPE_GRADIENTS[property.type] ?? HERO_GRADIENTS[index % 3];
   const neighborhoodLabel = NEIGHBORHOOD_LABELS_HERO[property.neighborhood] ?? property.neighborhood;
-  const priceStr = property.pricePeriod === "month"
+  const priceStr = property.price_period === "month"
     ? `${formatPrice(property.price)}/mois`
     : formatPrice(property.price);
-  const badge = property.transactionType === "rent" ? "Location" : "Vente";
+  const badge = property.transaction_type === "rent" ? "Location" : "Vente";
 
   return (
     <div
@@ -191,7 +142,7 @@ function PreviewCard({ property, index }: PreviewCardProps) {
       {/* Image */}
       <div className="relative h-36">
         {primaryImg ? (
-          <Image src={primaryImg.url} alt={primaryImg.alt || property.title} fill className="object-cover" sizes="260px" />
+          <Image src={primaryImg.url} alt={property.title} fill className="object-cover" sizes="260px" />
         ) : (
           <div className="w-full h-full" style={{ background: `linear-gradient(135deg, ${gradFrom}, ${gradTo})` }} />
         )}
@@ -230,11 +181,11 @@ function PreviewCard({ property, index }: PreviewCardProps) {
 export default async function HomePage() {
   const [properties, stats] = await Promise.all([fetchHomeProperties(), fetchStats()]);
   const heroPreview = properties.slice(0, 3);
-  const featured = properties.filter((p) => p.isBoosted).slice(0, 6).length > 0
-    ? properties.filter((p) => p.isBoosted).slice(0, 6)
+  const featured = properties.filter((p) => p.is_boosted).slice(0, 6).length > 0
+    ? properties.filter((p) => p.is_boosted).slice(0, 6)
     : properties.slice(0, 6);
-  const recent = properties.filter((p) => !p.isBoosted).slice(0, 6).length >= 3
-    ? properties.filter((p) => !p.isBoosted).slice(0, 6)
+  const recent = properties.filter((p) => !p.is_boosted).slice(0, 6).length >= 3
+    ? properties.filter((p) => !p.is_boosted).slice(0, 6)
     : properties.slice(0, 6);
 
   return (
