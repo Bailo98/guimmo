@@ -253,8 +253,13 @@ export default function PublierPage() {
   }
 
   async function testInsert() {
-    if (!user || !supabase) return;
-    console.log("=== TEST INSERT MINIMAL ===");
+    if (!supabase) return;
+    const { data: { user: u }, error: authErr } = await supabase.auth.getUser();
+    if (authErr || !u) {
+      setError(`TEST: non connecté — ${authErr?.message ?? "user null"}`);
+      return;
+    }
+    console.log("=== TEST INSERT MINIMAL ===", "uid:", u.id);
     const { data, error: e } = await supabase
       .from("properties")
       .insert({
@@ -265,7 +270,7 @@ export default function PublierPage() {
         neighborhood: "kipe",
         city: "Conakry",
         status: "active",
-        owner_id: user.id,
+        owner_id: u.id,
       })
       .select("id")
       .single();
@@ -274,20 +279,65 @@ export default function PublierPage() {
       setError(`TEST INSERT ÉCHOUÉ: ${e.message} | code=${e.code} | ${e.details ?? ""} | ${e.hint ?? ""}`);
     } else {
       console.log("TEST INSERT OK — id:", data?.id);
-      // Clean up test row
       await supabase.from("properties").delete().eq("id", data!.id);
+      setError(null);
+      toast("TEST INSERT OK ✓", "success");
+    }
+  }
+
+  async function testInsertSansPhotos() {
+    if (!supabase) return;
+    const { data: { user: u }, error: authErr } = await supabase.auth.getUser();
+    if (authErr || !u) {
+      setError(`TEST SANS PHOTOS: non connecté — ${authErr?.message ?? "user null"}`);
+      return;
+    }
+    const priceNum = parseInt(form.price.replace(/\D/g, ""), 10) || 1000000;
+    const testPayload = {
+      owner_id:         u.id,
+      title:            generateTitle(form.type || "apartment", form.rooms, form.neighborhood || "kipe"),
+      transaction_type: form.txType || "rent",
+      type:             form.type || "apartment",
+      price:            priceNum,
+      neighborhood:     form.neighborhood || "kipe",
+      status:           "active",
+      available_now:    true,
+      city:             "Conakry",
+    };
+    console.log("=== TEST SANS PHOTOS ===", testPayload);
+    const { data, error: e } = await supabase
+      .from("properties")
+      .insert(testPayload)
+      .select("id")
+      .single();
+    if (e) {
+      console.error("TEST SANS PHOTOS ÉCHOUÉ:", e);
+      setError(`TEST SANS PHOTOS ÉCHOUÉ: ${e.message} | code=${e.code} | ${e.details ?? ""} | ${e.hint ?? ""}`);
+    } else {
+      console.log("TEST SANS PHOTOS OK — id:", data?.id);
+      await supabase.from("properties").delete().eq("id", data!.id);
+      setError(null);
+      toast("TEST SANS PHOTOS OK ✓ — le problème vient du storage", "success");
     }
   }
 
   async function handleSubmit() {
-    if (!user) {
-      toast("Vous devez être connecté pour publier", "error");
-      return;
-    }
     if (!supabase) {
       toast("Service non disponible, réessayez plus tard", "error");
       return;
     }
+
+    // Re-fetch user fresh from Supabase (context cache may be stale on mobile)
+    const { data: { user: freshUser }, error: authError } = await supabase.auth.getUser();
+    if (authError || !freshUser) {
+      console.error("AUTH ERROR:", authError);
+      setError("Vous devez être connecté pour publier");
+      router.push("/connexion?redirect=/publier");
+      return;
+    }
+    console.log("USER ID:", freshUser.id);
+    console.log("USER EMAIL:", freshUser.email);
+
     if (form.photos.length === 0) {
       toast("Veuillez ajouter au moins une photo", "error");
       return;
@@ -302,7 +352,7 @@ export default function PublierPage() {
 
     // Validate required fields before hitting the DB
     const requiredFields: Record<string, unknown> = {
-      owner_id: user?.id,
+      owner_id: freshUser.id,
       title: generateTitle(form.type, form.rooms, form.neighborhood),
       type: form.type,
       transaction_type: form.txType,
@@ -326,31 +376,36 @@ export default function PublierPage() {
       for (let i = 0; i < form.photos.length; i++) {
         const file = form.photos[i];
         const ext  = file.name.split(".").pop() ?? "jpg";
-        const path = `${user.id}/${Date.now()}-${i}.${ext}`;
+        const path = `${freshUser.id}/${Date.now()}-${i}.${ext}`;
+        console.log(`[upload photo ${i}] bucket=property-images path=${path} size=${file.size} type=${file.type}`);
         const { error: upErr } = await supabase.storage
           .from("property-images")
           .upload(path, file, { upsert: false, contentType: file.type });
         if (upErr) {
-          console.error("[upload photo] error:", JSON.stringify(upErr, null, 2));
-          toast(`Erreur upload photo : ${upErr.message ?? "réessayez"}`, "error");
-          setSubmitting(false);
-          return;
+          console.error(`[upload photo ${i}] ERREUR:`, upErr.message, upErr);
+          setError(`Upload photo ${i + 1} échoué: ${upErr.message}`);
+          // Non-blocking: continue trying remaining photos
+          continue;
         }
         const { data: { publicUrl } } = supabase.storage.from("property-images").getPublicUrl(path);
+        console.log(`[upload photo ${i}] OK → ${publicUrl}`);
         uploadedUrls.push(publicUrl);
       }
       if (uploadedUrls.length === 0) {
-        toast("Aucune photo uploadée — réessayez.", "error");
+        const msg = "Aucune photo uploadée — vérifiez le bucket 'property-images' et ses policies.";
+        setError(msg);
+        toast(msg, "error");
         setSubmitting(false);
         return;
       }
+      setError(null);
 
       // 1b. Upload video if present (non-blocking — failure skips video)
       let videoUrl: string | null = null;
       if (videoFile) {
         setVideoUploading(true);
         const ext  = videoFile.name.split(".").pop() ?? "mp4";
-        const path = `videos/${user.id}/${Date.now()}.${ext}`;
+        const path = `videos/${freshUser.id}/${Date.now()}.${ext}`;
         const { error: vErr } = await supabase.storage
           .from("listings")
           .upload(path, videoFile, { upsert: false, contentType: videoFile.type });
@@ -367,8 +422,7 @@ export default function PublierPage() {
       // 2. Insert into properties
       const title    = generateTitle(form.type, form.rooms, form.neighborhood);
       console.log("=== DEBUT PUBLICATION ===");
-      console.log("User:", user?.id);
-      console.log("Session:", (await supabase.auth.getSession()).data.session?.access_token ? "OK" : "MISSING");
+      console.log("User:", freshUser.id, freshUser.email);
 
       const payload = {
         title,
@@ -388,7 +442,7 @@ export default function PublierPage() {
         contact_phone:       form.phone,
         contact_preference:  form.contactMethod,
         video_url:           videoUrl,
-        owner_id:            user.id,
+        owner_id:            freshUser.id,
         features:            [],
         is_boosted:          false,
         views:               0,
@@ -406,6 +460,7 @@ export default function PublierPage() {
         floor_number:        form.floorNumber,
       };
 
+      console.log("owner_id dans payload:", payload.owner_id, typeof payload.owner_id);
       console.log("Payload complet:", JSON.stringify(payload, null, 2));
 
       const { data: property, error: insertErr } = await supabase
@@ -1266,15 +1321,25 @@ export default function PublierPage() {
             </div>
           )}
 
-          {/* Test insert button (debug) */}
-          <button
-            type="button"
-            onClick={testInsert}
-            className="w-full text-xs py-2 rounded-xl font-mono transition-colors"
-            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.08)" }}
-          >
-            [DEV] Test INSERT minimal
-          </button>
+          {/* Test insert buttons (debug) */}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={testInsert}
+              className="flex-1 text-xs py-2 rounded-xl font-mono transition-colors"
+              style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              [DEV] Test INSERT
+            </button>
+            <button
+              type="button"
+              onClick={testInsertSansPhotos}
+              className="flex-1 text-xs py-2 rounded-xl font-mono transition-colors"
+              style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.08)" }}
+            >
+              [DEV] Test sans photos
+            </button>
+          </div>
 
           {/* Publish button */}
           <button
