@@ -97,6 +97,7 @@ export default function PublierPage() {
   const [videoFile, setVideoFile]         = useState<File | null>(null);
   const [videoPreview, setVideoPreview]   = useState<string | null>(null);
   const [videoUploading, setVideoUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const tourInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
@@ -251,6 +252,33 @@ export default function PublierPage() {
     });
   }
 
+  async function testInsert() {
+    if (!user || !supabase) return;
+    console.log("=== TEST INSERT MINIMAL ===");
+    const { data, error: e } = await supabase
+      .from("properties")
+      .insert({
+        title: "TEST",
+        type: "apartment",
+        transaction_type: "rent",
+        price: 1,
+        neighborhood: "kipe",
+        city: "Conakry",
+        status: "active",
+        owner_id: user.id,
+      })
+      .select("id")
+      .single();
+    if (e) {
+      console.error("TEST INSERT ÉCHOUÉ:", { code: e.code, message: e.message, details: e.details, hint: e.hint });
+      setError(`TEST INSERT ÉCHOUÉ: ${e.message} | code=${e.code} | ${e.details ?? ""} | ${e.hint ?? ""}`);
+    } else {
+      console.log("TEST INSERT OK — id:", data?.id);
+      // Clean up test row
+      await supabase.from("properties").delete().eq("id", data!.id);
+    }
+  }
+
   async function handleSubmit() {
     if (!user) {
       toast("Vous devez être connecté pour publier", "error");
@@ -268,6 +296,26 @@ export default function PublierPage() {
     if (!priceNum || isNaN(priceNum) || priceNum <= 0) {
       toast("Veuillez saisir un prix valide", "error");
       return;
+    }
+
+    setError(null);
+
+    // Validate required fields before hitting the DB
+    const requiredFields: Record<string, unknown> = {
+      owner_id: user?.id,
+      title: generateTitle(form.type, form.rooms, form.neighborhood),
+      type: form.type,
+      transaction_type: form.txType,
+      price: priceNum,
+      neighborhood: form.neighborhood,
+    };
+    for (const [key, value] of Object.entries(requiredFields)) {
+      if (!value && value !== 0) {
+        const msg = `Champ obligatoire manquant: ${key}`;
+        setError(msg);
+        toast(msg, "error");
+        return;
+      }
     }
 
     setSubmitting(true);
@@ -320,6 +368,10 @@ export default function PublierPage() {
       const title    = generateTitle(form.type, form.rooms, form.neighborhood);
       const shortRef = "GUI-" + Math.random().toString(36).substring(2, 6).toUpperCase();
 
+      console.log("=== DEBUT PUBLICATION ===");
+      console.log("User:", user?.id);
+      console.log("Session:", (await supabase.auth.getSession()).data.session?.access_token ? "OK" : "MISSING");
+
       const payload = {
         title,
         description:         form.locationDetail || "",
@@ -357,6 +409,8 @@ export default function PublierPage() {
         floor_number:        form.floorNumber,
       };
 
+      console.log("Payload complet:", JSON.stringify(payload, null, 2));
+
       const { data: property, error: insertErr } = await supabase
         .from("properties")
         .insert(payload)
@@ -364,10 +418,15 @@ export default function PublierPage() {
         .single();
 
       if (insertErr || !property) {
-        console.error("ERREUR SUPABASE INSERT:", JSON.stringify(insertErr, null, 2));
+        console.error("ERREUR SUPABASE INSERT");
+        console.error("CODE:", insertErr?.code);
+        console.error("MESSAGE:", insertErr?.message);
+        console.error("DETAILS:", insertErr?.details);
+        console.error("HINT:", insertErr?.hint);
         console.error("PAYLOAD ENVOYÉ:", JSON.stringify(payload, null, 2));
-        const detail = insertErr?.message ?? insertErr?.details ?? "réessayez";
-        toast(`Erreur lors de la publication : ${detail}`, "error");
+        const fullMsg = `${insertErr?.message ?? "Erreur inconnue"} | code=${insertErr?.code ?? "?"} | ${insertErr?.details ?? ""} | ${insertErr?.hint ?? ""}`.replace(/\s*\|\s*$/, "");
+        setError(fullMsg);
+        toast(`Erreur publication : ${insertErr?.message ?? "réessayez"}`, "error");
         setSubmitting(false);
         return;
       }
@@ -1201,6 +1260,24 @@ export default function PublierPage() {
               ))}
             </div>
           </div>
+
+          {/* Error display */}
+          {error && (
+            <div className="rounded-xl p-4 text-sm font-mono break-all" style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", color: "#fca5a5" }}>
+              <p className="font-bold mb-1 text-red-400">Erreur Supabase :</p>
+              {error}
+            </div>
+          )}
+
+          {/* Test insert button (debug) */}
+          <button
+            type="button"
+            onClick={testInsert}
+            className="w-full text-xs py-2 rounded-xl font-mono transition-colors"
+            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.08)" }}
+          >
+            [DEV] Test INSERT minimal
+          </button>
 
           {/* Publish button */}
           <button
