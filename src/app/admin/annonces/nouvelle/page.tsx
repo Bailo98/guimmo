@@ -72,7 +72,6 @@ export default function AdminNouvelleAnnoncePage() {
     contact_preference: "both",
     features: [] as string[],
     video_url: "",
-    short_ref: "",
     latitude: "",
     longitude: "",
   });
@@ -122,7 +121,6 @@ export default function AdminNouvelleAnnoncePage() {
       contact_phone:      form.contact_phone.trim() || null,
       contact_preference: form.contact_preference,
       video_url:          form.video_url.trim() || null,
-      short_ref:          form.short_ref.trim() || null,
       latitude:           form.latitude ? Number(form.latitude) : null,
       longitude:          form.longitude ? Number(form.longitude) : null,
     };
@@ -141,7 +139,7 @@ export default function AdminNouvelleAnnoncePage() {
     title: "", description: "", type: "apartment", transaction_type: "rent",
     price: "", price_period: "month", surface: "", rooms: "1", bathrooms: "0",
     furnished: false, available_now: true, neighborhood: "", contact_phone: "",
-    contact_preference: "both", features: [], video_url: "", short_ref: "",
+    contact_preference: "both", features: [], video_url: "",
     latitude: "", longitude: "",
   };
 
@@ -357,20 +355,12 @@ export default function AdminNouvelleAnnoncePage() {
           </Field>
 
           {/* Video + Short ref */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <Field label="URL vidéo">
-              <input aria-label="URL de la vidéo" type="url" value={form.video_url}
-                onChange={(e) => set("video_url", e.target.value)}
-                placeholder="https://…"
-                style={INPUT_STYLE} onFocus={focusInput} onBlur={blurInput} />
-            </Field>
-            <Field label="Référence courte">
-              <input aria-label="Référence courte" value={form.short_ref}
-                onChange={(e) => set("short_ref", e.target.value)}
-                placeholder="BL-XXXX"
-                style={INPUT_STYLE} onFocus={focusInput} onBlur={blurInput} />
-            </Field>
-          </div>
+          <Field label="URL vidéo">
+            <input aria-label="URL de la vidéo" type="url" value={form.video_url}
+              onChange={(e) => set("video_url", e.target.value)}
+              placeholder="https://…"
+              style={INPUT_STYLE} onFocus={focusInput} onBlur={blurInput} />
+          </Field>
 
           {/* GPS */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>

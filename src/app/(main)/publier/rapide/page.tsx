@@ -77,7 +77,6 @@ export default function PublierRapidePage() {
       const nbName   = NEIGHBORHOODS.find((n) => n.id === form.neighborhood)?.name ?? form.neighborhood;
       const propType = form.type || "house";
       const title    = `${TYPE_OPTIONS.find((t) => t.id === propType)?.label ?? "Bien"} à ${nbName}`;
-      const shortRef = "GUI-" + Math.random().toString(36).substring(2, 6).toUpperCase();
 
       // ── 1. Get or create user ──────────────────────────────────────
       let userId: string;
@@ -137,7 +136,6 @@ export default function PublierRapidePage() {
           status:            "active",
           contact_phone:     form.phone,
           contact_preference: "both",
-          short_ref:         shortRef,
           features:          [],
           is_boosted:        false,
           views:             0,

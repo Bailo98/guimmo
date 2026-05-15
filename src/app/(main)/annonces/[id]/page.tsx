@@ -89,7 +89,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
   const property = row as Property;
   const videoUrl = property.video_url ?? null;
-  const shortRef = property.short_ref ?? null;
+  const shortRef = property.ref ?? null;
 
   void db.from("properties").update({ views: (row.views ?? 0) + 1 }).eq("id", id).then(() => {});
 

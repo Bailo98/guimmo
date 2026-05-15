@@ -85,7 +85,7 @@ export interface Property {
   kitchen_equipped?: boolean;
   video_url?: string;
   has_virtual_tour?: boolean;
-  short_ref?: string;
+  ref?: string;
   created_at?: string;
   updated_at?: string;
   property_images?: {

@@ -258,7 +258,7 @@ export function PropertyCard({ property, variant = "default", className, index =
               onClick={(e) => {
                 e.stopPropagation();
                 const cleaned = phone.replace(/\D/g, "");
-                const ref = property.short_ref ? ` (${property.short_ref})` : "";
+                const ref = property.ref ? ` (${property.ref})` : "";
                 const msg = `Bonjour, je suis intéressé par votre annonce : ${property.title}${ref}`;
                 window.open(`https://wa.me/${cleaned}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
               }}

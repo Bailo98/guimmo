@@ -16,7 +16,7 @@ export async function GET(
     const { data } = await db
       .from("properties")
       .select("id")
-      .eq("short_ref", ref.toUpperCase())
+      .eq("ref", ref.toUpperCase())
       .eq("status", "active")
       .single();
 

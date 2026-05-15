@@ -366,8 +366,6 @@ export default function PublierPage() {
 
       // 2. Insert into properties
       const title    = generateTitle(form.type, form.rooms, form.neighborhood);
-      const shortRef = "GUI-" + Math.random().toString(36).substring(2, 6).toUpperCase();
-
       console.log("=== DEBUT PUBLICATION ===");
       console.log("User:", user?.id);
       console.log("Session:", (await supabase.auth.getSession()).data.session?.access_token ? "OK" : "MISSING");
@@ -389,7 +387,6 @@ export default function PublierPage() {
         status:              "active",
         contact_phone:       form.phone,
         contact_preference:  form.contactMethod,
-        short_ref:           shortRef,
         video_url:           videoUrl,
         owner_id:            user.id,
         features:            [],
