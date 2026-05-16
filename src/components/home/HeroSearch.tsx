@@ -32,9 +32,11 @@ const SELECT_BASE: React.CSSProperties = {
   border: "1px solid rgba(247,242,230,0.18)",
   color: "rgba(247,242,230,0.55)",
   borderRadius: "12px",
-  padding: "10px 14px",
+  padding: "0 14px",
   fontSize: "16px",
   width: "100%",
+  height: "48px",
+  minHeight: "48px",
   outline: "none",
   appearance: "none",
   WebkitAppearance: "none",
@@ -47,14 +49,11 @@ export function HeroSearch() {
   const router = useRouter();
 
   function handleVoiceResult(text: string) {
-    // Map spoken neighborhood names to IDs
     const lower = text.toLowerCase();
     const match = QUARTIERS.find((q) => lower.includes(q.name.toLowerCase()));
     if (match) { setNeighborhood(match.id); return; }
-    // Map spoken type names
     const typeMatch = TYPES.find((t) => lower.includes(t.name.toLowerCase()));
     if (typeMatch) { setType(typeMatch.id); return; }
-    // Navigate directly with raw query
     router.push(`/annonces?q=${encodeURIComponent(text)}`);
   }
 
@@ -67,14 +66,14 @@ export function HeroSearch() {
 
   return (
     <div
-      className="rounded-2xl p-4"
+      className="rounded-2xl p-3 sm:p-4 w-full"
       style={{
         background: "rgba(10,18,12,0.55)",
         border: "1px solid rgba(247,242,230,0.12)",
         maxWidth: "480px",
       }}
     >
-      {/* Tabs */}
+      {/* Tabs — pleine largeur, 50/50 */}
       <div
         className="flex gap-1 mb-4 p-1 rounded-[10px]"
         style={{ background: "rgba(247,242,230,0.08)" }}
@@ -83,19 +82,20 @@ export function HeroSearch() {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className="flex-1 py-2 text-sm font-semibold rounded-lg transition-all"
-            style={
-              tab === t
+            className="flex-1 text-sm font-semibold rounded-lg transition-all"
+            style={{
+              minHeight: "44px",
+              ...(tab === t
                 ? { background: "#f7f2e6", color: "#111a14" }
-                : { color: "rgba(247,242,230,0.55)" }
-            }
+                : { color: "rgba(247,242,230,0.55)" }),
+            }}
           >
             {t === "rent" ? "🔑 Location" : "💰 Achat"}
           </button>
         ))}
       </div>
 
-      {/* Selects */}
+      {/* Selects — empilés mobile, côte à côte sm+ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
         <div>
           <label
@@ -153,7 +153,7 @@ export function HeroSearch() {
         </div>
       </div>
 
-      {/* Search + mic row */}
+      {/* Bouton Rechercher + micro — flex row pleine largeur */}
       <div className="flex gap-2">
         <button
           onClick={handleSearch}

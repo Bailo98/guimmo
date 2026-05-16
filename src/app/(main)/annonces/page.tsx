@@ -53,12 +53,15 @@ function TypeChip({ active, onClick, children }: {
     <button
       onClick={onClick}
       className={cn(
-        "flex-none px-4 py-2 rounded-full text-sm font-semibold transition-all whitespace-nowrap",
+        "flex-none px-4 rounded-full text-sm font-semibold transition-all whitespace-nowrap inline-flex items-center",
         active ? "text-white" : "text-white/50 hover:text-white"
       )}
-      style={active
-        ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
-        : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}
+      style={{
+        minHeight: "48px",
+        ...(active
+          ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
+          : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }),
+      }}
     >
       {children}
     </button>
@@ -72,12 +75,15 @@ function SmallChip({ active, onClick, children }: {
     <button
       onClick={onClick}
       className={cn(
-        "flex-none px-3 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap",
+        "flex-none px-3 rounded-full text-xs font-semibold transition-all whitespace-nowrap inline-flex items-center",
         active ? "text-white" : "text-white/50 hover:text-white"
       )}
-      style={active
-        ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
-        : { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+      style={{
+        minHeight: "48px",
+        ...(active
+          ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
+          : { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }),
+      }}
     >
       {children}
     </button>
@@ -218,7 +224,10 @@ function AnnoncesContent() {
       <div className="sticky top-16 z-30 -mx-0 px-4 pt-4 pb-3 space-y-3" style={{ background: "rgba(15,15,15,0.97)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
         {/* Search pill + filter button */}
         <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-center gap-3 rounded-full px-4 py-2.5" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}>
+          <div
+            className="flex-1 flex items-center gap-3 rounded-full px-4"
+            style={{ minHeight: 48, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}
+          >
             <Search className="w-4 h-4 text-white/40 flex-shrink-0" />
             <span className="flex-1 text-sm text-white/40">Rechercher un bien…</span>
             <VoiceSearchButton
@@ -232,7 +241,7 @@ function AnnoncesContent() {
             disabled={gpsLoading}
             title="Près de moi"
             className={cn(
-              "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all",
+              "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all",
               nearbyCoords ? "text-[#6ec97a]" : "text-white/50 hover:text-white"
             )}
             style={nearbyCoords
@@ -246,22 +255,25 @@ function AnnoncesContent() {
           <button
             onClick={() => setFiltersOpen(!filtersOpen)}
             className={cn(
-              "flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold transition-all",
+              "flex items-center gap-1.5 rounded-full px-4 text-sm font-semibold transition-all flex-shrink-0",
               filtersOpen || activeFilterCount > 0
                 ? "text-white"
                 : "text-white/50 hover:text-white"
             )}
-            style={filtersOpen || activeFilterCount > 0
-              ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
-              : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}
+            style={{
+              minHeight: 48,
+              ...(filtersOpen || activeFilterCount > 0
+                ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
+                : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }),
+            }}
           >
             <SlidersHorizontal className="w-4 h-4" />
-            {activeFilterCount > 0 ? `Filtres (${activeFilterCount})` : "Filtres"}
+            <span className="ml-1.5">{activeFilterCount > 0 ? `Filtres (${activeFilterCount})` : "Filtres"}</span>
           </button>
           {hasFilters && (
             <button
               onClick={clearFilters}
-              className="w-9 h-9 rounded-full flex items-center justify-center text-red-400 hover:bg-red-500/10 transition-colors"
+              className="w-12 h-12 rounded-full flex items-center justify-center text-red-400 hover:bg-red-500/10 transition-colors flex-shrink-0"
               style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}
             >
               <X className="w-4 h-4" />
@@ -270,7 +282,7 @@ function AnnoncesContent() {
         </div>
 
         {/* Type chips — always visible */}
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
           {TYPE_CHIPS.map((c) => (
             <TypeChip key={c.id} active={type === c.id} onClick={() => setParam("type", c.id)}>
               {c.label}
@@ -283,7 +295,7 @@ function AnnoncesContent() {
           <div className="space-y-2 pt-1 border-t border-white/8">
             <div>
               <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Quartier</p>
-              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
                 {QUARTIER_CHIPS.map((c) => (
                   <SmallChip key={c.id} active={neighborhood === c.id} onClick={() => setParam("neighborhood", c.id)}>
                     {c.label}
@@ -293,7 +305,7 @@ function AnnoncesContent() {
             </div>
             <div>
               <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Budget</p>
-              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
                 {BUDGET_CHIPS.map((c) => (
                   <SmallChip key={c.id} active={budget === c.id} onClick={() => setParam("budget", c.id)}>
                     {c.label}
