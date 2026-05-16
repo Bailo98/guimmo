@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useRef, useCallback, useEffect } from "react";
+import { X } from "lucide-react";
 
 export interface VTRoom {
   id: string;
@@ -15,33 +15,120 @@ interface Props {
 }
 
 export function VirtualTour({ rooms }: Props) {
-  const [open,       setOpen]       = useState(false);
-  const [current,   setCurrent]    = useState(0);
-  const [imgLoaded, setImgLoaded]  = useState(false);
+  const [open,     setOpen]     = useState(false);
+  const [current,  setCurrent]  = useState(0);
+  const [imgLoaded,setImgLoaded]= useState(false);
+  const [slideDir, setSlideDir] = useState<"left" | "right" | null>(null);
+  const [scale,    setScale]    = useState(1);
+  const [pinching, setPinching] = useState(false);
 
-  const touchStartX = useRef(0);
+  const pinchStartDist  = useRef<number | null>(null);
+  const pinchStartScale = useRef(1);
+  const touchStartX     = useRef(0);
+  const touchStartY     = useRef(0);
+  const touchCount      = useRef(0);
+  const thumbsRef       = useRef<HTMLDivElement>(null);
 
-  const goTo = useCallback((idx: number) => {
-    setCurrent(((idx % rooms.length) + rooms.length) % rooms.length);
+  const goTo = useCallback((idx: number, dir: "left" | "right") => {
+    const next = ((idx % rooms.length) + rooms.length) % rooms.length;
+    setSlideDir(dir);
+    setCurrent(next);
     setImgLoaded(false);
+    setScale(1);
+    setPinching(false);
   }, [rooms.length]);
 
-  const goNext = useCallback(() => goTo(current + 1), [current, goTo]);
-  const goPrev = useCallback(() => goTo(current - 1), [current, goTo]);
+  const goNext = useCallback(() => goTo(current + 1, "right"), [current, goTo]);
+  const goPrev = useCallback(() => goTo(current - 1, "left"),  [current, goTo]);
+
+  // Scroll active thumbnail into view
+  useEffect(() => {
+    if (!open || !thumbsRef.current) return;
+    const el = thumbsRef.current.children[current] as HTMLElement | undefined;
+    el?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }, [current, open]);
 
   if (!rooms.length) return null;
-
   const room = rooms[current];
+
+  function pinchDist(touches: React.TouchList): number {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchCount.current = e.touches.length;
+    if (e.touches.length === 2) {
+      pinchStartDist.current  = pinchDist(e.touches);
+      pinchStartScale.current = scale;
+      setPinching(true);
+    } else {
+      touchStartX.current    = e.touches[0].clientX;
+      touchStartY.current    = e.touches[0].clientY;
+      pinchStartDist.current = null;
+    }
+  }
+
+  function handleTouchMove(e: React.TouchEvent) {
+    if (e.touches.length === 2 && pinchStartDist.current !== null) {
+      const dist     = pinchDist(e.touches);
+      const newScale = Math.min(3, Math.max(1, pinchStartScale.current * (dist / pinchStartDist.current)));
+      setScale(newScale);
+    }
+  }
+
+  function handleTouchEnd(e: React.TouchEvent) {
+    if (e.touches.length === 0) setPinching(false);
+    // Only swipe on single-finger gesture when not zoomed
+    if (touchCount.current !== 1 || scale > 1.05) return;
+    const dx = touchStartX.current - e.changedTouches[0].clientX;
+    const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current);
+    if (Math.abs(dx) > 60 && Math.abs(dx) > dy) {
+      dx > 0 ? goNext() : goPrev();
+    }
+  }
+
+  const animClass = slideDir === "right"
+    ? "vt-slide-right"
+    : slideDir === "left"
+      ? "vt-slide-left"
+      : "";
+
+  function openTour() {
+    setOpen(true);
+    setCurrent(0);
+    setImgLoaded(false);
+    setScale(1);
+    setSlideDir(null);
+  }
+
+  function closeTour() {
+    setOpen(false);
+    setScale(1);
+    setSlideDir(null);
+  }
 
   return (
     <>
+      {/* ── Keyframes ── */}
+      <style>{`
+        @keyframes vtSlideRight {
+          from { transform: translateX(100%); }
+          to   { transform: translateX(0); }
+        }
+        @keyframes vtSlideLeft {
+          from { transform: translateX(-100%); }
+          to   { transform: translateX(0); }
+        }
+        .vt-slide-right { animation: vtSlideRight 0.28s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+        .vt-slide-left  { animation: vtSlideLeft  0.28s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+      `}</style>
+
       {/* ── Trigger card ── */}
       <div style={{
         background: "linear-gradient(135deg, #1a2e1e 0%, #0d1610 100%)",
-        border: "1px solid #c8901e",
-        borderRadius: 14,
-        padding: "18px 20px",
-        marginBottom: 24,
+        border: "1px solid #c8901e", borderRadius: 14, padding: "18px 20px", marginBottom: 24,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
           <div style={{
@@ -57,25 +144,20 @@ export function VirtualTour({ rooms }: Props) {
               Visite virtuelle
             </p>
             <p style={{ color: "rgba(240,230,204,0.55)", fontSize: 12 }}>
-              {rooms.length} pièce{rooms.length > 1 ? "s" : ""} à explorer · Naviguez au doigt
+              {rooms.length} pièce{rooms.length > 1 ? "s" : ""} · Swipe &amp; pinch pour zoomer
             </p>
           </div>
         </div>
 
-        {/* Thumbnail preview strip */}
+        {/* Preview thumbnails */}
         <div style={{ display: "flex", gap: 8, marginBottom: 14, overflowX: "auto" }}>
-          {rooms.slice(0, 5).map((r, i) => (
+          {rooms.slice(0, 5).map((r) => (
             <div key={r.id} style={{
-              width: 56, height: 56, borderRadius: 8, overflow: "hidden",
-              flexShrink: 0, background: "#0d1610",
+              width: 56, height: 56, borderRadius: 8, overflow: "hidden", flexShrink: 0, background: "#0d1610",
             }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={r.url}
-                alt={r.room_name}
-                loading="lazy"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
+              <img src={r.url} alt={r.room_name} loading="lazy"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
           ))}
           {rooms.length > 5 && (
@@ -91,7 +173,7 @@ export function VirtualTour({ rooms }: Props) {
         </div>
 
         <button
-          onClick={() => { setOpen(true); setCurrent(0); setImgLoaded(false); }}
+          onClick={openTour}
           style={{
             width: "100%", background: "#c8901e", color: "#fff", border: "none",
             borderRadius: 12, padding: "13px 16px", fontWeight: 700, fontSize: 14,
@@ -106,18 +188,20 @@ export function VirtualTour({ rooms }: Props) {
       {/* ── Full-screen overlay ── */}
       {open && (
         <div style={{
-          position: "fixed", inset: 0, zIndex: 9999,
+          position: "fixed", inset: 0, zIndex: 50,
           background: "#000", display: "flex", flexDirection: "column",
         }}>
+
           {/* Header */}
           <div style={{
-            background: "rgba(0,0,0,0.85)",
+            background: "rgba(0,0,0,0.6)",
             padding: "12px 16px",
             display: "flex", alignItems: "center", justifyContent: "space-between",
             flexShrink: 0,
+            userSelect: "none",
           }}>
             <button
-              onClick={() => setOpen(false)}
+              onClick={closeTour}
               style={{
                 width: 44, height: 44, borderRadius: 22,
                 background: "rgba(255,255,255,0.12)", border: "none",
@@ -128,10 +212,10 @@ export function VirtualTour({ rooms }: Props) {
             </button>
 
             <div style={{ textAlign: "center" }}>
-              <p style={{ color: "#f7f2e6", fontWeight: 700, fontSize: 14, marginBottom: 2 }}>
+              <p style={{ color: "#f7f2e6", fontWeight: 700, fontSize: 14, margin: 0 }}>
                 {room.room_name}
               </p>
-              <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12 }}>
+              <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, margin: 0 }}>
                 {current + 1} / {rooms.length}
               </p>
             </div>
@@ -140,109 +224,118 @@ export function VirtualTour({ rooms }: Props) {
             <div style={{ width: 44 }} />
           </div>
 
-          {/* Main image */}
+          {/* Main image area */}
           <div
-            style={{ flex: 1, position: "relative", overflow: "hidden" }}
-            onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
-            onTouchEnd={(e) => {
-              const delta = touchStartX.current - e.changedTouches[0].clientX;
-              if (Math.abs(delta) > 50) delta > 0 ? goNext() : goPrev();
+            style={{
+              flex: 1,
+              position: "relative",
+              overflow: "hidden",
+              touchAction: "none",
             }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
-            {/* Skeleton */}
+            {/* Loading spinner */}
             {!imgLoaded && (
               <div style={{
                 position: "absolute", inset: 0,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                background: "#0a0a0a",
+                background: "#0a0a0a", zIndex: 1,
               }}>
                 <div className="w-10 h-10 border-2 border-white/20 border-t-[#c8901e] rounded-full animate-spin" />
               </div>
             )}
 
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            {/* Animated wrapper — keyed per room for slide-in */}
+            <div
               key={room.id}
-              src={room.url}
-              alt={room.room_name}
-              onLoad={() => setImgLoaded(true)}
+              className={animClass}
+              onAnimationEnd={() => setSlideDir(null)}
               style={{
-                width: "100%", height: "100%", objectFit: "contain",
-                opacity: imgLoaded ? 1 : 0, transition: "opacity 0.2s",
+                position: "absolute", inset: 0,
+                display: "flex", alignItems: "center", justifyContent: "center",
               }}
-            />
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={room.url}
+                alt={room.room_name}
+                onLoad={() => setImgLoaded(true)}
+                draggable={false}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  transform: `scale(${scale})`,
+                  transformOrigin: "center center",
+                  transition: pinching ? "none" : "transform 0.18s ease-out, opacity 0.2s ease",
+                  opacity: imgLoaded ? 1 : 0,
+                  userSelect: "none",
+                  WebkitUserSelect: "none",
+                }}
+              />
+            </div>
 
-            {/* Arrow buttons */}
-            {rooms.length > 1 && (
-              <>
-                <button
-                  onClick={goPrev}
-                  style={{
-                    position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)",
-                    width: 44, height: 44, borderRadius: 22,
-                    background: "rgba(0,0,0,0.55)", border: "none", cursor: "pointer",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                  }}
-                >
-                  <ChevronLeft style={{ width: 24, height: 24, color: "#fff" }} />
-                </button>
-                <button
-                  onClick={goNext}
-                  style={{
-                    position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
-                    width: 44, height: 44, borderRadius: 22,
-                    background: "rgba(0,0,0,0.55)", border: "none", cursor: "pointer",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                  }}
-                >
-                  <ChevronRight style={{ width: 24, height: 24, color: "#fff" }} />
-                </button>
-              </>
+            {/* Zoom level indicator (visible when zoomed) */}
+            {scale > 1.05 && (
+              <div style={{
+                position: "absolute", bottom: 16, right: 16,
+                background: "rgba(0,0,0,0.55)", borderRadius: 20,
+                padding: "4px 10px", fontSize: 11, fontWeight: 700, color: "#f7f2e6",
+                pointerEvents: "none",
+              }}>
+                {Math.round(scale * 10) / 10}×
+              </div>
             )}
           </div>
 
-          {/* Thumbnails */}
-          {rooms.length > 1 && (
-            <div style={{
-              background: "rgba(0,0,0,0.88)", padding: "10px 16px",
-              overflowX: "auto", flexShrink: 0,
-            }}>
-              <div style={{ display: "flex", gap: 10, width: "max-content" }}>
-                {rooms.map((r, i) => (
-                  <button
-                    key={r.id}
-                    onClick={() => goTo(i)}
-                    style={{
-                      display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-                      background: "transparent", border: "none", cursor: "pointer", padding: 0,
-                    }}
-                  >
-                    <div style={{
-                      width: 60, height: 60, borderRadius: 8, overflow: "hidden",
-                      border: i === current ? "2px solid #c8901e" : "2px solid transparent",
-                      opacity: i === current ? 1 : 0.55,
-                      transition: "all 0.15s",
-                    }}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={r.url}
-                        alt={r.room_name}
-                        loading="lazy"
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                      />
-                    </div>
-                    <p style={{
-                      color: i === current ? "#c8901e" : "rgba(255,255,255,0.45)",
-                      fontSize: 10, maxWidth: 64,
-                      overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                    }}>
-                      {r.room_name}
-                    </p>
-                  </button>
-                ))}
-              </div>
+          {/* Footer thumbnails */}
+          <div style={{
+            background: "rgba(0,0,0,0.8)",
+            padding: "10px 16px",
+            overflowX: "auto",
+            flexShrink: 0,
+          }}>
+            <div
+              ref={thumbsRef}
+              style={{ display: "flex", gap: 8, width: "max-content" }}
+            >
+              {rooms.map((r, i) => (
+                <button
+                  key={r.id}
+                  onClick={() => goTo(i, i >= current ? "right" : "left")}
+                  style={{
+                    display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
+                    background: "transparent", border: "none", cursor: "pointer", padding: 0,
+                  }}
+                >
+                  <div style={{
+                    width: 64, height: 64, borderRadius: 8, overflow: "hidden", flexShrink: 0,
+                    border: i === current ? "2px solid #c8901e" : "2px solid rgba(255,255,255,0.12)",
+                    opacity: i === current ? 1 : 0.55,
+                    transition: "border-color 0.15s, opacity 0.15s",
+                  }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={r.url}
+                      alt={r.room_name}
+                      loading="lazy"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  </div>
+                  <p style={{
+                    color: i === current ? "#c8901e" : "rgba(255,255,255,0.45)",
+                    fontSize: 10, maxWidth: 64,
+                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                    margin: 0, transition: "color 0.15s",
+                  }}>
+                    {r.room_name}
+                  </p>
+                </button>
+              ))}
             </div>
-          )}
+          </div>
         </div>
       )}
     </>
