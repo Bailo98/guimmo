@@ -12,7 +12,11 @@ export async function POST(request: Request) {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? key;
   const db = createClient(url, serviceKey);
 
-  await db.rpc("increment_listing_stat_whatsapp", { p_property_id: propertyId }).catch(() => null);
+  try {
+    await db.rpc("increment_listing_stat_whatsapp", { p_property_id: propertyId });
+  } catch {
+    // RPC not yet deployed — silent fallback
+  }
 
   return NextResponse.json({ ok: true });
 }
