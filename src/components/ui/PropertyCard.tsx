@@ -117,7 +117,9 @@ export function PropertyCard({ property, variant = "default", className, index =
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            quality={65}
             priority={index < 4}
+            loading={index < 4 ? undefined : "lazy"}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center" style={{ background: "#0d1a10" }}>

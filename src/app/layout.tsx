@@ -85,12 +85,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `(function(){try{var s=JSON.parse(localStorage.getItem('BienLoger-store')||localStorage.getItem('logerbien-store')||'{}');var t=s&&s.state&&s.state.theme?s.state.theme:'dark';if(t!=='light')document.documentElement.classList.add('dark');}catch(e){document.documentElement.classList.add('dark');}})();`,
           }}
         />
-        {/* TODO: remove after diagnosing #418 */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var orig=console.error;console.error=function(){var a=Array.prototype.slice.call(arguments);if(a.some(function(x){return typeof x==='string'&&(x.indexOf('418')>-1||x.indexOf('Hydration')>-1||x.toLowerCase().indexOf('hydrat')>-1);})){console.trace('[BienLoger] Hydration/#418 source');}orig.apply(console,a);};})();`,
-          }}
-        />
         <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="preconnect" href="https://kqshknfrtlbjaufkdeeg.supabase.co" />
       </head>

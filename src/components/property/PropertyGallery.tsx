@@ -48,6 +48,7 @@ export function PropertyGallery({ images }: { images: GalleryImage[] }) {
             fill
             className="object-cover transition-opacity duration-200"
             sizes="(max-width: 1024px) 100vw, 66vw"
+            quality={75}
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
@@ -96,7 +97,7 @@ export function PropertyGallery({ images }: { images: GalleryImage[] }) {
                 )}
                 aria-label={`Voir photo ${i + 1}`}
               >
-                <Image src={img.url} alt={img.alt} fill className="object-cover" sizes="64px" />
+                <Image src={img.url} alt={img.alt} fill className="object-cover" sizes="64px" quality={50} loading="lazy" />
               </button>
             ))}
           </div>

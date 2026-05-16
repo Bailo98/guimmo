@@ -45,7 +45,8 @@ export function PhotoGallery({ images, title }: Props) {
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 66vw"
-          priority={current === 0}
+          quality={75}
+          priority
         />
 
         {/* Gradient */}
@@ -102,7 +103,7 @@ export function PhotoGallery({ images, title }: Props) {
                 i === current ? "border-[#F97316]" : "border-transparent opacity-60 hover:opacity-100"
               }`}
             >
-              <Image src={img.url} alt={img.alt || `Photo ${i + 1}`} fill className="object-cover" sizes="64px" />
+              <Image src={img.url} alt={img.alt || `Photo ${i + 1}`} fill className="object-cover" sizes="64px" quality={50} loading="lazy" />
             </button>
           ))}
         </div>

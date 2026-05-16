@@ -142,7 +142,7 @@ function PreviewCard({ property, index }: PreviewCardProps) {
       {/* Image */}
       <div className="relative h-36">
         {primaryImg ? (
-          <Image src={primaryImg.url} alt={property.title} fill className="object-cover" sizes="260px" />
+          <Image src={primaryImg.url} alt={property.title} fill className="object-cover" sizes="260px" quality={65} loading="lazy" />
         ) : (
           <div className="w-full h-full" style={{ background: `linear-gradient(135deg, ${gradFrom}, ${gradTo})` }} />
         )}

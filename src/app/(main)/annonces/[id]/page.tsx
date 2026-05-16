@@ -7,8 +7,13 @@ import { PropertyCard } from "@/components/ui/PropertyCard";
 import { MessageButton } from "@/components/property/MessageButton";
 import { ReportButton } from "@/components/property/ReportButton";
 import { PropertyShareButton } from "@/components/property/PropertyShareButton";
-import { VirtualTour } from "@/components/VirtualTour";
+import dynamic from "next/dynamic";
 import type { VTRoom } from "@/components/VirtualTour";
+
+const VirtualTour = dynamic(
+  () => import("@/components/VirtualTour").then((m) => m.VirtualTour),
+  { ssr: false }
+);
 import { getNeighborhoodName } from "@/data/neighborhoods";
 import type { Metadata } from "next";
 import type { Property } from "@/types";
