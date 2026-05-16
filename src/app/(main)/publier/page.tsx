@@ -252,75 +252,6 @@ export default function PublierPage() {
     });
   }
 
-  async function testInsert() {
-    if (!supabase) return;
-    const { data: { user: u }, error: authErr } = await supabase.auth.getUser();
-    if (authErr || !u) {
-      setError(`TEST: non connecté — ${authErr?.message ?? "user null"}`);
-      return;
-    }
-    console.log("=== TEST INSERT MINIMAL ===", "uid:", u.id);
-    const { data, error: e } = await supabase
-      .from("properties")
-      .insert({
-        title: "TEST",
-        type: "apartment",
-        transaction_type: "rent",
-        price: 1,
-        neighborhood: "kipe",
-        city: "Conakry",
-        status: "active",
-        owner_id: u.id,
-      })
-      .select("id")
-      .single();
-    if (e) {
-      console.error("TEST INSERT ÉCHOUÉ:", { code: e.code, message: e.message, details: e.details, hint: e.hint });
-      setError(`TEST INSERT ÉCHOUÉ: ${e.message} | code=${e.code} | ${e.details ?? ""} | ${e.hint ?? ""}`);
-    } else {
-      console.log("TEST INSERT OK — id:", data?.id);
-      await supabase.from("properties").delete().eq("id", data!.id);
-      setError(null);
-      toast("TEST INSERT OK ✓", "success");
-    }
-  }
-
-  async function testInsertSansPhotos() {
-    if (!supabase) return;
-    const { data: { user: u }, error: authErr } = await supabase.auth.getUser();
-    if (authErr || !u) {
-      setError(`TEST SANS PHOTOS: non connecté — ${authErr?.message ?? "user null"}`);
-      return;
-    }
-    const priceNum = parseInt(form.price.replace(/\D/g, ""), 10) || 1000000;
-    const testPayload = {
-      owner_id:         u.id,
-      title:            generateTitle(form.type || "apartment", form.rooms, form.neighborhood || "kipe"),
-      transaction_type: form.txType || "rent",
-      type:             form.type || "apartment",
-      price:            priceNum,
-      neighborhood:     form.neighborhood || "kipe",
-      status:           "active",
-      available_now:    true,
-      city:             "Conakry",
-    };
-    console.log("=== TEST SANS PHOTOS ===", testPayload);
-    const { data, error: e } = await supabase
-      .from("properties")
-      .insert(testPayload)
-      .select("id")
-      .single();
-    if (e) {
-      console.error("TEST SANS PHOTOS ÉCHOUÉ:", e);
-      setError(`TEST SANS PHOTOS ÉCHOUÉ: ${e.message} | code=${e.code} | ${e.details ?? ""} | ${e.hint ?? ""}`);
-    } else {
-      console.log("TEST SANS PHOTOS OK — id:", data?.id);
-      await supabase.from("properties").delete().eq("id", data!.id);
-      setError(null);
-      toast("TEST SANS PHOTOS OK ✓ — le problème vient du storage", "success");
-    }
-  }
-
   async function handleSubmit() {
     if (!supabase) {
       toast("Service non disponible, réessayez plus tard", "error");
@@ -330,13 +261,10 @@ export default function PublierPage() {
     // Re-fetch user fresh from Supabase (context cache may be stale on mobile)
     const { data: { user: freshUser }, error: authError } = await supabase.auth.getUser();
     if (authError || !freshUser) {
-      console.error("AUTH ERROR:", authError);
       setError("Vous devez être connecté pour publier");
       router.push("/connexion?redirect=/publier");
       return;
     }
-    console.log("USER ID:", freshUser.id);
-    console.log("USER EMAIL:", freshUser.email);
 
     if (form.photos.length === 0) {
       toast("Veuillez ajouter au moins une photo", "error");
@@ -377,7 +305,6 @@ export default function PublierPage() {
         const file = form.photos[i];
         const ext  = file.name.split(".").pop() ?? "jpg";
         const path = `${freshUser.id}/${Date.now()}-${i}.${ext}`;
-        console.log(`[upload photo ${i}] bucket=property-images path=${path} size=${file.size} type=${file.type}`);
         const { error: upErr } = await supabase.storage
           .from("property-images")
           .upload(path, file, { upsert: false, contentType: file.type });
@@ -388,7 +315,6 @@ export default function PublierPage() {
           continue;
         }
         const { data: { publicUrl } } = supabase.storage.from("property-images").getPublicUrl(path);
-        console.log(`[upload photo ${i}] OK → ${publicUrl}`);
         uploadedUrls.push(publicUrl);
       }
       if (uploadedUrls.length === 0) {
@@ -421,8 +347,6 @@ export default function PublierPage() {
 
       // 2. Insert into properties
       const title    = generateTitle(form.type, form.rooms, form.neighborhood);
-      console.log("=== DEBUT PUBLICATION ===");
-      console.log("User:", freshUser.id, freshUser.email);
 
       const payload = {
         title,
@@ -459,9 +383,6 @@ export default function PublierPage() {
         kitchen_equipped:    form.kitchenEquipped,
         floor_number:        form.floorNumber,
       };
-
-      console.log("owner_id dans payload:", payload.owner_id, typeof payload.owner_id);
-      console.log("Payload complet:", JSON.stringify(payload, null, 2));
 
       const { data: property, error: insertErr } = await supabase
         .from("properties")
@@ -1320,26 +1241,6 @@ export default function PublierPage() {
               {error}
             </div>
           )}
-
-          {/* Test insert buttons (debug) */}
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={testInsert}
-              className="flex-1 text-xs py-2 rounded-xl font-mono transition-colors"
-              style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.08)" }}
-            >
-              [DEV] Test INSERT
-            </button>
-            <button
-              type="button"
-              onClick={testInsertSansPhotos}
-              className="flex-1 text-xs py-2 rounded-xl font-mono transition-colors"
-              style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.08)" }}
-            >
-              [DEV] Test sans photos
-            </button>
-          </div>
 
           {/* Publish button */}
           <button
