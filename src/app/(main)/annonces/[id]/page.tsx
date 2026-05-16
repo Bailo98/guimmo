@@ -7,13 +7,8 @@ import { PropertyCard } from "@/components/ui/PropertyCard";
 import { MessageButton } from "@/components/property/MessageButton";
 import { ReportButton } from "@/components/property/ReportButton";
 import { PropertyShareButton } from "@/components/property/PropertyShareButton";
-import dynamic from "next/dynamic";
 import type { VTRoom } from "@/components/VirtualTour";
-
-const VirtualTour = dynamic(
-  () => import("@/components/VirtualTour").then((m) => m.VirtualTour),
-  { ssr: false }
-);
+import VirtualTourWrapper from "@/components/VirtualTourWrapper";
 import { getNeighborhoodName } from "@/data/neighborhoods";
 import type { Metadata } from "next";
 import type { Property } from "@/types";
@@ -387,7 +382,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               </div>
 
               {/* Virtual tour */}
-              {vtRooms.length > 0 && <VirtualTour rooms={vtRooms} />}
+              {vtRooms.length > 0 && <VirtualTourWrapper rooms={vtRooms} />}
 
               {/* Trust badges */}
               {((profileData as {is_verified?: boolean} | null)?.is_verified || (property.property_images?.length ?? 0) > 0 || property.contact_phone) && (
