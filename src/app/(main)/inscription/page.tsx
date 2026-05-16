@@ -26,6 +26,7 @@ function InscriptionForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", phone: "", email: "", password: "" });
 
   const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
@@ -90,7 +91,7 @@ function InscriptionForm() {
         }
       }
 
-      const { error: authError } = await supabase.auth.signUp({
+      const { error: signUpError } = await supabase.auth.signUp({
         email,
         password: form.password,
         options: {
@@ -102,9 +103,22 @@ function InscriptionForm() {
         },
       });
 
-      if (authError) {
-        setError(erreurFrancais(authError.message));
+      if (signUpError) {
+        setError(erreurFrancais(signUpError.message));
         setLoading(false);
+        return;
+      }
+
+      // Force immediate sign-in to bypass email confirmation requirement
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password: form.password,
+      });
+
+      if (signInError || !signInData.session) {
+        setSuccess("Compte créé ! Connectez-vous maintenant.");
+        setLoading(false);
+        router.push(`/connexion?redirect=${encodeURIComponent(redirectTo)}`);
         return;
       }
 
@@ -353,6 +367,11 @@ function InscriptionForm() {
                   {error && (
                     <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3">
                       <p className="text-red-400 text-sm">{error}</p>
+                    </div>
+                  )}
+                  {success && (
+                    <div className="bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-3">
+                      <p className="text-green-400 text-sm">{success}</p>
                     </div>
                   )}
 

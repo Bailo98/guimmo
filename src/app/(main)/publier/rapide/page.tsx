@@ -99,6 +99,9 @@ export default function PublierRapidePage() {
 
         if (signUpErr || !signUpData.user) throw new Error("Création compte échouée");
         userId = signUpData.user.id;
+
+        // Force immediate sign-in to bypass email confirmation
+        await supabase.auth.signInWithPassword({ email: tempEmail, password: tempPassword });
       }
 
       // ── 2. Upload photos ───────────────────────────────────────────
