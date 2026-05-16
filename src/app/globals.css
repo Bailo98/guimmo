@@ -48,6 +48,11 @@
     to { transform: translateY(0); opacity: 1; }
   }
   --animate-toast-in: toastIn 0.25s ease-out;
+
+  @keyframes slideInLeft {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+  }
 }
 
 /* GuImmo Design System tokens */

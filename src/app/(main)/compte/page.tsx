@@ -7,22 +7,29 @@ import {
   Plus, Eye, MapPin, LogOut, Pencil, Trash2, User,
   CheckCircle, XCircle, RotateCcw, AlertTriangle, Search,
   Bell, BellOff, Heart, MessageCircle, BarChart2, Home,
-  TrendingUp, Phone, Building2, ChevronRight,
+  TrendingUp, Phone, Building2, ChevronRight, Download,
 } from "lucide-react";
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
+  BarChart, Bar, LineChart, Line,
+  XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from "recharts";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
+import { DashboardLayout, type DashTab } from "@/components/dashboard/DashboardLayout";
+import { StatCard } from "@/components/dashboard/StatCard";
+import { StatusBadge } from "@/components/dashboard/StatusBadge";
+import { SectionHeader } from "@/components/dashboard/SectionHeader";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Listing {
   id: string; title: string; neighborhood: string;
   price: number; price_period: string | null;
-  available_now: boolean; views: number; primary_image: string | null;
+  available_now: boolean; views: number;
+  whatsapp_clicks: number;
+  primary_image: string | null;
 }
 interface SavedSearch {
   id: string; label: string; neighborhood: string | null; type: string | null;
@@ -31,6 +38,11 @@ interface SavedSearch {
 }
 interface DayStat {
   date: string; views: number; whatsapp_clicks: number; message_clicks: number;
+}
+interface Lead {
+  id: string; sender_id: string; property_id: string | null;
+  message: string; created_at: string;
+  sender_name: string | null; sender_phone: string | null;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -54,26 +66,23 @@ function fmtDate(iso: string) {
   const d = new Date(iso);
   return `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}`;
 }
-
-// ─── Primitives ───────────────────────────────────────────────────────────────
-
-function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: React.ReactNode }) {
-  return (
-    <div className="bl-stat-card">
-      <span className="bl-stat-label">{label}</span>
-      <span className="bl-stat-value">{value}</span>
-      {sub && <span style={{ fontSize: 11, color: "var(--bl-cream-faint)", marginTop: 4, display: "block" }}>{sub}</span>}
-    </div>
-  );
+function fmtTime(iso: string) {
+  const d = new Date(iso);
+  return d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+}
+function todayLabel() {
+  return new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <p className="bl-section-label" style={{ marginBottom: 10 }}>{children}</p>;
-}
+// ─── Chart style ─────────────────────────────────────────────────────────────
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <h2 className="bl-section-title" style={{ marginBottom: 16 }}>{children}</h2>;
-}
+const CHART_STYLE = {
+  contentStyle: { background: "#0d1a10", border: "1px solid rgba(240,230,204,0.15)", borderRadius: 8, color: "#f7f2e6", fontSize: 12 },
+  cursor: { fill: "rgba(200,144,30,0.08)" },
+  tick: { fill: "rgba(240,230,204,0.35)", fontSize: 10 },
+};
+
+// ─── Dialogs ──────────────────────────────────────────────────────────────────
 
 function DeleteDialog({ title, onConfirm, onCancel }: { title: string; onConfirm: () => void; onCancel: () => void }) {
   return (
@@ -102,81 +111,48 @@ function DeleteDialog({ title, onConfirm, onCancel }: { title: string; onConfirm
   );
 }
 
-// ─── TabBar (mobile) + SidebarNav (desktop) ───────────────────────────────────
-
-type Tab = { key: string; label: string; icon: React.ReactNode };
-
-function TabBar({ tabs, active, onChange }: { tabs: Tab[]; active: string; onChange: (k: string) => void }) {
+function DeleteAccountDialog({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
+  const [confirm, setConfirm] = useState("");
   return (
-    <div className="flex gap-1 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-      {tabs.map((t) => (
-        <button
-          key={t.key}
-          onClick={() => onChange(t.key)}
-          className={cn("flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all flex-shrink-0",
-            active === t.key ? "text-white" : "hover:text-white/75")}
-          style={active === t.key
-            ? { background: "var(--bl-amber)", color: "#fff" }
-            : { background: "rgba(240,230,204,0.06)", color: "var(--bl-cream-dim)" }}
-        >
-          {t.icon}{t.label}
-        </button>
-      ))}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+      <div className="rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ background: "#0d1a10", border: "1px solid rgba(240,68,68,0.30)" }}>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(240,68,68,0.15)" }}>
+            <AlertTriangle className="w-5 h-5 text-red-400" />
+          </div>
+          <div>
+            <p className="font-bold text-sm text-red-400">Supprimer le compte</p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>Action permanente et irréversible.</p>
+          </div>
+        </div>
+        <p className="text-sm mb-4" style={{ color: "var(--bl-cream-dim)" }}>
+          Toutes vos annonces, messages et données seront supprimés. Tapez <strong style={{ color: "var(--bl-cream)" }}>SUPPRIMER</strong> pour confirmer.
+        </p>
+        <input
+          type="text" value={confirm} onChange={(e) => setConfirm(e.target.value)}
+          placeholder="SUPPRIMER"
+          style={{ background: "rgba(240,230,204,0.04)", border: "1px solid rgba(240,68,68,0.30)", borderRadius: 10, padding: "10px 14px", color: "var(--bl-cream)", fontSize: 14, width: "100%", outline: "none", marginBottom: 16 }}
+        />
+        <div className="flex gap-3">
+          <button onClick={onCancel} className="flex-1 py-2.5 rounded-xl text-sm font-semibold" style={{ border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}>Annuler</button>
+          <button onClick={onConfirm} disabled={confirm !== "SUPPRIMER"} className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 disabled:opacity-40 text-white font-bold text-sm transition-colors">
+            Supprimer
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
 
-function SidebarNav({ tabs, active, onChange }: { tabs: Tab[]; active: string; onChange: (k: string) => void }) {
+// ─── ChartCard ────────────────────────────────────────────────────────────────
+
+function ChartCard({ title, height = 160, children }: { title: string; height?: number; children: React.ReactNode }) {
   return (
-    <nav className="flex-1 py-4" style={{ paddingLeft: 0 }}>
-      {tabs.map((t) => (
-        <button
-          key={t.key}
-          onClick={() => onChange(t.key)}
-          className={cn("bl-nav-item", active === t.key && "active")}
-        >
-          {t.icon}{t.label}
-        </button>
-      ))}
-    </nav>
-  );
-}
-
-// ─── DashboardShell ───────────────────────────────────────────────────────────
-
-function DashboardShell({ tabs, active, onChange, signOut, children }: {
-  tabs: Tab[]; active: string; onChange: (k: string) => void;
-  signOut: () => Promise<void>; children: React.ReactNode;
-}) {
-  const router = useRouter();
-  return (
-    <div className="lg:flex" style={{ minHeight: 500 }}>
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col flex-shrink-0" style={{ width: 240, background: "var(--bl-sidebar)", borderRight: "1px solid var(--bl-border)" }}>
-        <SidebarNav tabs={tabs} active={active} onChange={onChange} />
-        <div className="p-3" style={{ borderTop: "1px solid var(--bl-border)" }}>
-          <button
-            onClick={async () => { await signOut(); router.push("/"); }}
-            className="flex items-center gap-2 w-full text-sm py-2.5 px-3 rounded-xl transition-colors"
-            style={{ color: "#ef4444" }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(240,68,68,0.08)")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-          >
-            <LogOut className="w-4 h-4 flex-shrink-0" />
-            Se déconnecter
-          </button>
-        </div>
-      </aside>
-
-      {/* Mobile tab bar */}
-      <div className="lg:hidden px-4 pt-4 pb-2">
-        <TabBar tabs={tabs} active={active} onChange={onChange} />
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 p-4 lg:p-7 min-w-0">
-        {children}
-      </div>
+    <div className="rounded-2xl p-4 mb-6" style={{ background: "var(--bl-surface)", borderLeft: "3px solid var(--bl-amber)", borderRadius: "0 16px 16px 0" }}>
+      <p className="bl-section-label mb-3">{title}</p>
+      <ResponsiveContainer width="100%" height={height}>
+        {children as React.ReactElement}
+      </ResponsiveContainer>
     </div>
   );
 }
@@ -188,14 +164,18 @@ function ProfileForm({ user, profile, refreshProfile }: {
   profile: ReturnType<typeof useAuth>["profile"];
   refreshProfile: () => Promise<void>;
 }) {
-  const [fullName, setFullName] = useState(profile?.full_name ?? "");
-  const [phone, setPhone]       = useState(profile?.phone ?? "");
-  const [bio, setBio]           = useState(profile?.bio ?? "");
+  const [fullName, setFullName]   = useState(profile?.full_name ?? "");
+  const [phone, setPhone]         = useState(profile?.phone ?? "");
+  const [bio, setBio]             = useState(profile?.bio ?? "");
   const [agencyName, setAgencyName] = useState(profile?.agency_name ?? "");
-  const [saving, setSaving]     = useState(false);
+  const [saving, setSaving]       = useState(false);
+  const [showDeleteAccount, setShowDeleteAccount] = useState(false);
 
   const isAgence = profile?.account_type === "agence" || profile?.role === "agence";
   const isPro    = ["agent","agence"].includes(profile?.account_type ?? "");
+
+  const displayName = profile?.full_name ?? user.email?.split("@")[0] ?? "?";
+  const initials = displayName.split(" ").map((w: string) => w[0]).join("").slice(0,2).toUpperCase();
 
   async function save() {
     if (!supabase || !fullName.trim()) return;
@@ -210,83 +190,134 @@ function ProfileForm({ user, profile, refreshProfile }: {
     setSaving(false);
   }
 
-  const inputStyle: React.CSSProperties = {
-    background: "rgba(240,230,204,0.04)", border: "1px solid var(--bl-border-md)",
-    borderRadius: 12, padding: "10px 14px", color: "var(--bl-cream)", fontSize: 14,
-    width: "100%", outline: "none",
+  async function deleteAccount() {
+    setShowDeleteAccount(false);
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  }
+
+  const inputCss: React.CSSProperties = {
+    background: "rgba(240,230,204,0.05)", border: "1px solid var(--bl-border-md)",
+    borderRadius: 10, padding: "0 14px", color: "var(--bl-cream)",
+    fontSize: 16, width: "100%", outline: "none", height: 50,
+    transition: "border-color 0.15s",
   };
-  const labelStyle: React.CSSProperties = {
+  const labelCss: React.CSSProperties = {
     fontSize: 9, letterSpacing: "1.5px", color: "var(--bl-cream-faint)",
     textTransform: "uppercase", fontWeight: 500, marginBottom: 6, display: "block",
   };
 
+  function FocusInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
+    return (
+      <input
+        {...props}
+        style={inputCss}
+        onFocus={(e) => (e.currentTarget.style.borderColor = "var(--bl-amber)")}
+        onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(240,230,204,0.15)")}
+      />
+    );
+  }
+
   return (
-    <div className="space-y-4">
-      <div>
-        <label style={labelStyle}>Prénom &amp; Nom</label>
-        <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Votre nom complet" style={inputStyle} />
+    <div>
+      {/* Avatar */}
+      <div className="flex flex-col items-center mb-6">
+        {profile?.avatar_url ? (
+          <Image src={profile.avatar_url} alt={displayName} width={80} height={80} className="rounded-full object-cover mb-2" />
+        ) : (
+          <div className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-black mb-2"
+            style={{ background: "var(--bl-amber)", color: "#fff" }}>
+            {initials}
+          </div>
+        )}
+        <p className="text-xs font-semibold" style={{ color: "var(--bl-cream-faint)" }}>Photo de profil</p>
       </div>
-      <div>
-        <label style={labelStyle}>Email</label>
-        <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl" style={{ background: "rgba(240,230,204,0.03)", border: "1px solid var(--bl-border)" }}>
-          <span style={{ color: "var(--bl-cream-dim)", fontSize: 14 }} className="truncate">{user.email}</span>
-          <span className="text-[11px] px-2.5 py-1 rounded-full ml-2 flex-shrink-0" style={{ background: "rgba(240,230,204,0.06)", color: "var(--bl-cream-faint)" }}>Non modifiable</span>
-        </div>
-      </div>
-      <div>
-        <label style={labelStyle}>Téléphone</label>
-        <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+224 620 00 00 00" style={inputStyle} />
-      </div>
-      {isPro && (
+
+      <div className="space-y-4 mb-6">
         <div>
-          <label style={labelStyle}>Bio professionnelle</label>
-          <textarea rows={3} value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Décrivez votre expertise..." style={{ ...inputStyle, resize: "none" }} />
+          <label style={labelCss}>Prénom &amp; Nom</label>
+          <FocusInput type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Votre nom complet" />
         </div>
-      )}
-      {isAgence && (
         <div>
-          <label style={labelStyle}>Nom de l&apos;agence</label>
-          <input type="text" value={agencyName} onChange={(e) => setAgencyName(e.target.value)} placeholder="Nom de votre agence" style={inputStyle} />
+          <label style={labelCss}>Email</label>
+          <div className="flex items-center justify-between px-3.5 rounded-xl" style={{ height: 50, background: "rgba(240,230,204,0.03)", border: "1px solid var(--bl-border)" }}>
+            <span style={{ color: "var(--bl-cream-dim)", fontSize: 14 }} className="truncate">{user.email}</span>
+            <span className="text-[11px] px-2.5 py-1 rounded-full ml-2 flex-shrink-0" style={{ background: "rgba(240,230,204,0.06)", color: "var(--bl-cream-faint)" }}>Non modifiable</span>
+          </div>
         </div>
-      )}
+        <div>
+          <label style={labelCss}>Téléphone</label>
+          <FocusInput type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+224 620 00 00 00" />
+        </div>
+        {isPro && (
+          <div>
+            <label style={labelCss}>Bio professionnelle</label>
+            <textarea
+              rows={3} value={bio} onChange={(e) => setBio(e.target.value)}
+              placeholder="Décrivez votre expertise..."
+              style={{ ...inputCss, height: "auto", padding: "12px 14px", resize: "none" }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--bl-amber)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(240,230,204,0.15)")}
+            />
+          </div>
+        )}
+        {isAgence && (
+          <div>
+            <label style={labelCss}>Nom de l&apos;agence</label>
+            <FocusInput type="text" value={agencyName} onChange={(e) => setAgencyName(e.target.value)} placeholder="Nom de votre agence" />
+          </div>
+        )}
+      </div>
+
       <button
-        onClick={save}
-        disabled={saving || !fullName.trim()}
-        className="w-full py-3 rounded-xl font-bold text-sm transition-colors disabled:opacity-50"
+        onClick={save} disabled={saving || !fullName.trim()}
+        className="w-full py-3 rounded-xl font-bold text-sm transition-colors disabled:opacity-50 mb-6"
         style={{ background: "var(--bl-amber)", color: "#fff" }}
       >
         {saving ? <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : "Sauvegarder le profil"}
       </button>
-      {/* Mobile sign out */}
-      <button
-        onClick={async () => { if (supabase) await supabase.auth.signOut(); window.location.href = "/"; }}
-        className="lg:hidden w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-colors"
-        style={{ border: "1px solid rgba(240,68,68,0.30)", color: "#ef4444" }}
-      >
-        <LogOut className="w-4 h-4" /> Se déconnecter
-      </button>
+
+      {/* Mon plan */}
+      <div className="rounded-r-2xl p-4 mb-6" style={{ background: "var(--bl-surface)", borderLeft: "3px solid var(--bl-amber-light)" }}>
+        <p className="bl-section-label mb-2">Mon plan</p>
+        <p className="font-bold" style={{ color: "var(--bl-cream)", fontFamily: "var(--font-playfair)" }}>
+          {profile?.is_verified_pro ? "Plan Pro" : "Plan Gratuit"}
+        </p>
+        <p className="text-xs mt-1 mb-3" style={{ color: "var(--bl-cream-faint)" }}>
+          {profile?.is_verified_pro ? "Annonces illimitées · Badge vérifié · Priorité dans les résultats" : "Jusqu'à 5 annonces · Visibilité standard"}
+        </p>
+        <Link href="/tarifs" className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
+          style={{ background: "rgba(200,144,30,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.25)" }}>
+          {profile?.is_verified_pro ? "Gérer l'abonnement" : "Passer Pro"} →
+        </Link>
+      </div>
+
+      {/* Sécurité */}
+      <div className="space-y-2">
+        <p className="bl-section-label">Sécurité</p>
+        <button
+          className="lg:hidden w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-colors"
+          style={{ border: "1px solid rgba(240,68,68,0.30)", color: "#ef4444" }}
+          onClick={async () => { if (supabase) await supabase.auth.signOut(); window.location.href = "/"; }}
+        >
+          <LogOut className="w-4 h-4" /> Se déconnecter
+        </button>
+        <button
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-colors"
+          style={{ border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-faint)" }}
+          onClick={() => setShowDeleteAccount(true)}
+        >
+          <Trash2 className="w-4 h-4" /> Supprimer mon compte
+        </button>
+      </div>
+
+      {showDeleteAccount && (
+        <DeleteAccountDialog onConfirm={deleteAccount} onCancel={() => setShowDeleteAccount(false)} />
+      )}
     </div>
   );
 }
-
-// ─── Chart card wrapper ───────────────────────────────────────────────────────
-
-function ChartCard({ title, height = 160, children }: { title: string; height?: number; children: React.ReactNode }) {
-  return (
-    <div className="rounded-2xl p-4 mb-6" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
-      <SectionLabel>{title}</SectionLabel>
-      <ResponsiveContainer width="100%" height={height}>
-        {children as React.ReactElement}
-      </ResponsiveContainer>
-    </div>
-  );
-}
-
-const CHART_STYLE = {
-  contentStyle: { background: "#0d1a10", border: "1px solid rgba(240,230,204,0.15)", borderRadius: 8, color: "#f7f2e6", fontSize: 12 },
-  cursor: { fill: "rgba(200,144,30,0.08)" },
-  tick: { fill: "rgba(240,230,204,0.35)", fontSize: 10 },
-};
 
 // ─── ListingsManager ──────────────────────────────────────────────────────────
 
@@ -299,16 +330,33 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
   const load = useCallback(async () => {
     if (!supabase) return;
     setLoading(true);
-    const { data } = await supabase
-      .from("properties")
-      .select("id,title,neighborhood,price,price_period,available_now,views,property_images!inner(url,is_primary,sort_order)")
-      .eq("owner_id", userId)
-      .order("created_at", { ascending: false });
-    const mapped: Listing[] = (data ?? []).map((row) => {
+    const [propRes, statsRes] = await Promise.all([
+      supabase.from("properties")
+        .select("id,title,neighborhood,price,price_period,available_now,views,property_images(url,is_primary,sort_order)")
+        .eq("owner_id", userId)
+        .order("created_at", { ascending: false }),
+      supabase.from("listing_stats")
+        .select("property_id,whatsapp_clicks"),
+    ]);
+
+    // Build WA clicks map per property
+    const waMap: Record<string, number> = {};
+    for (const s of statsRes.data ?? []) {
+      waMap[s.property_id] = (waMap[s.property_id] ?? 0) + (s.whatsapp_clicks ?? 0);
+    }
+
+    const mapped: Listing[] = (propRes.data ?? []).map((row) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const imgs: any[] = (row as any).property_images ?? [];
       const primary = imgs.find((i) => i.is_primary) ?? imgs.sort((a,b) => a.sort_order - b.sort_order)[0];
-      return { id: row.id, title: row.title, neighborhood: row.neighborhood, price: row.price, price_period: row.price_period, available_now: row.available_now ?? true, views: row.views ?? 0, primary_image: primary?.url ?? null };
+      return {
+        id: row.id, title: row.title, neighborhood: row.neighborhood,
+        price: row.price, price_period: row.price_period,
+        available_now: row.available_now ?? true,
+        views: row.views ?? 0,
+        whatsapp_clicks: waMap[row.id] ?? 0,
+        primary_image: primary?.url ?? null,
+      };
     });
     setListings(mapped);
     setLoading(false);
@@ -384,12 +432,10 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
                     <MapPin className="w-3 h-3 flex-shrink-0" />{NL[listing.neighborhood] ?? listing.neighborhood}
                   </div>
                   <p className="font-bold text-sm mt-1" style={{ color: "var(--bl-amber-light)" }}>{fmtGNF(listing.price, listing.price_period)}</p>
-                  <div className="flex items-center gap-2 mt-1.5">
-                    {listing.available_now
-                      ? <span className="bl-badge-active inline-flex items-center gap-1"><CheckCircle className="w-2.5 h-2.5" /> Disponible</span>
-                      : <span className="bl-badge-rented inline-flex items-center gap-1"><XCircle className="w-2.5 h-2.5" /> Loué</span>}
+                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                    <StatusBadge status={listing.available_now ? "active" : "sold"} />
                     <span className="flex items-center gap-1 text-[11px]" style={{ color: "var(--bl-cream-faint)" }}>
-                      <Eye className="w-3 h-3" /> {listing.views} vue{listing.views !== 1 ? "s" : ""}
+                      <Eye className="w-3 h-3" /> {listing.views} · <Phone className="w-3 h-3" /> {listing.whatsapp_clicks}
                     </span>
                   </div>
                 </div>
@@ -424,6 +470,175 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
   );
 }
 
+// ─── Stats loader ─────────────────────────────────────────────────────────────
+
+async function loadDayStats(userId: string, days: number): Promise<{
+  data: DayStat[]; active: number; total: number; totalViews: number; totalWA: number;
+}> {
+  if (!supabase) return { data: [], active: 0, total: 0, totalViews: 0, totalWA: 0 };
+  const { data: props } = await supabase.from("properties").select("id,available_now").eq("owner_id", userId);
+  const ids    = (props ?? []).map((p: { id: string }) => p.id);
+  const active = (props ?? []).filter((p: { available_now: boolean }) => p.available_now).length;
+  const total  = (props ?? []).length;
+
+  const emptyDays = Array.from({ length: days }, (_, i) => {
+    const d = new Date(); d.setDate(d.getDate() - (days - 1 - i));
+    return { date: d.toISOString().split("T")[0], views: 0, whatsapp_clicks: 0, message_clicks: 0 };
+  });
+  if (ids.length === 0) return { data: emptyDays, active, total, totalViews: 0, totalWA: 0 };
+
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - (days - 1));
+  const { data: raw } = await supabase.from("listing_stats")
+    .select("date,views,whatsapp_clicks,message_clicks")
+    .in("property_id", ids)
+    .gte("date", cutoff.toISOString().split("T")[0])
+    .order("date");
+
+  const byDate: Record<string, DayStat> = {};
+  for (const r of raw ?? []) {
+    if (!byDate[r.date]) byDate[r.date] = { date: r.date, views: 0, whatsapp_clicks: 0, message_clicks: 0 };
+    byDate[r.date].views += r.views; byDate[r.date].whatsapp_clicks += r.whatsapp_clicks; byDate[r.date].message_clicks += r.message_clicks;
+  }
+  const filled = emptyDays.map((d) => byDate[d.date] ?? d);
+  const totalViews = filled.reduce((a, d) => a + d.views, 0);
+  const totalWA    = filled.reduce((a, d) => a + d.whatsapp_clicks, 0);
+  return { data: filled, active, total, totalViews, totalWA };
+}
+
+async function loadMessagesCount(userId: string): Promise<number> {
+  if (!supabase) return 0;
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 7);
+  const { count } = await supabase.from("messages")
+    .select("id", { count: "exact", head: true })
+    .eq("receiver_id", userId)
+    .gte("created_at", cutoff.toISOString());
+  return count ?? 0;
+}
+
+async function loadRecentLeads(userId: string): Promise<Lead[]> {
+  if (!supabase) return [];
+  try {
+    const { data } = await supabase.from("messages")
+      .select("id, sender_id, property_id, message, created_at")
+      .eq("receiver_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(5);
+    if (!data || data.length === 0) return [];
+    const senderIds = [...new Set(data.map((m) => m.sender_id))];
+    const { data: profiles } = await supabase.from("profiles").select("id, full_name, phone").in("id", senderIds);
+    const pMap: Record<string, { full_name: string | null; phone: string | null }> = {};
+    for (const p of profiles ?? []) pMap[p.id] = p;
+    return data.map((m) => ({
+      id: m.id, sender_id: m.sender_id, property_id: m.property_id,
+      message: m.message, created_at: m.created_at,
+      sender_name: pMap[m.sender_id]?.full_name ?? null,
+      sender_phone: pMap[m.sender_id]?.phone ?? null,
+    }));
+  } catch { return []; }
+}
+
+// ─── DASHBOARD PROPRIÉTAIRE ───────────────────────────────────────────────────
+
+function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
+  user: { id: string; email?: string };
+  profile: ReturnType<typeof useAuth>["profile"];
+  signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
+}) {
+  const [tab, setTab]             = useState("dashboard");
+  const [statsData, setStatsData] = useState<DayStat[]>([]);
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [totalViews, setTotalViews] = useState(0);
+  const [totalWA, setTotalWA]     = useState(0);
+  const [activeCount, setActiveCount] = useState(0);
+  const [msgCount, setMsgCount]   = useState(0);
+
+  const displayName = profile?.full_name?.split(" ")[0] ?? "vous";
+
+  useEffect(() => {
+    Promise.all([
+      loadDayStats(user.id, 7),
+      loadMessagesCount(user.id),
+    ]).then(([{ data, active, totalViews: tv, totalWA: tw }, mc]) => {
+      setStatsData(data); setActiveCount(active); setTotalViews(tv); setTotalWA(tw);
+      setMsgCount(mc); setStatsLoading(false);
+    });
+  }, [user.id]);
+
+  const tabs: DashTab[] = [
+    { key: "dashboard", label: "Tableau de bord", icon: <BarChart2 className="w-4 h-4" /> },
+    { key: "annonces",  label: "Mes annonces",    icon: <Home className="w-4 h-4" /> },
+    { key: "messages",  label: "Messages",        icon: <MessageCircle className="w-4 h-4" /> },
+    { key: "profil",    label: "Profil",          icon: <User className="w-4 h-4" /> },
+  ];
+
+  const initials = (profile?.full_name ?? user.email ?? "?").split(" ").map((w:string) => w[0]).join("").slice(0,2).toUpperCase();
+
+  return (
+    <DashboardLayout tabs={tabs} active={tab} onChange={setTab} signOut={signOut}
+      userName={profile?.full_name ?? user.email ?? "Utilisateur"} userInitials={initials}>
+      {tab === "dashboard" && (
+        <>
+          {/* Page header */}
+          <div className="mb-6">
+            <h1 style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-amber-light)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>
+              Bonjour, {displayName}
+            </h1>
+            <p className="text-sm mt-1" style={{ color: "var(--bl-cream-dim)", fontWeight: 300 }}>Votre activité cette semaine</p>
+            <p className="text-xs mt-0.5 capitalize" style={{ color: "var(--bl-cream-faint)" }}>{todayLabel()}</p>
+          </div>
+
+          {statsLoading ? (
+            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(200,144,30,0.20)", borderRadius: "0 12px 12px 0", background: "rgba(240,230,204,0.04)" }} />)}</div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <StatCard label="Vues 7 jours" value={totalViews} sub="toutes annonces" borderColor="#c8901e" />
+                <StatCard label="Clics WhatsApp" value={totalWA} sub="7 derniers jours" borderColor="#6ec97a" />
+                <StatCard label="Messages reçus" value={msgCount} sub="cette semaine" borderColor="#daa84a" />
+                <StatCard label="Annonces actives" value={activeCount} sub="sur 5 max" borderColor="#6ec97a" />
+              </div>
+
+              <ChartCard title="Vues par jour — 7 jours">
+                <BarChart data={statsData.map((d) => ({ ...d, label: fmtDate(d.date) }))} margin={{ top: 4, right: 0, left: -20, bottom: 0 }}>
+                  <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
+                  <YAxis tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
+                  <Tooltip {...CHART_STYLE} />
+                  <Bar dataKey="views" name="Vues" fill="#c8901e" activeBar={{ fill: "#daa84a" }} radius={[4,4,0,0]} />
+                </BarChart>
+              </ChartCard>
+
+              <SectionHeader title="Mes annonces" action={
+                <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "#fff" }}>
+                  <Plus className="w-3.5 h-3.5" /> Publier
+                </Link>
+              } />
+              <ListingsManager userId={user.id} limit={3} />
+            </>
+          )}
+        </>
+      )}
+      {tab === "annonces" && (
+        <>
+          <SectionHeader title="Mes annonces" action={
+            <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "#fff" }}>
+              <Plus className="w-3.5 h-3.5" /> Publier
+            </Link>
+          } />
+          <ListingsManager userId={user.id} />
+        </>
+      )}
+      {tab === "messages" && (
+        <Link href="/messages" className="flex items-center justify-between rounded-2xl p-5" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+          <div className="flex items-center gap-3"><MessageCircle className="w-6 h-6 text-blue-400" /><div><p className="font-bold" style={{ color: "var(--bl-cream)" }}>Mes messages</p><p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Ouvrir la messagerie</p></div></div>
+          <ChevronRight className="w-5 h-5" style={{ color: "var(--bl-cream-faint)" }} />
+        </Link>
+      )}
+      {tab === "profil" && <><SectionHeader title="Mon profil" /><ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} /></>}
+    </DashboardLayout>
+  );
+}
+
 // ─── DASHBOARD CHERCHEUR ──────────────────────────────────────────────────────
 
 function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
@@ -432,15 +647,15 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }) {
-  const [tab, setTab]               = useState("recherches");
-  const [searches, setSearches]     = useState<SavedSearch[]>([]);
+  const [tab, setTab]             = useState("recherches");
+  const [searches, setSearches]   = useState<SavedSearch[]>([]);
   const [searchesLoading, setSearchesLoading] = useState(true);
-  const [showNew, setShowNew]       = useState(false);
-  const [newLabel, setNewLabel]     = useState("");
+  const [showNew, setShowNew]     = useState(false);
+  const [newLabel, setNewLabel]   = useState("");
   const [newNeighborhood, setNewNeighborhood] = useState("");
-  const [newType, setNewType]       = useState("");
-  const [newTx, setNewTx]           = useState("");
-  const [saving, setSaving]         = useState(false);
+  const [newType, setNewType]     = useState("");
+  const [newTx, setNewTx]         = useState("");
+  const [saving, setSaving]       = useState(false);
 
   const load = useCallback(async () => {
     if (!supabase) return;
@@ -484,23 +699,25 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
     borderRadius: 12, padding: "10px 14px", color: "var(--bl-cream)", fontSize: 14, width: "100%", outline: "none",
   };
 
-  const tabs: Tab[] = [
-    { key: "recherches", label: "Recherches",  icon: <Search className="w-3.5 h-3.5" /> },
-    { key: "favoris",    label: "Favoris",     icon: <Heart className="w-3.5 h-3.5" /> },
-    { key: "messages",   label: "Messages",    icon: <MessageCircle className="w-3.5 h-3.5" /> },
-    { key: "profil",     label: "Profil",      icon: <User className="w-3.5 h-3.5" /> },
+  const tabs: DashTab[] = [
+    { key: "recherches", label: "Recherches",  icon: <Search className="w-4 h-4" /> },
+    { key: "favoris",    label: "Favoris",     icon: <Heart className="w-4 h-4" /> },
+    { key: "messages",   label: "Messages",    icon: <MessageCircle className="w-4 h-4" /> },
+    { key: "profil",     label: "Profil",      icon: <User className="w-4 h-4" /> },
   ];
 
+  const initials = (profile?.full_name ?? user.email ?? "?").split(" ").map((w:string) => w[0]).join("").slice(0,2).toUpperCase();
+
   return (
-    <DashboardShell tabs={tabs} active={tab} onChange={setTab} signOut={signOut}>
+    <DashboardLayout tabs={tabs} active={tab} onChange={setTab} signOut={signOut}
+      userName={profile?.full_name ?? user.email ?? "Utilisateur"} userInitials={initials}>
       {tab === "recherches" && (
         <div>
-          <div className="flex items-center justify-between mb-5">
-            <SectionTitle>Recherches sauvegardées</SectionTitle>
-            <button onClick={() => setShowNew(true)} className="flex items-center gap-1.5 text-xs font-bold hover:underline" style={{ color: "var(--bl-amber)" }}>
+          <SectionHeader title="Votre espace recherche" subtitle="Gérez vos critères et alertes" action={
+            <button onClick={() => setShowNew(true)} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "#fff" }}>
               <Plus className="w-3.5 h-3.5" /> Nouvelle
             </button>
-          </div>
+          } />
           {showNew && (
             <div className="rounded-2xl p-4 mb-4" style={{ background: "var(--bl-surface)", border: "1px solid rgba(200,144,30,0.30)" }}>
               <p className="font-bold text-sm mb-3" style={{ color: "var(--bl-cream)" }}>Nouvelle recherche</p>
@@ -542,7 +759,7 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
           ) : (
             <div className="space-y-3">
               {searches.map((s) => (
-                <div key={s.id} className="rounded-2xl p-4" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+                <div key={s.id} className="rounded-2xl p-4" style={{ background: "var(--bl-surface)", borderLeft: "3px solid var(--bl-amber)", borderRadius: "0 16px 16px 0" }}>
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <p className="font-bold text-sm" style={{ color: "var(--bl-cream)" }}>{s.label}</p>
                     <button onClick={() => deleteSearch(s.id)} style={{ color: "var(--bl-cream-faint)" }} className="hover:text-red-400 transition-colors flex-shrink-0"><Trash2 className="w-4 h-4" /></button>
@@ -553,10 +770,10 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
                     {s.transaction_type && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "rgba(240,230,204,0.07)", color: "var(--bl-cream-dim)" }}>{s.transaction_type === "rent" ? "Location" : "Vente"}</span>}
                   </div>
                   <div className="flex items-center gap-2">
-                    <Link href={buildUrl(s)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-colors" style={{ background: "rgba(200,144,30,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.25)" }}>
+                    <Link href={buildUrl(s)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold" style={{ background: "rgba(200,144,30,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.25)" }}>
                       Voir les annonces <ChevronRight className="w-3.5 h-3.5" />
                     </Link>
-                    <button onClick={() => toggleNotify(s)} className="flex items-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-colors"
+                    <button onClick={() => toggleNotify(s)} className="flex items-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold"
                       style={s.notify_whatsapp ? { background: "rgba(110,201,122,0.12)", color: "#6ec97a", border: "1px solid rgba(110,201,122,0.25)" } : { background: "rgba(240,230,204,0.05)", color: "var(--bl-cream-faint)", border: "1px solid var(--bl-border)" }}>
                       {s.notify_whatsapp ? <Bell className="w-3.5 h-3.5" /> : <BellOff className="w-3.5 h-3.5" />} Alerte
                     </button>
@@ -569,127 +786,30 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
       )}
 
       {tab === "favoris" && (
-        <Link href="/favoris" className="flex items-center justify-between rounded-2xl p-5 transition-colors" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}
-          onMouseEnter={(e) => e.currentTarget.style.borderColor = "var(--bl-amber)"} onMouseLeave={(e) => e.currentTarget.style.borderColor = "var(--bl-border)"}>
-          <div className="flex items-center gap-3">
-            <Heart className="w-6 h-6 text-red-400" />
-            <div><p className="font-bold" style={{ color: "var(--bl-cream)" }}>Mes favoris</p><p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Voir mes annonces sauvegardées</p></div>
-          </div>
-          <ChevronRight className="w-5 h-5" style={{ color: "var(--bl-cream-faint)" }} />
-        </Link>
+        <div>
+          <SectionHeader title="Mes favoris" />
+          <Link href="/favoris" className="flex items-center justify-between rounded-2xl p-5" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+            <div className="flex items-center gap-3">
+              <Heart className="w-6 h-6 text-red-400" />
+              <div><p className="font-bold" style={{ color: "var(--bl-cream)" }}>Mes annonces sauvegardées</p><p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Voir tous mes favoris</p></div>
+            </div>
+            <ChevronRight className="w-5 h-5" style={{ color: "var(--bl-cream-faint)" }} />
+          </Link>
+        </div>
       )}
 
       {tab === "messages" && (
-        <Link href="/messages" className="flex items-center justify-between rounded-2xl p-5 transition-colors" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}
-          onMouseEnter={(e) => e.currentTarget.style.borderColor = "var(--bl-amber)"} onMouseLeave={(e) => e.currentTarget.style.borderColor = "var(--bl-border)"}>
-          <div className="flex items-center gap-3">
-            <MessageCircle className="w-6 h-6 text-blue-400" />
-            <div><p className="font-bold" style={{ color: "var(--bl-cream)" }}>Mes messages</p><p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Ouvrir la messagerie</p></div>
-          </div>
-          <ChevronRight className="w-5 h-5" style={{ color: "var(--bl-cream-faint)" }} />
-        </Link>
+        <div>
+          <SectionHeader title="Messages" />
+          <Link href="/messages" className="flex items-center justify-between rounded-2xl p-5" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+            <div className="flex items-center gap-3"><MessageCircle className="w-6 h-6 text-blue-400" /><div><p className="font-bold" style={{ color: "var(--bl-cream)" }}>Mes messages</p><p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Ouvrir la messagerie</p></div></div>
+            <ChevronRight className="w-5 h-5" style={{ color: "var(--bl-cream-faint)" }} />
+          </Link>
+        </div>
       )}
 
-      {tab === "profil" && <ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} />}
-    </DashboardShell>
-  );
-}
-
-// ─── Stats loader helper ──────────────────────────────────────────────────────
-
-async function loadDayStats(userId: string, days: number): Promise<{ data: DayStat[]; active: number; total: number; totalViews: number; totalWA: number }> {
-  if (!supabase) return { data: [], active: 0, total: 0, totalViews: 0, totalWA: 0 };
-  const { data: props } = await supabase.from("properties").select("id,available_now").eq("owner_id", userId);
-  const ids = (props ?? []).map((p: { id: string }) => p.id);
-  const active = (props ?? []).filter((p: { available_now: boolean }) => p.available_now).length;
-  const total = (props ?? []).length;
-  if (ids.length === 0) return { data: Array.from({ length: days }, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (days - 1 - i)); return { date: d.toISOString().split("T")[0], views: 0, whatsapp_clicks: 0, message_clicks: 0 }; }), active, total, totalViews: 0, totalWA: 0 };
-  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - (days - 1));
-  const { data: raw } = await supabase.from("listing_stats").select("date,views,whatsapp_clicks,message_clicks").in("property_id", ids).gte("date", cutoff.toISOString().split("T")[0]).order("date");
-  const byDate: Record<string, DayStat> = {};
-  for (const r of raw ?? []) {
-    if (!byDate[r.date]) byDate[r.date] = { date: r.date, views: 0, whatsapp_clicks: 0, message_clicks: 0 };
-    byDate[r.date].views += r.views; byDate[r.date].whatsapp_clicks += r.whatsapp_clicks; byDate[r.date].message_clicks += r.message_clicks;
-  }
-  const filled: DayStat[] = Array.from({ length: days }, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (days - 1 - i)); const key = d.toISOString().split("T")[0]; return byDate[key] ?? { date: key, views: 0, whatsapp_clicks: 0, message_clicks: 0 }; });
-  const totalViews = filled.reduce((a, d) => a + d.views, 0);
-  const totalWA    = filled.reduce((a, d) => a + d.whatsapp_clicks, 0);
-  return { data: filled, active, total, totalViews, totalWA };
-}
-
-// ─── DASHBOARD PROPRIÉTAIRE ───────────────────────────────────────────────────
-
-function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
-  user: { id: string; email?: string };
-  profile: ReturnType<typeof useAuth>["profile"];
-  signOut: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
-}) {
-  const [tab, setTab]               = useState("dashboard");
-  const [statsData, setStatsData]   = useState<DayStat[]>([]);
-  const [statsLoading, setStatsLoading] = useState(true);
-  const [totalViews, setTotalViews] = useState(0);
-  const [totalWA, setTotalWA]       = useState(0);
-  const [activeCount, setActiveCount] = useState(0);
-
-  useEffect(() => {
-    loadDayStats(user.id, 7).then(({ data, active, totalViews: tv, totalWA: tw }) => {
-      setStatsData(data); setActiveCount(active); setTotalViews(tv); setTotalWA(tw); setStatsLoading(false);
-    });
-  }, [user.id]);
-
-  const tabs: Tab[] = [
-    { key: "dashboard", label: "Tableau de bord", icon: <BarChart2 className="w-3.5 h-3.5" /> },
-    { key: "annonces",  label: "Mes annonces",    icon: <Home className="w-3.5 h-3.5" /> },
-    { key: "messages",  label: "Messages",        icon: <MessageCircle className="w-3.5 h-3.5" /> },
-    { key: "profil",    label: "Profil",          icon: <User className="w-3.5 h-3.5" /> },
-  ];
-
-  return (
-    <DashboardShell tabs={tabs} active={tab} onChange={setTab} signOut={signOut}>
-      {tab === "dashboard" && (
-        <>
-          <SectionTitle>Tableau de bord</SectionTitle>
-          {statsLoading ? (
-            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4].map((i) => <div key={i} className="h-24 rounded-r-2xl animate-pulse" style={{ background: "rgba(240,230,204,0.04)", borderLeft: "3px solid rgba(200,144,30,0.20)" }} />)}</div>
-          ) : (
-            <>
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <StatCard label="Vues (7 jours)" value={totalViews} sub="toutes annonces" />
-                <StatCard label="Clics WhatsApp" value={totalWA} sub="7 derniers jours" />
-                <StatCard label="Annonces actives" value={activeCount} />
-                <StatCard label="Messages" value="—" sub={<Link href="/messages" style={{ color: "var(--bl-amber)" }}>Voir →</Link>} />
-              </div>
-              <ChartCard title="Vues par jour (7 jours)">
-                <BarChart data={statsData.map((d) => ({ ...d, label: fmtDate(d.date) }))} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(240,230,204,0.05)" />
-                  <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
-                  <YAxis tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
-                  <Tooltip {...CHART_STYLE} />
-                  <Bar dataKey="views" name="Vues" fill="var(--bl-amber)" radius={[4,4,0,0]} />
-                </BarChart>
-              </ChartCard>
-              <SectionLabel>Annonces récentes</SectionLabel>
-              <ListingsManager userId={user.id} limit={3} />
-            </>
-          )}
-        </>
-      )}
-      {tab === "annonces" && (
-        <>
-          <SectionTitle>Mes annonces</SectionTitle>
-          <ListingsManager userId={user.id} />
-        </>
-      )}
-      {tab === "messages" && (
-        <Link href="/messages" className="flex items-center justify-between rounded-2xl p-5 transition-colors" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}
-          onMouseEnter={(e) => e.currentTarget.style.borderColor = "var(--bl-amber)"} onMouseLeave={(e) => e.currentTarget.style.borderColor = "var(--bl-border)"}>
-          <div className="flex items-center gap-3"><MessageCircle className="w-6 h-6 text-blue-400" /><div><p className="font-bold" style={{ color: "var(--bl-cream)" }}>Mes messages</p><p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Ouvrir la messagerie</p></div></div>
-          <ChevronRight className="w-5 h-5" style={{ color: "var(--bl-cream-faint)" }} />
-        </Link>
-      )}
-      {tab === "profil" && <><SectionTitle>Mon profil</SectionTitle><ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} /></>}
-    </DashboardShell>
+      {tab === "profil" && <><SectionHeader title="Mon profil" /><ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} /></>}
+    </DashboardLayout>
   );
 }
 
@@ -701,103 +821,190 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }) {
-  const [tab, setTab]               = useState("dashboard");
-  const [statsData, setStatsData]   = useState<DayStat[]>([]);
+  const [tab, setTab]             = useState("dashboard");
+  const [statsData, setStatsData] = useState<DayStat[]>([]);
   const [statsLoading, setStatsLoading] = useState(true);
   const [totalViews, setTotalViews] = useState(0);
-  const [totalWA, setTotalWA]       = useState(0);
+  const [totalWA, setTotalWA]     = useState(0);
   const [activeCount, setActiveCount] = useState(0);
+  const [msgCount, setMsgCount]   = useState(0);
+  const [leads, setLeads]         = useState<Lead[]>([]);
+  const [leadsLoading, setLeadsLoading] = useState(true);
 
   useEffect(() => {
-    loadDayStats(user.id, 30).then(({ data, active, totalViews: tv, totalWA: tw }) => {
-      setStatsData(data); setActiveCount(active); setTotalViews(tv); setTotalWA(tw); setStatsLoading(false);
+    Promise.all([
+      loadDayStats(user.id, 30),
+      loadMessagesCount(user.id),
+    ]).then(([{ data, active, totalViews: tv, totalWA: tw }, mc]) => {
+      setStatsData(data); setActiveCount(active); setTotalViews(tv); setTotalWA(tw);
+      setMsgCount(mc); setStatsLoading(false);
     });
+    loadRecentLeads(user.id).then((l) => { setLeads(l); setLeadsLoading(false); });
   }, [user.id]);
 
-  const tabs: Tab[] = [
-    { key: "dashboard",    label: "Dashboard",    icon: <BarChart2 className="w-3.5 h-3.5" /> },
-    { key: "annonces",     label: "Annonces",     icon: <Home className="w-3.5 h-3.5" /> },
-    { key: "leads",        label: "Leads",        icon: <Phone className="w-3.5 h-3.5" /> },
-    { key: "statistiques", label: "Statistiques", icon: <TrendingUp className="w-3.5 h-3.5" /> },
-    { key: "profil",       label: "Profil",       icon: <User className="w-3.5 h-3.5" /> },
+  const tabs: DashTab[] = [
+    { key: "dashboard",    label: "Dashboard",    icon: <BarChart2 className="w-4 h-4" /> },
+    { key: "annonces",     label: "Annonces",     icon: <Home className="w-4 h-4" /> },
+    { key: "leads",        label: "Leads",        icon: <Phone className="w-4 h-4" /> },
+    { key: "statistiques", label: "Statistiques", icon: <TrendingUp className="w-4 h-4" /> },
+    { key: "profil",       label: "Profil",       icon: <User className="w-4 h-4" /> },
   ];
 
-  const chartData = statsData.filter((_, i) => i % 3 === 0).map((d) => ({ ...d, label: fmtDate(d.date) }));
+  const initials = (profile?.full_name ?? user.email ?? "?").split(" ").map((w:string) => w[0]).join("").slice(0,2).toUpperCase();
+  const chartLine = statsData.map((d) => ({ ...d, label: fmtDate(d.date) }));
+  const chartSampled = chartLine.filter((_, i) => i % 3 === 0);
 
   return (
-    <DashboardShell tabs={tabs} active={tab} onChange={setTab} signOut={signOut}>
+    <DashboardLayout tabs={tabs} active={tab} onChange={setTab} signOut={signOut}
+      userName={profile?.full_name ?? user.email ?? "Utilisateur"} userInitials={initials}
+      userBadge={profile?.is_verified_pro ? "Agent Pro" : undefined}>
       {tab === "dashboard" && (
         <>
-          <SectionTitle>Dashboard agent</SectionTitle>
+          <div className="mb-6">
+            <h1 style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-amber-light)", fontSize: 26, fontWeight: 700 }}>
+              Tableau de bord Agent
+            </h1>
+            <p className="text-sm mt-1" style={{ color: "var(--bl-cream-dim)", fontWeight: 300 }}>Performance sur 30 jours</p>
+          </div>
+
           {statsLoading ? (
-            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4].map((i) => <div key={i} className="h-24 rounded-r-2xl animate-pulse" style={{ background: "rgba(240,230,204,0.04)", borderLeft: "3px solid rgba(200,144,30,0.20)" }} />)}</div>
+            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4,5].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(200,144,30,0.20)", borderRadius: "0 12px 12px 0", background: "rgba(240,230,204,0.04)" }} />)}</div>
           ) : (
             <>
               <div className="grid grid-cols-2 gap-3 mb-6">
-                <StatCard label="Vues ce mois" value={totalViews} />
-                <StatCard label="Contacts WhatsApp" value={totalWA} />
-                <StatCard label="Annonces actives" value={activeCount} />
-                {profile?.is_verified_pro
-                  ? <StatCard label="Statut" value="✓ Pro" sub="Agent vérifié" />
-                  : <StatCard label="Messages" value="—" sub={<Link href="/messages" style={{ color: "var(--bl-amber)" }}>Voir →</Link>} />}
+                <StatCard label="Vues ce mois"  value={totalViews}  borderColor="#c8901e" />
+                <StatCard label="Clics WhatsApp" value={totalWA}    borderColor="#6ec97a" />
+                <StatCard label="Messages reçus" value={msgCount}   borderColor="#daa84a" />
+                <StatCard label="Annonces actives" value={activeCount} borderColor="#6ec97a" />
+                <StatCard label="Statut" value={profile?.is_verified_pro ? "✓ Pro" : "Agent"} sub={profile?.is_verified_pro ? "Vérifié" : "Standard"} borderColor="#daa84a" />
               </div>
-              <ChartCard title="Vues sur 30 jours">
-                <BarChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(240,230,204,0.05)" />
-                  <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
+
+              <ChartCard title="Vues sur 30 jours (LineChart)" height={160}>
+                <LineChart data={chartLine} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+                  <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false}
+                    ticks={chartSampled.map((d) => d.label)} />
                   <YAxis tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
                   <Tooltip {...CHART_STYLE} />
-                  <Bar dataKey="views" name="Vues" fill="var(--bl-amber)" radius={[3,3,0,0]} />
-                </BarChart>
+                  <Line type="monotone" dataKey="views" name="Vues" stroke="#c8901e" strokeWidth={2}
+                    dot={{ fill: "#daa84a", r: 3, strokeWidth: 0 }}
+                    activeDot={{ r: 5, fill: "#daa84a" }} />
+                </LineChart>
               </ChartCard>
-              <SectionLabel>Annonces récentes</SectionLabel>
-              <ListingsManager userId={user.id} limit={3} />
+
+              <SectionHeader title="Derniers leads" subtitle="5 contacts les plus récents" action={
+                <Link href="/messages" className="text-xs font-bold" style={{ color: "var(--bl-amber)" }}>Tout voir →</Link>
+              } />
+              {leadsLoading ? (
+                <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "rgba(240,230,204,0.04)" }} />)}</div>
+              ) : leads.length === 0 ? (
+                <div className="text-center py-10 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
+                  <Phone className="w-7 h-7 mx-auto mb-2" style={{ color: "var(--bl-cream-faint)" }} />
+                  <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Aucun lead pour l&apos;instant.</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {leads.map((lead) => {
+                    const name = lead.sender_name ?? "Inconnu";
+                    const ini  = name.split(" ").map((w:string) => w[0]).join("").slice(0,2).toUpperCase();
+                    const wa   = lead.sender_phone?.replace(/\D/g, "");
+                    return (
+                      <div key={lead.id} className="flex items-center gap-3 rounded-xl p-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+                        <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                          style={{ background: "rgba(200,144,30,0.20)", color: "var(--bl-amber-light)" }}>{ini}</div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold truncate" style={{ color: "var(--bl-cream)" }}>{name}</p>
+                          <p className="text-xs truncate" style={{ color: "var(--bl-cream-faint)" }}>{lead.message}</p>
+                        </div>
+                        <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                          <p className="text-[10px]" style={{ color: "var(--bl-cream-faint)" }}>{fmtTime(lead.created_at)}</p>
+                          {wa && (
+                            <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
+                              className="text-[11px] font-bold px-2 py-1 rounded-lg"
+                              style={{ background: "rgba(37,211,102,0.12)", color: "#25D366", border: "1px solid rgba(37,211,102,0.20)" }}>
+                              WA
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </>
           )}
         </>
       )}
-      {tab === "annonces" && <><SectionTitle>Mes annonces</SectionTitle><ListingsManager userId={user.id} /></>}
+      {tab === "annonces" && <><SectionHeader title="Mes annonces" /><ListingsManager userId={user.id} /></>}
       {tab === "leads" && (
-        <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
-          <Phone className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
-          <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Historique des leads</p>
-          <p className="text-sm mb-4" style={{ color: "var(--bl-cream-faint)" }}>Les contacts WhatsApp et messages apparaîtront ici.</p>
-          <Link href="/messages" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm" style={{ background: "rgba(200,144,30,0.15)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.30)" }}>Voir les messages</Link>
-        </div>
+        <>
+          <SectionHeader title="Leads" subtitle="Tous vos contacts reçus" />
+          {leadsLoading ? (
+            <div className="space-y-2">{[1,2,3,4,5].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "rgba(240,230,204,0.04)" }} />)}</div>
+          ) : leads.length === 0 ? (
+            <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
+              <Phone className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
+              <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Historique des leads</p>
+              <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Les contacts apparaîtront ici.</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {leads.map((lead) => {
+                const name = lead.sender_name ?? "Inconnu";
+                const ini  = name.split(" ").map((w:string) => w[0]).join("").slice(0,2).toUpperCase();
+                const wa   = lead.sender_phone?.replace(/\D/g, "");
+                return (
+                  <div key={lead.id} className="flex items-center gap-3 rounded-xl p-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                      style={{ background: "rgba(200,144,30,0.20)", color: "var(--bl-amber-light)" }}>{ini}</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold truncate" style={{ color: "var(--bl-cream)" }}>{name}</p>
+                      <p className="text-xs truncate" style={{ color: "var(--bl-cream-faint)" }}>{lead.message}</p>
+                    </div>
+                    {wa && (
+                      <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
+                        className="text-xs font-bold px-3 py-1.5 rounded-lg flex-shrink-0"
+                        style={{ background: "#25D366", color: "#fff" }}>
+                        Contacter
+                      </a>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
       {tab === "statistiques" && (
         <>
-          <SectionTitle>Statistiques</SectionTitle>
-          <ChartCard title="Vues + WhatsApp sur 30 jours" height={200}>
-            <BarChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(240,230,204,0.05)" />
-              <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
+          <SectionHeader title="Statistiques" subtitle="30 derniers jours" />
+          <ChartCard title="Vues + Contacts WhatsApp" height={200}>
+            <LineChart data={chartLine} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+              <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} ticks={chartSampled.map((d) => d.label)} />
               <YAxis tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
               <Tooltip {...CHART_STYLE} />
-              <Bar dataKey="views" name="Vues" fill="var(--bl-amber)" radius={[3,3,0,0]} />
-              <Bar dataKey="whatsapp_clicks" name="WhatsApp" fill="#25D366" radius={[3,3,0,0]} />
-            </BarChart>
+              <Line type="monotone" dataKey="views" name="Vues" stroke="#c8901e" strokeWidth={2} dot={false} />
+              <Line type="monotone" dataKey="whatsapp_clicks" name="WhatsApp" stroke="#25D366" strokeWidth={2} dot={false} />
+            </LineChart>
           </ChartCard>
         </>
       )}
       {tab === "profil" && (
         <>
-          <SectionTitle>Mon profil</SectionTitle>
+          <SectionHeader title="Mon profil" />
           {profile?.is_verified_pro && (
             <div className="flex items-center gap-2 mb-4 px-3 py-2.5 rounded-xl" style={{ background: "rgba(200,144,30,0.10)", border: "1px solid rgba(200,144,30,0.25)" }}>
               <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: "var(--bl-amber)" }} />
               <p className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>Agent professionnel vérifié</p>
             </div>
           )}
-          <Link href={`/agents/${user.id}`} className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4 transition-colors" style={{ background: "rgba(200,144,30,0.07)", border: "1px solid rgba(200,144,30,0.20)" }}
-            onMouseEnter={(e) => e.currentTarget.style.borderColor = "var(--bl-amber)"} onMouseLeave={(e) => e.currentTarget.style.borderColor = "rgba(200,144,30,0.20)"}>
+          <Link href={`/agents/${user.id}`} className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4" style={{ background: "rgba(200,144,30,0.07)", border: "1px solid rgba(200,144,30,0.20)" }}>
             <span className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>Voir mon profil public</span>
             <ChevronRight className="w-4 h-4" style={{ color: "var(--bl-amber)" }} />
           </Link>
           <ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} />
         </>
       )}
-    </DashboardShell>
+    </DashboardLayout>
   );
 }
 
@@ -809,90 +1016,176 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }) {
-  const [tab, setTab]               = useState("dashboard");
-  const [statsData, setStatsData]   = useState<DayStat[]>([]);
+  const [tab, setTab]             = useState("dashboard");
+  const [statsData, setStatsData] = useState<DayStat[]>([]);
   const [statsLoading, setStatsLoading] = useState(true);
   const [totalViews, setTotalViews] = useState(0);
-  const [totalWA, setTotalWA]       = useState(0);
+  const [totalWA, setTotalWA]     = useState(0);
   const [activeCount, setActiveCount] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
+  const [msgCount, setMsgCount]   = useState(0);
+  const [leads, setLeads]         = useState<Lead[]>([]);
 
   useEffect(() => {
-    loadDayStats(user.id, 30).then(({ data, active, total, totalViews: tv, totalWA: tw }) => {
-      setStatsData(data); setActiveCount(active); setTotalCount(total); setTotalViews(tv); setTotalWA(tw); setStatsLoading(false);
+    Promise.all([
+      loadDayStats(user.id, 30),
+      loadMessagesCount(user.id),
+      loadRecentLeads(user.id),
+    ]).then(([{ data, active, total, totalViews: tv, totalWA: tw }, mc, ls]) => {
+      setStatsData(data); setActiveCount(active); setTotalCount(total);
+      setTotalViews(tv); setTotalWA(tw); setMsgCount(mc); setLeads(ls); setStatsLoading(false);
     });
   }, [user.id]);
 
-  const tabs: Tab[] = [
-    { key: "dashboard", label: "Dashboard",     icon: <BarChart2 className="w-3.5 h-3.5" /> },
-    { key: "annonces",  label: "Annonces",      icon: <Home className="w-3.5 h-3.5" /> },
-    { key: "equipe",    label: "Équipe",        icon: <Building2 className="w-3.5 h-3.5" /> },
-    { key: "leads",     label: "Leads",         icon: <Phone className="w-3.5 h-3.5" /> },
-    { key: "stats",     label: "Statistiques",  icon: <TrendingUp className="w-3.5 h-3.5" /> },
-    { key: "profil",    label: "Profil agence", icon: <User className="w-3.5 h-3.5" /> },
+  const tabs: DashTab[] = [
+    { key: "dashboard", label: "Dashboard",     icon: <BarChart2 className="w-4 h-4" /> },
+    { key: "annonces",  label: "Annonces",      icon: <Home className="w-4 h-4" /> },
+    { key: "equipe",    label: "Équipe",        icon: <Building2 className="w-4 h-4" /> },
+    { key: "leads",     label: "Leads",         icon: <Phone className="w-4 h-4" /> },
+    { key: "stats",     label: "Statistiques",  icon: <TrendingUp className="w-4 h-4" /> },
+    { key: "profil",    label: "Profil agence", icon: <User className="w-4 h-4" /> },
   ];
 
-  const chartData = statsData.filter((_, i) => i % 5 === 0).map((d) => ({ ...d, label: fmtDate(d.date) }));
+  const agencyName = profile?.agency_name ?? profile?.full_name ?? "Agence";
+  const initials = agencyName.slice(0,2).toUpperCase();
+  const chartData = statsData.map((d) => ({ ...d, label: fmtDate(d.date) }));
+  const chartSampled = chartData.filter((_, i) => i % 5 === 0);
+
+  function exportCSV() {
+    const rows = leads.map((l) => [
+      l.sender_name ?? "Inconnu",
+      l.sender_phone ?? "",
+      l.message.replace(/,/g, " "),
+      new Date(l.created_at).toLocaleDateString("fr-FR"),
+    ]);
+    const csv = ["Nom,Téléphone,Message,Date", ...rows.map((r) => r.join(","))].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href = url; a.download = "leads-bienloger.csv"; a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
-    <DashboardShell tabs={tabs} active={tab} onChange={setTab} signOut={signOut}>
+    <DashboardLayout tabs={tabs} active={tab} onChange={setTab} signOut={signOut}
+      userName={agencyName} userInitials={initials}
+      userBadge={profile?.is_verified_pro ? "Agence Premium" : undefined}>
       {tab === "dashboard" && (
         <>
-          <SectionTitle>Dashboard agence</SectionTitle>
+          <div className="mb-6">
+            <h1 style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-amber-light)", fontSize: 26, fontWeight: 700 }}>
+              Dashboard agence
+            </h1>
+            <p className="text-sm mt-1" style={{ color: "var(--bl-cream-dim)", fontWeight: 300 }}>Performance sur 30 jours</p>
+          </div>
+
           {statsLoading ? (
-            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4,5,6].map((i) => <div key={i} className="h-24 rounded-r-2xl animate-pulse" style={{ background: "rgba(240,230,204,0.04)", borderLeft: "3px solid rgba(200,144,30,0.20)" }} />)}</div>
+            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4,5,6].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(200,144,30,0.20)", borderRadius: "0 12px 12px 0", background: "rgba(240,230,204,0.04)" }} />)}</div>
           ) : (
             <>
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <StatCard label="Vues totales (30j)" value={totalViews} />
-                <StatCard label="Annonces actives" value={activeCount} sub={`${totalCount} au total`} />
-                <StatCard label="Contacts WhatsApp" value={totalWA} sub="30 derniers jours" />
-                <StatCard label="Agents" value="—" sub="Bientôt disponible" />
-                <StatCard label="Leads" value="—" sub={<Link href="/messages" style={{ color: "var(--bl-amber)" }}>Voir messages →</Link>} />
-                <StatCard label="Note agence" value="—" sub="Bientôt" />
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+                <StatCard label="Vues totales (30j)"   value={totalViews}  borderColor="#c8901e" />
+                <StatCard label="Annonces actives"     value={activeCount} sub={`${totalCount} au total`} borderColor="#6ec97a" />
+                <StatCard label="Contacts WhatsApp"    value={totalWA}     sub="30 derniers jours" borderColor="#6ec97a" />
+                <StatCard label="Messages reçus"       value={msgCount}    sub="ce mois" borderColor="#daa84a" />
+                <StatCard label="Leads"                value={leads.length} sub={<Link href="/messages" style={{ color: "var(--bl-amber)" }}>Voir messages →</Link>} borderColor="#c8901e" />
+                <StatCard label="Statut"               value={profile?.is_verified_pro ? "Premium ✓" : "Agence"} sub="Plan actuel" borderColor="#daa84a" />
               </div>
-              <ChartCard title="Performance 30 jours">
-                <BarChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(240,230,204,0.05)" />
-                  <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
+
+              <ChartCard title="Performance 30 jours" height={160}>
+                <BarChart data={chartData} margin={{ top: 4, right: 0, left: -20, bottom: 0 }}>
+                  <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} ticks={chartSampled.map((d) => d.label)} />
                   <YAxis tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
                   <Tooltip {...CHART_STYLE} />
-                  <Bar dataKey="views" name="Vues" fill="var(--bl-amber)" radius={[3,3,0,0]} />
+                  <Bar dataKey="views" name="Vues" fill="#c8901e" radius={[3,3,0,0]} />
                   <Bar dataKey="whatsapp_clicks" name="WhatsApp" fill="#25D366" radius={[3,3,0,0]} />
                 </BarChart>
               </ChartCard>
-              <SectionLabel>Top annonces</SectionLabel>
+
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="bl-section-title">Top annonces</h2>
+                <button onClick={exportCSV} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
+                  style={{ background: "rgba(200,144,30,0.10)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.25)" }}>
+                  <Download className="w-3.5 h-3.5" /> Exporter CSV
+                </button>
+              </div>
               <ListingsManager userId={user.id} limit={3} />
             </>
           )}
         </>
       )}
-      {tab === "annonces" && <><SectionTitle>Toutes les annonces</SectionTitle><ListingsManager userId={user.id} /></>}
+      {tab === "annonces" && <><SectionHeader title="Toutes les annonces" /><ListingsManager userId={user.id} /></>}
       {tab === "equipe" && (
-        <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
-          <Building2 className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
-          <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Gestion de l&apos;équipe</p>
-          <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Inviter et gérer vos agents — disponible prochainement.</p>
-        </div>
+        <>
+          <SectionHeader title="Performance équipe" subtitle="Bientôt disponible" />
+          <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--bl-border)" }}>
+            <div className="grid grid-cols-4 text-[11px] font-bold px-4 py-2.5" style={{ background: "var(--bl-surface-2)", color: "var(--bl-cream-faint)", letterSpacing: "1px", textTransform: "uppercase" }}>
+              <span>Agent</span><span className="text-right">Annonces</span><span className="text-right">Vues</span><span className="text-right">Leads</span>
+            </div>
+            <div className="py-10 text-center" style={{ background: "var(--bl-surface)" }}>
+              <Building2 className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
+              <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Gestion multi-agents disponible prochainement.</p>
+            </div>
+          </div>
+        </>
       )}
       {tab === "leads" && (
-        <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
-          <Phone className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
-          <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Leads de l&apos;agence</p>
-          <p className="text-sm mb-4" style={{ color: "var(--bl-cream-faint)" }}>Tous vos contacts reçus en un seul endroit.</p>
-          <Link href="/messages" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm" style={{ background: "rgba(200,144,30,0.15)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.30)" }}>Voir les messages</Link>
-        </div>
+        <>
+          <SectionHeader title="Leads de l'agence" subtitle="Contacts reçus récemment" action={
+            leads.length > 0 ? (
+              <button onClick={exportCSV} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg"
+                style={{ background: "rgba(200,144,30,0.10)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.25)" }}>
+                <Download className="w-3.5 h-3.5" /> CSV
+              </button>
+            ) : undefined
+          } />
+          {leads.length === 0 ? (
+            <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
+              <Phone className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
+              <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucun lead</p>
+              <p className="text-sm mb-4" style={{ color: "var(--bl-cream-faint)" }}>Tous vos contacts reçus apparaîtront ici.</p>
+              <Link href="/messages" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm" style={{ background: "rgba(200,144,30,0.15)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.30)" }}>Voir les messages</Link>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {leads.map((lead) => {
+                const name = lead.sender_name ?? "Inconnu";
+                const ini  = name.split(" ").map((w:string) => w[0]).join("").slice(0,2).toUpperCase();
+                const wa   = lead.sender_phone?.replace(/\D/g, "");
+                return (
+                  <div key={lead.id} className="flex items-center gap-3 rounded-xl p-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                      style={{ background: "rgba(200,144,30,0.20)", color: "var(--bl-amber-light)" }}>{ini}</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold truncate" style={{ color: "var(--bl-cream)" }}>{name}</p>
+                      <p className="text-xs truncate" style={{ color: "var(--bl-cream-faint)" }}>{lead.message}</p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                      <p className="text-[10px]" style={{ color: "var(--bl-cream-faint)" }}>{fmtTime(lead.created_at)}</p>
+                      {wa && (
+                        <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
+                          className="text-xs font-bold px-2.5 py-1 rounded-lg"
+                          style={{ background: "#25D366", color: "#fff" }}>
+                          WA
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
       {tab === "stats" && (
         <>
-          <SectionTitle>Statistiques agence</SectionTitle>
+          <SectionHeader title="Statistiques agence" subtitle="30 derniers jours" />
           <ChartCard title="Vues + WhatsApp sur 30 jours" height={200}>
-            <BarChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(240,230,204,0.05)" />
-              <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
+            <BarChart data={chartData} margin={{ top: 4, right: 0, left: -20, bottom: 0 }}>
+              <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} ticks={chartSampled.map((d) => d.label)} />
               <YAxis tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
               <Tooltip {...CHART_STYLE} />
-              <Bar dataKey="views" name="Vues" fill="var(--bl-amber)" radius={[3,3,0,0]} />
+              <Bar dataKey="views" name="Vues" fill="#c8901e" radius={[3,3,0,0]} />
               <Bar dataKey="whatsapp_clicks" name="WhatsApp" fill="#25D366" radius={[3,3,0,0]} />
             </BarChart>
           </ChartCard>
@@ -900,16 +1193,15 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
       )}
       {tab === "profil" && (
         <>
-          <SectionTitle>Profil de l&apos;agence</SectionTitle>
-          <Link href={`/agences/${user.id}`} className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4 transition-colors" style={{ background: "rgba(200,144,30,0.07)", border: "1px solid rgba(200,144,30,0.20)" }}
-            onMouseEnter={(e) => e.currentTarget.style.borderColor = "var(--bl-amber)"} onMouseLeave={(e) => e.currentTarget.style.borderColor = "rgba(200,144,30,0.20)"}>
+          <SectionHeader title="Profil de l'agence" />
+          <Link href={`/agences/${user.id}`} className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4" style={{ background: "rgba(200,144,30,0.07)", border: "1px solid rgba(200,144,30,0.20)" }}>
             <span className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>Voir le profil public de l&apos;agence</span>
             <ChevronRight className="w-4 h-4" style={{ color: "var(--bl-amber)" }} />
           </Link>
           <ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} />
         </>
       )}
-    </DashboardShell>
+    </DashboardLayout>
   );
 }
 
@@ -941,40 +1233,10 @@ export default function ComptePage() {
     ["agence","agency"].includes(role) ? "agence" : "chercheur"
   );
 
-  const displayName = profile?.full_name ?? user.email?.split("@")[0] ?? "Utilisateur";
-  const initials    = displayName.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
-
-  const roleLabel: Record<string, string> = {
-    chercheur: "🔍 Chercheur", proprietaire: "🏠 Propriétaire",
-    agent: "👔 Agent immobilier", agence: "🏢 Agence immobilière",
-  };
-
   const dashProps = { user, profile, signOut, refreshProfile };
 
   return (
-    <div className="max-w-3xl lg:max-w-5xl mx-auto px-4 lg:px-0 py-6 pb-24">
-
-      {/* ── Header ── */}
-      <div className="flex items-center gap-4 mb-6 lg:mb-4">
-        {profile?.avatar_url ? (
-          <Image src={profile.avatar_url} alt={displayName} width={52} height={52} className="rounded-2xl object-cover flex-shrink-0" />
-        ) : (
-          <div className="w-13 h-13 rounded-2xl flex items-center justify-center text-lg font-black flex-shrink-0" style={{ background: "rgba(200,144,30,0.15)", border: "1px solid rgba(200,144,30,0.35)", width: 52, height: 52, color: "var(--bl-amber-light)" }}>
-            {initials || <User className="w-5 h-5" />}
-          </div>
-        )}
-        <div className="min-w-0">
-          <h1 style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-cream)", fontSize: 20, fontWeight: 700, lineHeight: 1.2 }} className="truncate">{displayName}</h1>
-          <p className="text-sm mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>{roleLabel[accountType] ?? accountType}</p>
-        </div>
-        {accountType !== "chercheur" && (
-          <Link href="/publier" className="ml-auto flex-none flex items-center gap-1.5 text-sm font-bold px-4 py-2.5 rounded-xl transition-colors" style={{ background: "var(--bl-amber)", color: "#fff", boxShadow: "0 4px 20px rgba(200,144,30,0.30)" }}>
-            <Plus className="w-4 h-4" /> Publier
-          </Link>
-        )}
-      </div>
-
-      {/* ── Dashboard panel ── */}
+    <div className="max-w-3xl lg:max-w-5xl mx-auto lg:px-0">
       <div className="lg:rounded-2xl lg:overflow-hidden" style={{ border: "1px solid var(--bl-border)" }}>
         {accountType === "chercheur"    && <ChercheurDashboard    {...dashProps} />}
         {accountType === "proprietaire" && <ProprietaireDashboard {...dashProps} />}
