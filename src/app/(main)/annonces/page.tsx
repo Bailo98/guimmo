@@ -239,7 +239,7 @@ function AnnoncesContent() {
             type="button"
             onClick={handleNearby}
             disabled={gpsLoading}
-            title="Près de moi"
+            aria-label="Rechercher les biens près de moi"
             className={cn(
               "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all",
               nearbyCoords ? "text-[#6ec97a]" : "text-white/50 hover:text-white"
@@ -273,6 +273,7 @@ function AnnoncesContent() {
           {hasFilters && (
             <button
               onClick={clearFilters}
+              aria-label="Effacer les filtres"
               className="w-12 h-12 rounded-full flex items-center justify-center text-red-400 hover:bg-red-500/10 transition-colors flex-shrink-0"
               style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}
             >

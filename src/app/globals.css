@@ -76,8 +76,8 @@
   --bl-amber-light: #daa84a;
   --bl-green:       #6ec97a;
   --bl-cream:       #f7f2e6;
-  --bl-cream-dim:   rgba(240,230,204,0.55);
-  --bl-cream-faint: rgba(240,230,204,0.25);
+  --bl-cream-dim:   rgba(240,230,204,0.75);
+  --bl-cream-faint: rgba(240,230,204,0.55);
   --bl-border:      rgba(240,230,204,0.08);
   --bl-border-md:   rgba(240,230,204,0.15);
 
@@ -94,7 +94,7 @@
 .bl-stat-label {
   font-size: 9px;
   letter-spacing: 1.5px;
-  color: var(--bl-cream-faint);
+  color: rgba(240,230,204,0.80);
   text-transform: uppercase;
   font-weight: 500;
   margin-bottom: 4px;
@@ -117,7 +117,7 @@
 .bl-section-label {
   font-size: 9px;
   letter-spacing: 1.5px;
-  color: var(--bl-cream-faint);
+  color: rgba(240,230,204,0.80);
   text-transform: uppercase;
   font-weight: 500;
 }

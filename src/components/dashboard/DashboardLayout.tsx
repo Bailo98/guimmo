@@ -121,6 +121,7 @@ export function DashboardLayout({ tabs, active, onChange, signOut, userName, use
       >
         <button
           onClick={() => setDrawerOpen(true)}
+          aria-label="Ouvrir le menu de navigation"
           className="w-10 h-10 flex items-center justify-center rounded-xl transition-colors"
           style={{ color: "var(--bl-cream-dim)" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(240,230,204,0.07)")}
@@ -172,6 +173,7 @@ export function DashboardLayout({ tabs, active, onChange, signOut, userName, use
               </div>
               <button
                 onClick={() => setDrawerOpen(false)}
+                aria-label="Fermer le menu de navigation"
                 className="w-8 h-8 flex items-center justify-center rounded-lg"
                 style={{ color: "var(--bl-cream-faint)" }}
               >

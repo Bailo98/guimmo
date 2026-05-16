@@ -99,6 +99,7 @@ export function HeroSearch() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
         <div>
           <label
+            htmlFor="hs-quartier"
             className="block text-xs font-semibold mb-1.5"
             style={{ color: "rgba(247,242,230,0.50)" }}
           >
@@ -106,6 +107,7 @@ export function HeroSearch() {
           </label>
           <div className="relative">
             <select
+              id="hs-quartier"
               value={neighborhood}
               onChange={(e) => {
                 setNeighborhood(e.target.value);
@@ -126,6 +128,7 @@ export function HeroSearch() {
         </div>
         <div>
           <label
+            htmlFor="hs-type"
             className="block text-xs font-semibold mb-1.5"
             style={{ color: "rgba(247,242,230,0.50)" }}
           >
@@ -133,6 +136,7 @@ export function HeroSearch() {
           </label>
           <div className="relative">
             <select
+              id="hs-type"
               value={type}
               onChange={(e) => {
                 setType(e.target.value);

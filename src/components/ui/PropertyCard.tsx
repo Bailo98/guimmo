@@ -160,6 +160,7 @@ export function PropertyCard({ property, variant = "default", className, index =
               toggleFavorite(property.id);
               toast(fav ? "Retiré des favoris" : "Ajouté aux favoris", fav ? "info" : "success");
             }}
+            aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
             className={cn(
               "w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-md",
               fav ? "bg-red-500 text-white" : "bg-black/50 backdrop-blur-sm text-white hover:bg-black/70"

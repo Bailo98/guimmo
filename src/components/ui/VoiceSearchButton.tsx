@@ -64,7 +64,7 @@ export function VoiceSearchButton({ onResult, className = "", style }: VoiceSear
     <button
       type="button"
       onClick={toggle}
-      title={listening ? "Arrêter le micro" : "Recherche vocale"}
+      aria-label={listening ? "Arrêter la recherche vocale" : "Recherche vocale"}
       className={className}
       style={{
         position: "relative",
