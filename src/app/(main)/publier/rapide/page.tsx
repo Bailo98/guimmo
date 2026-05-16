@@ -88,7 +88,7 @@ export default function PublierRapidePage() {
         // Create a temporary account
         const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
         const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
-        const tempEmail = `temp_${normalized}_${Date.now()}@BienLoger.gn`;
+        const tempEmail = `temp_${normalized}_${Date.now()}@bienloger.gn`;
         const tempPassword = Math.random().toString(36).slice(2, 12) + "Aa1!";
 
         const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
