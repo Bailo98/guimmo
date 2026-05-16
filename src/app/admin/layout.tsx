@@ -298,7 +298,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Menu size={22} />
         </button>
         <Link href="/admin" style={{ textDecoration: "none" }}>
-          <span style={{ color: TEXT_PRI, fontWeight: 800, fontSize: 16, fontFamily: "'Nunito', sans-serif" }}>
+          <span style={{ color: TEXT_PRI, fontWeight: 800, fontSize: 16, fontFamily: "var(--font-nunito), 'Nunito', sans-serif" }}>
             BienLoger
           </span>
         </Link>

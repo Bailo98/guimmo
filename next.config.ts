@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizeCss: false,
+    optimizePackageImports: [
+      "lucide-react",
+      "recharts",
+      "@supabase/supabase-js",
+    ],
   },
 };
 
