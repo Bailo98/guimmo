@@ -1,12 +1,15 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, MapPin, Bed, Bath, Square, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
+import { useAuth } from "@/lib/auth-context";
 import { toast } from "@/lib/toast";
 import { WhatsAppShare } from "@/components/ui/WhatsAppShare";
+import { AuthPromptModal } from "@/components/AuthPromptModal";
 import type { Property } from "@/types";
 
 interface PropertyCardProps {
@@ -35,6 +38,8 @@ const WA_ICON_SM = (
 
 export function PropertyCard({ property, variant = "default", className, index = 0 }: PropertyCardProps) {
   const { toggleFavorite, isFavorite, _hasHydrated } = useAppStore();
+  const { user } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const fav = _hasHydrated && isFavorite(property.id);
   const primaryImage = property.property_images?.find((i) => i.is_primary) ?? property.property_images?.[0];
   const neighborhoodLabel = NEIGHBORHOOD_LABELS[property.neighborhood] ?? property.neighborhood;
@@ -149,6 +154,7 @@ export function PropertyCard({ property, variant = "default", className, index =
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
+              if (!user) { setShowAuthModal(true); return; }
               toggleFavorite(property.id);
               toast(fav ? "Retiré des favoris" : "Ajouté aux favoris", fav ? "info" : "success");
             }}
@@ -285,6 +291,14 @@ export function PropertyCard({ property, variant = "default", className, index =
           )}
         </div>
       </div>
+
+      {showAuthModal && (
+        <AuthPromptModal
+          onClose={() => setShowAuthModal(false)}
+          redirectUrl={`/annonces/${property.id}`}
+          action="sauvegarder cette annonce"
+        />
+      )}
     </div>
   );
 }

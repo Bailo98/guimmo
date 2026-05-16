@@ -506,6 +506,7 @@ export default async function PropertyDetailPage({ params }: Props) {
             <Phone className="w-4 h-4" /> Appeler
           </a>
         </div>
+        <MessageButton propertyId={property.id} ownerId={property.owner_id} propertyTitle={property.title} />
       </div>
 
     </div>

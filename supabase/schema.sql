@@ -8,7 +8,7 @@ create extension if not exists "uuid-ossp";
 create table if not exists profiles (
   id          uuid primary key references auth.users(id) on delete cascade,
   full_name   text,
-  phone       text,
+  phone       text unique,
   role        text not null default 'buyer'
                 check (role in ('buyer','owner','agent','agency','admin')),
   agency_name text,
@@ -17,6 +17,13 @@ create table if not exists profiles (
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()
 );
+
+-- IMPORTANT: Auth → Settings → Email Confirmations doit être DÉSACTIVÉ
+-- pour que les utilisateurs guinéens puissent se connecter directement
+-- sans confirmation email (flux téléphone @BienLoger.gn).
+
+-- Contrainte unique sur le numéro de téléphone (idempotent sur base existante)
+alter table profiles add constraint if not exists profiles_phone_unique unique (phone);
 
 -- Auto-create profile on new signup
 create or replace function handle_new_user()

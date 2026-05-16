@@ -1,12 +1,13 @@
 ﻿"use client";
-import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Phone, Lock, Mail, User, Building, ArrowRight, CheckCircle } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { erreurFrancais } from "@/lib/errors";
 
 const USER_ROLES = [
   { value: "buyer",  label: "Chercher un logement",   icon: "🔍", desc: "Je cherche à louer ou acheter" },
@@ -15,8 +16,10 @@ const USER_ROLES = [
   { value: "agency", label: "Agence immobilière",       icon: "🏢", desc: "Je représente une agence" },
 ];
 
-export default function InscriptionPage() {
+function InscriptionForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") ?? "/compte";
   const [step, setStep] = useState(1);
   const [mode, setMode] = useState<"phone" | "email">("phone");
   const [role, setRole] = useState("");
@@ -73,6 +76,20 @@ export default function InscriptionPage() {
           ? `${normalized}@BienLoger.gn`
           : form.email;
 
+      // Check for duplicate phone before creating account
+      if (mode === "phone") {
+        const { data: existing } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("phone", form.phone.trim())
+          .maybeSingle();
+        if (existing) {
+          setError("Ce numéro est déjà utilisé. Connectez-vous à la place.");
+          setLoading(false);
+          return;
+        }
+      }
+
       const { error: authError } = await supabase.auth.signUp({
         email,
         password: form.password,
@@ -86,11 +103,7 @@ export default function InscriptionPage() {
       });
 
       if (authError) {
-        setError(
-          authError.message.includes("already registered")
-            ? "Ce numéro est déjà utilisé. Connectez-vous."
-            : authError.message
-        );
+        setError(erreurFrancais(authError.message));
         setLoading(false);
         return;
       }
@@ -102,7 +115,7 @@ export default function InscriptionPage() {
     }
 
     setLoading(false);
-    router.push("/compte");
+    router.push(redirectTo);
   }
 
   return (
@@ -319,12 +332,12 @@ export default function InscriptionPage() {
                         id="password"
                         name="password"
                         type={showPassword ? "text" : "password"}
-                        placeholder="••••••••  (min. 6 caractères)"
+                        placeholder="••••••••  (min. 8 caractères)"
                         value={form.password}
                         onChange={(e) => setForm({ ...form, password: e.target.value })}
-                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e]" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16 }}
                         required
-                        minLength={6}
+                        minLength={8}
                         autoComplete="new-password"
                       />
                       <button
@@ -360,5 +373,13 @@ export default function InscriptionPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function InscriptionPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#111a14]" />}>
+      <InscriptionForm />
+    </Suspense>
   );
 }

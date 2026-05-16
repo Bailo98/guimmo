@@ -6,6 +6,7 @@ import { Eye, EyeOff, Phone, Lock, Mail, ArrowRight } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { erreurFrancais } from "@/lib/errors";
 
 function ConnexionForm() {
   const [mode, setMode] = useState<"phone" | "email">("phone");
@@ -58,11 +59,7 @@ function ConnexionForm() {
       });
 
       if (authError) {
-        setError(
-          authError.message.includes("Invalid login credentials")
-            ? "Numéro ou mot de passe incorrect."
-            : authError.message
-        );
+        setError(erreurFrancais(authError.message));
         setLoading(false);
         return;
       }
