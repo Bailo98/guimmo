@@ -71,6 +71,7 @@ export interface Property {
   views?: number;
   whatsapp_clicks?: number;
   is_boosted?: boolean;
+  is_verified?: boolean;
   boost_expires_at?: string;
   latitude?: number;
   longitude?: number;
