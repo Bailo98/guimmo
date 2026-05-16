@@ -45,31 +45,47 @@ function ConnexionForm() {
     setLoading(true);
     setError(null);
 
-    if (isSupabaseConfigured && supabase) {
-      const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
-      const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
-      const email =
-        mode === "phone"
-          ? `${normalized}@BienLoger.gn`
-          : form.email;
+    console.log("=== CONNEXION DEBUT ===");
+    console.log("Type:", mode); // 'phone' ou 'email'
 
-      const { error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password: form.password,
-      });
+    try {
+      if (isSupabaseConfigured && supabase) {
+        const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
+        const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
+        const internalEmail =
+          mode === "phone"
+            ? `${normalized}@bienloger.gn`
+            : form.email;
 
-      if (authError) {
-        setError(erreurFrancais(authError.message));
-        setLoading(false);
-        return;
+        console.log("Email interne:", internalEmail);
+
+        const { data, error: authError } = await supabase.auth.signInWithPassword({
+          email: internalEmail,
+          password: form.password,
+        });
+
+        console.log("Data:", JSON.stringify(data, null, 2));
+        console.log("Error:", JSON.stringify(authError, null, 2));
+
+        if (authError) {
+          console.error("CODE:", authError.code);
+          console.error("MESSAGE:", authError.message);
+          setError(erreurFrancais(authError.message));
+          return;
+        }
+
+        document.cookie = `BienLoger-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+        router.push(redirect);
+      } else {
+        await new Promise((r) => setTimeout(r, 1000));
+        document.cookie = `BienLoger-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+        router.push(redirect);
       }
-
-      document.cookie = `BienLoger-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
-      router.push(redirect);
-    } else {
-      await new Promise((r) => setTimeout(r, 1000));
-      document.cookie = `BienLoger-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
-      router.push(redirect);
+    } catch (err) {
+      console.error("EXCEPTION:", err);
+      setError("Une erreur est survenue. Veuillez réessayer.");
+    } finally {
+      setLoading(false);
     }
   }
 

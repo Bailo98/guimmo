@@ -60,7 +60,7 @@ function InscriptionForm() {
     if (isSupabaseConfigured && supabase) {
       const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
       const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
-      const email = mode === "phone" ? `${normalized}@BienLoger.gn` : form.email;
+      const email = mode === "phone" ? `${normalized}@bienloger.gn` : form.email;
 
       // Vérification doublon téléphone
       if (mode === "phone") {
