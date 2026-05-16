@@ -81,6 +81,20 @@
   --bl-border:      rgba(240,230,204,0.08);
   --bl-border-md:   rgba(240,230,204,0.15);
 
+  /* --BienLoger-* aliases — used across layout/page components */
+  --BienLoger-bg:          #111a14;
+  --BienLoger-bg-alt:      #0d1610;
+  --BienLoger-surface:     #1a2e1e;
+  --BienLoger-amber:       #c8901e;
+  --BienLoger-amber-light: #daa84a;
+  --BienLoger-cream:       #f7f2e6;
+  --BienLoger-cream-dim:   rgba(240,230,204,0.75);
+  --BienLoger-cream-faint: rgba(240,230,204,0.55);
+  --BienLoger-border:      rgba(240,230,204,0.08);
+  --BienLoger-border-md:   rgba(240,230,204,0.15);
+  --BienLoger-green:       #6ec97a;
+  --BienLoger-sidebar:     #0d1a10;
+
   color-scheme: dark;
 }
 

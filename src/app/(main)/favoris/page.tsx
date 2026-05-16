@@ -99,7 +99,7 @@ export default function FavorisPage() {
                 onClick={() => removeFavorite(p.id)}
                 className="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity"
                 style={{ background: "rgba(239,68,68,0.85)" }}
-                title="Retirer des favoris"
+                aria-label="Retirer des favoris"
               >
                 <Heart className="w-4 h-4 text-white fill-white" />
               </button>
