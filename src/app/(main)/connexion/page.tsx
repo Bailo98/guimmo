@@ -45,9 +45,6 @@ function ConnexionForm() {
     setLoading(true);
     setError(null);
 
-    console.log("=== CONNEXION DEBUT ===");
-    console.log("Type:", mode); // 'phone' ou 'email'
-
     try {
       if (isSupabaseConfigured && supabase) {
         const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
@@ -57,19 +54,12 @@ function ConnexionForm() {
             ? `${normalized}@bienloger.gn`
             : form.email;
 
-        console.log("Email interne:", internalEmail);
-
-        const { data, error: authError } = await supabase.auth.signInWithPassword({
+        const { error: authError } = await supabase.auth.signInWithPassword({
           email: internalEmail,
           password: form.password,
         });
 
-        console.log("Data:", JSON.stringify(data, null, 2));
-        console.log("Error:", JSON.stringify(authError, null, 2));
-
         if (authError) {
-          console.error("CODE:", authError.code);
-          console.error("MESSAGE:", authError.message);
           setError(erreurFrancais(authError.message));
           return;
         }

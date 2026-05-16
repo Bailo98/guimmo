@@ -366,7 +366,7 @@ export default async function HomePage() {
             <div className="flex gap-5 overflow-x-auto pb-3 scrollbar-hide snap-x snap-mandatory lg:grid lg:grid-cols-3 lg:overflow-visible lg:pb-0">
               {featured.map((p, i) => (
                 <div key={p.id} className="flex-none w-[280px] snap-start lg:w-auto">
-                  <PropertyCard property={p} index={i} />
+                  <PropertyCard property={p} index={i + 20} />
                 </div>
               ))}
             </div>
@@ -402,7 +402,7 @@ export default async function HomePage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {recent.map((p, i) => (
-                <PropertyCard key={p.id} property={p} index={i} />
+                <PropertyCard key={p.id} property={p} index={i + 20} />
               ))}
             </div>
           </div>

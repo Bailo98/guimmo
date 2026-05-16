@@ -9,10 +9,17 @@ import {
   Bell, BellOff, Heart, MessageCircle, BarChart2, Home,
   TrendingUp, Phone, Building2, ChevronRight, Download,
 } from "lucide-react";
-import {
-  BarChart, Bar, LineChart, Line,
-  XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
-} from "recharts";
+import dynamic from "next/dynamic";
+
+const DashboardChart = dynamic(
+  () => import("@/components/dashboard/DashboardChart"),
+  {
+    ssr: false,
+    loading: () => (
+      <div style={{ height: 140, background: "#1a2e1e", borderRadius: "0 12px 12px 0", borderLeft: "3px solid rgba(200,144,30,0.20)", marginBottom: 24 }} />
+    ),
+  }
+);
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
@@ -74,14 +81,6 @@ function todayLabel() {
   return new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
 }
 
-// ─── Chart style ─────────────────────────────────────────────────────────────
-
-const CHART_STYLE = {
-  contentStyle: { background: "#0d1a10", border: "1px solid rgba(240,230,204,0.15)", borderRadius: 8, color: "#f7f2e6", fontSize: 12 },
-  cursor: { fill: "rgba(200,144,30,0.08)" },
-  tick: { fill: "rgba(240,230,204,0.35)", fontSize: 10 },
-};
-
 // ─── Dialogs ──────────────────────────────────────────────────────────────────
 
 function DeleteDialog({ title, onConfirm, onCancel }: { title: string; onConfirm: () => void; onCancel: () => void }) {
@@ -140,19 +139,6 @@ function DeleteAccountDialog({ onConfirm, onCancel }: { onConfirm: () => void; o
           </button>
         </div>
       </div>
-    </div>
-  );
-}
-
-// ─── ChartCard ────────────────────────────────────────────────────────────────
-
-function ChartCard({ title, height = 160, children }: { title: string; height?: number; children: React.ReactNode }) {
-  return (
-    <div className="rounded-2xl p-4 mb-6" style={{ background: "var(--bl-surface)", borderLeft: "3px solid var(--bl-amber)", borderRadius: "0 16px 16px 0" }}>
-      <p className="bl-section-label mb-3">{title}</p>
-      <ResponsiveContainer width="100%" height={height}>
-        {children as React.ReactElement}
-      </ResponsiveContainer>
     </div>
   );
 }
@@ -599,14 +585,12 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
                 <StatCard label="Annonces actives" value={activeCount} sub="sur 5 max" borderColor="#6ec97a" />
               </div>
 
-              <ChartCard title="Vues par jour — 7 jours">
-                <BarChart data={statsData.map((d) => ({ ...d, label: fmtDate(d.date) }))} margin={{ top: 4, right: 0, left: -20, bottom: 0 }}>
-                  <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
-                  <YAxis tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
-                  <Tooltip {...CHART_STYLE} />
-                  <Bar dataKey="views" name="Vues" fill="#c8901e" activeBar={{ fill: "#daa84a" }} radius={[4,4,0,0]} />
-                </BarChart>
-              </ChartCard>
+              <DashboardChart
+                type="bar"
+                title="Vues par jour — 7 jours"
+                data={statsData.map((d) => ({ ...d, label: fmtDate(d.date) }))}
+                series={[{ dataKey: "views", name: "Vues", color: "#c8901e" }]}
+              />
 
               <SectionHeader title="Mes annonces" action={
                 <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "#fff" }}>
@@ -879,17 +863,15 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
                 <StatCard label="Statut" value={profile?.is_verified_pro ? "✓ Pro" : "Agent"} sub={profile?.is_verified_pro ? "Vérifié" : "Standard"} borderColor="#daa84a" />
               </div>
 
-              <ChartCard title="Vues sur 30 jours (LineChart)" height={160}>
-                <LineChart data={chartLine} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                  <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false}
-                    ticks={chartSampled.map((d) => d.label)} />
-                  <YAxis tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
-                  <Tooltip {...CHART_STYLE} />
-                  <Line type="monotone" dataKey="views" name="Vues" stroke="#c8901e" strokeWidth={2}
-                    dot={{ fill: "#daa84a", r: 3, strokeWidth: 0 }}
-                    activeDot={{ r: 5, fill: "#daa84a" }} />
-                </LineChart>
-              </ChartCard>
+              <DashboardChart
+                type="line"
+                title="Vues sur 30 jours"
+                data={chartLine}
+                height={160}
+                series={[{ dataKey: "views", name: "Vues", color: "#c8901e" }]}
+                ticks={chartSampled.map((d) => d.label)}
+                showDots
+              />
 
               <SectionHeader title="Derniers leads" subtitle="5 contacts les plus récents" action={
                 <Link href="/messages" className="text-xs font-bold" style={{ color: "var(--bl-amber)" }}>Tout voir →</Link>
@@ -977,15 +959,17 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
       {tab === "statistiques" && (
         <>
           <SectionHeader title="Statistiques" subtitle="30 derniers jours" />
-          <ChartCard title="Vues + Contacts WhatsApp" height={200}>
-            <LineChart data={chartLine} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-              <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} ticks={chartSampled.map((d) => d.label)} />
-              <YAxis tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
-              <Tooltip {...CHART_STYLE} />
-              <Line type="monotone" dataKey="views" name="Vues" stroke="#c8901e" strokeWidth={2} dot={false} />
-              <Line type="monotone" dataKey="whatsapp_clicks" name="WhatsApp" stroke="#25D366" strokeWidth={2} dot={false} />
-            </LineChart>
-          </ChartCard>
+          <DashboardChart
+            type="line"
+            title="Vues + Contacts WhatsApp"
+            data={chartLine}
+            height={200}
+            series={[
+              { dataKey: "views", name: "Vues", color: "#c8901e" },
+              { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
+            ]}
+            ticks={chartSampled.map((d) => d.label)}
+          />
         </>
       )}
       {tab === "profil" && (
@@ -1092,15 +1076,17 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
                 <StatCard label="Statut"               value={profile?.is_verified_pro ? "Premium ✓" : "Agence"} sub="Plan actuel" borderColor="#daa84a" />
               </div>
 
-              <ChartCard title="Performance 30 jours" height={160}>
-                <BarChart data={chartData} margin={{ top: 4, right: 0, left: -20, bottom: 0 }}>
-                  <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} ticks={chartSampled.map((d) => d.label)} />
-                  <YAxis tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
-                  <Tooltip {...CHART_STYLE} />
-                  <Bar dataKey="views" name="Vues" fill="#c8901e" radius={[3,3,0,0]} />
-                  <Bar dataKey="whatsapp_clicks" name="WhatsApp" fill="#25D366" radius={[3,3,0,0]} />
-                </BarChart>
-              </ChartCard>
+              <DashboardChart
+                type="bar"
+                title="Performance 30 jours"
+                data={chartData}
+                height={160}
+                series={[
+                  { dataKey: "views", name: "Vues", color: "#c8901e" },
+                  { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
+                ]}
+                ticks={chartSampled.map((d) => d.label)}
+              />
 
               <div className="flex items-center justify-between mb-4">
                 <h2 className="bl-section-title">Top annonces</h2>
@@ -1180,15 +1166,17 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
       {tab === "stats" && (
         <>
           <SectionHeader title="Statistiques agence" subtitle="30 derniers jours" />
-          <ChartCard title="Vues + WhatsApp sur 30 jours" height={200}>
-            <BarChart data={chartData} margin={{ top: 4, right: 0, left: -20, bottom: 0 }}>
-              <XAxis dataKey="label" tick={CHART_STYLE.tick} axisLine={false} tickLine={false} ticks={chartSampled.map((d) => d.label)} />
-              <YAxis tick={CHART_STYLE.tick} axisLine={false} tickLine={false} />
-              <Tooltip {...CHART_STYLE} />
-              <Bar dataKey="views" name="Vues" fill="#c8901e" radius={[3,3,0,0]} />
-              <Bar dataKey="whatsapp_clicks" name="WhatsApp" fill="#25D366" radius={[3,3,0,0]} />
-            </BarChart>
-          </ChartCard>
+          <DashboardChart
+            type="bar"
+            title="Vues + WhatsApp sur 30 jours"
+            data={chartData}
+            height={200}
+            series={[
+              { dataKey: "views", name: "Vues", color: "#c8901e" },
+              { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
+            ]}
+            ticks={chartSampled.map((d) => d.label)}
+          />
         </>
       )}
       {tab === "profil" && (
