@@ -796,6 +796,10 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
               <p className="text-sm font-semibold text-[#daa84a]">Agent professionnel vérifié</p>
             </div>
           )}
+          <Link href={`/agents/${user.id}`} className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4 hover:bg-white/5 transition-colors" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}>
+            <span className="text-sm font-semibold text-white/70">Voir mon profil public</span>
+            <ChevronRight className="w-4 h-4 text-white/30" />
+          </Link>
           <ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} signOut={signOut} />
         </div>
       )}
@@ -935,7 +939,13 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
       )}
 
       {tab === "profil" && (
-        <ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} signOut={signOut} />
+        <div>
+          <Link href={`/agences/${user.id}`} className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4 hover:bg-white/5 transition-colors" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}>
+            <span className="text-sm font-semibold text-white/70">Voir le profil public de l&apos;agence</span>
+            <ChevronRight className="w-4 h-4 text-white/30" />
+          </Link>
+          <ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} signOut={signOut} />
+        </div>
       )}
     </>
   );
