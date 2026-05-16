@@ -3,14 +3,20 @@ import { createContext, useContext, useEffect, useRef, useState, useCallback } f
 import type { User } from "@supabase/supabase-js";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
-interface Profile {
+export interface Profile {
   id: string;
   full_name: string | null;
   phone: string | null;
   role: "buyer" | "chercheur" | "proprietaire" | "owner" | "agent" | "agence" | "agency" | "admin";
+  account_type: "chercheur" | "proprietaire" | "agent" | "agence" | null;
   agency_name: string | null;
+  agency_logo_url: string | null;
   avatar_url: string | null;
   is_verified: boolean;
+  is_verified_pro: boolean;
+  bio: string | null;
+  website: string | null;
+  total_listings: number;
 }
 
 interface AuthContextType {

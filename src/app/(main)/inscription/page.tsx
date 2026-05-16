@@ -1,5 +1,5 @@
-﻿"use client";
-import { useState, useRef, useEffect, Suspense } from "react";
+"use client";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Phone, Lock, Mail, User, Building, ArrowRight, CheckCircle } from "lucide-react";
@@ -10,11 +10,21 @@ import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { erreurFrancais } from "@/lib/errors";
 
 const USER_ROLES = [
-  { value: "buyer",  label: "Chercher un logement",   icon: "🔍", desc: "Je cherche à louer ou acheter" },
-  { value: "owner",  label: "Propriétaire particulier", icon: "🏠", desc: "Je loue mon propre logement" },
-  { value: "agent",  label: "Agent immobilier",         icon: "🤝", desc: "Je suis agent professionnel" },
-  { value: "agency", label: "Agence immobilière",       icon: "🏢", desc: "Je représente une agence" },
+  { value: "buyer",  label: "Je cherche un logement",    icon: "🔍", desc: "Je cherche à louer ou acheter" },
+  { value: "owner",  label: "Je suis propriétaire",      icon: "🏠", desc: "Je loue mon propre logement" },
+  { value: "agent",  label: "Je suis agent immobilier",  icon: "👔", desc: "Je suis agent professionnel" },
+  { value: "agency", label: "J'ai une agence",           icon: "🏢", desc: "Je représente une agence immobilière" },
 ];
+
+function roleToAccountType(role: string): string {
+  switch (role) {
+    case "buyer":  return "chercheur";
+    case "owner":  return "proprietaire";
+    case "agent":  return "agent";
+    case "agency": return "agence";
+    default:       return "chercheur";
+  }
+}
 
 function InscriptionForm() {
   const router = useRouter();
@@ -27,40 +37,18 @@ function InscriptionForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", phone: "", email: "", password: "" });
-
-  const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
-
-  useEffect(() => {
-    if (!isSupabaseConfigured || !supabase || !GOOGLE_CLIENT_ID) return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).__BienLogerGoogleCallback = async (response: { credential: string }) => {
-      const { error: signInError } = await supabase!.auth.signInWithIdToken({
-        provider: "google",
-        token: response.credential,
-      });
-      if (!signInError) {
-        document.cookie = `BienLoger-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
-        router.push("/compte");
-      }
-    };
-    if (!document.getElementById("gsi-script")) {
-      const script = document.createElement("script");
-      script.id = "gsi-script";
-      script.src = "https://accounts.google.com/gsi/client";
-      script.async = true;
-      script.defer = true;
-      document.head.appendChild(script);
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return () => { delete (window as any).__BienLogerGoogleCallback; };
-  }, [GOOGLE_CLIENT_ID, router]);
+  const [form, setForm] = useState({
+    name: "", phone: "", email: "", password: "",
+    bio: "", agencyName: "",
+  });
 
   function switchMode(next: "phone" | "email") {
     setMode(next);
     setError(null);
     setForm((f) => ({ ...f, phone: "", email: "" }));
   }
+
+  const isAgentOrAgency = role === "agent" || role === "agency";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -72,12 +60,9 @@ function InscriptionForm() {
     if (isSupabaseConfigured && supabase) {
       const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
       const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
-      const email =
-        mode === "phone"
-          ? `${normalized}@BienLoger.gn`
-          : form.email;
+      const email = mode === "phone" ? `${normalized}@BienLoger.gn` : form.email;
 
-      // Check for duplicate phone before creating account
+      // Vérification doublon téléphone
       if (mode === "phone") {
         const { data: existing } = await supabase
           .from("profiles")
@@ -99,6 +84,9 @@ function InscriptionForm() {
             name: form.name,
             phone: mode === "phone" ? form.phone : "",
             role,
+            account_type: roleToAccountType(role),
+            bio: form.bio || null,
+            agency_name: isAgentOrAgency ? (form.agencyName || null) : null,
           },
         },
       });
@@ -109,7 +97,7 @@ function InscriptionForm() {
         return;
       }
 
-      // Force immediate sign-in to bypass email confirmation requirement
+      // Forcer la connexion immédiate (bypass confirmation email)
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password: form.password,
@@ -131,6 +119,8 @@ function InscriptionForm() {
     setLoading(false);
     router.push(redirectTo);
   }
+
+  const selectedRole = USER_ROLES.find((r) => r.value === role);
 
   return (
     <div className="min-h-screen bg-[#111a14] flex flex-col">
@@ -160,47 +150,12 @@ function InscriptionForm() {
 
           <div className="rounded-3xl p-8" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", border: "1px solid rgba(255,255,255,0.10)" }}>
 
-            {/* ── STEP 1 — Role ── */}
+            {/* ── STEP 1 — Profil ── */}
             {step === 1 && (
               <>
                 <div className="text-center mb-6">
                   <h1 className="text-2xl font-black text-white">Créer un compte</h1>
                   <p className="text-[rgba(240,230,204,0.50)] text-sm mt-1">Quel est votre profil ?</p>
-                </div>
-
-                {/* Google signup */}
-                {GOOGLE_CLIENT_ID && (
-                  <div
-                    id="g_id_onload"
-                    data-client_id={GOOGLE_CLIENT_ID}
-                    data-context="signup"
-                    data-callback="__BienLogerGoogleCallback"
-                    data-auto_prompt="false"
-                  />
-                )}
-                <div className="flex justify-center mb-4">
-                  {GOOGLE_CLIENT_ID && (
-                    <div
-                      className="g_id_signin"
-                      data-type="standard"
-                      data-shape="rectangular"
-                      data-theme="outline"
-                      data-text="signup_with"
-                      data-size="large"
-                      data-logo_alignment="left"
-                      data-locale="fr"
-                      data-width="300"
-                    />
-                  )}
-                </div>
-
-                <div className="relative mb-4">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-[#2a3040]" />
-                  </div>
-                  <div className="relative flex justify-center text-xs text-[rgba(240,230,204,0.50)] bg-[#1e2430] px-3">
-                    ou avec téléphone / email
-                  </div>
                 </div>
 
                 <div className="space-y-3">
@@ -212,16 +167,21 @@ function InscriptionForm() {
                       className={cn(
                         "w-full flex items-center gap-3 p-4 rounded-2xl border transition-all text-left",
                         role === r.value
-                          ? "border-[#c8901e] bg-[#c8901e]/10"
+                          ? "border-[#c8901e] bg-[rgba(200,144,30,0.10)]"
                           : "hover:border-white/20"
                       )}
+                      style={{
+                        minHeight: 80,
+                        borderColor: role === r.value ? "#c8901e" : "rgba(240,230,204,0.12)",
+                        background: role === r.value ? "rgba(200,144,30,0.10)" : "#1a2e1e",
+                      }}
                     >
-                      <span className="text-2xl">{r.icon}</span>
+                      <span style={{ fontSize: 32, lineHeight: 1, flexShrink: 0 }}>{r.icon}</span>
                       <div className="flex-1">
                         <p className={cn("font-semibold text-sm", role === r.value ? "text-[#daa84a]" : "text-white")}>
                           {r.label}
                         </p>
-                        <p className="text-[rgba(240,230,204,0.50)] text-xs">{r.desc}</p>
+                        <p className="text-[rgba(240,230,204,0.50)] text-xs mt-0.5">{r.desc}</p>
                       </div>
                       {role === r.value && <CheckCircle className="w-4 h-4 text-[#daa84a] flex-shrink-0" />}
                     </button>
@@ -240,7 +200,7 @@ function InscriptionForm() {
               </>
             )}
 
-            {/* ── STEP 2 — Form ── */}
+            {/* ── STEP 2 — Formulaire ── */}
             {step === 2 && (
               <>
                 <div className="text-center mb-6">
@@ -250,12 +210,33 @@ function InscriptionForm() {
                   >
                     ← Retour
                   </button>
-                  <h1 className="text-2xl font-black text-white">Vos informations</h1>
-                  <p className="text-[rgba(240,230,204,0.50)] text-sm mt-1">Presque terminé !</p>
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <span style={{ fontSize: 20 }}>{selectedRole?.icon}</span>
+                    <h1 className="text-xl font-black text-white">{selectedRole?.label}</h1>
+                  </div>
+                  <p className="text-[rgba(240,230,204,0.50)] text-sm">Vos informations</p>
+                </div>
+
+                {/* Phone / Email toggle */}
+                <div className="flex rounded-xl overflow-hidden mb-4" style={{ border: "1px solid rgba(255,255,255,0.10)" }}>
+                  {(["phone", "email"] as const).map((m) => (
+                    <button
+                      key={m}
+                      type="button"
+                      onClick={() => switchMode(m)}
+                      className={cn(
+                        "flex-1 py-2.5 text-sm font-semibold transition-colors",
+                        mode === m ? "bg-[#c8901e] text-white" : "text-white/50 hover:text-white"
+                      )}
+                      style={mode !== m ? { background: "rgba(255,255,255,0.05)" } : {}}
+                    >
+                      {m === "phone" ? "📱 Téléphone" : "✉️ Email"}
+                    </button>
+                  ))}
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Name */}
+                  {/* Nom */}
                   <div>
                     <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
                       {role === "agency" ? "Nom de l'agence" : "Votre nom complet"}
@@ -265,20 +246,59 @@ function InscriptionForm() {
                         ? <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
                         : <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />}
                       <input
-                        id="name"
-                        name="name"
                         type="text"
                         placeholder={role === "agency" ? "Conakry Premium Immo" : "Mamadou Diallo"}
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                        className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm"
+                        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                         required
                         autoComplete="name"
                       />
                     </div>
                   </div>
 
-                  {/* Phone or email */}
+                  {/* Nom de l'agence si agent */}
+                  {isAgentOrAgency && (
+                    <div>
+                      <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
+                        {role === "agency" ? "Raison sociale" : "Agence de rattachement"}
+                        <span className="text-white/30 font-normal ml-1">(optionnel)</span>
+                      </label>
+                      <div className="relative">
+                        <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
+                        <input
+                          type="text"
+                          placeholder="Ex: Immo Guinée SARL"
+                          value={form.agencyName}
+                          onChange={(e) => setForm({ ...form, agencyName: e.target.value })}
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm"
+                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Bio si agent/agence */}
+                  {isAgentOrAgency && (
+                    <div>
+                      <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
+                        Bio courte
+                        <span className="text-white/30 font-normal ml-1">(optionnel)</span>
+                      </label>
+                      <textarea
+                        rows={2}
+                        placeholder="Ex: Spécialiste location Kipé &amp; Ratoma depuis 5 ans."
+                        value={form.bio}
+                        onChange={(e) => setForm({ ...form, bio: e.target.value })}
+                        maxLength={200}
+                        className="w-full rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm resize-none"
+                        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                      />
+                    </div>
+                  )}
+
+                  {/* Téléphone ou email */}
                   {mode === "phone" ? (
                     <div>
                       <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
@@ -287,22 +307,17 @@ function InscriptionForm() {
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
                         <input
-                          id="phone"
-                          name="phone"
                           type="tel"
-                          placeholder="+224 628 222 510 ou +1 438 000 0000"
+                          placeholder="+224 628 222 510"
                           value={form.phone}
                           onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm"
+                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                           required
                           autoComplete="tel"
                         />
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => switchMode("email")}
-                        className="text-xs text-[#daa84a] hover:underline mt-1.5 block"
-                      >
+                      <button type="button" onClick={() => switchMode("email")} className="text-xs text-[#daa84a] hover:underline mt-1.5 block">
                         Utiliser mon email à la place →
                       </button>
                     </div>
@@ -314,28 +329,23 @@ function InscriptionForm() {
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
                         <input
-                          id="email"
-                          name="email"
                           type="email"
                           placeholder="vous@email.com"
                           value={form.email}
                           onChange={(e) => setForm({ ...form, email: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm"
+                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                           required
                           autoComplete="email"
                         />
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => switchMode("phone")}
-                        className="text-xs text-[#daa84a] hover:underline mt-1.5 block"
-                      >
+                      <button type="button" onClick={() => switchMode("phone")} className="text-xs text-[#daa84a] hover:underline mt-1.5 block">
                         ← Utiliser mon numéro de téléphone
                       </button>
                     </div>
                   )}
 
-                  {/* Password */}
+                  {/* Mot de passe */}
                   <div>
                     <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
                       Mot de passe
@@ -343,13 +353,12 @@ function InscriptionForm() {
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
                       <input
-                        id="password"
-                        name="password"
                         type={showPassword ? "text" : "password"}
-                        placeholder="••••••••  (min. 8 caractères)"
+                        placeholder="•••••••• (min. 8 caractères)"
                         value={form.password}
                         onChange={(e) => setForm({ ...form, password: e.target.value })}
-                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e]" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16 }}
+                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e]"
+                        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16 }}
                         required
                         minLength={8}
                         autoComplete="new-password"

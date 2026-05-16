@@ -330,3 +330,115 @@ create policy "vt_delete" on virtual_tour_images for delete
   using (
     auth.uid() = (select owner_id from properties where id = property_id)
   );
+
+-- ─── Profils étendus ──────────────────────────────────────────────────────────
+alter table profiles add column if not exists account_type    text    default 'chercheur';
+alter table profiles add column if not exists agency_logo_url text;
+alter table profiles add column if not exists is_verified_pro boolean default false;
+alter table profiles add column if not exists bio             text;
+alter table profiles add column if not exists website         text;
+alter table profiles add column if not exists total_listings  integer default 0;
+
+-- Mettre à jour le trigger handle_new_user pour renseigner account_type
+create or replace function handle_new_user()
+returns trigger language plpgsql security definer set search_path = public as $$
+declare
+  v_role text;
+  v_account_type text;
+begin
+  v_role := coalesce(new.raw_user_meta_data->>'role', 'buyer');
+  v_account_type := case v_role
+    when 'buyer'  then 'chercheur'
+    when 'owner'  then 'proprietaire'
+    when 'agent'  then 'agent'
+    when 'agency' then 'agence'
+    else coalesce(new.raw_user_meta_data->>'account_type', 'chercheur')
+  end;
+  insert into public.profiles (id, full_name, phone, role, account_type, agency_name)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'name', new.raw_user_meta_data->>'full_name'),
+    new.raw_user_meta_data->>'phone',
+    v_role,
+    v_account_type,
+    new.raw_user_meta_data->>'agency_name'
+  )
+  on conflict (id) do nothing;
+  return new;
+end;
+$$;
+
+-- ─── Recherches sauvegardées ──────────────────────────────────────────────────
+create table if not exists saved_searches (
+  id               uuid primary key default gen_random_uuid(),
+  user_id          uuid not null references profiles(id) on delete cascade,
+  label            text not null,
+  neighborhood     text,
+  type             text,
+  transaction_type text,
+  min_price        integer,
+  max_price        integer,
+  min_rooms        integer,
+  notify_whatsapp  boolean default false,
+  created_at       timestamptz default now()
+);
+
+alter table saved_searches enable row level security;
+create policy "saved_searches_own" on saved_searches
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create index if not exists saved_searches_user_idx on saved_searches(user_id);
+
+-- ─── Statistiques journalières des annonces ───────────────────────────────────
+create table if not exists listing_stats (
+  id               uuid primary key default gen_random_uuid(),
+  property_id      uuid not null references properties(id) on delete cascade,
+  date             date not null default current_date,
+  views            integer not null default 0,
+  whatsapp_clicks  integer not null default 0,
+  message_clicks   integer not null default 0,
+  unique(property_id, date)
+);
+
+alter table listing_stats enable row level security;
+create policy "listing_stats_owner" on listing_stats for select
+  using (
+    auth.uid() = (select owner_id from properties where id = property_id)
+  );
+
+create index if not exists listing_stats_property_date_idx
+  on listing_stats(property_id, date desc);
+
+-- Allow server-side increments (anonymous + authenticated) — the data is
+-- already scoped by property_id and is non-sensitive counter data.
+create policy "listing_stats_insert" on listing_stats for insert
+  with check (true);
+create policy "listing_stats_update" on listing_stats for update
+  using (true) with check (true);
+
+-- ─── RPC: incrémenter vues journalières ───────────────────────────────────────
+create or replace function increment_listing_stat_views(p_property_id uuid)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  insert into listing_stats (property_id, date, views, whatsapp_clicks, message_clicks)
+  values (p_property_id, current_date, 1, 0, 0)
+  on conflict (property_id, date)
+  do update set views = listing_stats.views + 1;
+end;
+$$;
+
+-- ─── RPC: incrémenter clics WhatsApp journaliers ──────────────────────────────
+create or replace function increment_listing_stat_whatsapp(p_property_id uuid)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  insert into listing_stats (property_id, date, views, whatsapp_clicks, message_clicks)
+  values (p_property_id, current_date, 0, 1, 0)
+  on conflict (property_id, date)
+  do update set whatsapp_clicks = listing_stats.whatsapp_clicks + 1;
+
+  update properties
+  set whatsapp_clicks = coalesce(whatsapp_clicks, 0) + 1
+  where id = p_property_id;
+end;
+$$;

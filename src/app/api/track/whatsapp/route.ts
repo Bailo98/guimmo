@@ -12,10 +12,7 @@ export async function POST(request: Request) {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? key;
   const db = createClient(url, serviceKey);
 
-  await Promise.allSettled([
-    db.rpc("increment_views", { property_id: propertyId }),
-    db.rpc("increment_listing_stat_views", { p_property_id: propertyId }),
-  ]);
+  await db.rpc("increment_listing_stat_whatsapp", { p_property_id: propertyId }).catch(() => null);
 
   return NextResponse.json({ ok: true });
 }

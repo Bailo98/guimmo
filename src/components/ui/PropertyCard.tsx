@@ -268,6 +268,7 @@ export function PropertyCard({ property, variant = "default", className, index =
                 const cleaned = phone.replace(/\D/g, "");
                 const ref = property.ref ? ` (${property.ref})` : "";
                 const msg = `Bonjour, je suis intéressé par votre annonce : ${property.title}${ref}`;
+                fetch("/api/track/whatsapp", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ propertyId: property.id }) }).catch(() => null);
                 window.open(`https://wa.me/${cleaned}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
               }}
               className="w-full flex items-center justify-center gap-2 font-bold text-white transition-opacity hover:opacity-85"
