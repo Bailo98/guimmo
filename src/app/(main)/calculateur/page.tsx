@@ -8,9 +8,7 @@ import { Calculator, Info, ChevronRight } from "lucide-react";
 const CHARGE_PRESETS = [100000, 200000, 300000];
 
 function formatGNF(v: number) {
-  if (v >= 1000000) return `${(v / 1000000).toFixed(v % 1000000 === 0 ? 0 : 1)} M GNF`;
-  if (v >= 1000) return `${(v / 1000).toFixed(0)} k GNF`;
-  return `${v} GNF`;
+  return `${v.toLocaleString("fr-FR")} GNF`;
 }
 
 export default function CalculateurPage() {

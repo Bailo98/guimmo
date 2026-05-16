@@ -66,9 +66,6 @@ function estimate(
 }
 
 function formatGNF(amount: number): string {
-  if (amount >= 1_000_000) {
-    return `${(amount / 1_000_000).toFixed(1).replace(/\.0$/, "")} M GNF`;
-  }
   return `${amount.toLocaleString("fr-FR")} GNF`;
 }
 

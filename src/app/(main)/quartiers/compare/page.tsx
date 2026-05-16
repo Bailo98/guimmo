@@ -29,9 +29,7 @@ function Stars({ value }: { value: number }) {
 }
 
 function formatPrice(n: number) {
-  if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1)} Mrd GNF`;
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(0)} M GNF`;
-  return `${n.toLocaleString()} GNF`;
+  return `${n.toLocaleString("fr-FR")} GNF`;
 }
 
 type Neighborhood = typeof NEIGHBORHOODS[0];
