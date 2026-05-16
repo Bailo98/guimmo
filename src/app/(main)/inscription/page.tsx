@@ -125,7 +125,7 @@ function InscriptionForm() {
   return (
     <div className="min-h-screen bg-[#111a14] flex flex-col">
       <div className="p-4 flex items-center justify-between">
-        <Logo />
+        <Logo size="lg" />
         <Link href="/connexion" className="text-sm text-[rgba(240,230,204,0.50)] hover:text-white transition-colors">
           Déjà un compte ? Se connecter
         </Link>

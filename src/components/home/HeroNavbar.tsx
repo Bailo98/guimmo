@@ -16,21 +16,19 @@ export function HeroNavbar() {
     <nav className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-5 flex items-center justify-between">
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2.5">
-        <span
-          className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0"
-          style={{ background: "#f7f2e6", color: "#111a14" }}
-        >
-          BL
-        </span>
-        <span
-          style={{
-            color: "#f7f2e6",
-            fontFamily: "var(--font-nunito), sans-serif",
-            fontWeight: 800,
-            fontSize: "1.15rem",
-            letterSpacing: "-0.01em",
-          }}
-        >
+        <div style={{
+          width: 32, height: 32, background: "#c8901e", borderRadius: 8,
+          display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+        }}>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+        </div>
+        <span style={{
+          fontFamily: "var(--font-playfair), 'Playfair Display', serif",
+          fontWeight: 700, fontSize: "1.0625rem", color: "#f7f2e6", letterSpacing: "-0.3px",
+        }}>
           BienLoger
         </span>
       </Link>

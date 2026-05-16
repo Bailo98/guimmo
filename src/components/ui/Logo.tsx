@@ -5,26 +5,39 @@ import { cn } from "@/lib/utils";
 interface LogoProps {
   size?: "sm" | "md" | "lg";
   className?: string;
+  href?: string;
 }
 
-const textSizes = { sm: "text-xl", md: "text-2xl", lg: "text-3xl" };
-const imgSizes  = { sm: 28, md: 32, lg: 40 };
+const CONFIG = {
+  sm: { box: 32, icon: 17, text: 17 },
+  md: { box: 36, icon: 20, text: 18 },
+  lg: { box: 44, icon: 24, text: 22 },
+};
 
-export function Logo({ size = "md", className }: LogoProps) {
-  const px = imgSizes[size];
-
+function HouseIcon({ size }: { size: number }) {
   return (
-    <Link href="/" className={cn("flex items-center gap-2", textSizes[size], className)}>
-      <img
-        src="/logo.png"
-        alt=""
-        width={px}
-        height={px}
-        style={{ borderRadius: "50%", width: px, height: px, objectFit: "cover", flexShrink: 0 }}
-      />
-      <span style={{ fontFamily: "'Nunito', sans-serif", fontWeight: 800, letterSpacing: "-0.01em" }}>
-        <span style={{ color: "#daa84a" }}>Bien</span>
-        <span style={{ color: "#f7f2e6" }}>Loger</span>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+      <polyline points="9 22 9 12 15 12 15 22" />
+    </svg>
+  );
+}
+
+export function Logo({ size = "md", className, href = "/" }: LogoProps) {
+  const { box, icon, text } = CONFIG[size];
+  return (
+    <Link href={href} className={cn("flex items-center gap-2.5", className)}>
+      <div style={{
+        width: box, height: box, background: "#c8901e", borderRadius: 8,
+        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+      }}>
+        <HouseIcon size={icon} />
+      </div>
+      <span style={{
+        fontFamily: "var(--font-playfair), 'Playfair Display', serif",
+        fontSize: text, fontWeight: 700, color: "#f7f2e6", letterSpacing: "-0.3px",
+      }}>
+        BienLoger
       </span>
     </Link>
   );

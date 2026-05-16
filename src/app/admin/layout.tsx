@@ -42,7 +42,7 @@ function AdminLogo() {
         </svg>
       </div>
       <div>
-        <p style={{ color: TEXT_PRI, fontWeight: 800, fontSize: 16, fontFamily: "'Nunito', sans-serif", lineHeight: 1.2 }}>
+        <p style={{ color: TEXT_PRI, fontWeight: 700, fontSize: 16, fontFamily: "var(--font-playfair), 'Playfair Display', serif", lineHeight: 1.2, letterSpacing: "-0.3px" }}>
           BienLoger
         </p>
         <p style={{ color: TEXT_SEC, fontSize: 11, lineHeight: 1 }}>Administration</p>

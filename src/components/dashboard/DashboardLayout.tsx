@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Menu, X, LogOut, Home } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type DashTab = { key: string; label: string; icon: React.ReactNode };
@@ -47,10 +47,16 @@ function SidebarBottom({ signOut }: { signOut: () => Promise<void> }) {
 function SidebarLogo() {
   return (
     <div className="flex items-center gap-2.5 px-5 py-5" style={{ borderBottom: "1px solid var(--bl-border)" }}>
-      <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "var(--bl-amber)" }}>
-        <Home className="w-4 h-4 text-white" />
+      <div style={{
+        width: 36, height: 36, background: "#c8901e", borderRadius: 8,
+        display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+      }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
       </div>
-      <span style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-cream)", fontSize: 17, fontWeight: 700 }}>
+      <span style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-cream)", fontSize: 18, fontWeight: 700, letterSpacing: "-0.3px" }}>
         BienLoger
       </span>
     </div>
@@ -153,10 +159,16 @@ export function DashboardLayout({ tabs, active, onChange, signOut, userName, use
           >
             <div className="flex items-center justify-between px-4 py-4" style={{ borderBottom: "1px solid var(--bl-border)" }}>
               <div className="flex items-center gap-2.5">
-                <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: "var(--bl-amber)" }}>
-                  <Home className="w-3.5 h-3.5 text-white" />
+                <div style={{
+                  width: 32, height: 32, background: "#c8901e", borderRadius: 8,
+                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                }}>
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                  </svg>
                 </div>
-                <span style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-cream)", fontSize: 16, fontWeight: 700 }}>BienLoger</span>
+                <span style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-cream)", fontSize: 17, fontWeight: 700, letterSpacing: "-0.3px" }}>BienLoger</span>
               </div>
               <button
                 onClick={() => setDrawerOpen(false)}

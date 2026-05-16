@@ -82,7 +82,7 @@ function ConnexionForm() {
   return (
     <div className="min-h-screen bg-[#111a14] flex flex-col">
       <div className="p-4 flex items-center justify-between">
-        <Logo />
+        <Logo size="lg" />
         <Link href="/" className="text-sm text-[rgba(240,230,204,0.50)] hover:text-white transition-colors">
           Retour à l&apos;accueil
         </Link>
