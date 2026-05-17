@@ -224,7 +224,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-20 items-center w-full">
 
             {/* ── Left column ── */}
-            <div className="text-center lg:text-left">
+            <div className="text-center lg:text-left" style={{ maxWidth: "560px" }}>
               {/* Badge pill */}
               <div
                 className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-8"
@@ -235,7 +235,7 @@ export default async function HomePage() {
               >
                 <span className="w-2 h-2 rounded-full bg-green-400" style={{ animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite" }} />
                 <span className="text-sm font-medium" style={{ color: "rgba(247,242,230,0.85)", fontFamily: "var(--font-dm-sans), sans-serif" }}>
-                  Plateforme N°1 en Guinée
+                  Annonces vérifiées · Contact direct
                 </span>
               </div>
 

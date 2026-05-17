@@ -70,12 +70,12 @@ export function HeroSearch() {
       style={{
         background: "rgba(10,18,12,0.55)",
         border: "1px solid rgba(247,242,230,0.12)",
-        maxWidth: "480px",
+        maxWidth: "min(520px, 100%)",
       }}
     >
       {/* Tabs — pleine largeur, 50/50 */}
       <div
-        className="flex gap-1 mb-4 p-1 rounded-[10px]"
+        className="grid grid-cols-2 gap-1 mb-4 p-1 rounded-[10px]"
         style={{ background: "rgba(247,242,230,0.08)" }}
       >
         {(["rent", "sale"] as const).map((t) => (
