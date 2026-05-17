@@ -10,6 +10,7 @@ import { useAuth } from "@/lib/auth-context";
 import { toast } from "@/lib/toast";
 import { WhatsAppShare } from "@/components/ui/WhatsAppShare";
 import { AuthPromptModal } from "@/components/AuthPromptModal";
+import { ListingScore } from "@/components/ListingScore";
 import type { Property } from "@/types";
 
 interface PropertyCardProps {
@@ -253,8 +254,20 @@ export function PropertyCard({ property, variant = "default", className, index =
         </div>
       </Link>
 
+      {/* ── Score bar ── */}
+      <div style={{ padding: "6px 12px 0", background: "#0d1610" }}>
+        <ListingScore
+          images={(property.property_images ?? []).length}
+          description={property.description}
+          phone={property.contact_phone}
+          surface={property.surface}
+          rooms={property.rooms}
+          compact
+        />
+      </div>
+
       {/* ── Button section ── */}
-      <div style={{ padding: "10px 12px", background: "#0d1610" }}>
+      <div style={{ padding: "8px 12px 10px", background: "#0d1610" }}>
         {phone ? (
           <button
             type="button"

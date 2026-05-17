@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { ArrowLeft, MapPin, Bed, Bath, Square, Phone, CheckCircle, XCircle } from "lucide-react";
+import { ListingScore } from "@/components/ListingScore";
 import { PhotoGallery } from "./PhotoGallery";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { MessageButton } from "@/components/property/MessageButton";
@@ -296,6 +297,15 @@ export default async function PropertyDetailPage({ params }: Props) {
                   {formatGNF(property.price, property.price_period)}
                 </p>
               </div>
+
+              {/* Score de confiance */}
+              <ListingScore
+                images={(property.property_images ?? []).length}
+                description={property.description}
+                phone={property.contact_phone}
+                surface={property.surface}
+                rooms={property.rooms}
+              />
 
               {/* Specs row */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
