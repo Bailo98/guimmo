@@ -16,7 +16,11 @@ function ConnexionForm() {
   const [form, setForm] = useState({ phone: "", email: "", password: "" });
   const searchParams = useSearchParams();
   const router = useRouter();
-  const redirect = searchParams.get("redirect") ?? "/compte";
+  // Sanitize: never redirect back to an auth page (breaks loops)
+  const rawRedirect = searchParams.get("redirect") ?? "/compte";
+  const redirect = (rawRedirect.startsWith("/connexion") || rawRedirect.startsWith("/inscription"))
+    ? "/compte"
+    : rawRedirect;
 
   async function handleGoogleSignIn() {
     if (!isSupabaseConfigured || !supabase) return;
@@ -65,11 +69,13 @@ function ConnexionForm() {
         }
 
         document.cookie = `BienLoger-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
-        router.push(redirect);
+        // Hard refresh forces AuthProvider to re-init from fresh session cookies,
+        // avoiding the SPA race condition where user is still null on /compte.
+        window.location.href = redirect;
       } else {
         await new Promise((r) => setTimeout(r, 1000));
         document.cookie = `BienLoger-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
-        router.push(redirect);
+        window.location.href = redirect;
       }
     } catch (err) {
       console.error("EXCEPTION:", err);

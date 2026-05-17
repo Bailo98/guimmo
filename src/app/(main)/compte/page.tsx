@@ -1294,7 +1294,7 @@ export default function ComptePage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!authLoading && !user) router.replace("/connexion?redirect=/compte");
+    if (!authLoading && !user) router.replace("/connexion");
   }, [authLoading, user, router]);
   useEffect(() => {
     if (!authLoading && profile?.role === "admin") router.replace("/admin");
