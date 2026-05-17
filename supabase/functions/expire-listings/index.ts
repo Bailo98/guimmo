@@ -38,6 +38,8 @@ Deno.serve(async () => {
       const tpl = emailReminder(ownerName, prop.title, daysLeft, renewUrl);
       await sendEmail(email, tpl.subject, tpl.html);
       reminded++;
+    } else {
+      console.warn(`[expire-listings] no email for user ${prop.owner_id} (listing ${prop.id})`);
     }
     await supabase.from("properties").update({ reminder_sent: true }).eq("id", prop.id);
   }
@@ -69,6 +71,8 @@ Deno.serve(async () => {
       const tpl = emailExpired(ownerName, prop.title, renewUrl);
       await sendEmail(email, tpl.subject, tpl.html);
       notifiedExpired++;
+    } else {
+      console.warn(`[expire-listings] no email for user ${prop.owner_id} (expired listing ${prop.id})`);
     }
   }
 

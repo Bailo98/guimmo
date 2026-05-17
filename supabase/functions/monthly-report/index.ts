@@ -41,7 +41,10 @@ Deno.serve(async () => {
   let sent = 0;
   for (const [ownerId, profile] of ownerMap) {
     const email = await getEmail(ownerId);
-    if (!email) continue;
+    if (!email) {
+      console.warn(`[monthly-report] no email for owner ${ownerId}`);
+      continue;
+    }
 
     // Count their active listings
     const { count: activeCount } = await supabase

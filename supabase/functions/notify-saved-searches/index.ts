@@ -45,7 +45,10 @@ Deno.serve(async () => {
   for (const search of searches ?? []) {
     const profile = Array.isArray(search.profiles) ? search.profiles[0] : search.profiles;
     const email = await getEmail(search.user_id);
-    if (!email) continue;
+    if (!email) {
+      console.warn(`[notify-saved-searches] no email for user ${search.user_id}`);
+      continue;
+    }
 
     const filters = search.filters as Record<string, unknown>;
     const matches = newListings.filter((p) => {
