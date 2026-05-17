@@ -362,7 +362,8 @@ export default function PublierPage() {
         available_now:       true,
         neighborhood:        form.neighborhood,
         city:                "Conakry",
-        status:              "active",
+        status:              "pending",
+        expires_at:          new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         contact_phone:       form.phone,
         contact_preference:  form.contactMethod,
         video_url:           videoUrl,
@@ -448,8 +449,8 @@ export default function PublierPage() {
         }
       }
 
-      toast("✅ Votre annonce est en ligne !", "success");
-      router.push(`/annonces/${property.id}`);
+      toast("✅ Annonce soumise — elle sera publiée sous 24h après vérification.", "success");
+      router.push("/compte");
     } catch (err) {
       console.error("ERREUR INATTENDUE:", err);
       toast("Une erreur inattendue est survenue", "error");

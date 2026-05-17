@@ -136,7 +136,8 @@ export default function PublierRapidePage() {
           available_now:     true,
           neighborhood:      form.neighborhood,
           city:              "Conakry",
-          status:            "active",
+          status:            "pending",
+          expires_at:        new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           contact_phone:     form.phone,
           contact_preference: "both",
           features:          [],
@@ -181,9 +182,9 @@ export default function PublierRapidePage() {
         <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl" style={{ background: "rgba(110,201,122,0.15)", border: "2px solid rgba(110,201,122,0.35)" }}>
           ✅
         </div>
-        <h1 className="text-2xl font-black text-white mb-3">Annonce publiée !</h1>
+        <h1 className="text-2xl font-black text-white mb-3">Annonce soumise !</h1>
         <p className="text-white/60 text-sm leading-relaxed mb-6">
-          Votre annonce est maintenant visible sur BienLoger.<br />
+          Votre annonce est en cours de vérification. Elle sera publiée sous 24h.<br />
           <span className="text-white font-semibold">Retenez votre numéro {form.phone} pour vous connecter plus tard.</span>
         </p>
         <button

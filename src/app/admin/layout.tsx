@@ -4,7 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   LayoutDashboard, FileText, Users, LogOut, Flag, UserCheck,
-  Upload, Plus, Menu, X,
+  Upload, Plus, Menu, X, Shield,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
@@ -22,8 +22,9 @@ const NAV_ITEMS = [
   { href: "/admin",                   label: "Tableau de bord",     icon: LayoutDashboard },
   { href: "/admin/annonces",          label: "Annonces",            icon: FileText },
   { href: "/admin/annonces/nouvelle", label: "Ajouter une annonce", icon: Plus },
+  { href: "/admin/moderation",        label: "Modération",          icon: Shield,     badgeKey: "moderation" as const },
   { href: "/admin/utilisateurs",      label: "Utilisateurs",        icon: Users },
-  { href: "/admin/signalements",      label: "Signalements",        icon: Flag, hasBadge: true },
+  { href: "/admin/signalements",      label: "Signalements",        icon: Flag,       badgeKey: "reports" as const },
   { href: "/admin/agents",            label: "Agents",              icon: UserCheck },
   { href: "/admin/import",            label: "Importer CSV",        icon: Upload },
 ] as const;
@@ -103,10 +104,11 @@ function NavLink({
 
 // ─── SidebarContent ───────────────────────────────────────────────────────────
 function SidebarContent({
-  pathname, pendingReports, user, profile, onSignOut, onNavClick,
+  pathname, pendingReports, pendingMod, user, profile, onSignOut, onNavClick,
 }: {
   pathname: string;
   pendingReports: number;
+  pendingMod: number;
   user: { email?: string } | null;
   profile: { full_name?: string | null; role?: string } | null;
   onSignOut: () => void;
@@ -138,7 +140,13 @@ function SidebarContent({
             label={item.label}
             icon={item.icon}
             isActive={isActive(item.href)}
-            badge={"hasBadge" in item && item.hasBadge ? pendingReports : undefined}
+            badge={
+              "badgeKey" in item
+                ? item.badgeKey === "moderation" ? pendingMod
+                : item.badgeKey === "reports"    ? pendingReports
+                : undefined
+              : undefined
+            }
             onClick={onNavClick}
           />
         ))}
@@ -194,6 +202,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router   = useRouter();
   const pathname = usePathname();
   const [pendingReports, setPendingReports] = useState(0);
+  const [pendingMod, setPendingMod] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
@@ -206,6 +215,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (!supabase || !user) return;
     supabase.from("reports").select("*", { count: "exact", head: true })
       .then(({ count }) => setPendingReports(count ?? 0));
+    supabase.from("properties").select("*", { count: "exact", head: true })
+      .eq("status", "pending")
+      .then(({ count }) => setPendingMod(count ?? 0));
   }, [user]);
 
   // Close drawer on route change
@@ -225,7 +237,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  const sidebarProps = { pathname, pendingReports, user, profile, onSignOut: handleSignOut };
+  const sidebarProps = { pathname, pendingReports, pendingMod, user, profile, onSignOut: handleSignOut };
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#111a14" }}>
