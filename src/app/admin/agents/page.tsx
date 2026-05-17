@@ -7,14 +7,14 @@ import { toast } from "@/lib/toast";
 import { NEIGHBORHOODS } from "@/data/neighborhoods";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
-const SURFACE  = "#0f2210";
-const BORDER   = "rgba(134,239,172,0.08)";
-const TEXT_PRI = "#f0fdf4";
-const TEXT_SEC = "rgba(187,247,208,0.55)";
-const ACCENT   = "#f97316";
+const SURFACE  = "#111a1f";
+const BORDER   = "#1e2a30";
+const TEXT_PRI = "#ffffff";
+const TEXT_SEC = "rgba(255,255,255,0.55)";
+const ACCENT   = "#E9E900";
 
 const INPUT_STYLE: React.CSSProperties = {
-  width: "100%", background: "rgba(240,230,204,0.06)", border: `1px solid ${BORDER}`,
+  width: "100%", background: "rgba(255,255,255,0.06)", border: `1px solid ${BORDER}`,
   color: TEXT_PRI, borderRadius: 10, height: 44, padding: "0 14px",
   fontSize: 13, outline: "none", boxSizing: "border-box",
 };
@@ -216,9 +216,9 @@ export default function AdminAgentsPage() {
                 style={{
                   display: "flex", alignItems: "center", gap: 8, height: 44,
                   padding: "0 14px", borderRadius: 10, fontSize: 13, fontWeight: 500,
-                  border: `1px solid ${form.is_active ? "#22c55e" : BORDER}`,
-                  background: form.is_active ? "rgba(110,201,122,0.10)" : "transparent",
-                  color: form.is_active ? "#22c55e" : TEXT_SEC, cursor: "pointer",
+                  border: `1px solid ${form.is_active ? "#E9E900" : BORDER}`,
+                  background: form.is_active ? "rgba(233,233,0,0.10)" : "transparent",
+                  color: form.is_active ? "#E9E900" : TEXT_SEC, cursor: "pointer",
                 }}>
                 {form.is_active ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
                 {form.is_active ? "Actif" : "Inactif"}
@@ -249,7 +249,7 @@ export default function AdminAgentsPage() {
       {/* Loading */}
       {loading && (
         <div style={{ display: "flex", justifyContent: "center", padding: "64px 0" }}>
-          <div style={{ width: 28, height: 28, borderRadius: "50%", border: "2px solid #f97316", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
+          <div style={{ width: 28, height: 28, borderRadius: "50%", border: "2px solid #E9E900", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
         </div>
       )}
 
@@ -290,8 +290,8 @@ export default function AdminAgentsPage() {
                           display: "flex", alignItems: "center", gap: 4,
                           padding: "4px 10px", borderRadius: 999, fontSize: 11, fontWeight: 700,
                           border: "none", cursor: "pointer",
-                          background: a.is_active ? "rgba(110,201,122,0.15)" : "rgba(240,230,204,0.06)",
-                          color: a.is_active ? "#22c55e" : TEXT_SEC,
+                          background: a.is_active ? "rgba(233,233,0,0.12)" : "rgba(255,255,255,0.06)",
+                          color: a.is_active ? "#E9E900" : TEXT_SEC,
                         }}>
                         {a.is_active ? <ToggleRight size={12} /> : <ToggleLeft size={12} />}
                         {a.is_active ? "Actif" : "Inactif"}
@@ -323,7 +323,7 @@ export default function AdminAgentsPage() {
           style={{ position: "fixed", inset: 0, zIndex: 50, background: "rgba(0,0,0,0.72)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
           onClick={() => setDeleteTarget(null)}
         >
-          <div style={{ background: "#0f2210", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 340, width: "100%" }}
+          <div style={{ background: "#111a1f", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 340, width: "100%" }}
             onClick={(e) => e.stopPropagation()}>
             <p style={{ color: TEXT_PRI, fontWeight: 700, marginBottom: 6 }}>Supprimer {deleteTarget.name} ?</p>
             <p style={{ color: "#ef4444", fontSize: 12, marginBottom: 20 }}>Cette action est irréversible.</p>

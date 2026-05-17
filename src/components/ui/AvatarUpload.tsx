@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useRef, useState } from "react";
 import imageCompression from "browser-image-compression";
 import { Avatar } from "@/components/ui/Avatar";
@@ -102,7 +102,7 @@ export function AvatarUpload({ userId, currentUrl, name, onSuccess }: Props) {
       </button>
 
       {/* Discret label */}
-      <span style={{ fontSize: 11, color: "rgba(240,230,204,0.35)", cursor: "pointer" }}
+      <span style={{ fontSize: 11, color: "#666666", cursor: "pointer" }}
         onClick={() => !uploading && inputRef.current?.click()}>
         {uploading ? "Téléchargement…" : "Changer la photo"}
       </span>

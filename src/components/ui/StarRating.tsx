@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 interface StarRatingProps {
   rating: number;
@@ -31,14 +31,14 @@ export function StarRating({ rating, count, size = "md" }: StarRatingProps) {
               {partial && (
                 <defs>
                   <linearGradient id={id} x1="0" x2="1" y1="0" y2="0">
-                    <stop offset={`${fillPercent}%`} stopColor="#F97316" />
+                    <stop offset={`${fillPercent}%`} stopColor="#E9E900" />
                     <stop offset={`${fillPercent}%`} stopColor="#94a3b8" />
                   </linearGradient>
                 </defs>
               )}
               <path
                 d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-                fill={filled ? "#F97316" : partial ? `url(#${id})` : "#94a3b8"}
+                fill={filled ? "#E9E900" : partial ? `url(#${id})` : "#94a3b8"}
               />
             </svg>
           );

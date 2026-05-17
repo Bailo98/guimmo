@@ -1,4 +1,4 @@
-interface Props {
+﻿interface Props {
   images: number;
   description?: string | null;
   phone?: string | null;
@@ -19,8 +19,8 @@ function calcScore(p: Props): number {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 71) return "#22c55e";
-  if (score >= 41) return "#fb923c";
+  if (score >= 71) return "#E9E900";
+  if (score >= 41) return "#E9E900";
   return "#f87171";
 }
 
@@ -38,7 +38,7 @@ export function ListingScore(props: Props) {
   if (props.compact) {
     return (
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <div style={{ flex: 1, height: 4, background: "rgba(134,239,172,0.10)", borderRadius: 999, overflow: "hidden" }}>
+        <div style={{ flex: 1, height: 4, background: "#1e2a30", borderRadius: 999, overflow: "hidden" }}>
           <div style={{ width: `${score}%`, height: "100%", background: color, borderRadius: 999, transition: "width 0.4s" }} />
         </div>
         <span style={{ fontSize: 10, fontWeight: 700, color, flexShrink: 0 }}>{score}%</span>
@@ -49,25 +49,25 @@ export function ListingScore(props: Props) {
   return (
     <div style={{
       background: "rgba(134,239,172,0.04)",
-      border: "1px solid rgba(134,239,172,0.10)",
+      border: "1px solid #1e2a30",
       borderRadius: 14,
       padding: "14px 16px",
     }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-        <p style={{ color: "rgba(187,247,208,0.55)", fontSize: 11, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", margin: 0 }}>
+        <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 11, fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", margin: 0 }}>
           Score de confiance
         </p>
         <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
           <span style={{ fontWeight: 800, fontSize: 22, color, fontFamily: "var(--font-playfair, 'Playfair Display', serif)" }}>
             {score}
           </span>
-          <span style={{ fontSize: 12, color: "rgba(187,247,208,0.45)" }}>/100</span>
+          <span style={{ fontSize: 12, color: "rgba(255,255,255,0.45)" }}>/100</span>
           <span style={{ fontSize: 11, fontWeight: 700, color, marginLeft: 4 }}>— {scoreLabel(score)}</span>
         </div>
       </div>
 
       {/* Bar */}
-      <div style={{ height: 8, background: "rgba(134,239,172,0.08)", borderRadius: 999, overflow: "hidden", marginBottom: 12 }}>
+      <div style={{ height: 8, background: "#1e2a30", borderRadius: 999, overflow: "hidden", marginBottom: 12 }}>
         <div style={{ width: `${score}%`, height: "100%", background: color, borderRadius: 999, transition: "width 0.5s ease" }} />
       </div>
 
@@ -84,13 +84,13 @@ export function ListingScore(props: Props) {
           .filter((c) => !c.skip)
           .map((c) => (
             <div key={c.label} style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <span style={{ fontSize: 11, color: c.ok ? "#22c55e" : "rgba(187,247,208,0.30)" }}>
+              <span style={{ fontSize: 11, color: c.ok ? "#E9E900" : "rgba(255,255,255,0.30)" }}>
                 {c.ok ? "✓" : "○"}
               </span>
-              <span style={{ fontSize: 11, color: c.ok ? "rgba(187,247,208,0.70)" : "rgba(187,247,208,0.30)" }}>
+              <span style={{ fontSize: 11, color: c.ok ? "rgba(255,255,255,0.70)" : "rgba(255,255,255,0.30)" }}>
                 {c.label}
               </span>
-              <span style={{ fontSize: 10, color: c.ok ? color : "rgba(187,247,208,0.20)", fontWeight: 700 }}>
+              <span style={{ fontSize: 10, color: c.ok ? color : "rgba(255,255,255,0.20)", fontWeight: 700 }}>
                 {c.pts}
               </span>
             </div>

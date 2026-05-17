@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+﻿import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { MOCK_PROPERTIES } from "@/data/mock-properties";
@@ -47,7 +47,7 @@ export default async function QuartierPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0f1117]">
       {/* Hero banner */}
-      <div className="bg-gradient-to-br from-[#F97316] via-[#ea6c0a] to-[#c2540a] text-white">
+      <div className="bg-gradient-to-br from-[#E9E900] via-[#c4c400] to-[#c2540a] text-white">
         <div className="max-w-6xl mx-auto px-4 py-12 md:py-16">
           <Link
             href="/annonces"
@@ -124,7 +124,7 @@ export default async function QuartierPage({ params }: PageProps) {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                 {properties.length} annonce{properties.length > 1 ? "s" : ""} à{" "}
-                <span className="text-[#F97316]">{neighborhood.name}</span>
+                <span className="text-[#E9E900]">{neighborhood.name}</span>
               </h2>
             </div>
 
@@ -148,7 +148,7 @@ export default async function QuartierPage({ params }: PageProps) {
             </p>
             <Link
               href="/annonces"
-              className="inline-flex items-center gap-2 bg-[#F97316] hover:bg-[#ea6c0a] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+              className="inline-flex items-center gap-2 bg-[#E9E900] hover:bg-[#c4c400] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Voir toutes les annonces
@@ -160,7 +160,7 @@ export default async function QuartierPage({ params }: PageProps) {
           <div className="mt-10 text-center">
             <Link
               href="/annonces"
-              className="inline-flex items-center gap-2 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316] font-semibold px-6 py-3 rounded-xl transition-colors"
+              className="inline-flex items-center gap-2 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-[#E9E900] hover:text-[#E9E900] font-semibold px-6 py-3 rounded-xl transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Voir toutes les annonces

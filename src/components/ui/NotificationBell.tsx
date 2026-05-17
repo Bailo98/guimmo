@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { Bell, CheckCircle, Info, AlertTriangle, Check } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
@@ -32,7 +32,7 @@ export function NotificationBell() {
 
   function getIcon(type: "success" | "info" | "warning") {
     if (type === "success") return <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />;
-    if (type === "warning") return <AlertTriangle className="w-4 h-4 text-[#F97316] shrink-0" />;
+    if (type === "warning") return <AlertTriangle className="w-4 h-4 text-[#E9E900] shrink-0" />;
     return <Info className="w-4 h-4 text-blue-500 shrink-0" />;
   }
 
@@ -45,7 +45,7 @@ export function NotificationBell() {
       >
         <Bell className="w-4 h-4" />
         {count > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-[#F97316] text-white text-[10px] font-bold flex items-center justify-center px-0.5 leading-none">
+          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-[#E9E900] text-white text-[10px] font-bold flex items-center justify-center px-0.5 leading-none">
             {count > 9 ? "9+" : count}
           </span>
         )}
@@ -55,12 +55,12 @@ export function NotificationBell() {
         <div className="absolute right-0 top-11 w-80 rounded-2xl shadow-2xl border border-slate-100 dark:border-[#2a3040] bg-white dark:bg-[#1a2030] z-50 overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-[#2a3040]">
             <span className="font-semibold text-sm text-slate-800 dark:text-slate-100">
-              Notifications {count > 0 && <span className="text-[#F97316]">({count})</span>}
+              Notifications {count > 0 && <span className="text-[#E9E900]">({count})</span>}
             </span>
             {count > 0 ? (
               <button
                 onClick={handleMarkAllRead}
-                className="flex items-center gap-1 text-xs font-medium text-[#F97316] hover:underline"
+                className="flex items-center gap-1 text-xs font-medium text-[#E9E900] hover:underline"
               >
                 {justMarked ? <><Check className="w-3 h-3" /> Lu !</> : "Tout lire"}
               </button>
@@ -93,7 +93,7 @@ export function NotificationBell() {
                       {timeAgo(n.createdAt)}
                     </p>
                   </div>
-                  {!n.read && <div className="w-2 h-2 bg-[#F97316] rounded-full flex-shrink-0 mt-1.5" />}
+                  {!n.read && <div className="w-2 h-2 bg-[#E9E900] rounded-full flex-shrink-0 mt-1.5" />}
                 </li>
               ))}
             </ul>

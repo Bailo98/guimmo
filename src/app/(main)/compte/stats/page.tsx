@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { TrendingUp, Eye, MessageCircle, MapPin, Home, BarChart3, Zap, X } from "lucide-react";
@@ -46,7 +46,7 @@ export default function StatsPage() {
         {[
           { label: "Vues ce mois", value: "1 247", change: "+12%", icon: Eye, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/20" },
           { label: "Contacts WhatsApp", value: "89", change: "+8", icon: MessageCircle, color: "text-green-500", bg: "bg-green-50 dark:bg-green-900/20" },
-          { label: "Annonces actives", value: "3", change: "", icon: Home, color: "text-[#F97316]", bg: "bg-orange-50 dark:bg-orange-900/20" },
+          { label: "Annonces actives", value: "3", change: "", icon: Home, color: "text-[#E9E900]", bg: "bg-orange-50 dark:bg-orange-900/20" },
           { label: "Taux de contact", value: "7.1%", change: "+2%", icon: TrendingUp, color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-900/20" },
         ].map((s) => {
           const Icon = s.icon;
@@ -66,13 +66,13 @@ export default function StatsPage() {
       {/* Weekly chart */}
       <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-5 border border-slate-100 dark:border-[#2a3040]">
         <h2 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-[#F97316]" /> Vues cette semaine
+          <BarChart3 className="w-4 h-4 text-[#E9E900]" /> Vues cette semaine
         </h2>
         <div className="flex items-end gap-2 h-32">
           {WEEKLY_VIEWS.map((v, i) => (
             <div key={i} className="flex-1 flex flex-col items-center gap-1">
               <span className="text-[10px] text-slate-400">{v}</span>
-              <div className="w-full bg-[#F97316] rounded-t-lg transition-all" style={{ height: `${(v / maxViews) * 96}px` }} />
+              <div className="w-full bg-[#E9E900] rounded-t-lg transition-all" style={{ height: `${(v / maxViews) * 96}px` }} />
               <span className="text-[10px] text-slate-400">{DAYS[i]}</span>
             </div>
           ))}
@@ -85,7 +85,7 @@ export default function StatsPage() {
         <div className="space-y-3">
           {TOP_PROPERTIES.map((p, i) => (
             <div key={i} className="flex items-center gap-3">
-              <span className="w-6 h-6 bg-[#F97316]/10 text-[#F97316] text-xs font-black rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="w-6 h-6 bg-[#E9E900]/10 text-[#E9E900] text-xs font-black rounded-full flex items-center justify-center flex-shrink-0">
                 {i + 1}
               </span>
               <div className="flex-1 min-w-0">
@@ -109,9 +109,9 @@ export default function StatsPage() {
       <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-5 border border-slate-100 dark:border-[#2a3040]">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Zap className="w-4 h-4 text-[#F97316]" /> Performances du boost
+            <Zap className="w-4 h-4 text-[#E9E900]" /> Performances du boost
           </h2>
-          <span className="text-xs font-bold bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2.5 py-1 rounded-full">
+          <span className="text-xs font-bold bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-yellow-400 px-2.5 py-1 rounded-full">
             +420% de visibilité
           </span>
         </div>
@@ -135,11 +135,11 @@ export default function StatsPage() {
           <div>
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs text-slate-500 dark:text-slate-400">Après boost</span>
-              <span className="text-xs font-bold text-[#F97316]">{AFTER_VIEWS} vues/jour</span>
+              <span className="text-xs font-bold text-[#E9E900]">{AFTER_VIEWS} vues/jour</span>
             </div>
             <div className="h-3 bg-slate-100 dark:bg-[#151922] rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#F97316] rounded-full"
+                className="h-full bg-[#E9E900] rounded-full"
                 style={{ width: `${(AFTER_VIEWS / maxBar) * 100}%` }}
               />
             </div>
@@ -148,7 +148,7 @@ export default function StatsPage() {
 
         <button
           onClick={() => setShowBoostModal(true)}
-          className="mt-5 w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#F97316] text-white font-bold text-sm hover:bg-[#EA6C0A] transition-colors"
+          className="mt-5 w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#E9E900] text-white font-bold text-sm hover:bg-[#c4c400] transition-colors"
         >
           <Zap className="w-4 h-4" /> Booster une annonce
         </button>
@@ -179,7 +179,7 @@ export default function StatsPage() {
                 <select
                   value={selectedAnnonce}
                   onChange={(e) => setSelectedAnnonce(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+                  className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
                 >
                   {BOOST_ANNONCES.map((a) => (
                     <option key={a.id} value={a.id}>{a.title}</option>
@@ -204,7 +204,7 @@ export default function StatsPage() {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+                  className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
                 />
               </div>
 

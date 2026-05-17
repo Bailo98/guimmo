@@ -21,13 +21,13 @@ interface DashboardChartProps {
   showDots?: boolean;
 }
 
-const TICK = { fill: "rgba(240,230,204,0.35)", fontSize: 10 };
+const TICK = { fill: "#666666", fontSize: 10 };
 const TOOLTIP_STYLE = {
   contentStyle: {
-    background: "#0d1a10",
-    border: "1px solid rgba(134,239,172,0.15)",
+    background: "#111a1f",
+    border: "1px solid #1e2a30",
     borderRadius: 8,
-    color: "#f0fdf4",
+    color: "#ffffff",
     fontSize: 12,
   },
   cursor: { fill: "rgba(200,144,30,0.08)" },
@@ -71,7 +71,7 @@ export default function DashboardChart({
                 dataKey={s.dataKey}
                 name={s.name}
                 fill={s.color}
-                activeBar={{ fill: "#f97316" }}
+                activeBar={{ fill: "#E9E900" }}
                 radius={[3, 3, 0, 0]}
               />
             ))}
@@ -95,8 +95,8 @@ export default function DashboardChart({
                 name={s.name}
                 stroke={s.color}
                 strokeWidth={2}
-                dot={showDots && i === 0 ? { fill: "#f97316", r: 3, strokeWidth: 0 } : false}
-                activeDot={showDots && i === 0 ? { r: 5, fill: "#f97316" } : { r: 4 }}
+                dot={showDots && i === 0 ? { fill: "#E9E900", r: 3, strokeWidth: 0 } : false}
+                activeDot={showDots && i === 0 ? { r: 5, fill: "#E9E900" } : { r: 4 }}
               />
             ))}
           </LineChart>

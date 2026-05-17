@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useEffect, useRef, useState } from "react";
 import { Flame } from "lucide-react";
 import type { Property } from "@/types";
@@ -20,7 +20,7 @@ function buildMarkers(
     className: "",
     html: `<div style="
       width:32px;height:32px;
-      background:#F97316;
+      background:#E9E900;
       border:3px solid #fff;
       border-radius:50% 50% 50% 0;
       transform:rotate(-45deg);
@@ -58,8 +58,8 @@ function buildMarkers(
       const popup = L.popup({ maxWidth: 240, className: "leaflet-popup-custom" }).setContent(`
         <div style="font-family:system-ui,sans-serif;padding:4px 0;">
           <p style="font-weight:700;font-size:13px;margin:0 0 4px;color:#111;line-height:1.3;">${property.title}</p>
-          <p style="font-size:12px;color:#F97316;font-weight:600;margin:0 0 8px;">${formattedPrice}${property.price_period === "month" ? "/mois" : ""}</p>
-          <a href="/annonces/${property.id}" style="display:inline-block;background:#F97316;color:#fff;font-size:12px;font-weight:600;padding:5px 12px;border-radius:8px;text-decoration:none;">Voir →</a>
+          <p style="font-size:12px;color:#E9E900;font-weight:600;margin:0 0 8px;">${formattedPrice}${property.price_period === "month" ? "/mois" : ""}</p>
+          <a href="/annonces/${property.id}" style="display:inline-block;background:#E9E900;color:#fff;font-size:12px;font-weight:600;padding:5px 12px;border-radius:8px;text-decoration:none;">Voir →</a>
         </div>
       `);
 
@@ -68,7 +68,7 @@ function buildMarkers(
       // Cluster marker
       const count = group.length;
       const clusterIcon = L.divIcon({
-        html: `<div style="background:#F97316;color:white;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3)">${count}</div>`,
+        html: `<div style="background:#E9E900;color:white;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3)">${count}</div>`,
         iconSize: [36, 36],
         className: "",
       });
@@ -76,7 +76,7 @@ function buildMarkers(
       const listItems = group
         .map(
           (p) =>
-            `<li style="margin:0 0 6px;"><a href="/annonces/${p.id}" style="color:#F97316;font-weight:600;font-size:13px;text-decoration:none;">${p.title}</a></li>`
+            `<li style="margin:0 0 6px;"><a href="/annonces/${p.id}" style="color:#E9E900;font-weight:600;font-size:13px;text-decoration:none;">${p.title}</a></li>`
         )
         .join("");
 
@@ -109,7 +109,7 @@ function buildMarkers(
       if (!coords) return;
       const avgPrice = prices.reduce((a, b) => a + b, 0) / prices.length;
       const ratio = (avgPrice - minPrice) / (maxPrice - minPrice || 1);
-      const color = ratio < 0.33 ? "#22c55e" : ratio < 0.66 ? "#F97316" : "#ef4444";
+      const color = ratio < 0.33 ? "#E9E900" : ratio < 0.66 ? "#E9E900" : "#ef4444";
 
       L.circle(coords as [number, number], {
         radius: 600,
@@ -215,7 +215,7 @@ export function PropertyMap({ properties }: PropertyMapProps) {
           className={cn(
             "flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg border transition-colors",
             heatmap
-              ? "bg-[#F97316] text-white border-[#F97316]"
+              ? "bg-[#E9E900] text-white border-[#E9E900]"
               : "bg-white dark:bg-[#1e2430] text-slate-700 dark:text-white border-slate-200 dark:border-[#2a3040]"
           )}
         >

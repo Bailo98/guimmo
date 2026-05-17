@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
@@ -71,7 +71,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-slate-100 dark:border-[#2a3040]">
           <div className="flex items-center gap-2">
-            <CalendarCheck className="w-5 h-5 text-[#F97316]" />
+            <CalendarCheck className="w-5 h-5 text-[#E9E900]" />
             <h2 className="font-bold text-slate-900 dark:text-white text-lg">Réserver une visite</h2>
           </div>
           <button
@@ -131,7 +131,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
                   min={today}
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-[#2a3040] bg-slate-50 dark:bg-[#151922] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#F97316]/40 focus:border-[#F97316] transition"
+                  className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-[#2a3040] bg-slate-50 dark:bg-[#151922] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#E9E900]/40 focus:border-[#E9E900] transition"
                 />
               </div>
 
@@ -147,8 +147,8 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
                       onClick={() => setTime(slot)}
                       className={`py-2 rounded-xl text-sm font-semibold transition-all ${
                         time === slot
-                          ? "bg-[#F97316] text-white shadow-[0_2px_10px_rgba(249,115,22,0.35)]"
-                          : "bg-slate-100 dark:bg-[#151922] text-slate-600 dark:text-slate-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-[#F97316]"
+                          ? "bg-[#E9E900] text-white shadow-[0_2px_10px_rgba(249,115,22,0.35)]"
+                          : "bg-slate-100 dark:bg-[#151922] text-slate-600 dark:text-slate-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-[#E9E900]"
                       }`}
                     >
                       {slot}
@@ -167,7 +167,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
                   placeholder="Prénom et nom"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-[#2a3040] bg-slate-50 dark:bg-[#151922] text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316]/40 focus:border-[#F97316] transition"
+                  className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-[#2a3040] bg-slate-50 dark:bg-[#151922] text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E9E900]/40 focus:border-[#E9E900] transition"
                 />
               </div>
 
@@ -181,7 +181,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
                   placeholder="+224 6XX XXX XXX"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-[#2a3040] bg-slate-50 dark:bg-[#151922] text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316]/40 focus:border-[#F97316] transition"
+                  className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-[#2a3040] bg-slate-50 dark:bg-[#151922] text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E9E900]/40 focus:border-[#E9E900] transition"
                 />
               </div>
 
@@ -191,7 +191,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
                 disabled={!canConfirm}
                 className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all ${
                   canConfirm
-                    ? "bg-[#F97316] hover:bg-[#EA6C0A] active:scale-95 text-white shadow-[0_4px_20px_rgba(249,115,22,0.35)]"
+                    ? "bg-[#E9E900] hover:bg-[#c4c400] active:scale-95 text-white shadow-[0_4px_20px_rgba(249,115,22,0.35)]"
                     : "bg-slate-200 dark:bg-[#151922] text-slate-400 cursor-not-allowed"
                 }`}
               >
@@ -229,7 +229,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
 
               <button
                 onClick={handleContactWhatsApp}
-                className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#22c55e] active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all text-sm shadow-[0_4px_20px_rgba(37,211,102,0.3)]"
+                className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#c4c400] active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all text-sm shadow-[0_4px_20px_rgba(37,211,102,0.3)]"
               >
                 <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current flex-shrink-0">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />

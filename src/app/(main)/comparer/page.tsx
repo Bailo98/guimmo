@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import Image from "next/image";
 import { useAppStore } from "@/lib/store";
@@ -28,7 +28,7 @@ function CompareRow({ label, values, highlight }: RowProps) {
           key={i}
           className={`py-3 px-3 text-sm text-center font-medium ${
             highlight === i
-              ? "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/10"
+              ? "text-green-600 dark:text-yellow-400 bg-green-50 dark:bg-green-900/10"
               : "text-slate-800 dark:text-slate-200"
           }`}
         >
@@ -56,7 +56,7 @@ export default function ComparerPage() {
         </p>
         <Link
           href="/annonces"
-          className="inline-flex items-center gap-2 bg-[#F97316] hover:bg-[#EA6C0A] text-white font-bold px-6 py-3 rounded-xl transition-colors"
+          className="inline-flex items-center gap-2 bg-[#E9E900] hover:bg-[#c4c400] text-white font-bold px-6 py-3 rounded-xl transition-colors"
         >
           Parcourir les annonces
         </Link>
@@ -72,7 +72,7 @@ export default function ComparerPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-            <Scale className="w-6 h-6 text-[#F97316]" />
+            <Scale className="w-6 h-6 text-[#E9E900]" />
             Comparateur
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">
@@ -115,7 +115,7 @@ export default function ComparerPage() {
                     </div>
                     <div className="p-3">
                       <p className="font-bold text-slate-900 dark:text-white text-sm line-clamp-2 text-left">{p.title}</p>
-                      <p className="text-[#F97316] font-black text-lg text-left mt-1">{formatPrice(p.price)}</p>
+                      <p className="text-[#E9E900] font-black text-lg text-left mt-1">{formatPrice(p.price)}</p>
                       {p.price_period === "month" && (
                         <p className="text-slate-400 text-xs text-left">/mois</p>
                       )}
@@ -128,7 +128,7 @@ export default function ComparerPage() {
                         </button>
                         <Link
                           href={`/annonces/${p.id}`}
-                          className="flex-1 text-xs py-1.5 rounded-lg bg-[#F97316] text-white font-bold text-center flex items-center justify-center hover:bg-[#EA6C0A] transition-colors"
+                          className="flex-1 text-xs py-1.5 rounded-lg bg-[#E9E900] text-white font-bold text-center flex items-center justify-center hover:bg-[#c4c400] transition-colors"
                         >
                           Voir l&apos;annonce
                         </Link>
@@ -153,7 +153,7 @@ export default function ComparerPage() {
             <CompareRow
               label="Meilleur prix"
               values={properties.map((_, i) => i === minPriceIndex ? (
-                <span className="inline-flex items-center gap-1 text-green-600 dark:text-green-400 text-xs font-bold bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
+                <span className="inline-flex items-center gap-1 text-green-600 dark:text-yellow-400 text-xs font-bold bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
                   <CheckCircle className="w-3 h-3" /> Meilleur prix
                 </span>
               ) : <span className="text-slate-300 dark:text-slate-600">—</span>)}
@@ -193,7 +193,7 @@ export default function ComparerPage() {
             <CompareRow
               label="Disponible"
               values={properties.map((p) => p?.available_now ? (
-                <span className="text-green-600 dark:text-green-400 text-xs font-semibold">Oui</span>
+                <span className="text-green-600 dark:text-yellow-400 text-xs font-semibold">Oui</span>
               ) : (
                 <span className="text-slate-400 text-xs">Non</span>
               ))}

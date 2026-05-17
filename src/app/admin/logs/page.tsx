@@ -1,4 +1,4 @@
-import { CheckCircle, Trash2, AlertTriangle, Info, Download } from "lucide-react";
+﻿import { CheckCircle, Trash2, AlertTriangle, Info, Download } from "lucide-react";
 
 const LOGS = [
   { id: 1, action: "approve", message: "Annonce 'Appartement 3ch Kipé' approuvée", admin: "Admin Principal", date: "2026-05-09 14:32", icon: "check" },
@@ -16,7 +16,7 @@ const LOGS = [
 const ACTION_STYLES: Record<string, { bg: string; icon: React.ReactNode; label: string; dot: string }> = {
   approve: {
     bg: "bg-green-100 dark:bg-green-900/30",
-    icon: <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />,
+    icon: <CheckCircle className="w-4 h-4 text-green-600 dark:text-yellow-400" />,
     label: "Approbation",
     dot: "bg-green-500",
   },
@@ -54,7 +54,7 @@ export default function AdminLogsPage() {
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">Historique complet des actions administratives</p>
         </div>
-        <button className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316] transition-colors">
+        <button className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#E9E900] hover:text-[#E9E900] transition-colors">
           <Download className="w-4 h-4" />
           Exporter
         </button>
@@ -86,7 +86,7 @@ export default function AdminLogsPage() {
                 </div>
 
                 {/* Content */}
-                <div className={`flex-1 bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-slate-100 dark:border-[#2a3040] ${index === 0 ? "border-l-4 border-l-[#F97316]" : ""}`}>
+                <div className={`flex-1 bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-slate-100 dark:border-[#2a3040] ${index === 0 ? "border-l-4 border-l-[#E9E900]" : ""}`}>
                   <p className="text-sm font-medium text-slate-900 dark:text-white leading-snug">{log.message}</p>
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                     <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{log.admin}</span>

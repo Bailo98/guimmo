@@ -30,15 +30,15 @@ export default function SelectionPage() {
       {/* Editorial hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-[#1e1008] text-white">
         {/* Decorative orb */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#F97316]/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#F97316]/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#E9E900]/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#E9E900]/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
 
         <div className="relative max-w-6xl mx-auto px-4 py-14 md:py-20">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-[#F97316]/20 border border-[#F97316]/30 flex items-center justify-center">
-              <Award className="w-5 h-5 text-[#F97316]" />
+            <div className="w-10 h-10 rounded-xl bg-[#E9E900]/20 border border-[#E9E900]/30 flex items-center justify-center">
+              <Award className="w-5 h-5 text-[#E9E900]" />
             </div>
-            <span className="text-[#F97316] font-semibold text-sm uppercase tracking-widest">
+            <span className="text-[#E9E900] font-semibold text-sm uppercase tracking-widest">
               Sélection éditoriale
             </span>
           </div>
@@ -54,8 +54,8 @@ export default function SelectionPage() {
           {/* Curation process */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             <div className="flex items-start gap-3 bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-              <div className="w-8 h-8 rounded-lg bg-[#F97316]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Star className="w-4 h-4 text-[#F97316]" />
+              <div className="w-8 h-8 rounded-lg bg-[#E9E900]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Star className="w-4 h-4 text-[#E9E900]" />
               </div>
               <div>
                 <p className="font-semibold text-sm">Qualité garantie</p>
@@ -66,7 +66,7 @@ export default function SelectionPage() {
             </div>
             <div className="flex items-start gap-3 bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
               <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Award className="w-4 h-4 text-green-400" />
+                <Award className="w-4 h-4 text-yellow-400" />
               </div>
               <div>
                 <p className="font-semibold text-sm">Vérifiées sur place</p>
@@ -105,7 +105,7 @@ export default function SelectionPage() {
         {boosted.length > 0 && (
           <section className="mb-12">
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex items-center gap-2 bg-[#F97316] text-white px-4 py-2 rounded-full font-bold text-sm">
+              <div className="flex items-center gap-2 bg-[#E9E900] text-white px-4 py-2 rounded-full font-bold text-sm">
                 <Zap className="w-4 h-4" />
                 ⭐ Coups de cœur
               </div>
@@ -116,13 +116,13 @@ export default function SelectionPage() {
 
             {/* Highlighted card strip */}
             <div className="relative mb-2">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#F97316]/10 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#E9E900]/10 to-transparent pointer-events-none" />
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {boosted.map((property, index) => (
                   <div key={property.id} className="relative">
                     {/* Editorial badge */}
                     <div className="absolute -top-2.5 left-4 z-10">
-                      <span className="inline-flex items-center gap-1 bg-[#F97316] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-lg">
+                      <span className="inline-flex items-center gap-1 bg-[#E9E900] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-lg">
                         <Star className="w-2.5 h-2.5 fill-white" />
                         Coup de cœur
                       </span>
@@ -172,7 +172,7 @@ export default function SelectionPage() {
             </p>
             <Link
               href="/annonces"
-              className="inline-flex items-center gap-2 bg-[#F97316] hover:bg-[#ea6c0a] text-white font-bold px-6 py-3 rounded-xl transition-colors"
+              className="inline-flex items-center gap-2 bg-[#E9E900] hover:bg-[#c4c400] text-white font-bold px-6 py-3 rounded-xl transition-colors"
             >
               Toutes les annonces
               <ArrowRight className="w-4 h-4" />

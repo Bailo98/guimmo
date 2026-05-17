@@ -226,7 +226,7 @@ export default function ConversationPage() {
   if (authLoading || (fetching && meId && otherId)) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-2 border-[#f97316] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#E9E900] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -236,31 +236,31 @@ export default function ConversationPage() {
 
   return (
     <div
-      className="flex flex-col bg-[#0a1a0a]"
+      className="flex flex-col bg-[#0A1216]"
       style={{ height: "calc(100dvh - 4rem - 4rem - env(safe-area-inset-bottom, 0px))" }}
     >
       {/* ── Header ── */}
       <div
-        className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-[rgba(134,239,172,0.08)]"
-        style={{ background: "#0a1a0a" }}
+        className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-[#1e2a30]"
+        style={{ background: "#0A1216" }}
       >
         <button
           onClick={() => router.push("/messages")}
-          className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[rgba(134,239,172,0.08)] transition-colors flex-shrink-0"
+          className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[#1e2a30] transition-colors flex-shrink-0"
         >
-          <ArrowLeft className="w-5 h-5 text-[#f0fdf4]" />
+          <ArrowLeft className="w-5 h-5 text-[#ffffff]" />
         </button>
 
-        <div className="w-10 h-10 rounded-full bg-[#f97316] flex-shrink-0 flex items-center justify-center text-white font-bold">
+        <div className="w-10 h-10 rounded-full bg-[#E9E900] flex-shrink-0 flex items-center justify-center text-white font-bold">
           {otherName.charAt(0).toUpperCase()}
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-[#f0fdf4] text-sm leading-tight">{otherName}</p>
+          <p className="font-bold text-[#ffffff] text-sm leading-tight">{otherName}</p>
           {propId && (
             <Link href={`/annonces/${propId}`} className="flex items-center gap-1 group mt-0.5">
-              <Home className="w-3 h-3 text-[rgba(240,230,204,0.40)] flex-shrink-0" />
-              <p className="text-xs text-[rgba(240,230,204,0.50)] truncate group-hover:text-[#f97316] transition-colors">
+              <Home className="w-3 h-3 text-white/40 flex-shrink-0" />
+              <p className="text-xs text-[#666666] truncate group-hover:text-[#E9E900] transition-colors">
                 {propertyTitle}
               </p>
             </Link>
@@ -272,7 +272,7 @@ export default function ConversationPage() {
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {messages.length === 0 && !fetching && (
           <div className="flex items-center justify-center h-full py-12">
-            <p className="text-[rgba(240,230,204,0.40)] text-sm text-center">
+            <p className="text-white/40 text-sm text-center">
               Aucun message encore. Soyez le premier à écrire !
             </p>
           </div>
@@ -283,7 +283,7 @@ export default function ConversationPage() {
           return (
             <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
               {!isMe && (
-                <div className="w-7 h-7 rounded-full bg-[#f97316] flex-shrink-0 flex items-center justify-center text-white text-xs font-bold mr-2 self-end mb-5">
+                <div className="w-7 h-7 rounded-full bg-[#E9E900] flex-shrink-0 flex items-center justify-center text-white text-xs font-bold mr-2 self-end mb-5">
                   {otherName.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -291,8 +291,8 @@ export default function ConversationPage() {
                 <div
                   className={`px-4 py-2.5 text-sm leading-relaxed ${
                     isMe
-                      ? "bg-[#f97316] text-white"
-                      : "bg-[#0f2210] text-[#f0fdf4] border border-[rgba(134,239,172,0.10)]"
+                      ? "bg-[#E9E900] text-white"
+                      : "bg-[#111a1f] text-[#ffffff] border border-[#1e2a30]"
                   }`}
                   style={{
                     borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
@@ -301,11 +301,11 @@ export default function ConversationPage() {
                   {msg.content}
                 </div>
                 <div className="flex items-center gap-1.5 mt-1 px-1">
-                  <span className="text-[10px] text-[rgba(240,230,204,0.40)]">
+                  <span className="text-[10px] text-white/40">
                     {formatTime(msg.created_at)}
                   </span>
                   {isMe && msg.is_read && (
-                    <span className="text-[10px] text-[#f97316]" title="Lu">✓✓</span>
+                    <span className="text-[10px] text-[#E9E900]" title="Lu">✓✓</span>
                   )}
                 </div>
               </div>
@@ -318,9 +318,9 @@ export default function ConversationPage() {
       {/* ── Input ── */}
       <form
         onSubmit={handleSend}
-        className="flex-shrink-0 px-4 py-3 border-t border-[rgba(134,239,172,0.08)]"
+        className="flex-shrink-0 px-4 py-3 border-t border-[#1e2a30]"
         style={{
-          background: "#0a1a0a",
+          background: "#0A1216",
           paddingBottom: "max(12px, env(safe-area-inset-bottom))",
         }}
       >
@@ -333,12 +333,12 @@ export default function ConversationPage() {
             placeholder="Écrire un message…"
             rows={1}
             style={{ fontSize: 16 }}
-            className="flex-1 resize-none bg-[#0f2210] border border-[rgba(134,239,172,0.10)] text-[#f0fdf4] placeholder:text-[rgba(240,230,204,0.35)] rounded-3xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#f97316]/50 max-h-32 overflow-y-auto"
+            className="flex-1 resize-none bg-[#111a1f] border border-[#1e2a30] text-[#ffffff] placeholder:text-white/30 rounded-3xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#E9E900]/50 max-h-32 overflow-y-auto"
           />
           <button
             type="submit"
             disabled={!input.trim() || sending}
-            className="w-11 h-11 rounded-full flex items-center justify-center bg-[#f97316] hover:bg-[#ea6c0a] disabled:opacity-40 disabled:cursor-not-allowed text-white transition-all flex-shrink-0"
+            className="w-11 h-11 rounded-full flex items-center justify-center bg-[#E9E900] hover:bg-[#c4c400] disabled:opacity-40 disabled:cursor-not-allowed text-white transition-all flex-shrink-0"
           >
             {sending
               ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -346,7 +346,7 @@ export default function ConversationPage() {
             }
           </button>
         </div>
-        <p className="text-[10px] text-[rgba(240,230,204,0.30)] text-center mt-1.5">
+        <p className="text-[10px] text-white/30 text-center mt-1.5">
           Entrée pour envoyer · Maj+Entrée pour nouvelle ligne
         </p>
       </form>

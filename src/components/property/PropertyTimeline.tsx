@@ -1,4 +1,4 @@
-import { History } from "lucide-react";
+﻿import { History } from "lucide-react";
 
 interface TimelineEvent {
   date: Date;
@@ -75,7 +75,7 @@ function formatDate(date: Date): string {
 const DOT_CLASSES: Record<TimelineEvent["type"], string> = {
   publish: "bg-blue-500",
   milestone: "bg-purple-500",
-  price: "bg-[#F97316]",
+  price: "bg-[#E9E900]",
   available: "bg-green-500",
 };
 
@@ -98,7 +98,7 @@ export function PropertyTimeline({ price, createdAt, availableNow }: Props) {
   return (
     <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-5 border border-slate-100 dark:border-[#2a3040]">
       <h2 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-        <History className="w-4 h-4 text-[#F97316]" /> Historique de l&apos;annonce
+        <History className="w-4 h-4 text-[#E9E900]" /> Historique de l&apos;annonce
       </h2>
 
       <ol className="space-y-0">

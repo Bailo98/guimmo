@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useEffect, useRef } from "react";
 
 const NEIGHBORHOOD_COORDS: Record<string, [number, number]> = {
@@ -63,7 +63,7 @@ export function PropertyDetailMap({ neighborhood }: PropertyDetailMapProps) {
         className: "",
         html: `<div style="
           width:28px;height:28px;
-          background:#F97316;
+          background:#E9E900;
           border:3px solid #fff;
           border-radius:50% 50% 50% 0;
           transform:rotate(-45deg);

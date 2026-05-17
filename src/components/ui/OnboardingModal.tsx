@@ -59,7 +59,7 @@ export function OnboardingModal() {
           <div
             className="px-8 pt-10 pb-8 text-center"
             style={{
-              background: "linear-gradient(135deg, #F97316 0%, #EA6C0A 100%)",
+              background: "linear-gradient(135deg, #E9E900 0%, #c4c400 100%)",
             }}
           >
             <h2 className="text-2xl font-bold text-white leading-tight">
@@ -91,7 +91,7 @@ export function OnboardingModal() {
                 <button
                   key={label}
                   onClick={() => setStep(1)}
-                  className="flex items-center gap-3 w-full px-5 py-4 rounded-xl border-2 border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#111418] text-slate-700 dark:text-slate-200 font-semibold text-sm hover:border-[#F97316] hover:text-[#F97316] transition-colors text-left"
+                  className="flex items-center gap-3 w-full px-5 py-4 rounded-xl border-2 border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#111418] text-slate-700 dark:text-slate-200 font-semibold text-sm hover:border-[#E9E900] hover:text-[#E9E900] transition-colors text-left"
                 >
                   <span className="text-xl">{emoji}</span>
                   {label}
@@ -107,7 +107,7 @@ export function OnboardingModal() {
                 <button
                   key={option}
                   onClick={() => setStep(2)}
-                  className="px-4 py-4 rounded-xl border-2 border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#111418] text-slate-700 dark:text-slate-200 font-semibold text-sm hover:border-[#F97316] hover:text-[#F97316] transition-colors text-center"
+                  className="px-4 py-4 rounded-xl border-2 border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#111418] text-slate-700 dark:text-slate-200 font-semibold text-sm hover:border-[#E9E900] hover:text-[#E9E900] transition-colors text-center"
                 >
                   {option}
                 </button>
@@ -122,7 +122,7 @@ export function OnboardingModal() {
                 <button
                   key={name}
                   onClick={() => finish()}
-                  className="px-3 py-3 rounded-xl border-2 border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#111418] text-slate-700 dark:text-slate-200 font-semibold text-sm hover:border-[#F97316] hover:text-[#F97316] transition-colors text-center"
+                  className="px-3 py-3 rounded-xl border-2 border-slate-200 dark:border-[#2a3040] bg-white dark:bg-[#111418] text-slate-700 dark:text-slate-200 font-semibold text-sm hover:border-[#E9E900] hover:text-[#E9E900] transition-colors text-center"
                 >
                   {name}
                 </button>
@@ -139,14 +139,14 @@ export function OnboardingModal() {
                 key={i}
                 className="block w-2 h-2 rounded-full transition-colors"
                 style={{
-                  backgroundColor: i <= step ? "#F97316" : "#cbd5e1",
+                  backgroundColor: i <= step ? "#E9E900" : "#cbd5e1",
                 }}
               />
             ))}
           </div>
           <button
             onClick={finish}
-            className="text-xs text-slate-400 dark:text-slate-500 hover:text-[#F97316] transition-colors"
+            className="text-xs text-slate-400 dark:text-slate-500 hover:text-[#E9E900] transition-colors"
           >
             Passer
           </button>

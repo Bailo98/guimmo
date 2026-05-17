@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+﻿import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
@@ -78,7 +78,7 @@ export default async function ProfilPage({ params }: Props) {
       {/* Profile card */}
       <div className="bg-white dark:bg-[#1e2430] rounded-3xl border border-slate-100 dark:border-[#2a3040] p-6 mb-8 flex flex-col sm:flex-row items-center sm:items-start gap-5">
         {/* Avatar */}
-        <div className="w-20 h-20 rounded-2xl bg-[#F97316] flex-shrink-0 flex items-center justify-center text-white text-2xl font-black overflow-hidden">
+        <div className="w-20 h-20 rounded-2xl bg-[#E9E900] flex-shrink-0 flex items-center justify-center text-white text-2xl font-black overflow-hidden">
           {profile.avatar_url ? (
             <Image src={profile.avatar_url} alt={displayName} width={80} height={80} className="object-cover w-full h-full" />
           ) : (
@@ -91,11 +91,11 @@ export default async function ProfilPage({ params }: Props) {
           <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
             <h1 className="text-xl font-black text-slate-900 dark:text-white">{displayName}</h1>
             {profile.is_verified && (
-              <CheckCircle className="w-5 h-5 text-[#F97316] flex-shrink-0" />
+              <CheckCircle className="w-5 h-5 text-[#E9E900] flex-shrink-0" />
             )}
           </div>
           {isAgence && profile.agency_name && (
-            <p className="text-[#F97316] font-semibold text-sm mt-0.5">{profile.agency_name}</p>
+            <p className="text-[#E9E900] font-semibold text-sm mt-0.5">{profile.agency_name}</p>
           )}
           <span className="inline-block mt-1 text-xs font-bold bg-slate-100 dark:bg-[#2a3040] text-slate-600 dark:text-slate-300 px-2.5 py-1 rounded-full">
             {roleLabel}
@@ -111,7 +111,7 @@ export default async function ProfilPage({ params }: Props) {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-[#25D366] hover:bg-[#22c55e] text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors flex-shrink-0"
+            className="flex items-center gap-2 bg-[#25D366] hover:bg-[#c4c400] text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors flex-shrink-0"
           >
             <Phone className="w-4 h-4" />
             WhatsApp
@@ -130,7 +130,7 @@ export default async function ProfilPage({ params }: Props) {
               <Link
                 key={l.id}
                 href={`/annonces/${l.id}`}
-                className="flex gap-3 bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] p-3 hover:border-[#F97316]/40 transition-colors"
+                className="flex gap-3 bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] p-3 hover:border-[#E9E900]/40 transition-colors"
               >
                 <div className="relative w-24 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-slate-100 dark:bg-[#151922]">
                   {l.primaryImage ? (
@@ -145,7 +145,7 @@ export default async function ProfilPage({ params }: Props) {
                     <MapPin className="w-3 h-3 flex-shrink-0" />
                     {NEIGHBORHOOD_LABELS[l.neighborhood] ?? l.neighborhood}
                   </div>
-                  <p className="text-[#F97316] font-bold text-sm mt-1">
+                  <p className="text-[#E9E900] font-bold text-sm mt-1">
                     {formatGNF(l.price, l.price_period)}
                   </p>
                 </div>

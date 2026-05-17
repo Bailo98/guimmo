@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { createContext, useCallback, useContext, useRef, useState } from "react";
 import { X, CheckCircle, AlertCircle, Info } from "lucide-react";
 
@@ -62,20 +62,20 @@ export function useToast(): ToastContextValue {
 
 // ─── Toaster ──────────────────────────────────────────────────────────────────
 
-const STYLES: Record<ToastType, { bg: string; border: string; icon: React.ReactNode }> = {
+const STYLES: Record<ToastType, { style: React.CSSProperties; textColor: string; icon: React.ReactNode }> = {
   success: {
-    bg: "bg-[#16A34A]",
-    border: "border-green-700",
+    style: { background: "rgba(233,233,0,0.10)", border: "1px solid #E9E900" },
+    textColor: "#E9E900",
     icon: <CheckCircle className="w-4 h-4 flex-shrink-0" />,
   },
   error: {
-    bg: "bg-red-600",
-    border: "border-red-700",
+    style: { background: "rgba(239,68,68,0.10)", border: "1px solid #ef4444" },
+    textColor: "#fca5a5",
     icon: <AlertCircle className="w-4 h-4 flex-shrink-0" />,
   },
   info: {
-    bg: "bg-[#F97316]",
-    border: "border-orange-600",
+    style: { background: "rgba(233,233,0,0.10)", border: "1px solid rgba(233,233,0,0.50)" },
+    textColor: "#E9E900",
     icon: <Info className="w-4 h-4 flex-shrink-0" />,
   },
 };
@@ -98,13 +98,8 @@ function Toaster({ toasts, onDismiss }: ToasterProps) {
         return (
           <div
             key={toast.id}
-            className={`
-              pointer-events-auto flex items-center gap-3 w-full max-w-sm
-              ${style.bg} ${style.border} border
-              text-white text-sm font-medium
-              px-4 py-3 rounded-xl shadow-lg
-              animate-toast-in
-            `}
+            className="pointer-events-auto flex items-center gap-3 w-full max-w-sm px-4 py-3 rounded-xl shadow-lg animate-toast-in text-sm font-medium"
+            style={{ ...style.style, color: style.textColor, backdropFilter: "blur(12px)" }}
           >
             {style.icon}
             <span className="flex-1">{toast.message}</span>

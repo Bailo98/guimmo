@@ -123,10 +123,10 @@ function InscriptionForm() {
   const selectedRole = USER_ROLES.find((r) => r.value === role);
 
   return (
-    <div className="min-h-screen bg-[#0a1a0a] flex flex-col">
+    <div className="min-h-screen bg-[#0A1216] flex flex-col">
       <div className="p-4 flex items-center justify-between">
         <Logo size="lg" />
-        <Link href="/connexion" className="text-sm text-[rgba(240,230,204,0.50)] hover:text-white transition-colors">
+        <Link href="/connexion" className="text-sm text-[#666666] hover:text-white transition-colors">
           Déjà un compte ? Se connecter
         </Link>
       </div>
@@ -140,22 +140,22 @@ function InscriptionForm() {
                 key={s}
                 className={cn(
                   "h-1.5 rounded-full transition-all duration-300",
-                  s < step  ? "bg-[#f97316] w-12"
-                  : s === step ? "bg-[#f97316] w-16"
+                  s < step  ? "bg-[#E9E900] w-12"
+                  : s === step ? "bg-[#E9E900] w-16"
                   : "bg-[#2a3040] w-8"
                 )}
               />
             ))}
           </div>
 
-          <div className="rounded-3xl p-8" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", border: "1px solid rgba(255,255,255,0.10)" }}>
+          <div className="rounded-3xl p-8" style={{ background: "#111a1f", border: "1px solid #1e2a30", borderRadius: 24 }}>
 
             {/* ── STEP 1 — Profil ── */}
             {step === 1 && (
               <>
                 <div className="text-center mb-6">
                   <h1 className="text-2xl font-black text-white">Créer un compte</h1>
-                  <p className="text-[rgba(240,230,204,0.50)] text-sm mt-1">Quel est votre profil ?</p>
+                  <p className="text-[#666666] text-sm mt-1">Quel est votre profil ?</p>
                 </div>
 
                 <div className="space-y-3">
@@ -167,23 +167,23 @@ function InscriptionForm() {
                       className={cn(
                         "w-full flex items-center gap-3 p-4 rounded-2xl border transition-all text-left",
                         role === r.value
-                          ? "border-[#f97316] bg-[rgba(249,115,22,0.10)]"
+                          ? "border-[#E9E900] bg-[rgba(233,233,0,0.10)]"
                           : "hover:border-white/20"
                       )}
                       style={{
                         minHeight: 80,
-                        borderColor: role === r.value ? "#f97316" : "rgba(134,239,172,0.12)",
-                        background: role === r.value ? "rgba(249,115,22,0.10)" : "#0f2210",
+                        borderColor: role === r.value ? "#E9E900" : "#1e2a30",
+                        background: role === r.value ? "rgba(233,233,0,0.10)" : "#111a1f",
                       }}
                     >
                       <span style={{ fontSize: 32, lineHeight: 1, flexShrink: 0 }}>{r.icon}</span>
                       <div className="flex-1">
-                        <p className={cn("font-semibold text-sm", role === r.value ? "text-[#f97316]" : "text-white")}>
+                        <p className={cn("font-semibold text-sm", role === r.value ? "text-[#E9E900]" : "text-white")}>
                           {r.label}
                         </p>
-                        <p className="text-[rgba(240,230,204,0.50)] text-xs mt-0.5">{r.desc}</p>
+                        <p className="text-[#666666] text-xs mt-0.5">{r.desc}</p>
                       </div>
-                      {role === r.value && <CheckCircle className="w-4 h-4 text-[#f97316] flex-shrink-0" />}
+                      {role === r.value && <CheckCircle className="w-4 h-4 text-[#E9E900] flex-shrink-0" />}
                     </button>
                   ))}
                 </div>
@@ -206,7 +206,7 @@ function InscriptionForm() {
                 <div className="text-center mb-6">
                   <button
                     onClick={() => { setStep(1); setError(null); }}
-                    className="text-[rgba(240,230,204,0.50)] hover:text-white text-sm mb-2 flex items-center gap-1 mx-auto"
+                    className="text-[#666666] hover:text-white text-sm mb-2 flex items-center gap-1 mx-auto"
                   >
                     ← Retour
                   </button>
@@ -214,21 +214,18 @@ function InscriptionForm() {
                     <span style={{ fontSize: 20 }}>{selectedRole?.icon}</span>
                     <h1 className="text-xl font-black text-white">{selectedRole?.label}</h1>
                   </div>
-                  <p className="text-[rgba(240,230,204,0.50)] text-sm">Vos informations</p>
+                  <p className="text-[#666666] text-sm">Vos informations</p>
                 </div>
 
                 {/* Phone / Email toggle */}
-                <div className="flex rounded-xl overflow-hidden mb-4" style={{ border: "1px solid rgba(255,255,255,0.10)" }}>
+                <div className="grid grid-cols-2 p-1 mb-4 rounded-xl" style={{ background: "#0A1216" }}>
                   {(["phone", "email"] as const).map((m) => (
                     <button
                       key={m}
                       type="button"
                       onClick={() => switchMode(m)}
-                      className={cn(
-                        "flex-1 py-2.5 text-sm font-semibold transition-colors",
-                        mode === m ? "bg-[#f97316] text-white" : "text-white/50 hover:text-white"
-                      )}
-                      style={mode !== m ? { background: "rgba(255,255,255,0.05)" } : {}}
+                      className="py-2.5 text-sm font-bold rounded-lg transition-colors"
+                      style={mode === m ? { background: "#E9E900", color: "#0A1216" } : { color: "#666666" }}
                     >
                       {m === "phone" ? "📱 Téléphone" : "✉️ Email"}
                     </button>
@@ -238,20 +235,20 @@ function InscriptionForm() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Nom */}
                   <div>
-                    <label className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
+                    <label className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
                       {role === "agency" ? "Nom de l'agence" : "Votre nom complet"}
                     </label>
                     <div className="relative">
                       {role === "agency"
-                        ? <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
-                        : <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />}
+                        ? <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
+                        : <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />}
                       <input
                         type="text"
                         placeholder={role === "agency" ? "Conakry Premium Immo" : "Mamadou Diallo"}
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm"
-                        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                        className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm"
+                        style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                         required
                         autoComplete="name"
                       />
@@ -261,19 +258,19 @@ function InscriptionForm() {
                   {/* Nom de l'agence si agent */}
                   {isAgentOrAgency && (
                     <div>
-                      <label className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
+                      <label className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
                         {role === "agency" ? "Raison sociale" : "Agence de rattachement"}
                         <span className="text-white/30 font-normal ml-1">(optionnel)</span>
                       </label>
                       <div className="relative">
-                        <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
+                        <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
                         <input
                           type="text"
                           placeholder="Ex: Immo Guinée SARL"
                           value={form.agencyName}
                           onChange={(e) => setForm({ ...form, agencyName: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm"
-                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm"
+                          style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                         />
                       </div>
                     </div>
@@ -282,7 +279,7 @@ function InscriptionForm() {
                   {/* Bio si agent/agence */}
                   {isAgentOrAgency && (
                     <div>
-                      <label className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
+                      <label className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
                         Bio courte
                         <span className="text-white/30 font-normal ml-1">(optionnel)</span>
                       </label>
@@ -292,8 +289,8 @@ function InscriptionForm() {
                         value={form.bio}
                         onChange={(e) => setForm({ ...form, bio: e.target.value })}
                         maxLength={200}
-                        className="w-full rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm resize-none"
-                        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                        className="w-full rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm resize-none"
+                        style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                       />
                     </div>
                   )}
@@ -301,45 +298,45 @@ function InscriptionForm() {
                   {/* Téléphone ou email */}
                   {mode === "phone" ? (
                     <div>
-                      <label className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
+                      <label className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
                         Numéro de téléphone
                       </label>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
                         <input
                           type="tel"
                           placeholder="+224 628 222 510"
                           value={form.phone}
                           onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm"
-                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm"
+                          style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                           required
                           autoComplete="tel"
                         />
                       </div>
-                      <button type="button" onClick={() => switchMode("email")} className="text-xs text-[#f97316] hover:underline mt-1.5 block">
+                      <button type="button" onClick={() => switchMode("email")} className="text-xs text-[#E9E900] hover:underline mt-1.5 block">
                         Utiliser mon email à la place →
                       </button>
                     </div>
                   ) : (
                     <div>
-                      <label className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
+                      <label className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
                         Adresse email
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
                         <input
                           type="email"
                           placeholder="vous@email.com"
                           value={form.email}
                           onChange={(e) => setForm({ ...form, email: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm"
-                          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm"
+                          style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                           required
                           autoComplete="email"
                         />
                       </div>
-                      <button type="button" onClick={() => switchMode("phone")} className="text-xs text-[#f97316] hover:underline mt-1.5 block">
+                      <button type="button" onClick={() => switchMode("phone")} className="text-xs text-[#E9E900] hover:underline mt-1.5 block">
                         ← Utiliser mon numéro de téléphone
                       </button>
                     </div>
@@ -347,17 +344,17 @@ function InscriptionForm() {
 
                   {/* Mot de passe */}
                   <div>
-                    <label className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
+                    <label className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
                       Mot de passe
                     </label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder="•••••••• (min. 8 caractères)"
                         value={form.password}
                         onChange={(e) => setForm({ ...form, password: e.target.value })}
-                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316]"
+                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
                         style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16 }}
                         required
                         minLength={8}
@@ -366,7 +363,7 @@ function InscriptionForm() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[rgba(240,230,204,0.50)] hover:text-white"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666666] hover:text-white"
                       >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
@@ -380,7 +377,7 @@ function InscriptionForm() {
                   )}
                   {success && (
                     <div className="bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-3">
-                      <p className="text-green-400 text-sm">{success}</p>
+                      <p className="text-yellow-400 text-sm">{success}</p>
                     </div>
                   )}
 
@@ -389,9 +386,9 @@ function InscriptionForm() {
                   </Button>
                 </form>
 
-                <p className="text-[rgba(240,230,204,0.50)] text-xs text-center mt-4">
+                <p className="text-[#666666] text-xs text-center mt-4">
                   En créant un compte, vous acceptez nos{" "}
-                  <Link href="/cgv" className="text-[#f97316] hover:underline">
+                  <Link href="/cgv" className="text-[#E9E900] hover:underline">
                     conditions d&apos;utilisation
                   </Link>
                 </p>
@@ -406,7 +403,7 @@ function InscriptionForm() {
 
 export default function InscriptionPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0a1a0a]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0A1216]" />}>
       <InscriptionForm />
     </Suspense>
   );

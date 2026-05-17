@@ -5,21 +5,19 @@
 
 @theme {
   /* Brand */
-  --color-brand: #F97316;
-  --color-brand-dark: #EA6C0A;
-  --color-brand-light: #FB923C;
-  --color-brand-green: #16A34A;
-  --color-brand-green-light: #22C55E;
+  --color-brand: #E9E900;
+  --color-brand-dark: #c4c400;
+  --color-brand-light: #f0f000;
 
-  /* Surfaces dark */
-  --color-surface-dark: #1e2430;
-  --color-surface-dark-2: #1a1f2e;
-  --color-surface-dark-3: #151922;
-  --color-surface-dark-border: #2a3040;
-  --color-surface-dark-border-2: #334155;
+  /* Surfaces */
+  --color-surface-dark: #111a1f;
+  --color-surface-dark-2: #1a252b;
+  --color-surface-dark-3: #0A1216;
+  --color-surface-dark-border: #1e2a30;
+  --color-surface-dark-border-2: #2a3a42;
 
   /* Typography */
-  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-space-grotesk), var(--font-inter), system-ui, -apple-system, sans-serif;
 
   /* Animations */
   --animate-fade-in: fadeIn 0.3s ease-out;
@@ -55,45 +53,58 @@
   }
 }
 
-/* BienLoger Design System tokens */
+/* ── Design System tokens ── */
 :root {
-  --guimmo-bg:          #0a1a0a;
-  --guimmo-bg-alt:      #050f05;
-  --guimmo-surface:     #0f2210;
-  --guimmo-amber:       #f97316;
-  --guimmo-amber-light: #fb923c;
-  --guimmo-cream:       #f0fdf4;
-  --guimmo-cream-dim:   rgba(187,247,208,0.65);
-  --guimmo-border:      rgba(134,239,172,0.12);
-  --guimmo-green:       #22c55e;
+  --bg-primary:    #0A1216;
+  --bg-secondary:  #111a1f;
+  --bg-card-dark:  #1a252b;
+  --bg-card-light: #EAEAEA;
+  --color-accent:  #E9E900;
+  --color-accent-dark: #c4c400;
+  --color-text-white: #ffffff;
+  --color-text-black: #0A1216;
+  --color-text-muted: #666666;
+  --color-border:  #1e2a30;
+  --radius-card:   16px;
+  --radius-btn:    12px;
+  --radius-chip:   20px;
 
-  /* ── Dark Green + Orange theme ── */
-  --bl-sidebar:     #050f05;
-  --bl-bg:          #0a1a0a;
-  --bl-surface:     #0f2210;
-  --bl-surface-2:   #050f05;
-  --bl-amber:       #f97316;
-  --bl-amber-light: #fb923c;
-  --bl-green:       #22c55e;
-  --bl-cream:       #f0fdf4;
-  --bl-cream-dim:   rgba(187,247,208,0.75);
-  --bl-cream-faint: rgba(187,247,208,0.55);
-  --bl-border:      rgba(134,239,172,0.08);
-  --bl-border-md:   rgba(134,239,172,0.15);
+  /* Legacy aliases — components still reference these */
+  --guimmo-bg:          #0A1216;
+  --guimmo-bg-alt:      #0A1216;
+  --guimmo-surface:     #111a1f;
+  --guimmo-amber:       #E9E900;
+  --guimmo-amber-light: #E9E900;
+  --guimmo-cream:       #ffffff;
+  --guimmo-cream-dim:   rgba(255,255,255,0.65);
+  --guimmo-border:      #1e2a30;
+  --guimmo-green:       #E9E900;
 
-  /* --BienLoger-* aliases — used across layout/page components */
-  --BienLoger-bg:          #0a1a0a;
-  --BienLoger-bg-alt:      #050f05;
-  --BienLoger-surface:     #0f2210;
-  --BienLoger-amber:       #f97316;
-  --BienLoger-amber-light: #fb923c;
-  --BienLoger-cream:       #f0fdf4;
-  --BienLoger-cream-dim:   rgba(187,247,208,0.75);
-  --BienLoger-cream-faint: rgba(187,247,208,0.55);
-  --BienLoger-border:      rgba(134,239,172,0.08);
-  --BienLoger-border-md:   rgba(134,239,172,0.15);
-  --BienLoger-green:       #22c55e;
-  --BienLoger-sidebar:     #050f05;
+  --bl-sidebar:     #060d10;
+  --bl-bg:          #0A1216;
+  --bl-surface:     #111a1f;
+  --bl-surface-2:   #1a252b;
+  --bl-amber:       #E9E900;
+  --bl-amber-light: #E9E900;
+  --bl-green:       #E9E900;
+  --bl-cream:       #ffffff;
+  --bl-cream-dim:   rgba(255,255,255,0.65);
+  --bl-cream-faint: rgba(255,255,255,0.45);
+  --bl-border:      #1e2a30;
+  --bl-border-md:   #1e2a30;
+
+  --BienLoger-bg:          #0A1216;
+  --BienLoger-bg-alt:      #060d10;
+  --BienLoger-surface:     #111a1f;
+  --BienLoger-amber:       #E9E900;
+  --BienLoger-amber-light: #E9E900;
+  --BienLoger-cream:       #ffffff;
+  --BienLoger-cream-dim:   rgba(255,255,255,0.65);
+  --BienLoger-cream-faint: rgba(255,255,255,0.45);
+  --BienLoger-border:      rgba(30,42,48,0.8);
+  --BienLoger-border-md:   #1e2a30;
+  --BienLoger-green:       #E9E900;
+  --BienLoger-sidebar:     #060d10;
 
   color-scheme: dark;
 }
@@ -101,44 +112,42 @@
 /* ── Reusable UI classes ── */
 .bl-stat-card {
   background: var(--bl-surface);
-  border-left: 3px solid var(--bl-amber);
+  border-left: 3px solid var(--color-accent);
   border-radius: 0 12px 12px 0;
   padding: 14px 16px;
 }
 .bl-stat-label {
   font-size: 9px;
   letter-spacing: 1.5px;
-  color: rgba(187,247,208,0.80);
+  color: var(--color-text-muted);
   text-transform: uppercase;
   font-weight: 500;
   margin-bottom: 4px;
   display: block;
 }
 .bl-stat-value {
-  font-family: var(--font-playfair);
-  color: var(--bl-cream);
+  color: var(--color-accent);
   font-size: clamp(22px, 5vw, 28px);
   font-weight: 700;
   line-height: 1;
   display: block;
 }
 .bl-section-title {
-  font-family: var(--font-playfair);
-  color: var(--bl-green);
+  color: #ffffff;
   font-size: 20px;
   font-weight: 700;
 }
 .bl-section-label {
   font-size: 9px;
   letter-spacing: 1.5px;
-  color: rgba(187,247,208,0.80);
+  color: var(--color-text-muted);
   text-transform: uppercase;
   font-weight: 500;
 }
 .bl-badge-active {
-  background: rgba(34,197,94,0.12);
-  color: #22c55e;
-  border: 1px solid rgba(34,197,94,0.25);
+  background: rgba(233,233,0,0.12);
+  color: #c4c400;
+  border: 1px solid rgba(233,233,0,0.25);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 11px;
@@ -154,18 +163,18 @@
   font-weight: 500;
 }
 .bl-badge-paused {
-  background: rgba(249,115,22,0.12);
-  color: #fb923c;
-  border: 1px solid rgba(249,115,22,0.25);
+  background: rgba(255,255,255,0.07);
+  color: #aaaaaa;
+  border: 1px solid rgba(255,255,255,0.12);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 11px;
   font-weight: 500;
 }
 .bl-badge-pro {
-  background: rgba(249,115,22,0.12);
-  color: #fb923c;
-  border: 1px solid rgba(249,115,22,0.30);
+  background: rgba(233,233,0,0.12);
+  color: #c4c400;
+  border: 1px solid rgba(233,233,0,0.30);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 11px;
@@ -180,17 +189,17 @@
   font-weight: 500;
   padding: 10px 16px;
   transition: all 0.15s;
-  color: var(--bl-cream-dim);
+  color: var(--color-text-muted);
   border-left: 3px solid transparent;
 }
 .bl-nav-item:hover {
-  background: rgba(34,197,94,0.05);
-  color: var(--bl-cream);
+  background: rgba(233,233,0,0.04);
+  color: #ffffff;
 }
 .bl-nav-item.active {
-  border-left-color: var(--bl-green);
-  background: rgba(34,197,94,0.10);
-  color: var(--bl-green);
+  border-left-color: var(--color-accent);
+  background: rgba(233,233,0,0.07);
+  color: var(--color-accent);
   border-radius: 0 10px 10px 0;
 }
 .dark {
@@ -208,7 +217,7 @@ html {
   overflow-x: hidden;
 }
 
-/* Prevent iOS input zoom (inputs must be ≥16px) */
+/* Prevent iOS input zoom */
 @media (max-width: 768px) {
   input, select, textarea {
     font-size: 16px !important;
@@ -216,51 +225,65 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-space-grotesk), var(--font-inter), -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  background-color: var(--guimmo-bg);
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2322c55e' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  color: var(--guimmo-cream);
+  background-color: #0A1216;
+  color: #ffffff;
 }
 
+/* Global input styles */
+input, select, textarea {
+  background: #1a252b !important;
+  border: 1px solid #1e2a30 !important;
+  color: #ffffff !important;
+  border-radius: 12px;
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #E9E900 !important;
+  box-shadow: 0 0 0 2px rgba(233,233,0,0.15) !important;
+  outline: none;
+}
+input::placeholder, textarea::placeholder { color: #666666 !important; }
+
 /* Scrollbar */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #1a3a1a; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #22c55e; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #0A1216; }
+::-webkit-scrollbar-thumb { background: #E9E900; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #c4c400; }
 
 /* Utility classes */
 .text-gradient {
-  background: linear-gradient(135deg, #F97316, #EA6C0A);
+  background: linear-gradient(135deg, #E9E900, #c4c400);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .glass {
-  background: rgba(10, 26, 10, 0.7);
+  background: rgba(17, 26, 31, 0.85);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(134, 239, 172, 0.10);
+  border: 1px solid #1e2a30;
 }
 
 .glass-dark {
-  background: rgba(5, 15, 5, 0.92);
+  background: rgba(6, 13, 16, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(134, 239, 172, 0.08);
+  border: 1px solid #1e2a30;
 }
 
 .skeleton {
-  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%);
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 
 .skeleton-light {
-  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.04) 75%);
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.03) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }

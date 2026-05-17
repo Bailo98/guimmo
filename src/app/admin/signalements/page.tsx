@@ -6,10 +6,10 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
-const SURFACE  = "#0f2210";
-const BORDER   = "rgba(134,239,172,0.08)";
-const TEXT_PRI = "#f0fdf4";
-const TEXT_SEC = "rgba(187,247,208,0.55)";
+const SURFACE  = "#111a1f";
+const BORDER   = "#1e2a30";
+const TEXT_PRI = "#ffffff";
+const TEXT_SEC = "rgba(255,255,255,0.55)";
 
 interface Report {
   id: string;
@@ -135,14 +135,14 @@ export default function AdminSignalementsPage() {
       {/* Loading */}
       {loading && (
         <div style={{ display: "flex", justifyContent: "center", padding: "64px 0" }}>
-          <div style={{ width: 28, height: 28, borderRadius: "50%", border: "2px solid #f97316", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
+          <div style={{ width: 28, height: 28, borderRadius: "50%", border: "2px solid #E9E900", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
         </div>
       )}
 
       {/* Empty */}
       {!loading && reports.length === 0 && (
         <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 48, textAlign: "center" }}>
-          <CheckCircle size={40} color="#22c55e" style={{ margin: "0 auto 12px" }} />
+          <CheckCircle size={40} color="#E9E900" style={{ margin: "0 auto 12px" }} />
           <p style={{ color: TEXT_SEC, fontWeight: 600, fontSize: 14 }}>Aucun signalement en attente</p>
         </div>
       )}

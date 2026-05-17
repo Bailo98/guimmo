@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -54,7 +54,7 @@ export default function MesAnnoncesPage() {
         </div>
         <Link
           href="/publier"
-          className="flex items-center gap-1.5 bg-[#F97316] text-white text-sm font-bold px-4 py-2.5 rounded-xl hover:bg-[#EA6C0A] transition-colors"
+          className="flex items-center gap-1.5 bg-[#E9E900] text-white text-sm font-bold px-4 py-2.5 rounded-xl hover:bg-[#c4c400] transition-colors"
         >
           <Plus className="w-4 h-4" /> Publier
         </Link>
@@ -65,7 +65,7 @@ export default function MesAnnoncesPage() {
           <p className="text-slate-400 text-sm mb-4">Vous n&apos;avez pas encore d&apos;annonce publiée.</p>
           <Link
             href="/publier"
-            className="inline-flex items-center gap-1.5 bg-[#F97316] text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-[#EA6C0A] transition-colors"
+            className="inline-flex items-center gap-1.5 bg-[#E9E900] text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-[#c4c400] transition-colors"
           >
             <Plus className="w-4 h-4" /> Publier ma première annonce
           </Link>
@@ -92,7 +92,7 @@ export default function MesAnnoncesPage() {
                     <img src={p.images[0].url} alt="" className="w-full h-full object-cover" />
                   )}
                   {p.isBoosted && (
-                    <div className="absolute inset-0 bg-[#F97316]/80 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-[#E9E900]/80 flex items-center justify-center">
                       <Zap className="w-4 h-4 text-white" />
                     </div>
                   )}
@@ -103,7 +103,7 @@ export default function MesAnnoncesPage() {
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <p className="font-semibold text-slate-900 dark:text-white text-sm line-clamp-1">{p.title}</p>
-                      <p className="text-[#F97316] font-bold text-sm">
+                      <p className="text-[#E9E900] font-bold text-sm">
                         {formatPrice(p.price)}{p.pricePeriod === "month" ? "/mois" : ""}
                       </p>
                     </div>
@@ -127,7 +127,7 @@ export default function MesAnnoncesPage() {
                   <div className="flex flex-wrap gap-2 mt-3">
                     <Link
                       href={`/annonces/${p.id}`}
-                      className="flex-1 text-center text-xs font-semibold py-1.5 rounded-lg border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#F97316] hover:text-[#F97316] transition-colors"
+                      className="flex-1 text-center text-xs font-semibold py-1.5 rounded-lg border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#E9E900] hover:text-[#E9E900] transition-colors"
                     >
                       Voir
                     </Link>
@@ -173,7 +173,7 @@ export default function MesAnnoncesPage() {
                     {!p.isBoosted && (
                       <button
                         onClick={() => setBoostingProperty(p.id)}
-                        className="flex items-center justify-center gap-1 text-xs font-bold py-1.5 px-3 rounded-lg bg-[#F97316]/10 text-[#F97316] hover:bg-[#F97316]/20 transition-colors"
+                        className="flex items-center justify-center gap-1 text-xs font-bold py-1.5 px-3 rounded-lg bg-[#E9E900]/10 text-[#E9E900] hover:bg-[#c4c400]/20 transition-colors"
                       >
                         <Zap className="w-3 h-3" /> Booster
                       </button>

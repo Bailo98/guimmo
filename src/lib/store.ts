@@ -338,14 +338,14 @@ export const useAppStore = create<AppState>()(
           name: "Appartements",
           propertyIds: ["prop-001", "prop-002"],
           createdAt: new Date().toISOString(),
-          color: "#F97316",
+          color: "#E9E900",
         },
         {
           id: "col-2",
           name: "Pour la famille",
           propertyIds: ["prop-004"],
           createdAt: new Date().toISOString(),
-          color: "#22c55e",
+          color: "#E9E900",
         },
       ],
       createCollection: (name, color) => {

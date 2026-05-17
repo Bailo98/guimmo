@@ -44,20 +44,20 @@ function statFmt(n: number, suffix = "+"): string {
 }
 
 const TYPE_GRADIENTS: Record<string, [string, string]> = {
-  apartment: ["#2a5c38", "#3d7a50"],
-  villa:     ["#c4871a", "#8a5e10"],
-  house:     ["#1a3d28", "#2a5c38"],
-  studio:    ["#1a3d28", "#c4871a"],
-  room:      ["#2a4a30", "#3d6b45"],
-  land:      ["#8a5e10", "#6b4a0d"],
+  apartment: ["#1a252b", "#2a3d4a"],
+  villa:     ["#1a252b", "#0A1216"],
+  house:     ["#111a1f", "#1a252b"],
+  studio:    ["#111a1f", "#1a252b"],
+  room:      ["#1a252b", "#2a3a46"],
+  land:      ["#0A1216", "#1a252b"],
   office:    ["#1a2e45", "#2a4a6b"],
-  shop:      ["#451a1a", "#6b2a2a"],
+  shop:      ["#1a1a2a", "#2a2a3a"],
 };
 
 const HERO_GRADIENTS: [string, string][] = [
-  ["#2a5c38", "#3d7a50"],
-  ["#c4871a", "#8a5e10"],
-  ["#1a3d28", "#c4871a"],
+  ["#1a252b", "#2a3d4a"],
+  ["#111a1f", "#1a252b"],
+  ["#0A1216", "#1a252b"],
 ];
 
 const POPULAR_NEIGHBORHOODS = [
@@ -135,7 +135,7 @@ function PreviewCard({ property, index }: PreviewCardProps) {
         top: pos.top, right: pos.right,
         transform: `rotate(${pos.rotate})`,
         zIndex: pos.zIndex, opacity: pos.opacity,
-        background: "#f0fdf4",
+        background: "#ffffff",
         boxShadow: "0 8px 32px rgba(10,20,12,0.45)",
       }}
     >
@@ -149,20 +149,20 @@ function PreviewCard({ property, index }: PreviewCardProps) {
         <div className="absolute inset-0 flex items-end p-3" style={{ background: primaryImg ? "linear-gradient(to top, rgba(0,0,0,0.55), transparent)" : "none" }}>
           <span
             className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-            style={{ background: "rgba(10,20,12,0.50)", color: "#f0fdf4" }}
+            style={{ background: "rgba(10,18,22,0.75)", color: "#ffffff" }}
           >
             {badge}
           </span>
         </div>
       </div>
       {/* Content */}
-      <div className="p-3.5" style={{ color: "#0a1a0a" }}>
+      <div className="p-3.5" style={{ color: "#0A1216" }}>
         <p className="font-bold text-sm leading-snug line-clamp-1">{property.title}</p>
         <div className="flex items-center gap-1 text-xs mt-1" style={{ color: "rgba(17,26,20,0.50)" }}>
           <MapPin className="w-3 h-3 flex-shrink-0" />
           <span>{neighborhoodLabel}</span>
         </div>
-        <p className="font-black text-sm mt-2" style={{ color: "#f97316" }}>{priceStr}</p>
+        <p className="font-black text-sm mt-2" style={{ color: "#E9E900" }}>{priceStr}</p>
         <div className="flex items-center gap-3 mt-1.5 text-xs" style={{ color: "rgba(17,26,20,0.45)" }}>
           {(property.rooms ?? 0) > 0 && (
             <span className="flex items-center gap-1"><Bed className="w-3 h-3" />{property.rooms} ch.</span>
@@ -197,10 +197,9 @@ export default async function HomePage() {
         className="relative min-h-[100svh] flex flex-col overflow-hidden"
         style={{
           background:
-            "radial-gradient(ellipse 70% 60% at 85% 45%, #c4871a 0%, transparent 55%), " +
-            "radial-gradient(ellipse 50% 50% at 15% 85%, #8a5e10 0%, transparent 50%), " +
-            "radial-gradient(ellipse 60% 55% at 40% 5%, #2a5c38 0%, transparent 55%), " +
-            "#0a1a0a",
+            "radial-gradient(ellipse 60% 50% at 85% 40%, rgba(233,233,0,0.07) 0%, transparent 60%), " +
+            "radial-gradient(ellipse 50% 45% at 15% 80%, rgba(30,42,48,0.6) 0%, transparent 55%), " +
+            "#0A1216",
         }}
       >
         {/* Grain/noise texture overlay */}
@@ -229,12 +228,12 @@ export default async function HomePage() {
               <div
                 className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-8"
                 style={{
-                  background: "rgba(247,242,230,0.10)",
-                  border: "1px solid rgba(247,242,230,0.22)",
+                  background: "rgba(233,233,0,0.08)",
+                  border: "1px solid rgba(233,233,0,0.25)",
                 }}
               >
-                <span className="w-2 h-2 rounded-full bg-green-400" style={{ animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite" }} />
-                <span className="text-sm font-medium" style={{ color: "rgba(247,242,230,0.85)", fontFamily: "var(--font-dm-sans), sans-serif" }}>
+                <span className="w-2 h-2 rounded-full" style={{ background: "#E9E900", animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite" }} />
+                <span className="text-sm font-medium" style={{ color: "#E9E900" }}>
                   Annonces vérifiées · Contact direct
                 </span>
               </div>
@@ -246,21 +245,21 @@ export default async function HomePage() {
                   fontWeight: 900,
                   fontSize: "clamp(36px, 8vw, 88px)",
                   lineHeight: 1.05,
-                  color: "#f0fdf4",
+                  color: "#ffffff",
                   marginBottom: "1.5rem",
                   letterSpacing: "-0.02em",
                 }}
               >
                 Trouvez votre<br />
                 logement{" "}
-                <em style={{ color: "#f97316", fontStyle: "italic" }}>idéal</em><br />
+                <em style={{ color: "#E9E900", fontStyle: "italic" }}>idéal</em><br />
                 en Guinée
               </h1>
 
               {/* Subtitle */}
               <p
                 style={{
-                  color: "rgba(187,247,208,0.65)",
+                  color: "#666666",
                   fontSize: "1.1rem",
                   lineHeight: 1.7,
                   marginBottom: "2.5rem",
@@ -293,7 +292,7 @@ export default async function HomePage() {
         <div className="relative pb-8 flex justify-center">
           <div
             className="w-6 h-9 rounded-full flex items-start justify-center pt-2"
-            style={{ border: "2px solid rgba(247,242,230,0.20)" }}
+            style={{ border: "2px solid rgba(233,233,0,0.20)" }}
           >
             <div
               className="w-1 h-2 rounded-full"
@@ -309,7 +308,7 @@ export default async function HomePage() {
       {/* ══════════════════════════════════════════════════════════
           STATS BAR
       ══════════════════════════════════════════════════════════ */}
-      <div style={{ background: "#0a1a0a" }}>
+      <div style={{ background: "#0A1216" }}>
         <div className="max-w-7xl mx-auto px-4 py-10 md:py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
             {[
@@ -321,13 +320,13 @@ export default async function HomePage() {
               <div key={s.label} className="text-center">
                 <p
                   className="text-3xl md:text-4xl font-black"
-                  style={{ color: "#f97316", fontFamily: "var(--font-playfair), serif" }}
+                  style={{ color: "#E9E900", fontFamily: "var(--font-playfair), serif" }}
                 >
                   {s.value}
                 </p>
                 <p
                   className="text-sm mt-1.5"
-                  style={{ color: "rgba(240,230,204,0.50)", fontFamily: "var(--font-dm-sans), sans-serif" }}
+                  style={{ color: "#666666", fontFamily: "var(--font-dm-sans), sans-serif" }}
                 >
                   {s.label}
                 </p>
@@ -341,24 +340,24 @@ export default async function HomePage() {
           ANNONCES VEDETTES — dark forest bg
       ══════════════════════════════════════════════════════════ */}
       {featured.length > 0 && (
-        <section style={{ background: "#0a1a0a" }} className="py-14">
+        <section style={{ background: "#0A1216" }} className="py-14">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2
                   className="text-2xl md:text-3xl font-black"
-                  style={{ color: "#f0fdf4", fontFamily: "var(--font-playfair), serif" }}
+                  style={{ color: "#ffffff", fontFamily: "var(--font-playfair), serif" }}
                 >
                   Annonces vedettes
                 </h2>
-                <p className="mt-1 text-sm" style={{ color: "rgba(240,230,204,0.50)" }}>
+                <p className="mt-1 text-sm" style={{ color: "#666666" }}>
                   Sélectionnées pour vous
                 </p>
               </div>
               <Link
                 href="/annonces"
                 className="flex items-center gap-1 text-sm font-semibold hover:underline"
-                style={{ color: "#f97316" }}
+                style={{ color: "#E9E900" }}
               >
                 Voir tout <ChevronRight className="w-4 h-4" />
               </Link>
@@ -378,24 +377,24 @@ export default async function HomePage() {
           ANNONCES RÉCENTES — dark forest bg
       ══════════════════════════════════════════════════════════ */}
       {recent.length > 0 && (
-        <section style={{ background: "#0a1a0a" }} className="py-14">
+        <section style={{ background: "#0A1216" }} className="py-14">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2
                   className="text-2xl md:text-3xl font-black"
-                  style={{ color: "#f0fdf4", fontFamily: "var(--font-playfair), serif" }}
+                  style={{ color: "#ffffff", fontFamily: "var(--font-playfair), serif" }}
                 >
                   Annonces récentes
                 </h2>
-                <p className="mt-1 text-sm" style={{ color: "rgba(240,230,204,0.50)" }}>
+                <p className="mt-1 text-sm" style={{ color: "#666666" }}>
                   Les dernières mises en ligne
                 </p>
               </div>
               <Link
                 href="/annonces"
                 className="flex items-center gap-1 text-sm font-semibold hover:underline"
-                style={{ color: "#f97316" }}
+                style={{ color: "#E9E900" }}
               >
                 Voir tout <ChevronRight className="w-4 h-4" />
               </Link>
@@ -410,19 +409,19 @@ export default async function HomePage() {
       )}
 
       {/* Recently viewed */}
-      <div style={{ background: "#0a1a0a" }}>
+      <div style={{ background: "#0A1216" }}>
         <RecentlyViewedSection />
       </div>
 
       {/* ══════════════════════════════════════════════════════════
           QUARTIERS POPULAIRES — cream background
       ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#f0fdf4" }} className="py-16">
+      <section style={{ background: "#ffffff" }} className="py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="mb-8">
             <h2
               className="text-2xl md:text-3xl font-black"
-              style={{ color: "#0a1a0a", fontFamily: "var(--font-playfair), serif" }}
+              style={{ color: "#0A1216", fontFamily: "var(--font-playfair), serif" }}
             >
               Quartiers populaires
             </h2>
@@ -444,13 +443,13 @@ export default async function HomePage() {
               >
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center mb-3 transition-colors"
-                  style={{ background: "rgba(249,115,22,0.12)" }}
+                  style={{ background: "rgba(233,233,0,0.12)" }}
                 >
-                  <MapPin className="w-4 h-4" style={{ color: "#f97316" }} />
+                  <MapPin className="w-4 h-4" style={{ color: "#E9E900" }} />
                 </div>
                 <p
                   className="font-bold text-sm"
-                  style={{ color: "#0a1a0a" }}
+                  style={{ color: "#0A1216" }}
                 >
                   {n.name}
                 </p>
@@ -462,7 +461,7 @@ export default async function HomePage() {
                 </p>
                 <p
                   className="text-xs font-semibold mt-2"
-                  style={{ color: "#f97316" }}
+                  style={{ color: "#E9E900" }}
                 >
                   Voir →
                 </p>
@@ -475,12 +474,12 @@ export default async function HomePage() {
       {/* ══════════════════════════════════════════════════════════
           POURQUOI BienLoger — cream background
       ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#efe9d9" }} className="py-16">
+      <section style={{ background: "#f5f5f5" }} className="py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-10">
             <h2
               className="text-2xl md:text-3xl font-black"
-              style={{ color: "#0a1a0a", fontFamily: "var(--font-playfair), serif" }}
+              style={{ color: "#0A1216", fontFamily: "var(--font-playfair), serif" }}
             >
               Pourquoi choisir BienLoger ?
             </h2>
@@ -501,7 +500,7 @@ export default async function HomePage() {
                 <span className="text-3xl block mb-4">{item.icon}</span>
                 <h3
                   className="font-bold text-base mb-2"
-                  style={{ color: "#0a1a0a" }}
+                  style={{ color: "#0A1216" }}
                 >
                   {item.title}
                 </h3>
@@ -524,21 +523,21 @@ export default async function HomePage() {
         className="py-20"
         style={{
           background:
-            "radial-gradient(ellipse 80% 60% at 50% 100%, #c4871a 0%, transparent 60%), " +
-            "#0a1a0a",
+            "radial-gradient(ellipse 80% 60% at 50% 100%, rgba(233,233,0,0.12) 0%, transparent 60%), " +
+            "#0A1216",
         }}
       >
         <div className="max-w-3xl mx-auto px-4 text-center">
           <p className="text-5xl mb-6">🏠</p>
           <h2
             className="text-2xl md:text-4xl font-black mb-4"
-            style={{ color: "#f0fdf4", fontFamily: "var(--font-playfair), serif" }}
+            style={{ color: "#ffffff", fontFamily: "var(--font-playfair), serif" }}
           >
             Vous avez un logement à louer ou à vendre ?
           </h2>
           <p
             className="mb-10 max-w-lg mx-auto text-base"
-            style={{ color: "rgba(240,230,204,0.60)", fontFamily: "var(--font-dm-sans), sans-serif" }}
+            style={{ color: "#666666", fontFamily: "var(--font-dm-sans), sans-serif" }}
           >
             Publiez votre annonce en 2 minutes. Touchez des milliers de locataires potentiels à Conakry.
           </p>
@@ -546,15 +545,15 @@ export default async function HomePage() {
             <Link
               href="/publier"
               className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl transition-opacity hover:opacity-90 text-sm"
-              style={{ background: "#f0fdf4", color: "#0a1a0a" }}
+              style={{ background: "#ffffff", color: "#0A1216" }}
             >
               Publier gratuitement
             </Link>
-            <div className="flex items-center gap-2 text-sm" style={{ color: "rgba(240,230,204,0.50)" }}>
-              <CheckCircle2 className="w-4 h-4 text-green-400" />
+            <div className="flex items-center gap-2 text-sm" style={{ color: "#666666" }}>
+              <CheckCircle2 className="w-4 h-4 text-yellow-400" />
               Sans carte bancaire
               <span className="mx-1">·</span>
-              <CheckCircle2 className="w-4 h-4 text-green-400" />
+              <CheckCircle2 className="w-4 h-4 text-yellow-400" />
               Résultat immédiat
             </div>
           </div>

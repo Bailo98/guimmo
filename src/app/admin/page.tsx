@@ -8,11 +8,11 @@ import {
 import { supabase } from "@/lib/supabase";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
-const SURFACE = "#0f2210";
-const BORDER  = "rgba(134,239,172,0.08)";
-const TEXT_PRI = "#f0fdf4";
-const TEXT_SEC = "rgba(187,247,208,0.55)";
-const ACCENT   = "#f97316";
+const SURFACE = "#111a1f";
+const BORDER  = "#1e2a30";
+const TEXT_PRI = "#ffffff";
+const TEXT_SEC = "rgba(255,255,255,0.55)";
+const ACCENT   = "#E9E900";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Stats {
@@ -44,7 +44,7 @@ function StatCard({
         {label}
       </p>
       {value === null ? (
-        <div style={{ height: 36, width: 60, background: "rgba(134,239,172,0.08)", borderRadius: 6, animation: "pulse 1.5s ease-in-out infinite" }} />
+        <div style={{ height: 36, width: 60, background: "#1e2a30", borderRadius: 6, animation: "pulse 1.5s ease-in-out infinite" }} />
       ) : (
         <p style={{
           fontSize: "clamp(22px, 4vw, 32px)",
@@ -159,11 +159,11 @@ export default function AdminDashboardPage() {
         className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
       >
         <StatCard label="Total annonces"    value={v?.total        ?? null} accentColor={TEXT_PRI}   icon={FileText} />
-        <StatCard label="Actives"           value={v?.active       ?? null} accentColor="#22c55e"    icon={CheckCircle} />
+        <StatCard label="Actives"           value={v?.active       ?? null} accentColor="#E9E900"    icon={CheckCircle} />
         <StatCard label="En attente"        value={v?.pending      ?? null} accentColor={ACCENT}     icon={Clock} />
         <StatCard label="Utilisateurs"      value={v?.users        ?? null} accentColor="#60a5fa"    icon={Users} />
         <StatCard label="Cette semaine"     value={v?.thisWeek     ?? null} accentColor={ACCENT}     icon={TrendingUp} />
-        <StatCard label="À vérifier"        value={v?.pendingVerif ?? null} accentColor="#fb923c"    icon={Users} />
+        <StatCard label="À vérifier"        value={v?.pendingVerif ?? null} accentColor="#E9E900"    icon={Users} />
         <StatCard label="Signalements"      value={v?.reports      ?? null} accentColor="#ef4444"    icon={AlertTriangle} />
       </div>
 
@@ -187,7 +187,7 @@ export default function AdminDashboardPage() {
         <ActionCard
           href="/admin/annonces/nouvelle"
           icon={Plus}
-          iconColor="#22c55e"
+          iconColor="#E9E900"
           title="Ajouter une annonce"
           desc="Publier manuellement"
         />

@@ -63,7 +63,7 @@ export function PWAInstallBanner() {
       className="md:hidden fixed top-0 left-0 right-0 z-[60] flex items-center gap-3 px-4 shadow-2xl"
       style={{
         height: 60,
-        background: "#0f2210",
+        background: "#111a1f",
         borderBottom: "1px solid rgba(255,255,255,0.10)",
       }}
     >
@@ -86,7 +86,7 @@ export function PWAInstallBanner() {
         <button
           onClick={install}
           className="flex items-center gap-1 px-3 rounded-lg font-bold text-white text-xs"
-          style={{ height: 32, background: "#f97316" }}
+          style={{ height: 32, background: "#E9E900" }}
         >
           <Download className="w-3 h-3" />
           Installer

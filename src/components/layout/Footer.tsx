@@ -1,16 +1,16 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import { MessageCircle } from "lucide-react";
 
 export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
   return (
-    <footer style={{ background: "var(--BienLoger-bg-alt)", borderTop: "1px solid var(--BienLoger-border)" }} className="mt-16">
+    <footer style={{ background: "#060d10", borderTop: "1px solid #1e2a30" }} className="mt-16">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Logo size="md" />
-            <p className="text-sm mt-3 leading-relaxed" style={{ color: "var(--BienLoger-cream-dim)" }}>
+            <p className="text-sm mt-3 leading-relaxed" style={{ color: "#666666" }}>
               La plateforme immobilière de confiance en Guinée.
             </p>
             <a
@@ -27,7 +27,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
 
           {/* Annonces */}
           <div>
-            <h3 className="font-semibold text-sm mb-4" style={{ color: "var(--BienLoger-cream)" }}>Annonces</h3>
+            <h3 className="font-semibold text-sm mb-4" style={{ color: "#E9E900" }}>Annonces</h3>
             <ul className="space-y-2">
               {[
                 { label: "Toutes les annonces", href: "/annonces" },
@@ -38,7 +38,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
                 { label: "Agents BienLoger", href: "/agents" },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm transition-colors hover:text-[#f0fdf4]" style={{ color: "var(--BienLoger-cream-dim)" }}>
+                  <Link href={l.href} className="text-sm transition-colors hover:text-[#E9E900]" style={{ color: "#666666" }}>
                     {l.label}
                   </Link>
                 </li>
@@ -48,7 +48,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
 
           {/* Quartiers */}
           <div>
-            <h3 className="font-semibold text-sm mb-4" style={{ color: "var(--BienLoger-cream)" }}>Quartiers</h3>
+            <h3 className="font-semibold text-sm mb-4" style={{ color: "#E9E900" }}>Quartiers</h3>
             <ul className="space-y-2">
               {[
                 { label: "Kipé", href: "/annonces?neighborhood=kipe" },
@@ -58,7 +58,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
                 { label: "Taouyah", href: "/annonces?neighborhood=taouyah" },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm transition-colors hover:text-[#f0fdf4]" style={{ color: "var(--BienLoger-cream-dim)" }}>
+                  <Link href={l.href} className="text-sm transition-colors hover:text-[#E9E900]" style={{ color: "#666666" }}>
                     {l.label}
                   </Link>
                 </li>
@@ -68,7 +68,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
 
           {/* Légal */}
           <div>
-            <h3 className="font-semibold text-sm mb-4" style={{ color: "var(--BienLoger-cream)" }}>Informations</h3>
+            <h3 className="font-semibold text-sm mb-4" style={{ color: "#E9E900" }}>Informations</h3>
             <ul className="space-y-2">
               {[
                 { label: "À propos", href: "/a-propos" },
@@ -78,7 +78,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
                 { label: "Mentions légales", href: "/mentions-legales" },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm transition-colors hover:text-[#f0fdf4]" style={{ color: "var(--BienLoger-cream-dim)" }}>
+                  <Link href={l.href} className="text-sm transition-colors hover:text-[#E9E900]" style={{ color: "#666666" }}>
                     {l.label}
                   </Link>
                 </li>
@@ -87,8 +87,8 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
           </div>
         </div>
 
-        <div className="pt-6 text-center" style={{ borderTop: "1px solid var(--BienLoger-border)" }}>
-          <p className="text-xs" style={{ color: "rgba(240,230,204,0.40)" }}>
+        <div className="pt-6 text-center" style={{ borderTop: "1px solid #1e2a30" }}>
+          <p className="text-xs" style={{ color: "#666666" }}>
             🏠 BienLoger — Conakry, Guinée &nbsp;|&nbsp; © 2025 Tous droits réservés
           </p>
         </div>

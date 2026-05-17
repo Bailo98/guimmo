@@ -53,15 +53,12 @@ function TypeChip({ active, onClick, children }: {
   return (
     <button
       onClick={onClick}
-      className={cn(
-        "flex-none px-4 rounded-full text-sm font-semibold transition-all whitespace-nowrap inline-flex items-center",
-        active ? "text-white" : "text-white/50 hover:text-white"
-      )}
+      className="flex-none px-4 rounded-full text-sm font-bold transition-all whitespace-nowrap inline-flex items-center"
       style={{
-        minHeight: "48px",
+        minHeight: "40px",
         ...(active
-          ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
-          : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }),
+          ? { background: "rgba(233,233,0,0.15)", border: "1px solid rgba(233,233,0,0.40)", color: "#E9E900" }
+          : { background: "#1a252b", border: "1px solid #1e2a30", color: "#666666" }),
       }}
     >
       {children}
@@ -75,15 +72,12 @@ function SmallChip({ active, onClick, children }: {
   return (
     <button
       onClick={onClick}
-      className={cn(
-        "flex-none px-3 rounded-full text-xs font-semibold transition-all whitespace-nowrap inline-flex items-center",
-        active ? "text-white" : "text-white/50 hover:text-white"
-      )}
+      className="flex-none px-3 rounded-full text-xs font-semibold transition-all whitespace-nowrap inline-flex items-center"
       style={{
-        minHeight: "48px",
+        minHeight: "36px",
         ...(active
-          ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
-          : { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }),
+          ? { background: "rgba(233,233,0,0.15)", border: "1px solid rgba(233,233,0,0.40)", color: "#E9E900" }
+          : { background: "#1a252b", border: "1px solid #1e2a30", color: "#666666" }),
       }}
     >
       {children}
@@ -233,14 +227,14 @@ function AnnoncesContent() {
   const activeFilterCount = [neighborhood, type, tx, hasPriceFilter ? "price" : ""].filter(Boolean).length;
 
   return (
-    <div className="bg-[#0a1a0a] min-h-screen">
+    <div className="bg-[#0A1216] min-h-screen">
       {/* ── Sticky filter bar ───────────────────────────────────── */}
-      <div className="sticky top-16 z-30 -mx-0 px-4 pt-4 pb-3 space-y-3" style={{ background: "rgba(15,15,15,0.97)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+      <div className="sticky top-16 z-30 -mx-0 px-4 pt-4 pb-3 space-y-3" style={{ background: "rgba(10,18,22,0.97)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderBottom: "1px solid #1e2a30" }}>
         {/* Search pill + filter button */}
         <div className="flex items-center gap-2">
           <div
             className="flex-1 flex items-center gap-3 rounded-full px-4"
-            style={{ minHeight: 48, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}
+            style={{ minHeight: 48, background: "#1a252b", border: "1px solid #1e2a30" }}
           >
             <Search className="w-4 h-4 text-white/40 flex-shrink-0" />
             <span className="flex-1 text-sm text-white/40">Rechercher un bien…</span>
@@ -256,11 +250,11 @@ function AnnoncesContent() {
             aria-label="Rechercher les biens près de moi"
             className={cn(
               "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all",
-              nearbyCoords ? "text-[#22c55e]" : "text-white/50 hover:text-white"
+              nearbyCoords ? "text-[#E9E900]" : "text-white/50 hover:text-white"
             )}
             style={nearbyCoords
-              ? { background: "rgba(110,201,122,0.15)", border: "1px solid rgba(110,201,122,0.35)" }
-              : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}
+              ? { background: "rgba(233,233,0,0.12)", border: "1px solid rgba(233,233,0,0.35)" }
+              : { background: "#1a252b", border: "1px solid #1e2a30" }}
           >
             {gpsLoading
               ? <span className="w-4 h-4 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />
@@ -270,15 +264,13 @@ function AnnoncesContent() {
             onClick={() => setFiltersOpen(!filtersOpen)}
             className={cn(
               "flex items-center gap-1.5 rounded-full px-4 text-sm font-semibold transition-all flex-shrink-0",
-              filtersOpen || activeFilterCount > 0
-                ? "text-white"
-                : "text-white/50 hover:text-white"
+              filtersOpen || activeFilterCount > 0 ? "" : ""
             )}
             style={{
               minHeight: 48,
               ...(filtersOpen || activeFilterCount > 0
-                ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
-                : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }),
+                ? { background: "rgba(233,233,0,0.15)", border: "1px solid rgba(233,233,0,0.40)", color: "#E9E900" }
+                : { background: "#1a252b", border: "1px solid #1e2a30", color: "#666666" }),
             }}
           >
             <SlidersHorizontal className="w-4 h-4" />
@@ -365,7 +357,7 @@ function AnnoncesContent() {
                 <span className="font-bold text-white">{filtered.length}</span>{" "}
                 annonce{filtered.length !== 1 ? "s" : ""}
                 {hasFilters && (
-                  <button onClick={clearFilters} className="ml-2 text-[#f97316] hover:underline text-xs">
+                  <button onClick={clearFilters} className="ml-2 text-[#E9E900] hover:underline text-xs">
                     (voir tout)
                   </button>
                 )}
@@ -400,7 +392,7 @@ function AnnoncesContent() {
             <p className="text-white/50 text-sm mb-6">Essayez d&apos;élargir vos filtres.</p>
             <button
               onClick={clearFilters}
-              className="bg-[#F97316] hover:bg-[#EA6C0A] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+              className="bg-[#E9E900] hover:bg-[#c4c400] text-[#0A1216] font-bold px-6 py-3 rounded-xl transition-colors"
             >
               Voir toutes les annonces
             </button>
@@ -419,7 +411,7 @@ function AnnoncesContent() {
                 <button
                   onClick={() => setPage(safePage - 1)}
                   disabled={safePage === 1}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#f97316] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#E9E900] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -433,13 +425,10 @@ function AnnoncesContent() {
                       )}
                       <button
                         onClick={() => setPage(n)}
-                        className={cn(
-                          "w-9 h-9 rounded-full text-sm font-semibold transition-colors",
-                          n === safePage ? "text-white" : "text-white/50 hover:text-white"
-                        )}
+                        className="w-9 h-9 rounded-full text-sm font-semibold transition-colors"
                         style={n === safePage
-                          ? { background: "rgba(255,255,255,0.20)", border: "1px solid rgba(255,255,255,0.25)" }
-                          : { background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}
+                          ? { background: "rgba(233,233,0,0.15)", border: "1px solid rgba(233,233,0,0.40)", color: "#E9E900" }
+                          : { background: "#1a252b", border: "1px solid #1e2a30", color: "#666666" }}
                       >
                         {n}
                       </button>
@@ -449,7 +438,7 @@ function AnnoncesContent() {
                 <button
                   onClick={() => setPage(safePage + 1)}
                   disabled={safePage === totalPages}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#f97316] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#E9E900] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
                 >
                   <ChevronRight className="w-4 h-4" />

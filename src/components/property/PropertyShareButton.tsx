@@ -81,9 +81,9 @@ export function PropertyShareButton({ title, neighborhood, price, rooms, bathroo
         className="flex items-center gap-1.5 px-3 rounded-xl font-semibold text-sm transition-all"
         style={{
           minHeight: 44,
-          background: copied ? "rgba(110,201,122,0.15)" : "rgba(255,255,255,0.08)",
-          border: copied ? "1px solid rgba(110,201,122,0.35)" : "1px solid rgba(255,255,255,0.12)",
-          color: copied ? "#22c55e" : "rgba(255,255,255,0.70)",
+          background: copied ? "rgba(233,233,0,0.12)" : "rgba(255,255,255,0.08)",
+          border: copied ? "1px solid rgba(233,233,0,0.30)" : "1px solid rgba(255,255,255,0.12)",
+          color: copied ? "#E9E900" : "rgba(255,255,255,0.70)",
         }}
       >
         {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}

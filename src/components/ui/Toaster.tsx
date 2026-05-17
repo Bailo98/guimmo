@@ -1,5 +1,5 @@
-"use client";
-import { useState, useEffect } from "react";
+﻿"use client";
+import React, { useState, useEffect } from "react";
 import { CheckCircle, AlertCircle, Info, AlertTriangle, X } from "lucide-react";
 import { registerToastListener } from "@/lib/toast";
 import { cn } from "@/lib/utils";
@@ -17,11 +17,11 @@ const ICONS = {
   warning: AlertTriangle,
 };
 
-const STYLES = {
-  success: "bg-green-500 text-white",
-  error: "bg-red-500 text-white",
-  info: "bg-[#1e2430] text-white border border-[#2a3040]",
-  warning: "bg-[#F97316] text-white",
+const STYLES: Record<string, React.CSSProperties> = {
+  success: { background: "rgba(233,233,0,0.10)", border: "1px solid #E9E900", color: "#E9E900" },
+  error:   { background: "rgba(239,68,68,0.10)",  border: "1px solid #ef4444", color: "#fca5a5" },
+  info:    { background: "rgba(233,233,0,0.08)",  border: "1px solid rgba(233,233,0,0.40)", color: "#E9E900" },
+  warning: { background: "rgba(233,233,0,0.10)",  border: "1px solid #E9E900", color: "#E9E900" },
 };
 
 export function Toaster() {
@@ -45,10 +45,8 @@ export function Toaster() {
         return (
           <div
             key={t.id}
-            className={cn(
-              "flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-xl text-sm font-semibold animate-[slideUp_0.3s_ease-out]",
-              STYLES[t.type]
-            )}
+            className="flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-xl text-sm font-semibold animate-[slideUp_0.3s_ease-out]"
+            style={{ ...STYLES[t.type], backdropFilter: "blur(12px)" }}
           >
             <Icon className="w-4 h-4 flex-shrink-0" />
             {t.message}

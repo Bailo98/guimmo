@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { Clock, Trash2, MapPin, Eye, AlertTriangle, X } from "lucide-react";
 import Image from "next/image";
@@ -131,7 +131,7 @@ export default function HistoriquePage() {
           </p>
           <Link
             href="/annonces"
-            className="bg-[#F97316] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#EA6C0A] transition-colors inline-block"
+            className="bg-[#E9E900] text-white font-semibold px-6 py-3 rounded-xl hover:bg-[#c4c400] transition-colors inline-block"
           >
             Parcourir les annonces
           </Link>
@@ -159,7 +159,7 @@ export default function HistoriquePage() {
                   <div className="flex flex-col items-center self-stretch pt-1 flex-shrink-0">
                     <div className={`w-2.5 h-2.5 rounded-full border-2 ${
                       index === 0
-                        ? "bg-[#F97316] border-[#F97316]"
+                        ? "bg-[#E9E900] border-[#E9E900]"
                         : "bg-transparent border-slate-300 dark:border-slate-600"
                     }`} />
                     {index !== recentProperties.length - 1 && (
@@ -186,14 +186,14 @@ export default function HistoriquePage() {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-slate-900 dark:text-white line-clamp-1 group-hover:text-[#F97316] transition-colors">
+                    <p className="font-semibold text-sm text-slate-900 dark:text-white line-clamp-1 group-hover:text-[#E9E900] transition-colors">
                       {property.title}
                     </p>
                     <div className="flex items-center gap-1 text-slate-400 text-xs mt-0.5">
                       <MapPin className="w-3 h-3 flex-shrink-0" />
                       <span>{neighborhoodLabel}, {property.city}</span>
                     </div>
-                    <p className="text-[#F97316] font-bold text-sm mt-1">
+                    <p className="text-[#E9E900] font-bold text-sm mt-1">
                       {formatPrice(property.price)}
                       {property.price_period === "month" && (
                         <span className="text-xs font-normal text-slate-400">/mois</span>

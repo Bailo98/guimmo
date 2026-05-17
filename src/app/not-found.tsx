@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Home, Search, ArrowLeft, MapPin, Building2 } from "lucide-react";
 
 const SUGGESTIONS = [
@@ -14,13 +14,13 @@ export default function NotFound() {
       {/* Animated 404 */}
       <div className="relative mb-6">
         <div className="text-[9rem] font-black leading-none select-none">
-          <span className="text-[#F97316]">4</span>
+          <span className="text-[#E9E900]">4</span>
           <span className="text-white/10">0</span>
-          <span className="text-[#F97316]">4</span>
+          <span className="text-[#E9E900]">4</span>
         </div>
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-20 h-20 rounded-2xl bg-[#F97316]/10 flex items-center justify-center border border-[#F97316]/20">
-            <Home className="w-8 h-8 text-[#F97316]" />
+          <div className="w-20 h-20 rounded-2xl bg-[#E9E900]/10 flex items-center justify-center border border-[#E9E900]/20">
+            <Home className="w-8 h-8 text-[#E9E900]" />
           </div>
         </div>
       </div>
@@ -34,7 +34,7 @@ export default function NotFound() {
       <div className="flex flex-wrap gap-3 justify-center mb-10">
         <Link
           href="/"
-          className="flex items-center gap-2 bg-[#F97316] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#EA6C0A] transition-colors"
+          className="flex items-center gap-2 bg-[#E9E900] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#c4c400] transition-colors"
         >
           <Home className="w-4 h-4" /> Accueil
         </Link>
@@ -54,11 +54,11 @@ export default function NotFound() {
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#F97316]/40 rounded-xl text-slate-300 hover:text-white transition-all group"
+              className="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#E9E900]/40 rounded-xl text-slate-300 hover:text-white transition-all group"
             >
-              <Icon className="w-4 h-4 text-[#F97316]" />
+              <Icon className="w-4 h-4 text-[#E9E900]" />
               <span className="text-sm font-medium flex-1 text-left">{label}</span>
-              <ArrowLeft className="w-4 h-4 rotate-180 opacity-0 group-hover:opacity-100 transition-opacity text-[#F97316]" />
+              <ArrowLeft className="w-4 h-4 rotate-180 opacity-0 group-hover:opacity-100 transition-opacity text-[#E9E900]" />
             </Link>
           ))}
         </div>

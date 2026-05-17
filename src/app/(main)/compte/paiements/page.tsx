@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { CreditCard, CheckCircle, Clock, XCircle, Zap, ArrowRight } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 
@@ -24,7 +24,7 @@ export default function PaiementsPage() {
       </div>
 
       {/* Current subscription */}
-      <div className="bg-gradient-to-r from-[#F97316] to-[#EA6C0A] rounded-2xl p-5 text-white">
+      <div className="bg-gradient-to-r from-[#E9E900] to-[#c4c400] rounded-2xl p-5 text-white">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-white/80 text-xs font-semibold uppercase tracking-wide">Abonnement actuel</p>
@@ -40,22 +40,22 @@ export default function PaiementsPage() {
           <Link href="/tarifs" className="flex-1 text-center bg-white/20 hover:bg-white/30 text-white text-sm font-semibold py-2 rounded-xl transition-colors">
             Changer de plan
           </Link>
-          <button className="flex-1 text-center bg-white text-[#F97316] text-sm font-bold py-2 rounded-xl hover:bg-white/90 transition-colors">
+          <button className="flex-1 text-center bg-white text-[#E9E900] text-sm font-bold py-2 rounded-xl hover:bg-white/90 transition-colors">
             Renouveler
           </button>
         </div>
       </div>
 
       {/* Upgrade CTA */}
-      <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-[#F97316]/30 flex items-center gap-3">
-        <div className="w-10 h-10 bg-[#F97316]/10 rounded-xl flex items-center justify-center flex-shrink-0">
-          <Zap className="w-5 h-5 text-[#F97316]" />
+      <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-[#E9E900]/30 flex items-center gap-3">
+        <div className="w-10 h-10 bg-[#E9E900]/10 rounded-xl flex items-center justify-center flex-shrink-0">
+          <Zap className="w-5 h-5 text-[#E9E900]" />
         </div>
         <div className="flex-1">
           <p className="font-semibold text-slate-900 dark:text-white text-sm">Booster une annonce</p>
           <p className="text-slate-400 text-xs">À partir de 50 000 GNF / 7 jours</p>
         </div>
-        <Link href="/tarifs" className="flex items-center gap-1 text-[#F97316] text-sm font-bold hover:underline flex-shrink-0">
+        <Link href="/tarifs" className="flex items-center gap-1 text-[#E9E900] text-sm font-bold hover:underline flex-shrink-0">
           Voir <ArrowRight className="w-3 h-3" />
         </Link>
       </div>

@@ -92,48 +92,40 @@ function ConnexionForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a1a0a] flex flex-col">
+    <div className="min-h-screen bg-[#0A1216] flex flex-col">
       <div className="p-4 flex items-center justify-between">
         <Logo size="lg" />
-        <Link href="/" className="text-sm text-[rgba(240,230,204,0.50)] hover:text-white transition-colors">
+        <Link href="/" className="text-sm text-[#666666] hover:text-white transition-colors">
           Retour à l&apos;accueil
         </Link>
       </div>
 
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-sm">
-          <div className="rounded-3xl p-8" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", border: "1px solid rgba(255,255,255,0.10)" }}>
+          <div className="rounded-3xl p-8" style={{ background: "#111a1f", border: "1px solid #1e2a30", borderRadius: 24 }}>
             <div className="text-center mb-8">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.15)" }}>
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}>
                 <Lock className="w-8 h-8 text-white/70" />
               </div>
               <h1 className="text-2xl font-black text-white">Connexion</h1>
-              <p className="text-[rgba(240,230,204,0.50)] text-sm mt-1">Accédez à votre compte BienLoger</p>
+              <p className="text-[#666666] text-sm mt-1">Accédez à votre compte BienLoger</p>
             </div>
 
             {/* Mode toggle — outside <form> so it can never accidentally submit */}
-            <div className="flex rounded-xl overflow-hidden mb-4" style={{ border: "1px solid rgba(255,255,255,0.10)" }}>
+            <div className="grid grid-cols-2 p-1 mb-4 rounded-xl" style={{ background: "#0A1216" }}>
               <button
                 type="button"
                 onClick={() => switchMode("phone")}
-                className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
-                  mode === "phone"
-                    ? "bg-[#f97316] text-white"
-                    : "text-white/50 hover:text-white"
-                }`}
-                style={mode !== "phone" ? { background: "rgba(255,255,255,0.05)" } : {}}
+                className="py-2.5 text-sm font-bold rounded-lg transition-colors"
+                style={mode === "phone" ? { background: "#E9E900", color: "#0A1216" } : { color: "#666666" }}
               >
                 📱 Téléphone
               </button>
               <button
                 type="button"
                 onClick={() => switchMode("email")}
-                className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
-                  mode === "email"
-                    ? "bg-[#f97316] text-white"
-                    : "text-white/50 hover:text-white"
-                }`}
-                style={mode !== "email" ? { background: "rgba(255,255,255,0.05)" } : {}}
+                className="py-2.5 text-sm font-bold rounded-lg transition-colors"
+                style={mode === "email" ? { background: "#E9E900", color: "#0A1216" } : { color: "#666666" }}
               >
                 ✉️ Email
               </button>
@@ -142,11 +134,11 @@ function ConnexionForm() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === "phone" ? (
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
+                  <label htmlFor="phone" className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
                     Numéro de téléphone
                   </label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
                     <input
                       id="phone"
                       name="phone"
@@ -154,7 +146,7 @@ function ConnexionForm() {
                       placeholder="+224 628 222 510 ou +1 438 000 0000"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                       required
                       autoComplete="tel"
                     />
@@ -162,11 +154,11 @@ function ConnexionForm() {
                 </div>
               ) : (
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
+                  <label htmlFor="email" className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
                     Adresse email
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
                     <input
                       id="email"
                       name="email"
@@ -174,7 +166,7 @@ function ConnexionForm() {
                       placeholder="vous@email.com"
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                       required
                       autoComplete="email"
                     />
@@ -183,11 +175,11 @@ function ConnexionForm() {
               )}
 
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
+                <label htmlFor="password" className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
                   Mot de passe
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgba(240,230,204,0.50)] pointer-events-none" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
                   <input
                     id="password"
                     name="password"
@@ -195,14 +187,14 @@ function ConnexionForm() {
                     placeholder="••••••••"
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                    className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                     required
                     autoComplete="current-password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[rgba(240,230,204,0.50)] hover:text-white"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666666] hover:text-white"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -210,7 +202,7 @@ function ConnexionForm() {
               </div>
 
               <div className="flex justify-end">
-                <Link href="/mot-de-passe-oublie" className="text-xs text-[#f97316] hover:underline">
+                <Link href="/mot-de-passe-oublie" className="text-xs text-[#E9E900] hover:underline">
                   Mot de passe oublié ?
                 </Link>
               </div>
@@ -252,9 +244,9 @@ function ConnexionForm() {
               Continuer avec Google
             </button>
 
-            <p className="text-center text-sm text-[rgba(240,230,204,0.50)] mt-6">
+            <p className="text-center text-sm text-[#666666] mt-6">
               Pas encore de compte ?{" "}
-              <Link href="/inscription" className="text-[#f97316] font-semibold hover:underline">
+              <Link href="/inscription" className="text-[#E9E900] font-semibold hover:underline">
                 S&apos;inscrire
               </Link>
             </p>
@@ -267,7 +259,7 @@ function ConnexionForm() {
 
 export default function ConnexionPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0a1a0a]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0A1216]" />}>
       <ConnexionForm />
     </Suspense>
   );

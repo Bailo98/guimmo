@@ -21,7 +21,7 @@ export function PageHero({ title, subtitle, badge, align = "left" }: PageHeroPro
           <div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-5"
             style={{
-              background: "rgba(249,115,22,0.15)",
+              background: "rgba(233,233,0,0.15)",
               border: "1px solid rgba(200,144,30,0.30)",
               color: "var(--BienLoger-amber-light)",
             }}

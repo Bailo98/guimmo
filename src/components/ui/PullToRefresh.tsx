@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useRef, useCallback, type ReactNode } from "react";
 
 interface PullToRefreshProps {
@@ -91,7 +91,7 @@ export function PullToRefresh({ children, onRefresh }: PullToRefreshProps) {
                   height: "24px",
                   borderRadius: "50%",
                   border: "3px solid #f1f5f9",
-                  borderTopColor: "#F97316",
+                  borderTopColor: "#E9E900",
                   animation: "spin 0.7s linear infinite",
                 }}
               />
@@ -107,7 +107,7 @@ export function PullToRefresh({ children, onRefresh }: PullToRefreshProps) {
                   height: "24px",
                   borderRadius: "50%",
                   border: "3px solid #f1f5f9",
-                  borderTopColor: "#F97316",
+                  borderTopColor: "#E9E900",
                   transform: `rotate(${(pullDistance / THRESHOLD) * 360}deg)`,
                   transition: "transform 0.1s",
                 }}

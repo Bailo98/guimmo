@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { TrendingUp } from "lucide-react";
 import {
@@ -53,7 +53,7 @@ export function PriceHistoryChart({ price }: Props) {
   return (
     <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-5 border border-slate-100 dark:border-[#2a3040]">
       <h2 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-        <TrendingUp className="w-4 h-4 text-[#F97316]" />
+        <TrendingUp className="w-4 h-4 text-[#E9E900]" />
         Historique des prix
       </h2>
 
@@ -70,10 +70,10 @@ export function PriceHistoryChart({ price }: Props) {
           <Line
             type="monotone"
             dataKey="price"
-            stroke="#F97316"
+            stroke="#E9E900"
             strokeWidth={2}
             dot={false}
-            activeDot={{ r: 4, fill: "#F97316", strokeWidth: 0 }}
+            activeDot={{ r: 4, fill: "#E9E900", strokeWidth: 0 }}
           />
         </LineChart>
       </ResponsiveContainer>

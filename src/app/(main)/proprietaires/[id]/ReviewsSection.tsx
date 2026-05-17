@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Star, Send } from "lucide-react";
@@ -18,8 +18,8 @@ function StarDisplay({ rating }: { rating: number }) {
           key={star}
           className="w-4 h-4"
           style={{
-            fill: rating >= star ? "#F97316" : "#94a3b8",
-            color: rating >= star ? "#F97316" : "#94a3b8",
+            fill: rating >= star ? "#E9E900" : "#94a3b8",
+            color: rating >= star ? "#E9E900" : "#94a3b8",
           }}
         />
       ))}
@@ -43,8 +43,8 @@ function StarPicker({ value, onChange }: { value: number; onChange: (v: number) 
           <Star
             className="w-7 h-7 transition-colors"
             style={{
-              fill: (hovered || value) >= star ? "#F97316" : "transparent",
-              color: (hovered || value) >= star ? "#F97316" : "#94a3b8",
+              fill: (hovered || value) >= star ? "#E9E900" : "transparent",
+              color: (hovered || value) >= star ? "#E9E900" : "#94a3b8",
             }}
           />
         </button>
@@ -96,7 +96,7 @@ export function ReviewsSection({ ownerId, ownerName }: ReviewsSectionProps) {
         </h2>
         {reviews.length > 0 && (
           <div className="flex items-center gap-3 bg-white dark:bg-[#1e2430] rounded-xl px-4 py-2 border border-slate-100 dark:border-[#2a3040]">
-            <span className="text-3xl font-black text-[#F97316]">{avgRating.toFixed(1)}</span>
+            <span className="text-3xl font-black text-[#E9E900]">{avgRating.toFixed(1)}</span>
             <div>
               <StarDisplay rating={Math.round(avgRating)} />
               <p className="text-xs text-slate-400 mt-0.5">{reviews.length} avis</p>
@@ -117,7 +117,7 @@ export function ReviewsSection({ ownerId, ownerName }: ReviewsSectionProps) {
                 <div className="flex items-center gap-3">
                   <div
                     className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                    style={{ background: "linear-gradient(135deg, #F97316, #EA6C0A)" }}
+                    style={{ background: "linear-gradient(135deg, #E9E900, #c4c400)" }}
                   >
                     {review.authorName.charAt(0)}
                   </div>
@@ -159,7 +159,7 @@ export function ReviewsSection({ ownerId, ownerName }: ReviewsSectionProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ex : Aminata Balde"
-              className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+              className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
             />
           </div>
 
@@ -181,14 +181,14 @@ export function ReviewsSection({ ownerId, ownerName }: ReviewsSectionProps) {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Partagez votre expérience avec ce propriétaire..."
-              className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] resize-none"
+              className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E9E900] resize-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={submitting}
-            className="flex items-center gap-2 bg-[#F97316] hover:bg-[#EA6C0A] text-white font-bold px-5 py-2.5 rounded-xl transition-colors text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 bg-[#E9E900] hover:bg-[#c4c400] text-white font-bold px-5 py-2.5 rounded-xl transition-colors text-sm disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <Send className="w-4 h-4" />
             {submitting ? "Publication..." : "Publier l'avis"}

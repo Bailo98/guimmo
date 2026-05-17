@@ -48,7 +48,7 @@ export default function ResetPasswordPage() {
   } as const;
 
   return (
-    <div className="min-h-screen bg-[#0a1a0a] flex flex-col">
+    <div className="min-h-screen bg-[#0A1216] flex flex-col">
       <div className="p-4">
         <Logo />
       </div>
@@ -57,7 +57,7 @@ export default function ResetPasswordPage() {
           style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}>
           {done ? (
             <div className="text-center">
-              <CheckCircle className="w-14 h-14 text-green-400 mx-auto mb-4" />
+              <CheckCircle className="w-14 h-14 text-yellow-400 mx-auto mb-4" />
               <h2 className="text-xl font-black text-white mb-2">Mot de passe mis à jour !</h2>
               <p className="text-white/50 text-sm">Redirection vers votre compte…</p>
             </div>
@@ -87,7 +87,7 @@ export default function ResetPasswordPage() {
                       required
                       minLength={8}
                       style={{ ...INPUT, fontSize: 16 }}
-                      className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316]"
+                      className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
                     />
                     <button type="button" onClick={() => setShowPwd(!showPwd)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white">
@@ -109,7 +109,7 @@ export default function ResetPasswordPage() {
                       placeholder="Répétez le mot de passe"
                       required
                       style={{ ...INPUT, fontSize: 16 }}
-                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316]"
+                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
                     />
                   </div>
                 </div>

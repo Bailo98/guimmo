@@ -8,11 +8,11 @@ import { formatPrice, timeAgo } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
-const SURFACE  = "#0f2210";
-const BORDER   = "rgba(134,239,172,0.08)";
-const TEXT_PRI = "#f0fdf4";
-const TEXT_SEC = "rgba(187,247,208,0.55)";
-const ACCENT   = "#f97316";
+const SURFACE  = "#111a1f";
+const BORDER   = "#1e2a30";
+const TEXT_PRI = "#ffffff";
+const TEXT_SEC = "rgba(255,255,255,0.55)";
+const ACCENT   = "#E9E900";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 type DbStatus = "active" | "pending" | "paused" | "sold";
@@ -33,10 +33,10 @@ interface Property {
 }
 
 const STATUS_LABELS: Record<DbStatus, { label: string; color: string; bg: string }> = {
-  active:  { label: "Actif",      color: "#22c55e", bg: "rgba(110,201,122,0.15)" },
-  pending: { label: "En attente", color: "#fb923c", bg: "rgba(251,146,60,0.15)" },
+  active:  { label: "Actif",      color: "#E9E900", bg: "rgba(233,233,0,0.12)" },
+  pending: { label: "En attente", color: "#E9E900", bg: "rgba(251,146,60,0.15)" },
   paused:  { label: "Suspendu",   color: "#ef4444", bg: "rgba(239,68,68,0.15)" },
-  sold:    { label: "Vendu",      color: TEXT_SEC,  bg: "rgba(240,230,204,0.06)" },
+  sold:    { label: "Vendu",      color: TEXT_SEC,  bg: "rgba(255,255,255,0.06)" },
 };
 
 const STATUS_OPTIONS = [
@@ -223,10 +223,10 @@ export default function AdminAnnoncesPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 14, display: "flex", gap: 12, alignItems: "center", opacity: 1 - i * 0.15 }}>
-              <div style={{ width: 60, height: 44, borderRadius: 8, background: "rgba(240,230,204,0.06)" }} />
+              <div style={{ width: 60, height: 44, borderRadius: 8, background: "rgba(255,255,255,0.06)" }} />
               <div style={{ flex: 1 }}>
-                <div style={{ height: 12, width: 200, background: "rgba(240,230,204,0.06)", borderRadius: 4, marginBottom: 6 }} />
-                <div style={{ height: 10, width: 120, background: "rgba(240,230,204,0.04)", borderRadius: 4 }} />
+                <div style={{ height: 12, width: 200, background: "rgba(255,255,255,0.06)", borderRadius: 4, marginBottom: 6 }} />
+                <div style={{ height: 10, width: 120, background: "rgba(255,255,255,0.04)", borderRadius: 4 }} />
               </div>
             </div>
           ))}
@@ -259,7 +259,7 @@ export default function AdminAnnoncesPage() {
                 {/* Desktop row / Mobile stacked */}
                 <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                   {/* Thumbnail */}
-                  <div style={{ width: 60, height: 44, borderRadius: 8, overflow: "hidden", flexShrink: 0, background: "rgba(240,230,204,0.06)" }}>
+                  <div style={{ width: 60, height: 44, borderRadius: 8, overflow: "hidden", flexShrink: 0, background: "rgba(255,255,255,0.06)" }}>
                     {img && <img src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
                   </div>
 
@@ -285,9 +285,9 @@ export default function AdminAnnoncesPage() {
                       href={`/annonces/${p.id}`}
                       target="_blank"
                       title="Voir l'annonce"
-                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(240,230,204,0.06)", color: TEXT_SEC, textDecoration: "none", transition: "background 0.12s" }}
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: TEXT_SEC, textDecoration: "none", transition: "background 0.12s" }}
                       onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(200,144,30,0.18)"; (e.currentTarget as HTMLAnchorElement).style.color = ACCENT; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(240,230,204,0.06)"; (e.currentTarget as HTMLAnchorElement).style.color = TEXT_SEC; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.06)"; (e.currentTarget as HTMLAnchorElement).style.color = TEXT_SEC; }}
                     >
                       <Eye size={15} />
                     </Link>
@@ -295,9 +295,9 @@ export default function AdminAnnoncesPage() {
                       onClick={() => handleApprove(p.id)}
                       disabled={p.status === "active"}
                       title="Approuver"
-                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(34,197,94,0.12)", color: "#22c55e", border: "none", cursor: "pointer", opacity: p.status === "active" ? 0.35 : 1, transition: "background 0.12s" }}
-                      onMouseEnter={(e) => { if (p.status !== "active") (e.currentTarget as HTMLButtonElement).style.background = "rgba(34,197,94,0.25)"; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(34,197,94,0.12)"; }}
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(233,233,0,0.12)", color: "#E9E900", border: "none", cursor: "pointer", opacity: p.status === "active" ? 0.35 : 1, transition: "background 0.12s" }}
+                      onMouseEnter={(e) => { if (p.status !== "active") (e.currentTarget as HTMLButtonElement).style.background = "rgba(233,233,0,0.25)"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(233,233,0,0.12)"; }}
                     >
                       <CheckCircle size={15} />
                     </button>
@@ -305,9 +305,9 @@ export default function AdminAnnoncesPage() {
                       onClick={() => handleSuspend(p.id)}
                       disabled={p.status === "paused"}
                       title="Suspendre"
-                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: `rgba(249,115,22,0.12)`, color: ACCENT, border: "none", cursor: "pointer", opacity: p.status === "paused" ? 0.35 : 1, transition: "background 0.12s" }}
-                      onMouseEnter={(e) => { if (p.status !== "paused") (e.currentTarget as HTMLButtonElement).style.background = "rgba(249,115,22,0.25)"; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(249,115,22,0.12)"; }}
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: `rgba(233,233,0,0.12)`, color: ACCENT, border: "none", cursor: "pointer", opacity: p.status === "paused" ? 0.35 : 1, transition: "background 0.12s" }}
+                      onMouseEnter={(e) => { if (p.status !== "paused") (e.currentTarget as HTMLButtonElement).style.background = "rgba(233,233,0,0.25)"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(233,233,0,0.12)"; }}
                     >
                       <XCircle size={15} />
                     </button>
@@ -335,7 +335,7 @@ export default function AdminAnnoncesPage() {
           onClick={() => setConfirmDelete(null)}
         >
           <div
-            style={{ background: "#0f2210", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
+            style={{ background: "#111a1f", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>

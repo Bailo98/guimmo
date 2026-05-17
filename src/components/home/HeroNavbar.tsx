@@ -17,7 +17,7 @@ export function HeroNavbar() {
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2.5">
         <div style={{
-          width: 32, height: 32, background: "#f97316", borderRadius: 8,
+          width: 32, height: 32, background: "#E9E900", borderRadius: 8,
           display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
         }}>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -27,7 +27,7 @@ export function HeroNavbar() {
         </div>
         <span style={{
           fontFamily: "var(--font-playfair), 'Playfair Display', serif",
-          fontWeight: 700, fontSize: "1.0625rem", color: "#f0fdf4", letterSpacing: "-0.3px",
+          fontWeight: 700, fontSize: "1.0625rem", color: "#ffffff", letterSpacing: "-0.3px",
         }}>
           BienLoger
         </span>
@@ -39,8 +39,10 @@ export function HeroNavbar() {
           <Link
             key={l.href}
             href={l.href}
-            className="text-sm font-medium transition-opacity hover:opacity-100"
-            style={{ color: "rgba(247,242,230,0.70)" }}
+            className="text-sm font-medium transition-colors"
+            style={{ color: "#aaaaaa" }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#E9E900"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#aaaaaa"; }}
           >
             {l.label}
           </Link>
@@ -52,8 +54,8 @@ export function HeroNavbar() {
         {user ? (
           <Link
             href="/compte"
-            className="text-sm font-semibold px-4 py-2 rounded-xl transition-all hover:bg-white/10"
-            style={{ color: "#f0fdf4", border: "1px solid rgba(247,242,230,0.28)" }}
+            className="text-sm font-semibold px-4 py-2 rounded-xl transition-all"
+            style={{ color: "#ffffff", border: "1px solid #1e2a30", background: "#111a1f" }}
           >
             Mon compte
           </Link>
@@ -61,15 +63,15 @@ export function HeroNavbar() {
           <>
             <Link
               href="/connexion"
-              className="hidden md:block text-sm font-medium px-4 py-2 rounded-xl transition-all hover:bg-white/10"
-              style={{ color: "#f0fdf4", border: "1px solid rgba(247,242,230,0.28)" }}
+              className="hidden md:block text-sm font-medium px-4 py-2 rounded-xl transition-all"
+              style={{ color: "#aaaaaa", border: "1px solid #1e2a30" }}
             >
               Connexion
             </Link>
             <Link
               href="/inscription"
               className="text-sm font-bold px-4 py-2.5 rounded-xl transition-opacity hover:opacity-90"
-              style={{ background: "#f0fdf4", color: "#0a1a0a" }}
+              style={{ background: "#E9E900", color: "#0A1216" }}
             >
               S&apos;inscrire
             </Link>

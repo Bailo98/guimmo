@@ -9,12 +9,12 @@ const VirtualTour = dynamic(
     loading: () => (
       <div style={{
         height: "200px",
-        background: "#0f2210",
+        background: "#111a1f",
         borderRadius: "12px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        color: "rgba(134,239,172,0.5)",
+        color: "#1e2a30",
         fontSize: "14px",
       }}>
         Chargement de la visite...

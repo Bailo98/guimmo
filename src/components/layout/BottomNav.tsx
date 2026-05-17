@@ -73,14 +73,14 @@ export function BottomNav() {
     return (
       <Link href={href} className="flex flex-col items-center justify-center gap-0.5 w-14 h-14">
         <div className="relative">
-          <Icon className={cn("w-[22px] h-[22px]", active ? "text-[#f97316]" : "text-white/40")} />
+          <Icon className={cn("w-[22px] h-[22px]", active ? "text-[#E9E900]" : "text-white/40")} />
           {hasBadge && (
-            <span className="absolute -top-1 -right-1.5 min-w-[16px] h-4 px-1 bg-[#f97316] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
+            <span className="absolute -top-1 -right-1.5 min-w-[16px] h-4 px-1 bg-[#E9E900] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
         </div>
-        <span className={cn("text-[10px] font-semibold", active ? "text-[#f97316]" : "text-white/40")}>
+        <span className={cn("text-[10px] font-semibold", active ? "text-[#E9E900]" : "text-white/40")}>
           {label}
         </span>
       </Link>
@@ -90,7 +90,7 @@ export function BottomNav() {
   return (
     <nav
       className="md:hidden fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom,0px)]"
-      style={{ background: "var(--BienLoger-bg-alt)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderTop: "1px solid var(--BienLoger-border)" }}
+      style={{ background: "rgba(10,18,22,0.97)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderTop: "1px solid #1e2a30" }}
     >
       <div className="flex items-center justify-around h-16 px-2">
         {LEFT_NAV.map((item) => (
@@ -99,10 +99,10 @@ export function BottomNav() {
 
         {/* FAB — Publication rapide */}
         <Link href="/publier/rapide" className="flex flex-col items-center justify-center -mt-6">
-          <span className="w-14 h-14 rounded-full flex items-center justify-center active:scale-95 transition-transform" style={{ background: "#f97316", border: "1px solid rgba(249,115,22,0.50)", boxShadow: "0 4px 20px rgba(249,115,22,0.40)" }}>
-            <Plus className="w-7 h-7 text-white" strokeWidth={2.5} />
+          <span className="w-14 h-14 rounded-full flex items-center justify-center active:scale-95 transition-transform" style={{ background: "#E9E900", border: "1px solid rgba(233,233,0,0.50)", boxShadow: "0 4px 20px rgba(233,233,0,0.40)" }}>
+            <Plus className="w-7 h-7" style={{ color: "#0A1216" }} strokeWidth={2.5} />
           </span>
-          <span className="text-[9px] font-bold mt-1" style={{ color: "#f97316" }}>Publier</span>
+          <span className="text-[9px] font-bold mt-1" style={{ color: "#E9E900" }}>Publier</span>
         </Link>
 
         {RIGHT_NAV.map((item) => (

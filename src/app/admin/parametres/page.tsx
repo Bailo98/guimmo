@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
@@ -56,13 +56,13 @@ export default function AdminParametresPage() {
                 value={whatsapp}
                 onChange={(e) => setWhatsapp(e.target.value)}
                 placeholder="224628222510"
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
               />
             </div>
             <button
               onClick={save}
               disabled={saving}
-              className="w-full bg-[#F97316] text-white font-bold py-2.5 rounded-xl hover:bg-[#EA6C0A] transition-colors text-sm disabled:opacity-60"
+              className="w-full bg-[#E9E900] text-white font-bold py-2.5 rounded-xl hover:bg-[#c4c400] transition-colors text-sm disabled:opacity-60"
             >
               {saving ? "Sauvegarde…" : "Enregistrer"}
             </button>

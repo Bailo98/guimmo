@@ -1,5 +1,5 @@
 ﻿import type { Metadata, Viewport } from "next";
-import { Inter, Nunito, Playfair_Display, DM_Sans } from "next/font/google";
+import { Inter, Nunito, Playfair_Display, DM_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
@@ -33,6 +33,12 @@ const dmSans = DM_Sans({
   display: "swap",
   weight: ["300", "400", "500"],
   variable: "--font-dm-sans",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://BienLoger.gn";
@@ -70,12 +76,12 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0a1a0a",
+  themeColor: "#0A1216",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang="fr" suppressHydrationWarning className={spaceGrotesk.variable}>
       <head>
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script
@@ -86,7 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="preconnect" href="https://kqshknfrtlbjaufkdeeg.supabase.co" />
       </head>
-      <body className={`${inter.variable} ${nunito.variable} ${playfair.variable} ${dmSans.variable} font-sans min-h-screen`} style={{ backgroundColor: "var(--BienLoger-bg)", color: "var(--BienLoger-cream)" }}>
+      <body className={`${inter.variable} ${nunito.variable} ${playfair.variable} ${dmSans.variable} ${spaceGrotesk.variable} font-sans min-h-screen`} style={{ backgroundColor: "#0A1216", color: "#ffffff" }}>
         <QueryProvider>
           <AuthProvider>
             <ThemeProvider>{children}</ThemeProvider>

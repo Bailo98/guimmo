@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -90,20 +90,20 @@ export function PropertyCard({ property, variant = "default", className, index =
     );
   }
 
-  // ── Default variant — Concept A ─────────────────────────────────
+  // ── Default variant — Light card ──────────────────────────────
   return (
     <div
       className={cn("group flex flex-col overflow-hidden", className)}
       style={{
-        background: "#0a1a0a",
+        background: "#EAEAEA",
         borderRadius: 16,
-        border: "1px solid rgba(134,239,172,0.07)",
+        border: "none",
         cursor: "pointer",
         transition: "transform 0.2s ease, box-shadow 0.2s ease",
       }}
       onMouseEnter={(e) => {
-        (e.currentTarget as HTMLDivElement).style.transform = "scale(1.02)";
-        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 32px rgba(0,0,0,0.4)";
+        (e.currentTarget as HTMLDivElement).style.transform = "translateY(-4px)";
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 12px 40px rgba(0,0,0,0.18)";
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLDivElement).style.transform = "";
@@ -114,9 +114,8 @@ export function PropertyCard({ property, variant = "default", className, index =
       <Link
         href={`/annonces/${property.id}`}
         className="relative block flex-shrink-0"
-        style={{ height: 260, overflow: "hidden" }}
+        style={{ height: 210, overflow: "hidden", borderRadius: "16px 16px 0 0" }}
       >
-        {/* Image or placeholder */}
         {primaryImage ? (
           <Image
             src={primaryImage.url}
@@ -130,41 +129,42 @@ export function PropertyCard({ property, variant = "default", className, index =
             style={{ display: "block", width: "100%", height: "100%" }}
           />
         ) : (
-          <div
-            className="w-full h-full flex flex-col items-center justify-center gap-2"
-            style={{ background: "linear-gradient(135deg, #0f2210, #0a1a0a)" }}
-          >
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(134,239,172,0.2)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <div className="w-full h-full flex flex-col items-center justify-center gap-2"
+            style={{ background: "#d4d4d4" }}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
               <polyline points="9,22 9,12 15,12 15,22" />
             </svg>
-            <span style={{ color: "rgba(134,239,172,0.3)", fontSize: 12 }}>Aucune photo</span>
+            <span style={{ color: "#999", fontSize: 11 }}>Aucune photo</span>
           </div>
         )}
 
-        {/* Gradient overlay */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.88) 100%)" }}
-        />
-
-        {/* Top-left badges */}
+        {/* Top badges */}
         <div className="absolute flex items-center gap-1.5 flex-wrap" style={{ top: 10, left: 10, maxWidth: "calc(100% - 56px)" }}>
-          <span style={{ background: "rgba(0,0,0,0.6)", color: "#f0fdf4", fontSize: 11, padding: "4px 10px", borderRadius: 999, backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)", fontWeight: 500, whiteSpace: "nowrap" }}>
+          <span style={{ background: "rgba(10,18,22,0.75)", color: "#fff", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 600, whiteSpace: "nowrap", backdropFilter: "blur(4px)" }}>
             {TYPE_LABELS[property.type] ?? property.type}
           </span>
+          {property.transaction_type === "rent" ? (
+            <span style={{ background: "rgba(233,233,0,0.15)", color: "#666600", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 600, whiteSpace: "nowrap", border: "1px solid rgba(233,233,0,0.3)" }}>
+              Location
+            </span>
+          ) : (
+            <span style={{ background: "rgba(10,18,22,0.65)", color: "#fff", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 600, whiteSpace: "nowrap", backdropFilter: "blur(4px)" }}>
+              Vente
+            </span>
+          )}
           {property.is_verified && (
-            <span style={{ background: "rgba(249,115,22,0.85)", color: "white", fontSize: 10, padding: "4px 8px", borderRadius: 999, fontWeight: 600, whiteSpace: "nowrap" }}>
+            <span style={{ background: "#E9E900", color: "#0A1216", fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap" }}>
               ✓ Vérifié
             </span>
           )}
           {property.is_boosted && (
-            <span style={{ background: "rgba(249,115,22,0.85)", color: "white", fontSize: 10, padding: "4px 8px", borderRadius: 999, fontWeight: 600, whiteSpace: "nowrap" }}>
+            <span style={{ background: "#E9E900", color: "#0A1216", fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap" }}>
               ★ Pro
             </span>
           )}
           {isNew && !property.is_boosted && (
-            <span style={{ background: "rgba(0,0,0,0.55)", color: "#f0fdf4", fontSize: 10, padding: "4px 8px", borderRadius: 999, backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)", fontWeight: 500, whiteSpace: "nowrap" }}>
+            <span style={{ background: "rgba(10,18,22,0.65)", color: "#fff", fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 500, whiteSpace: "nowrap", backdropFilter: "blur(4px)" }}>
               Nouveau
             </span>
           )}
@@ -183,91 +183,89 @@ export function PropertyCard({ property, variant = "default", className, index =
           style={{
             position: "absolute", top: 10, right: 10,
             width: 34, height: 34,
-            background: "rgba(0,0,0,0.55)", border: "none", borderRadius: "50%",
+            background: "rgba(10,18,22,0.65)", border: "none", borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
             cursor: "pointer",
-            color: fav ? "#ef4444" : "rgba(187,247,208,0.7)",
+            color: fav ? "#ef4444" : "rgba(255,255,255,0.8)",
+            backdropFilter: "blur(4px)",
           }}
         >
-          <Heart style={{ width: 16, height: 16, fill: fav ? "#ef4444" : "none", stroke: "currentColor" }} />
+          <Heart style={{ width: 15, height: 15, fill: fav ? "#ef4444" : "none", stroke: "currentColor" }} />
         </button>
 
         {/* Video badge */}
         {property.video_url && (
-          <div style={{ position: "absolute", bottom: 70, left: 10 }}>
-            <span style={{ background: "rgba(249,115,22,0.85)", color: "white", fontSize: 10, padding: "3px 8px", borderRadius: 999, fontWeight: 500 }}>
-              Vidéo
+          <div style={{ position: "absolute", bottom: 10, left: 10 }}>
+            <span style={{ background: "#E9E900", color: "#0A1216", fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700 }}>
+              ▶ Vidéo
             </span>
           </div>
         )}
-
-        {/* Info overlay on photo */}
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "12px 14px" }}>
-          {/* Price */}
-          <div style={{ fontFamily: "var(--font-playfair, 'Playfair Display', serif)", fontSize: 18, fontWeight: 700, color: "#f97316", margin: "0 0 3px", display: "flex", alignItems: "baseline", gap: 6 }}>
-            {formatPrice(property.price)}
-            {property.price_period === "month" && (
-              <span style={{ fontSize: 11, fontWeight: 400, color: "rgba(187,247,208,0.6)" }}>/mois</span>
-            )}
-            {property.transaction_type === "sale" && property.price_period !== "month" && (
-              <span style={{ fontSize: 11, fontWeight: 400, color: "rgba(187,247,208,0.6)" }}>/vente</span>
-            )}
-          </div>
-
-          {/* Title */}
-          <p style={{ fontSize: 14, fontWeight: 500, color: "#f0fdf4", margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-            {property.title}
-          </p>
-
-          {/* Neighborhood */}
-          <div style={{ fontSize: 11, color: "rgba(187,247,208,0.65)", display: "flex", alignItems: "center", gap: 3, margin: "0 0 6px" }}>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}>
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-            {neighborhoodLabel}, Conakry
-          </div>
-
-          {/* Equipment + rooms badges */}
-          <div style={{ display: "flex", gap: 5, alignItems: "center", flexWrap: "wrap" }}>
-            {property.water_source && property.water_source !== "none" && (
-              <span style={{ background: "rgba(134,239,172,0.1)", color: "rgba(187,247,208,0.75)", fontSize: 9, padding: "2px 7px", borderRadius: 999 }}>
-                💧 {property.water_source === "robinet" ? "Robinet" : property.water_source === "forage" ? "Forage" : "Citerne"}
-              </span>
-            )}
-            {property.electricity && property.electricity !== "none" && (
-              <span style={{ background: "rgba(134,239,172,0.1)", color: "rgba(187,247,208,0.75)", fontSize: 9, padding: "2px 7px", borderRadius: 999 }}>
-                ⚡ {property.electricity === "edg" ? "EDG" : property.electricity === "solaire" ? "Solaire" : "Groupe"}
-              </span>
-            )}
-            {property.internet === "wifi" && (
-              <span style={{ background: "rgba(134,239,172,0.1)", color: "rgba(187,247,208,0.75)", fontSize: 9, padding: "2px 7px", borderRadius: 999 }}>
-                📶 WiFi
-              </span>
-            )}
-            {(property.rooms ?? 0) > 0 && (
-              <span style={{ background: "rgba(134,239,172,0.1)", color: "rgba(187,247,208,0.75)", fontSize: 9, padding: "2px 7px", borderRadius: 999 }}>
-                {property.rooms} ch.
-              </span>
-            )}
-          </div>
-        </div>
       </Link>
 
-      {/* ── Score bar ── */}
-      <div style={{ padding: "6px 12px 0", background: "#0a1a0a" }}>
-        <ListingScore
-          images={(property.property_images ?? []).length}
-          description={property.description}
-          phone={property.contact_phone}
-          surface={property.surface}
-          rooms={property.rooms}
-          compact
-        />
-      </div>
+      {/* ── Card body (light) ── */}
+      <div style={{ padding: "12px 14px", background: "#EAEAEA", flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+        {/* Title */}
+        <p style={{ fontSize: 14, fontWeight: 700, color: "#0A1216", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          {property.title}
+        </p>
 
-      {/* ── Button section ── */}
-      <div style={{ padding: "8px 12px 10px", background: "#0a1a0a" }}>
+        {/* Neighborhood */}
+        <div style={{ fontSize: 12, color: "#666666", display: "flex", alignItems: "center", gap: 3 }}>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}>
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          {neighborhoodLabel}, Conakry
+        </div>
+
+        {/* Price */}
+        <div style={{ fontSize: 15, fontWeight: 700, color: "#0A1216", display: "flex", alignItems: "baseline", gap: 4 }}>
+          {formatPrice(property.price)}
+          {property.price_period === "month" && (
+            <span style={{ fontSize: 11, fontWeight: 400, color: "#666" }}>/mois</span>
+          )}
+          {property.transaction_type === "sale" && property.price_period !== "month" && (
+            <span style={{ fontSize: 11, fontWeight: 400, color: "#666" }}>/vente</span>
+          )}
+        </div>
+
+        {/* Specs row */}
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          {(property.rooms ?? 0) > 0 && (
+            <span style={{ fontSize: 11, color: "#0A1216", display: "flex", alignItems: "center", gap: 3, fontWeight: 500 }}>
+              <span style={{ color: "#E9E900" }}>🛏</span> {property.rooms} ch.
+            </span>
+          )}
+          {(property.surface ?? 0) > 0 && (
+            <span style={{ fontSize: 11, color: "#0A1216", display: "flex", alignItems: "center", gap: 3, fontWeight: 500 }}>
+              <span style={{ color: "#E9E900" }}>📐</span> {property.surface} m²
+            </span>
+          )}
+          {property.water_source && property.water_source !== "none" && (
+            <span style={{ fontSize: 11, color: "#666" }}>💧</span>
+          )}
+          {property.electricity && property.electricity !== "none" && (
+            <span style={{ fontSize: 11, color: "#666" }}>⚡</span>
+          )}
+          {property.internet === "wifi" && (
+            <span style={{ fontSize: 11, color: "#666" }}>📶</span>
+          )}
+        </div>
+
+        {/* Score bar */}
+        <div style={{ margin: "2px 0" }}>
+          <ListingScore
+            images={(property.property_images ?? []).length}
+            description={property.description}
+            phone={property.contact_phone}
+            surface={property.surface}
+            rooms={property.rooms}
+            compact
+          />
+        </div>
+
+        {/* Contact button */}
         {phone ? (
           <button
             type="button"
@@ -280,14 +278,14 @@ export function PropertyCard({ property, variant = "default", className, index =
               window.open(`https://wa.me/${cleaned}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
             }}
             style={{
-              width: "100%", background: "#25D366", color: "white", border: "none",
-              borderRadius: 10, padding: 11, fontSize: 13, fontWeight: 500,
+              width: "100%", background: "#0A1216", color: "white", border: "none",
+              borderRadius: 10, padding: "10px", fontSize: 13, fontWeight: 700,
               display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
-              cursor: "pointer",
+              cursor: "pointer", marginTop: 4,
             }}
           >
             {WA_ICON}
-            Contacter sur WhatsApp
+            Contacter
           </button>
         ) : (
           <WhatsAppShare

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { RefreshCw, Home } from "lucide-react";
@@ -17,7 +17,7 @@ export default function Error({ reset }: { reset: () => void }) {
       >
         <div
           className="w-24 h-24 rounded-3xl flex items-center justify-center text-5xl font-black"
-          style={{ backgroundColor: "#F97316", color: "#fff" }}
+          style={{ backgroundColor: "#E9E900", color: "#fff" }}
         >
           !
         </div>
@@ -54,9 +54,9 @@ export default function Error({ reset }: { reset: () => void }) {
         <button
           onClick={reset}
           className="flex items-center justify-center gap-2 font-bold px-7 py-3 rounded-xl transition-colors"
-          style={{ backgroundColor: "#F97316", color: "#fff" }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#EA6C0A")}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#F97316")}
+          style={{ backgroundColor: "#E9E900", color: "#fff" }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#c4c400")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E9E900")}
         >
           <RefreshCw className="w-4 h-4" />
           Réessayer
@@ -78,7 +78,7 @@ export default function Error({ reset }: { reset: () => void }) {
         transition={{ duration: 0.4, delay: 0.4 }}
         className="absolute bottom-8 flex items-center gap-2"
       >
-        <span className="text-lg font-black" style={{ color: "#F97316" }}>Loger</span>
+        <span className="text-lg font-black" style={{ color: "#E9E900" }}>Loger</span>
         <span className="text-lg font-black text-white">Bien</span>
         <span className="text-xs ml-2" style={{ color: "#475569" }}>— Plateforme immobilière guinéenne</span>
       </motion.footer>

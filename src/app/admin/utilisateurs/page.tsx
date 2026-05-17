@@ -6,11 +6,11 @@ import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabase";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
-const SURFACE  = "#0f2210";
-const BORDER   = "rgba(134,239,172,0.08)";
-const TEXT_PRI = "#f0fdf4";
-const TEXT_SEC = "rgba(187,247,208,0.55)";
-const ACCENT   = "#f97316";
+const SURFACE  = "#111a1f";
+const BORDER   = "#1e2a30";
+const TEXT_PRI = "#ffffff";
+const TEXT_SEC = "rgba(255,255,255,0.55)";
+const ACCENT   = "#E9E900";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Profile {
@@ -29,7 +29,7 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-  buyer: TEXT_SEC, owner: "#22c55e", agent: "#60a5fa",
+  buyer: TEXT_SEC, owner: "#E9E900", agent: "#60a5fa",
   agency: "#a78bfa", admin: ACCENT,
 };
 
@@ -126,10 +126,10 @@ export default function AdminUtilisateursPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 14, display: "flex", gap: 12, alignItems: "center", opacity: 1 - i * 0.15 }}>
-              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(240,230,204,0.06)" }} />
+              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
               <div style={{ flex: 1 }}>
-                <div style={{ height: 12, width: 160, background: "rgba(240,230,204,0.06)", borderRadius: 4, marginBottom: 6 }} />
-                <div style={{ height: 10, width: 240, background: "rgba(240,230,204,0.04)", borderRadius: 4 }} />
+                <div style={{ height: 12, width: 160, background: "rgba(255,255,255,0.06)", borderRadius: 4, marginBottom: 6 }} />
+                <div style={{ height: 10, width: 240, background: "rgba(255,255,255,0.04)", borderRadius: 4 }} />
               </div>
             </div>
           ))}
@@ -169,7 +169,7 @@ export default function AdminUtilisateursPage() {
                         {u.full_name || "Sans nom"}
                       </p>
                       {u.is_verified && (
-                        <CheckCircle size={14} color="#22c55e" />
+                        <CheckCircle size={14} color="#E9E900" />
                       )}
                       {u.role && (
                         <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, color: roleColor, background: `${roleColor}18` }}>
@@ -218,7 +218,7 @@ export default function AdminUtilisateursPage() {
           onClick={() => setConfirmDelete(null)}
         >
           <div
-            style={{ background: "#0f2210", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
+            style={{ background: "#111a1f", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>

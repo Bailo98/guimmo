@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Zap, Check, Loader2, Star } from "lucide-react";
@@ -37,7 +37,7 @@ const BOOST_PLANS = [
     priceLabel: "90 000 GNF",
     badge: "Populaire",
     badgeColor: "#fff",
-    badgeBg: "#F97316",
+    badgeBg: "#E9E900",
     popular: true,
     advantages: [
       "Mise en avant 14 jours",
@@ -117,7 +117,7 @@ export function BoostModal({ propertyId, propertyTitle, isBoosted, boostExpiry, 
           <div className="flex items-start justify-between p-5 pb-4 border-b" style={{ borderColor: "#2a3040" }}>
             <div>
               <div className="flex items-center gap-2 mb-0.5">
-                <Zap className="w-5 h-5" style={{ color: "#F97316" }} />
+                <Zap className="w-5 h-5" style={{ color: "#E9E900" }} />
                 <h2 className="text-lg font-black text-white">Booster votre annonce</h2>
               </div>
               <p className="text-xs mt-1 line-clamp-1" style={{ color: "#64748b" }}>
@@ -137,8 +137,8 @@ export function BoostModal({ propertyId, propertyTitle, isBoosted, boostExpiry, 
             {/* Already boosted banner */}
             {isBoosted && remainingDays !== null && (
               <div className="rounded-xl p-3 text-sm font-semibold text-white flex items-center gap-2"
-                style={{ backgroundColor: "rgba(249,115,22,0.15)", border: "1px solid rgba(249,115,22,0.4)" }}>
-                <Star className="w-4 h-4 flex-shrink-0" style={{ color: "#F97316" }} />
+                style={{ backgroundColor: "rgba(233,233,0,0.15)", border: "1px solid rgba(249,115,22,0.4)" }}>
+                <Star className="w-4 h-4 flex-shrink-0" style={{ color: "#E9E900" }} />
                 Votre annonce est boostée encore {remainingDays} jour{remainingDays > 1 ? "s" : ""}
               </div>
             )}
@@ -153,7 +153,7 @@ export function BoostModal({ propertyId, propertyTitle, isBoosted, boostExpiry, 
                     onClick={() => setSelectedPlan(plan.id)}
                     className="w-full text-left rounded-2xl p-4 border transition-all"
                     style={{
-                      borderColor: isSelected ? "#F97316" : "#2a3040",
+                      borderColor: isSelected ? "#E9E900" : "#2a3040",
                       backgroundColor: isSelected ? "rgba(249,115,22,0.08)" : "rgba(255,255,255,0.03)",
                     }}
                   >
@@ -162,8 +162,8 @@ export function BoostModal({ propertyId, propertyTitle, isBoosted, boostExpiry, 
                         <div
                           className="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0"
                           style={{
-                            borderColor: isSelected ? "#F97316" : "#475569",
-                            backgroundColor: isSelected ? "#F97316" : "transparent",
+                            borderColor: isSelected ? "#E9E900" : "#475569",
+                            backgroundColor: isSelected ? "#E9E900" : "transparent",
                           }}
                         >
                           {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
@@ -177,13 +177,13 @@ export function BoostModal({ propertyId, propertyTitle, isBoosted, boostExpiry, 
                         {plan.badge}
                       </span>
                     </div>
-                    <p className="text-base font-black ml-6" style={{ color: "#F97316" }}>
+                    <p className="text-base font-black ml-6" style={{ color: "#E9E900" }}>
                       {plan.priceLabel}
                     </p>
                     <ul className="ml-6 mt-2 space-y-1">
                       {plan.advantages.map((adv) => (
                         <li key={adv} className="flex items-center gap-1.5 text-xs" style={{ color: "#94a3b8" }}>
-                          <Check className="w-3 h-3 flex-shrink-0" style={{ color: "#22c55e" }} />
+                          <Check className="w-3 h-3 flex-shrink-0" style={{ color: "#E9E900" }} />
                           {adv}
                         </li>
                       ))}
@@ -206,7 +206,7 @@ export function BoostModal({ propertyId, propertyTitle, isBoosted, boostExpiry, 
                       key={m.id}
                       className="flex items-center gap-3 rounded-xl border p-3 cursor-pointer transition-all"
                       style={{
-                        borderColor: isSelected ? "#F97316" : "#2a3040",
+                        borderColor: isSelected ? "#E9E900" : "#2a3040",
                         backgroundColor: isSelected ? "rgba(249,115,22,0.08)" : "rgba(255,255,255,0.03)",
                       }}
                     >
@@ -216,9 +216,9 @@ export function BoostModal({ propertyId, propertyTitle, isBoosted, boostExpiry, 
                         value={m.id}
                         checked={isSelected}
                         onChange={() => setSelectedPayment(m.id)}
-                        className="accent-[#F97316]"
+                        className="accent-[#E9E900]"
                       />
-                      <span className="text-sm font-semibold" style={{ color: isSelected ? "#F97316" : "#94a3b8" }}>
+                      <span className="text-sm font-semibold" style={{ color: isSelected ? "#E9E900" : "#94a3b8" }}>
                         {m.label}
                       </span>
                     </label>
@@ -241,7 +241,7 @@ export function BoostModal({ propertyId, propertyTitle, isBoosted, boostExpiry, 
                 onClick={handleConfirm}
                 disabled={loading}
                 className="flex-1 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2"
-                style={{ backgroundColor: "#F97316", color: "#fff", opacity: loading ? 0.8 : 1 }}
+                style={{ backgroundColor: "#E9E900", color: "#fff", opacity: loading ? 0.8 : 1 }}
               >
                 {loading ? (
                   <>

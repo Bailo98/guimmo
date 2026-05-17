@@ -68,7 +68,7 @@ export default async function AgentsPage() {
       <div className="mb-8">
         <div
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-3"
-          style={{ background: "rgba(249,115,22,0.15)", color: "var(--BienLoger-amber-light)", border: "1px solid rgba(249,115,22,0.25)" }}
+          style={{ background: "rgba(233,233,0,0.15)", color: "var(--BienLoger-amber-light)", border: "1px solid rgba(233,233,0,0.25)" }}
         >
           <UserCheck className="w-3.5 h-3.5" /> Agents certifiés
         </div>
@@ -110,7 +110,7 @@ export default async function AgentsPage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-bold text-white text-sm">{agent.name}</p>
                       {/* Agent Officiel badge */}
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(249,115,22,0.15)", color: "#f97316", border: "1px solid rgba(249,115,22,0.25)" }}>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(233,233,0,0.15)", color: "#E9E900", border: "1px solid rgba(233,233,0,0.25)" }}>
                         ✓ Agent Officiel
                       </span>
                     </div>

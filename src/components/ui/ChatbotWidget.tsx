@@ -152,7 +152,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
           >
             <div className="flex h-96 flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
               {/* Header */}
-              <div className="flex items-center justify-between bg-[#F97316] px-4 py-3">
+              <div className="flex items-center justify-between bg-[#E9E900] px-4 py-3">
                 <div className="flex items-center gap-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 text-xs font-bold text-white">
                     GI
@@ -186,14 +186,14 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
                     }`}
                   >
                     {msg.from === "bot" && (
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F97316] text-[9px] font-bold text-white">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#E9E900] text-[9px] font-bold text-white">
                         GI
                       </span>
                     )}
                     <div
                       className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-snug ${
                         msg.from === "user"
-                          ? "rounded-br-sm bg-[#F97316] text-white"
+                          ? "rounded-br-sm bg-[#E9E900] text-white"
                           : "rounded-bl-sm bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100"
                       }`}
                     >
@@ -213,7 +213,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
                         <button
                           key={opt}
                           onClick={() => handleOption(opt)}
-                          className="rounded-full border border-[#F97316] px-3 py-1 text-xs font-medium text-[#F97316] transition hover:bg-[#F97316] hover:text-white dark:border-orange-400 dark:text-orange-400 dark:hover:bg-orange-500 dark:hover:text-white"
+                          className="rounded-full border border-[#E9E900] px-3 py-1 text-xs font-medium text-[#E9E900] transition hover:bg-[#c4c400] hover:text-white dark:border-orange-400 dark:text-orange-400 dark:hover:bg-orange-500 dark:hover:text-white"
                         >
                           {opt}
                         </button>
@@ -233,7 +233,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
                           ? "noopener noreferrer"
                           : undefined
                       }
-                      className="block w-full rounded-xl bg-[#F97316] py-2 text-center text-sm font-semibold text-white transition hover:bg-orange-600"
+                      className="block w-full rounded-xl bg-[#E9E900] py-2 text-center text-sm font-semibold text-white transition hover:bg-orange-600"
                     >
                       {lastBotMsg.link.label}
                     </a>
@@ -269,7 +269,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
           onClick={() => setOpen((v) => !v)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
-          className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#F97316] shadow-[0_4px_24px_rgba(249,115,22,0.5)]"
+          className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#E9E900] shadow-[0_4px_24px_rgba(249,115,22,0.5)]"
           aria-label="Ouvrir l'assistant virtuel"
         >
           <AnimatePresence mode="wait">

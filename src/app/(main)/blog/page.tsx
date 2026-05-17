@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
@@ -104,7 +104,7 @@ const CATEGORY_TABS = ["Tous", "Marché", "Conseils", "Quartiers", "Juridique", 
 
 const CATEGORY_COLORS: Record<string, string> = {
   Marché: "bg-blue-500/20 text-blue-400",
-  Conseils: "bg-green-500/20 text-green-400",
+  Conseils: "bg-green-500/20 text-yellow-400",
   Quartiers: "bg-purple-500/20 text-purple-400",
   Juridique: "bg-yellow-500/20 text-yellow-400",
   Actualités: "bg-rose-500/20 text-rose-400",
@@ -143,7 +143,7 @@ export default function BlogPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0f1117]">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#F97316] via-[#ea6c0a] to-[#c2540a] text-white">
+      <div className="bg-gradient-to-br from-[#E9E900] via-[#c4c400] to-[#c2540a] text-white">
         <div className="max-w-6xl mx-auto px-4 py-16 md:py-20 text-center">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-medium mb-5">
             <BookOpen className="w-4 h-4" />
@@ -180,8 +180,8 @@ export default function BlogPage() {
               onClick={() => setActiveCategory(cat)}
               className={
                 cat === activeCategory
-                  ? "px-4 py-1.5 rounded-full text-sm font-semibold bg-[#F97316] text-white cursor-pointer"
-                  : "px-4 py-1.5 rounded-full text-sm font-semibold bg-white dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#2a3040] hover:border-[#F97316] hover:text-[#F97316] cursor-pointer transition-colors"
+                  ? "px-4 py-1.5 rounded-full text-sm font-semibold bg-[#E9E900] text-white cursor-pointer"
+                  : "px-4 py-1.5 rounded-full text-sm font-semibold bg-white dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#2a3040] hover:border-[#E9E900] hover:text-[#E9E900] cursor-pointer transition-colors"
               }
             >
               {cat}
@@ -201,7 +201,7 @@ export default function BlogPage() {
           <>
             {/* Featured article */}
             <div className="mb-12">
-              <p className="text-xs font-bold text-[#F97316] uppercase tracking-widest mb-4">
+              <p className="text-xs font-bold text-[#E9E900] uppercase tracking-widest mb-4">
                 Article à la une
               </p>
               <Link href={`/blog/${featured.slug}`} className="group block">
@@ -228,7 +228,7 @@ export default function BlogPage() {
                     >
                       {featured.category}
                     </span>
-                    <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white leading-tight mb-3 group-hover:text-[#F97316] transition-colors">
+                    <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white leading-tight mb-3 group-hover:text-[#E9E900] transition-colors">
                       {featured.title}
                     </h2>
                     <p className="text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
@@ -244,7 +244,7 @@ export default function BlogPage() {
                         {formatArticleDate(featured.date)}
                       </span>
                     </div>
-                    <span className="inline-flex items-center gap-2 bg-[#F97316] hover:bg-[#ea6c0a] text-white font-bold px-6 py-3 rounded-xl transition-colors w-fit">
+                    <span className="inline-flex items-center gap-2 bg-[#E9E900] hover:bg-[#c4c400] text-white font-bold px-6 py-3 rounded-xl transition-colors w-fit">
                       Lire l&apos;article
                       <ChevronRight className="w-4 h-4" />
                     </span>
@@ -286,7 +286,7 @@ export default function BlogPage() {
                         >
                           {article.category}
                         </span>
-                        <h3 className="font-bold text-slate-900 dark:text-white leading-snug mb-2 group-hover:text-[#F97316] transition-colors flex-1">
+                        <h3 className="font-bold text-slate-900 dark:text-white leading-snug mb-2 group-hover:text-[#E9E900] transition-colors flex-1">
                           {article.title}
                         </h3>
                         <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-4 line-clamp-2">

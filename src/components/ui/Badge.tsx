@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+﻿import { cn } from "@/lib/utils";
 import { CheckCircle, Shield, UserCheck, Building, Camera, Zap, Star, MapPin, ShieldCheck } from "lucide-react";
 import type { Badge as BadgeType } from "@/types";
 
@@ -15,7 +15,7 @@ const ICONS = {
 };
 
 const COLORS = {
-  green: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  green: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-yellow-400",
   blue: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
   orange: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
   purple: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",

@@ -28,9 +28,9 @@ const TYPES = [
 ];
 
 const SELECT_BASE: React.CSSProperties = {
-  background: "rgba(247,242,230,0.07)",
-  border: "1px solid rgba(247,242,230,0.18)",
-  color: "rgba(247,242,230,0.55)",
+  background: "#1a252b",
+  border: "1px solid #1e2a30",
+  color: "#666666",
   borderRadius: "12px",
   padding: "0 14px",
   fontSize: "16px",
@@ -69,15 +69,15 @@ export function HeroSearch() {
     <div
       className="rounded-2xl p-3 sm:p-4 w-full"
       style={{
-        background: "rgba(10,18,12,0.55)",
-        border: "1px solid rgba(247,242,230,0.12)",
+        background: "#111a1f",
+        border: "1px solid #1e2a30",
         maxWidth: "min(520px, 100%)",
       }}
     >
       {/* Tabs — pleine largeur, 50/50 */}
       <div
         className="grid grid-cols-2 gap-1 mb-4 p-1 rounded-[10px]"
-        style={{ background: "rgba(247,242,230,0.08)" }}
+        style={{ background: "#0A1216", borderRadius: 12 }}
       >
         {(["rent", "sale"] as const).map((t) => (
           <button
@@ -86,9 +86,10 @@ export function HeroSearch() {
             className="flex-1 text-sm font-semibold rounded-lg transition-all"
             style={{
               minHeight: "44px",
+              borderRadius: 10,
               ...(tab === t
-                ? { background: "#f0fdf4", color: "#0a1a0a" }
-                : { color: "rgba(247,242,230,0.55)" }),
+                ? { background: "#E9E900", color: "#0A1216", fontWeight: 700 }
+                : { color: "#666666" }),
             }}
           >
             {t === "rent" ? "🔑 Location" : "💰 Achat"}
@@ -102,7 +103,7 @@ export function HeroSearch() {
           <label
             htmlFor="hs-quartier"
             className="block text-xs font-semibold mb-1.5"
-            style={{ color: "rgba(247,242,230,0.50)" }}
+            style={{ color: "#666666" }}
           >
             Quartier
           </label>
@@ -113,14 +114,14 @@ export function HeroSearch() {
               onChange={(e) => {
                 setNeighborhood(e.target.value);
                 (e.target as HTMLSelectElement).style.color = e.target.value
-                  ? "#f0fdf4"
+                  ? "#ffffff"
                   : "rgba(247,242,230,0.55)";
               }}
               style={SELECT_BASE}
             >
-              <option value="" style={{ color: "#0a1a0a" }}>Tous les quartiers</option>
+              <option value="" style={{ color: "#0A1216" }}>Tous les quartiers</option>
               {QUARTIERS.map((q) => (
-                <option key={q.id} value={q.id} style={{ color: "#0a1a0a" }}>
+                <option key={q.id} value={q.id} style={{ color: "#0A1216" }}>
                   {q.name}
                 </option>
               ))}
@@ -131,7 +132,7 @@ export function HeroSearch() {
           <label
             htmlFor="hs-type"
             className="block text-xs font-semibold mb-1.5"
-            style={{ color: "rgba(247,242,230,0.50)" }}
+            style={{ color: "#666666" }}
           >
             Type de bien
           </label>
@@ -142,14 +143,14 @@ export function HeroSearch() {
               onChange={(e) => {
                 setType(e.target.value);
                 (e.target as HTMLSelectElement).style.color = e.target.value
-                  ? "#f0fdf4"
+                  ? "#ffffff"
                   : "rgba(247,242,230,0.55)";
               }}
               style={SELECT_BASE}
             >
-              <option value="" style={{ color: "#0a1a0a" }}>Tous les types</option>
+              <option value="" style={{ color: "#0A1216" }}>Tous les types</option>
               {TYPES.map((t) => (
-                <option key={t.id} value={t.id} style={{ color: "#0a1a0a" }}>
+                <option key={t.id} value={t.id} style={{ color: "#0A1216" }}>
                   {t.name}
                 </option>
               ))}
@@ -163,9 +164,9 @@ export function HeroSearch() {
         <button
           onClick={handleSearch}
           className="flex-1 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-colors"
-          style={{ background: "#f97316", color: "#fff", minHeight: "52px" }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "#ea6c0a"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "#f97316"; }}
+          style={{ background: "#E9E900", color: "#0A1216", minHeight: "52px", fontWeight: 700 }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "#c4c400"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "#E9E900"; }}
         >
           <Search className="w-4 h-4" />
           Rechercher
