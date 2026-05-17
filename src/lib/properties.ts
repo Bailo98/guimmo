@@ -6,11 +6,13 @@ import type { Property } from "@/types";
 export async function fetchProperties(): Promise<Property[]> {
   if (!isSupabaseConfigured || !supabase) return MOCK_PROPERTIES;
 
+  const now = new Date().toISOString();
   const { data, error } = await supabase
     .from("properties")
     .select("*, property_images(*)")
     .eq("status", "active")
     .not("title", "is", null)
+    .or(`expires_at.is.null,expires_at.gt.${now}`)
     .order("created_at", { ascending: false });
 
   if (error || !data || data.length === 0) return MOCK_PROPERTIES;

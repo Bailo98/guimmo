@@ -37,6 +37,8 @@ interface Listing {
   available_now: boolean; views: number;
   whatsapp_clicks: number;
   primary_image: string | null;
+  expires_at: string | null;
+  status: string | null;
 }
 interface SavedSearch {
   id: string; label: string; neighborhood: string | null; type: string | null;
@@ -318,7 +320,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
     setLoading(true);
     const [propRes, statsRes] = await Promise.all([
       supabase.from("properties")
-        .select("id,title,neighborhood,price,price_period,available_now,views,property_images(url,is_primary,sort_order)")
+        .select("id,title,neighborhood,price,price_period,available_now,views,expires_at,status,property_images(url,is_primary,sort_order)")
         .eq("owner_id", userId)
         .order("created_at", { ascending: false }),
       supabase.from("listing_stats")
@@ -342,6 +344,8 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
         views: row.views ?? 0,
         whatsapp_clicks: waMap[row.id] ?? 0,
         primary_image: primary?.url ?? null,
+        expires_at: (row as { expires_at?: string | null }).expires_at ?? null,
+        status: (row as { status?: string | null }).status ?? null,
       };
     });
     setListings(mapped);
@@ -419,14 +423,53 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
                   </div>
                   <p className="font-bold text-sm mt-1" style={{ color: "var(--bl-amber-light)" }}>{fmtGNF(listing.price, listing.price_period)}</p>
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                    <StatusBadge status={listing.available_now ? "active" : "sold"} />
+                    {listing.status === "pending" ? (
+                      <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ background: "rgba(200,144,30,0.15)", color: "#daa84a" }}>
+                        ⏳ En attente de validation
+                      </span>
+                    ) : (
+                      <StatusBadge status={listing.available_now ? "active" : "sold"} />
+                    )}
                     <span className="flex items-center gap-1 text-[11px]" style={{ color: "var(--bl-cream-faint)" }}>
                       <Eye className="w-3 h-3" /> {listing.views} · <Phone className="w-3 h-3" /> {listing.whatsapp_clicks}
                     </span>
+                    {listing.expires_at && listing.status === "active" && (() => {
+                      const daysLeft = Math.ceil((new Date(listing.expires_at).getTime() - Date.now()) / 86400000);
+                      if (daysLeft > 7) return null;
+                      return (
+                        <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ background: daysLeft <= 0 ? "rgba(239,68,68,0.12)" : "rgba(239,68,68,0.08)", color: "#f87171" }}>
+                          {daysLeft <= 0 ? "Expirée" : `Expire dans ${daysLeft}j`}
+                        </span>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
               <div className="flex gap-2 px-3 pb-3">
+                {listing.expires_at && listing.status === "active" && (() => {
+                  const daysLeft = Math.ceil((new Date(listing.expires_at).getTime() - Date.now()) / 86400000);
+                  if (daysLeft > 7) return null;
+                  const isRenewBusy = actionLoading === listing.id + "-renew";
+                  return (
+                    <button
+                      onClick={async () => {
+                        if (!supabase) return;
+                        setActionLoading(listing.id + "-renew");
+                        const newExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+                        const { error } = await supabase.from("properties").update({ expires_at: newExpiry }).eq("id", listing.id);
+                        if (error) toast("Erreur renouvellement", "error");
+                        else { setListings((p) => p.map((l) => l.id === listing.id ? { ...l, expires_at: newExpiry } : l)); toast("✅ Annonce renouvelée 30 jours", "success"); }
+                        setActionLoading(null);
+                      }}
+                      disabled={busy || isRenewBusy}
+                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-[#daa84a] transition-colors hover:bg-amber-900/10"
+                      style={{ border: "1px solid rgba(200,144,30,0.30)" }}
+                    >
+                      {isRenewBusy ? <div className="w-3.5 h-3.5 border border-[#daa84a] border-t-transparent rounded-full animate-spin" /> : <RotateCcw className="w-3.5 h-3.5" />}
+                      Renouveler
+                    </button>
+                  );
+                })()}
                 <button onClick={() => toggleAvailability(listing)} disabled={busy}
                   className={cn("flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-colors",
                     listing.available_now ? "text-red-400 hover:bg-red-900/20" : "text-[#6ec97a] hover:bg-green-900/20")}
@@ -523,6 +566,55 @@ async function loadRecentLeads(userId: string): Promise<Lead[]> {
   } catch { return []; }
 }
 
+// ─── RAPPORT MENSUEL ─────────────────────────────────────────────────────────
+
+interface MonthlyReport {
+  id: string; month: string; views_total: number;
+  whatsapp_clicks_total: number; active_listings: number; sent_at: string;
+}
+
+function MonthlyReportSection({ userId }: { userId: string }) {
+  const [reports, setReports] = useState<MonthlyReport[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!supabase) { setLoading(false); return; }
+    supabase.from("monthly_reports")
+      .select("id,month,views_total,whatsapp_clicks_total,active_listings,sent_at")
+      .eq("user_id", userId)
+      .order("sent_at", { ascending: false })
+      .limit(6)
+      .then(({ data }) => { setReports((data ?? []) as MonthlyReport[]); setLoading(false); });
+  }, [userId]);
+
+  if (!loading && reports.length === 0) return null;
+
+  return (
+    <div className="mt-6">
+      <SectionHeader title="Rapports mensuels" subtitle="Activité envoyée par WhatsApp" />
+      {loading ? (
+        <div className="h-20 rounded-2xl animate-pulse" style={{ background: "rgba(240,230,204,0.04)" }} />
+      ) : (
+        <div className="space-y-2">
+          {reports.map((r) => (
+            <div key={r.id} className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+              <div>
+                <p className="text-sm font-bold capitalize" style={{ color: "var(--bl-cream)" }}>{r.month}</p>
+                <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>
+                  {r.views_total} vues · {r.whatsapp_clicks_total} clics WA · {r.active_listings} annonces actives
+                </p>
+              </div>
+              <p className="text-[11px]" style={{ color: "var(--bl-cream-faint)" }}>
+                {new Date(r.sent_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── DASHBOARD PROPRIÉTAIRE ───────────────────────────────────────────────────
 
 function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
@@ -598,6 +690,8 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
                 </Link>
               } />
               <ListingsManager userId={user.id} limit={3} />
+
+              <MonthlyReportSection userId={user.id} />
             </>
           )}
         </>
