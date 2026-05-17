@@ -57,11 +57,30 @@ async function getDB() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const db = await getDB();
-  const { data } = await db.from("properties").select("title, description").eq("id", id).single();
+  const { data } = await db
+    .from("properties")
+    .select("title, description, neighborhood, price, property_images(url)")
+    .eq("id", id)
+    .single();
   if (!data) return { title: "Annonce introuvable — BienLoger" };
+  const neighborhoodLabel = getNeighborhoodName((data as { neighborhood?: string }).neighborhood ?? "");
+  const priceFormatted = new Intl.NumberFormat("fr-GN", { maximumFractionDigits: 0 }).format((data as { price?: number }).price ?? 0);
+  const ogDescription = (data.description ?? `${neighborhoodLabel} — ${priceFormatted} GNF`).slice(0, 160);
+  const image = ((data as { property_images?: { url: string }[] }).property_images ?? [])[0]?.url;
   return {
     title: `${data.title} — BienLoger`,
-    description: (data.description ?? "").slice(0, 160),
+    description: ogDescription,
+    openGraph: {
+      title: `${data.title} — BienLoger`,
+      description: ogDescription,
+      images: image ? [{ url: image, width: 1200, height: 630 }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${data.title} — BienLoger`,
+      description: ogDescription,
+      images: image ? [image] : [],
+    },
   };
 }
 
@@ -100,6 +119,9 @@ export default async function PropertyDetailPage({ params }: Props) {
     .eq("type", row.type)
     .eq("status", "active")
     .neq("id", id)
+    .gte("price", Math.round(row.price * 0.5))
+    .lte("price", Math.round(row.price * 1.5))
+    .not("title", "is", null)
     .limit(3);
   const similar = (similarRows ?? []) as Property[];
 
@@ -362,24 +384,30 @@ export default async function PropertyDetailPage({ params }: Props) {
               )}
 
               {/* Description */}
-              <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}>
-                <h2 className="font-bold text-white mb-3">Description</h2>
-                <p className="text-white/60 text-sm leading-relaxed whitespace-pre-line">
-                  {property.description}
-                </p>
-                {(property.features?.length ?? 0) > 0 && (
-                  <div className="mt-4 pt-4 border-t border-white/8">
-                    <h3 className="font-semibold text-white text-sm mb-3">Équipements</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {(property.features ?? []).map((f: string) => (
-                        <span key={f} className="text-white/60 text-xs font-medium px-3 py-1.5 rounded-lg" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}>
-                          {f}
-                        </span>
-                      ))}
+              {(property.description || (property.features?.length ?? 0) > 0) && (
+                <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}>
+                  {property.description && (
+                    <>
+                      <h2 className="font-bold text-white mb-3">Description</h2>
+                      <p className="text-white/60 text-sm leading-relaxed whitespace-pre-line">
+                        {property.description}
+                      </p>
+                    </>
+                  )}
+                  {(property.features?.length ?? 0) > 0 && (
+                    <div className={property.description ? "mt-4 pt-4 border-t border-white/8" : ""}>
+                      <h3 className="font-semibold text-white text-sm mb-3">Équipements</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {(property.features ?? []).map((f: string) => (
+                          <span key={f} className="text-white/60 text-xs font-medium px-3 py-1.5 rounded-lg" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}>
+                            {f}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
 
               {/* Virtual tour */}
               {vtRooms.length > 0 && <VirtualTourWrapper rooms={vtRooms} />}

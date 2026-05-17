@@ -10,11 +10,12 @@ export async function fetchProperties(): Promise<Property[]> {
     .from("properties")
     .select("*, property_images(*)")
     .eq("status", "active")
+    .not("title", "is", null)
     .order("created_at", { ascending: false });
 
   if (error || !data || data.length === 0) return MOCK_PROPERTIES;
 
-  return data as Property[];
+  return (data as Property[]).filter((p) => p.title && p.title.trim().length >= 5);
 }
 
 export async function fetchPropertyById(id: string): Promise<Property | undefined> {

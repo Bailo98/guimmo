@@ -39,11 +39,11 @@ const QUARTIER_CHIPS = [
 ];
 
 const BUDGET_CHIPS = [
-  { id: "", label: "Tous budgets", min: 0, max: Infinity },
-  { id: "lt1m", label: "< 1 M", min: 0, max: 1_000_000 },
-  { id: "1to2m", label: "1–2 M", min: 1_000_000, max: 2_000_000 },
-  { id: "2to5m", label: "2–5 M", min: 2_000_000, max: 5_000_000 },
-  { id: "gt5m", label: "> 5 M", min: 5_000_000, max: Infinity },
+  { label: "Tous budgets", min: 0, max: Infinity },
+  { label: "< 1 000 000", min: 0, max: 1_000_000 },
+  { label: "1M–2M", min: 1_000_000, max: 2_000_000 },
+  { label: "2M–5M", min: 2_000_000, max: 5_000_000 },
+  { label: "> 5M", min: 5_000_000, max: Infinity },
 ];
 
 function TypeChip({ active, onClick, children }: {
@@ -102,7 +102,8 @@ function AnnoncesContent() {
 
   const neighborhood = searchParams.get("neighborhood") ?? "";
   const type = searchParams.get("type") ?? "";
-  const budget = searchParams.get("budget") ?? "";
+  const priceMin = Number(searchParams.get("price_min") ?? 0);
+  const priceMax = Number(searchParams.get("price_max") ?? Infinity);
   const page = Number(searchParams.get("page") ?? "1");
 
   function handleVoiceResult(text: string) {
@@ -171,14 +172,22 @@ function AnnoncesContent() {
     router.replace(`?${params.toString()}`, { scroll: false });
   }
 
+  function setPriceRange(min: number, max: number) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (min > 0) params.set("price_min", String(min)); else params.delete("price_min");
+    if (max < Infinity) params.set("price_max", String(max)); else params.delete("price_max");
+    params.delete("page");
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }
+
   function setPage(p: number) {
     const params = new URLSearchParams(searchParams.toString());
     if (p === 1) params.delete("page"); else params.set("page", String(p));
     router.replace(`?${params.toString()}`, { scroll: true });
   }
 
-  const budgetChip = BUDGET_CHIPS.find((b) => b.id === budget) ?? BUDGET_CHIPS[0];
-  const hasFilters = !!neighborhood || !!type || !!budget;
+  const hasPriceFilter = priceMin > 0 || priceMax < Infinity;
+  const hasFilters = !!neighborhood || !!type || hasPriceFilter;
 
   function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
     const R = 6371;
@@ -190,9 +199,11 @@ function AnnoncesContent() {
 
   const filtered = useMemo(() => {
     let list = allProperties.filter((p) => {
+      if (!p.title || p.title.trim().length < 5) return false;
       if (neighborhood && p.neighborhood !== neighborhood) return false;
       if (type && p.type !== type) return false;
-      if (budget && (p.price < budgetChip.min || p.price > budgetChip.max)) return false;
+      if (priceMin > 0 && p.price < priceMin) return false;
+      if (priceMax < Infinity && p.price > priceMax) return false;
       return true;
     });
     if (nearbyCoords) {
@@ -204,7 +215,7 @@ function AnnoncesContent() {
         );
     }
     return list;
-  }, [allProperties, neighborhood, type, budget, budgetChip, nearbyCoords]);
+  }, [allProperties, neighborhood, type, priceMin, priceMax, nearbyCoords]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(Math.max(1, page), totalPages);
@@ -216,7 +227,7 @@ function AnnoncesContent() {
     (n) => n === 1 || n === totalPages || Math.abs(n - safePage) <= 1
   );
 
-  const activeFilterCount = [neighborhood, type, budget].filter(Boolean).length;
+  const activeFilterCount = [neighborhood, type, hasPriceFilter ? "price" : ""].filter(Boolean).length;
 
   return (
     <div className="bg-[#111a14] min-h-screen">
@@ -307,11 +318,17 @@ function AnnoncesContent() {
             <div>
               <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Budget</p>
               <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-                {BUDGET_CHIPS.map((c) => (
-                  <SmallChip key={c.id} active={budget === c.id} onClick={() => setParam("budget", c.id)}>
-                    {c.label}
-                  </SmallChip>
-                ))}
+                {BUDGET_CHIPS.map((c) => {
+                  const isAll = c.min === 0 && c.max === Infinity;
+                  const active = isAll
+                    ? !hasPriceFilter
+                    : priceMin === c.min && priceMax === c.max;
+                  return (
+                    <SmallChip key={c.label} active={active} onClick={() => setPriceRange(c.min, c.max)}>
+                      {c.label}
+                    </SmallChip>
+                  );
+                })}
               </div>
             </div>
           </div>
