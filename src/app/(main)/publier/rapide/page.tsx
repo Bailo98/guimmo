@@ -147,7 +147,12 @@ export default function PublierRapidePage() {
         .select("id")
         .single();
 
-      if (insertErr || !prop) throw new Error("insert failed");
+      if (insertErr || !prop) {
+        const msg = insertErr?.message ?? "Erreur insertion — vérifiez votre connexion";
+        toast(`Erreur publication : ${msg}`, "error");
+        setSubmitting(false);
+        return;
+      }
 
       if (uploadedUrls.length > 0) {
         await supabase.from("property_images").insert(

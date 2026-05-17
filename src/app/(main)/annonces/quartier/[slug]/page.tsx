@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!hood) return { title: "Quartier introuvable — BienLoger" };
   const name = hood.name;
   return {
-    title: `Appartements et maisons à louer à ${name} — BienLoger`,
+    title: `Appartements et maisons à louer à ${name}`,
     description: `Trouvez un appartement, une maison ou un studio à louer à ${name}, Conakry. Annonces vérifiées, contact direct avec les propriétaires.`,
     alternates: {
       canonical: `/annonces/quartier/${slug}`,

@@ -102,6 +102,7 @@ function AnnoncesContent() {
 
   const neighborhood = searchParams.get("neighborhood") ?? "";
   const type = searchParams.get("type") ?? "";
+  const tx = searchParams.get("tx") ?? "";
   const priceMin = Number(searchParams.get("price_min") ?? 0);
   const priceMax = Number(searchParams.get("price_max") ?? Infinity);
   const page = Number(searchParams.get("page") ?? "1");
@@ -187,7 +188,7 @@ function AnnoncesContent() {
   }
 
   const hasPriceFilter = priceMin > 0 || priceMax < Infinity;
-  const hasFilters = !!neighborhood || !!type || hasPriceFilter;
+  const hasFilters = !!neighborhood || !!type || !!tx || hasPriceFilter;
 
   function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
     const R = 6371;
@@ -202,6 +203,7 @@ function AnnoncesContent() {
       if (!p.title || p.title.trim().length < 5) return false;
       if (neighborhood && p.neighborhood !== neighborhood) return false;
       if (type && p.type !== type) return false;
+      if (tx && p.transaction_type !== tx) return false;
       if (priceMin > 0 && p.price < priceMin) return false;
       if (priceMax < Infinity && p.price > priceMax) return false;
       return true;
@@ -215,7 +217,7 @@ function AnnoncesContent() {
         );
     }
     return list;
-  }, [allProperties, neighborhood, type, priceMin, priceMax, nearbyCoords]);
+  }, [allProperties, neighborhood, type, tx, priceMin, priceMax, nearbyCoords]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(Math.max(1, page), totalPages);
@@ -227,7 +229,7 @@ function AnnoncesContent() {
     (n) => n === 1 || n === totalPages || Math.abs(n - safePage) <= 1
   );
 
-  const activeFilterCount = [neighborhood, type, hasPriceFilter ? "price" : ""].filter(Boolean).length;
+  const activeFilterCount = [neighborhood, type, tx, hasPriceFilter ? "price" : ""].filter(Boolean).length;
 
   return (
     <div className="bg-[#111a14] min-h-screen">
@@ -305,6 +307,16 @@ function AnnoncesContent() {
         {/* Neighborhood + budget — collapsible */}
         {filtersOpen && (
           <div className="space-y-2 pt-1 border-t border-white/8">
+            <div>
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Transaction</p>
+              <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+                {[{ id: "", label: "Toutes" }, { id: "rent", label: "Location" }, { id: "sale", label: "Achat" }].map((c) => (
+                  <SmallChip key={c.id} active={tx === c.id} onClick={() => setParam("tx", c.id)}>
+                    {c.label}
+                  </SmallChip>
+                ))}
+              </div>
+            </div>
             <div>
               <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Quartier</p>
               <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>

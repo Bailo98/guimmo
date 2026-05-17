@@ -59,6 +59,7 @@ export function HeroSearch() {
 
   function handleSearch() {
     const params = new URLSearchParams();
+    params.set("tx", tab);
     if (neighborhood) params.set("neighborhood", neighborhood);
     if (type)         params.set("type", type);
     router.push(`/annonces?${params.toString()}`);

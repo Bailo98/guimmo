@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ogDescription = (data.description ?? `${neighborhoodLabel} — ${priceFormatted} GNF`).slice(0, 160);
   const image = ((data as { property_images?: { url: string }[] }).property_images ?? [])[0]?.url;
   return {
-    title: `${data.title} — BienLoger`,
+    title: data.title,
     description: ogDescription,
     openGraph: {
       title: `${data.title} — BienLoger`,
