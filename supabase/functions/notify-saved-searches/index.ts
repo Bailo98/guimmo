@@ -1,12 +1,25 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { sendWhatsApp } from "../_shared/whatsapp.ts";
+import { sendEmail, emailSearchAlert } from "../_shared/notify.ts";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
 );
-const WA_APIKEY = Deno.env.get("CALLMEBOT_API_KEY") ?? "";
 const APP_URL = Deno.env.get("APP_URL") ?? "https://guimmo-orcin.vercel.app";
+
+async function getEmail(userId: string): Promise<string | null> {
+  const { data } = await supabase.auth.admin.getUserById(userId);
+  return data.user?.email ?? null;
+}
+
+function buildAlertLabel(filters: Record<string, unknown>): string {
+  const parts: string[] = [];
+  if (filters.type) parts.push(String(filters.type));
+  if (filters.transaction_type) parts.push(String(filters.transaction_type));
+  if (filters.wilaya) parts.push(String(filters.wilaya));
+  if (filters.max_price) parts.push(`≤ ${Number(filters.max_price).toLocaleString("fr-FR")} GNF`);
+  return parts.join(" · ") || "Recherche sauvegardée";
+}
 
 Deno.serve(async () => {
   // Listings published in the last hour
@@ -26,12 +39,13 @@ Deno.serve(async () => {
 
   const { data: searches } = await supabase
     .from("saved_searches")
-    .select("id, user_id, filters, profiles(full_name, phone)");
+    .select("id, user_id, filters, profiles(full_name)");
 
   let notified = 0;
   for (const search of searches ?? []) {
     const profile = Array.isArray(search.profiles) ? search.profiles[0] : search.profiles;
-    if (!profile?.phone || !WA_APIKEY) continue;
+    const email = await getEmail(search.user_id);
+    if (!email) continue;
 
     const filters = search.filters as Record<string, unknown>;
     const matches = newListings.filter((p) => {
@@ -56,28 +70,20 @@ Deno.serve(async () => {
     const toNotify = matches.filter((m) => !sentIds.has(m.id));
     if (!toNotify.length) continue;
 
-    const listingLines = toNotify
-      .slice(0, 3)
-      .map((p) => `• ${p.title} — ${p.price.toLocaleString("fr-FR")} GNF`)
-      .join("\n");
-    const msg =
-      `🔔 *BienLoger* — ${toNotify.length} nouvelle(s) annonce(s) correspondent à votre recherche :\n` +
-      `${listingLines}\n` +
-      (toNotify.length > 3 ? `et ${toNotify.length - 3} autre(s)…\n` : "") +
-      `Voir : ${APP_URL}/annonces`;
+    const userName = profile?.full_name?.split(" ")[0] ?? "cher utilisateur";
+    const alertLabel = buildAlertLabel(filters);
+    const tpl = emailSearchAlert(userName, alertLabel, toNotify, APP_URL);
+    await sendEmail(email, tpl.subject, tpl.html);
+    notified++;
 
-    const sent = await sendWhatsApp(profile.phone, msg, WA_APIKEY);
-    if (sent) {
-      notified++;
-      // Record sent notifications to avoid duplicates
-      await supabase.from("notifications_sent").insert(
-        toNotify.map((p) => ({
-          saved_search_id: search.id,
-          user_id: search.user_id,
-          property_id: p.id,
-        })),
-      );
-    }
+    // Record sent notifications to avoid duplicates
+    await supabase.from("notifications_sent").insert(
+      toNotify.map((p) => ({
+        saved_search_id: search.id,
+        user_id: search.user_id,
+        property_id: p.id,
+      })),
+    );
   }
 
   console.log(`[notify-saved-searches] notified=${notified}`);
