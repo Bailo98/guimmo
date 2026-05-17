@@ -1,9 +1,9 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 
 const SIZES = { sm: 32, md: 48, lg: 80, xl: 120 } as const;
 type Size = keyof typeof SIZES;
 
-const PALETTE = ["#c8901e", "#6ec97a", "#60a5fa", "#a78bfa", "#2dd4bf"];
+const PALETTE = ["#f97316", "#22c55e", "#60a5fa", "#a78bfa", "#2dd4bf"];
 
 function nameColor(name: string): string {
   let h = 0;

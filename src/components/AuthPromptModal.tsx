@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 
@@ -30,7 +30,7 @@ export function AuthPromptModal({ onClose, redirectUrl, action }: Props) {
     >
       <div
         className="relative w-full max-w-[360px] rounded-[20px] p-8 text-center"
-        style={{ background: "#1a2e1e", border: "1px solid rgba(240,230,204,0.12)" }}
+        style={{ background: "#0f2210", border: "1px solid rgba(134,239,172,0.12)" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close */}
@@ -46,14 +46,14 @@ export function AuthPromptModal({ onClose, redirectUrl, action }: Props) {
         <div className="text-4xl mb-4">🏠</div>
 
         {/* Title */}
-        <h2 className="font-black text-[20px] mb-2" style={{ color: "#f7f2e6", fontFamily: "Georgia, serif" }}>
+        <h2 className="font-black text-[20px] mb-2" style={{ color: "#f0fdf4", fontFamily: "Georgia, serif" }}>
           Créez votre compte gratuit
         </h2>
 
         {/* Subtitle */}
         <p className="text-sm mb-6 leading-relaxed" style={{ color: "rgba(240,230,204,0.60)" }}>
           Pour{" "}
-          <span style={{ color: "#daa84a" }}>{action ?? "contacter ce propriétaire"}</span>
+          <span style={{ color: "#f97316" }}>{action ?? "contacter ce propriétaire"}</span>
           , créez votre compte BienLoger. C&apos;est gratuit et rapide.
         </p>
 
@@ -61,7 +61,7 @@ export function AuthPromptModal({ onClose, redirectUrl, action }: Props) {
         <button
           onClick={goSignup}
           className="w-full flex items-center justify-center gap-2 font-bold text-white rounded-2xl mb-3 transition-colors"
-          style={{ background: "#c8901e", height: 52, fontSize: 15 }}
+          style={{ background: "#f97316", height: 52, fontSize: 15 }}
         >
           Créer mon compte →
         </button>

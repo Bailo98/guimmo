@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+﻿import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { MapPin, ArrowLeft } from "lucide-react";
@@ -94,7 +94,7 @@ export default async function QuartierPage({ params }: Props) {
 
       {/* Hero */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-[#daa84a] text-sm font-semibold mb-2">
+        <div className="flex items-center gap-2 text-[#f97316] text-sm font-semibold mb-2">
           <MapPin className="w-4 h-4" />
           <span>{hood?.commune ?? "Conakry"}, Guinée</span>
         </div>
@@ -113,7 +113,7 @@ export default async function QuartierPage({ params }: Props) {
           </div>
           {avgFormatted && (
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
-              style={{ background: "rgba(200,144,30,0.12)", border: "1px solid rgba(200,144,30,0.25)", color: "#daa84a" }}>
+              style={{ background: "rgba(249,115,22,0.12)", border: "1px solid rgba(249,115,22,0.25)", color: "#f97316" }}>
               Prix moyen : {avgFormatted} GNF
             </div>
           )}
@@ -129,7 +129,7 @@ export default async function QuartierPage({ params }: Props) {
           <p className="text-white/40 text-sm mb-6">Revenez bientôt ou explorez d'autres quartiers.</p>
           <Link
             href="/annonces"
-            className="inline-flex items-center gap-2 bg-[#c8901e] hover:bg-[#b87c18] text-white font-bold px-6 py-3 rounded-xl transition-colors"
+            className="inline-flex items-center gap-2 bg-[#f97316] hover:bg-[#ea6c0a] text-white font-bold px-6 py-3 rounded-xl transition-colors"
           >
             Voir toutes les annonces
           </Link>

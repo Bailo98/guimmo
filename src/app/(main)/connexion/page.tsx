@@ -92,7 +92,7 @@ function ConnexionForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111a14] flex flex-col">
+    <div className="min-h-screen bg-[#0a1a0a] flex flex-col">
       <div className="p-4 flex items-center justify-between">
         <Logo size="lg" />
         <Link href="/" className="text-sm text-[rgba(240,230,204,0.50)] hover:text-white transition-colors">
@@ -118,7 +118,7 @@ function ConnexionForm() {
                 onClick={() => switchMode("phone")}
                 className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
                   mode === "phone"
-                    ? "bg-[#c8901e] text-white"
+                    ? "bg-[#f97316] text-white"
                     : "text-white/50 hover:text-white"
                 }`}
                 style={mode !== "phone" ? { background: "rgba(255,255,255,0.05)" } : {}}
@@ -130,7 +130,7 @@ function ConnexionForm() {
                 onClick={() => switchMode("email")}
                 className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
                   mode === "email"
-                    ? "bg-[#c8901e] text-white"
+                    ? "bg-[#f97316] text-white"
                     : "text-white/50 hover:text-white"
                 }`}
                 style={mode !== "email" ? { background: "rgba(255,255,255,0.05)" } : {}}
@@ -142,7 +142,7 @@ function ConnexionForm() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === "phone" ? (
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
+                  <label htmlFor="phone" className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
                     Numéro de téléphone
                   </label>
                   <div className="relative">
@@ -154,7 +154,7 @@ function ConnexionForm() {
                       placeholder="+224 628 222 510 ou +1 438 000 0000"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                       required
                       autoComplete="tel"
                     />
@@ -162,7 +162,7 @@ function ConnexionForm() {
                 </div>
               ) : (
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
+                  <label htmlFor="email" className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
                     Adresse email
                   </label>
                   <div className="relative">
@@ -174,7 +174,7 @@ function ConnexionForm() {
                       placeholder="vous@email.com"
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                       required
                       autoComplete="email"
                     />
@@ -183,7 +183,7 @@ function ConnexionForm() {
               )}
 
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
+                <label htmlFor="password" className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
                   Mot de passe
                 </label>
                 <div className="relative">
@@ -195,7 +195,7 @@ function ConnexionForm() {
                     placeholder="••••••••"
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                    className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                     required
                     autoComplete="current-password"
                   />
@@ -210,7 +210,7 @@ function ConnexionForm() {
               </div>
 
               <div className="flex justify-end">
-                <Link href="/mot-de-passe-oublie" className="text-xs text-[#daa84a] hover:underline">
+                <Link href="/mot-de-passe-oublie" className="text-xs text-[#f97316] hover:underline">
                   Mot de passe oublié ?
                 </Link>
               </div>
@@ -254,7 +254,7 @@ function ConnexionForm() {
 
             <p className="text-center text-sm text-[rgba(240,230,204,0.50)] mt-6">
               Pas encore de compte ?{" "}
-              <Link href="/inscription" className="text-[#daa84a] font-semibold hover:underline">
+              <Link href="/inscription" className="text-[#f97316] font-semibold hover:underline">
                 S&apos;inscrire
               </Link>
             </p>
@@ -267,7 +267,7 @@ function ConnexionForm() {
 
 export default function ConnexionPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#111a14]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0a1a0a]" />}>
       <ConnexionForm />
     </Suspense>
   );

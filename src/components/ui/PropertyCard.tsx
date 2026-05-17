@@ -95,9 +95,9 @@ export function PropertyCard({ property, variant = "default", className, index =
     <div
       className={cn("group flex flex-col overflow-hidden", className)}
       style={{
-        background: "#0d1610",
+        background: "#0a1a0a",
         borderRadius: 16,
-        border: "1px solid rgba(240,230,204,0.07)",
+        border: "1px solid rgba(134,239,172,0.07)",
         cursor: "pointer",
         transition: "transform 0.2s ease, box-shadow 0.2s ease",
       }}
@@ -132,13 +132,13 @@ export function PropertyCard({ property, variant = "default", className, index =
         ) : (
           <div
             className="w-full h-full flex flex-col items-center justify-center gap-2"
-            style={{ background: "linear-gradient(135deg, #1a2e1e, #0d1610)" }}
+            style={{ background: "linear-gradient(135deg, #0f2210, #0a1a0a)" }}
           >
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(240,230,204,0.2)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(134,239,172,0.2)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
               <polyline points="9,22 9,12 15,12 15,22" />
             </svg>
-            <span style={{ color: "rgba(240,230,204,0.3)", fontSize: 12 }}>Aucune photo</span>
+            <span style={{ color: "rgba(134,239,172,0.3)", fontSize: 12 }}>Aucune photo</span>
           </div>
         )}
 
@@ -150,21 +150,21 @@ export function PropertyCard({ property, variant = "default", className, index =
 
         {/* Top-left badges */}
         <div className="absolute flex items-center gap-1.5 flex-wrap" style={{ top: 10, left: 10, maxWidth: "calc(100% - 56px)" }}>
-          <span style={{ background: "rgba(0,0,0,0.6)", color: "#f7f2e6", fontSize: 11, padding: "4px 10px", borderRadius: 999, backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)", fontWeight: 500, whiteSpace: "nowrap" }}>
+          <span style={{ background: "rgba(0,0,0,0.6)", color: "#f0fdf4", fontSize: 11, padding: "4px 10px", borderRadius: 999, backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)", fontWeight: 500, whiteSpace: "nowrap" }}>
             {TYPE_LABELS[property.type] ?? property.type}
           </span>
           {property.is_verified && (
-            <span style={{ background: "rgba(200,144,30,0.85)", color: "white", fontSize: 10, padding: "4px 8px", borderRadius: 999, fontWeight: 600, whiteSpace: "nowrap" }}>
+            <span style={{ background: "rgba(249,115,22,0.85)", color: "white", fontSize: 10, padding: "4px 8px", borderRadius: 999, fontWeight: 600, whiteSpace: "nowrap" }}>
               ✓ Vérifié
             </span>
           )}
           {property.is_boosted && (
-            <span style={{ background: "rgba(200,144,30,0.85)", color: "white", fontSize: 10, padding: "4px 8px", borderRadius: 999, fontWeight: 600, whiteSpace: "nowrap" }}>
+            <span style={{ background: "rgba(249,115,22,0.85)", color: "white", fontSize: 10, padding: "4px 8px", borderRadius: 999, fontWeight: 600, whiteSpace: "nowrap" }}>
               ★ Pro
             </span>
           )}
           {isNew && !property.is_boosted && (
-            <span style={{ background: "rgba(0,0,0,0.55)", color: "#f7f2e6", fontSize: 10, padding: "4px 8px", borderRadius: 999, backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)", fontWeight: 500, whiteSpace: "nowrap" }}>
+            <span style={{ background: "rgba(0,0,0,0.55)", color: "#f0fdf4", fontSize: 10, padding: "4px 8px", borderRadius: 999, backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)", fontWeight: 500, whiteSpace: "nowrap" }}>
               Nouveau
             </span>
           )}
@@ -186,7 +186,7 @@ export function PropertyCard({ property, variant = "default", className, index =
             background: "rgba(0,0,0,0.55)", border: "none", borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
             cursor: "pointer",
-            color: fav ? "#ef4444" : "rgba(240,230,204,0.7)",
+            color: fav ? "#ef4444" : "rgba(187,247,208,0.7)",
           }}
         >
           <Heart style={{ width: 16, height: 16, fill: fav ? "#ef4444" : "none", stroke: "currentColor" }} />
@@ -195,7 +195,7 @@ export function PropertyCard({ property, variant = "default", className, index =
         {/* Video badge */}
         {property.video_url && (
           <div style={{ position: "absolute", bottom: 70, left: 10 }}>
-            <span style={{ background: "rgba(200,144,30,0.85)", color: "white", fontSize: 10, padding: "3px 8px", borderRadius: 999, fontWeight: 500 }}>
+            <span style={{ background: "rgba(249,115,22,0.85)", color: "white", fontSize: 10, padding: "3px 8px", borderRadius: 999, fontWeight: 500 }}>
               Vidéo
             </span>
           </div>
@@ -204,23 +204,23 @@ export function PropertyCard({ property, variant = "default", className, index =
         {/* Info overlay on photo */}
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "12px 14px" }}>
           {/* Price */}
-          <div style={{ fontFamily: "var(--font-playfair, 'Playfair Display', serif)", fontSize: 18, fontWeight: 700, color: "#daa84a", margin: "0 0 3px", display: "flex", alignItems: "baseline", gap: 6 }}>
+          <div style={{ fontFamily: "var(--font-playfair, 'Playfair Display', serif)", fontSize: 18, fontWeight: 700, color: "#f97316", margin: "0 0 3px", display: "flex", alignItems: "baseline", gap: 6 }}>
             {formatPrice(property.price)}
             {property.price_period === "month" && (
-              <span style={{ fontSize: 11, fontWeight: 400, color: "rgba(240,230,204,0.6)" }}>/mois</span>
+              <span style={{ fontSize: 11, fontWeight: 400, color: "rgba(187,247,208,0.6)" }}>/mois</span>
             )}
             {property.transaction_type === "sale" && property.price_period !== "month" && (
-              <span style={{ fontSize: 11, fontWeight: 400, color: "rgba(240,230,204,0.6)" }}>/vente</span>
+              <span style={{ fontSize: 11, fontWeight: 400, color: "rgba(187,247,208,0.6)" }}>/vente</span>
             )}
           </div>
 
           {/* Title */}
-          <p style={{ fontSize: 14, fontWeight: 500, color: "#f7f2e6", margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          <p style={{ fontSize: 14, fontWeight: 500, color: "#f0fdf4", margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {property.title}
           </p>
 
           {/* Neighborhood */}
-          <div style={{ fontSize: 11, color: "rgba(240,230,204,0.65)", display: "flex", alignItems: "center", gap: 3, margin: "0 0 6px" }}>
+          <div style={{ fontSize: 11, color: "rgba(187,247,208,0.65)", display: "flex", alignItems: "center", gap: 3, margin: "0 0 6px" }}>
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}>
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
               <circle cx="12" cy="10" r="3" />
@@ -231,22 +231,22 @@ export function PropertyCard({ property, variant = "default", className, index =
           {/* Equipment + rooms badges */}
           <div style={{ display: "flex", gap: 5, alignItems: "center", flexWrap: "wrap" }}>
             {property.water_source && property.water_source !== "none" && (
-              <span style={{ background: "rgba(240,230,204,0.1)", color: "rgba(240,230,204,0.75)", fontSize: 9, padding: "2px 7px", borderRadius: 999 }}>
+              <span style={{ background: "rgba(134,239,172,0.1)", color: "rgba(187,247,208,0.75)", fontSize: 9, padding: "2px 7px", borderRadius: 999 }}>
                 💧 {property.water_source === "robinet" ? "Robinet" : property.water_source === "forage" ? "Forage" : "Citerne"}
               </span>
             )}
             {property.electricity && property.electricity !== "none" && (
-              <span style={{ background: "rgba(240,230,204,0.1)", color: "rgba(240,230,204,0.75)", fontSize: 9, padding: "2px 7px", borderRadius: 999 }}>
+              <span style={{ background: "rgba(134,239,172,0.1)", color: "rgba(187,247,208,0.75)", fontSize: 9, padding: "2px 7px", borderRadius: 999 }}>
                 ⚡ {property.electricity === "edg" ? "EDG" : property.electricity === "solaire" ? "Solaire" : "Groupe"}
               </span>
             )}
             {property.internet === "wifi" && (
-              <span style={{ background: "rgba(240,230,204,0.1)", color: "rgba(240,230,204,0.75)", fontSize: 9, padding: "2px 7px", borderRadius: 999 }}>
+              <span style={{ background: "rgba(134,239,172,0.1)", color: "rgba(187,247,208,0.75)", fontSize: 9, padding: "2px 7px", borderRadius: 999 }}>
                 📶 WiFi
               </span>
             )}
             {(property.rooms ?? 0) > 0 && (
-              <span style={{ background: "rgba(240,230,204,0.1)", color: "rgba(240,230,204,0.75)", fontSize: 9, padding: "2px 7px", borderRadius: 999 }}>
+              <span style={{ background: "rgba(134,239,172,0.1)", color: "rgba(187,247,208,0.75)", fontSize: 9, padding: "2px 7px", borderRadius: 999 }}>
                 {property.rooms} ch.
               </span>
             )}
@@ -255,7 +255,7 @@ export function PropertyCard({ property, variant = "default", className, index =
       </Link>
 
       {/* ── Score bar ── */}
-      <div style={{ padding: "6px 12px 0", background: "#0d1610" }}>
+      <div style={{ padding: "6px 12px 0", background: "#0a1a0a" }}>
         <ListingScore
           images={(property.property_images ?? []).length}
           description={property.description}
@@ -267,7 +267,7 @@ export function PropertyCard({ property, variant = "default", className, index =
       </div>
 
       {/* ── Button section ── */}
-      <div style={{ padding: "8px 12px 10px", background: "#0d1610" }}>
+      <div style={{ padding: "8px 12px 10px", background: "#0a1a0a" }}>
         {phone ? (
           <button
             type="button"

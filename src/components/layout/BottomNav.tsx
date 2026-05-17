@@ -73,14 +73,14 @@ export function BottomNav() {
     return (
       <Link href={href} className="flex flex-col items-center justify-center gap-0.5 w-14 h-14">
         <div className="relative">
-          <Icon className={cn("w-[22px] h-[22px]", active ? "text-[#daa84a]" : "text-white/40")} />
+          <Icon className={cn("w-[22px] h-[22px]", active ? "text-[#f97316]" : "text-white/40")} />
           {hasBadge && (
-            <span className="absolute -top-1 -right-1.5 min-w-[16px] h-4 px-1 bg-[#c8901e] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
+            <span className="absolute -top-1 -right-1.5 min-w-[16px] h-4 px-1 bg-[#f97316] text-white text-[8px] font-bold rounded-full flex items-center justify-center">
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
         </div>
-        <span className={cn("text-[10px] font-semibold", active ? "text-[#daa84a]" : "text-white/40")}>
+        <span className={cn("text-[10px] font-semibold", active ? "text-[#f97316]" : "text-white/40")}>
           {label}
         </span>
       </Link>
@@ -99,10 +99,10 @@ export function BottomNav() {
 
         {/* FAB — Publication rapide */}
         <Link href="/publier/rapide" className="flex flex-col items-center justify-center -mt-6">
-          <span className="w-14 h-14 rounded-full flex items-center justify-center active:scale-95 transition-transform" style={{ background: "#c8901e", border: "1px solid rgba(200,144,30,0.50)", boxShadow: "0 4px 20px rgba(200,144,30,0.40)" }}>
+          <span className="w-14 h-14 rounded-full flex items-center justify-center active:scale-95 transition-transform" style={{ background: "#f97316", border: "1px solid rgba(249,115,22,0.50)", boxShadow: "0 4px 20px rgba(249,115,22,0.40)" }}>
             <Plus className="w-7 h-7 text-white" strokeWidth={2.5} />
           </span>
-          <span className="text-[9px] font-bold mt-1" style={{ color: "#daa84a" }}>Publier</span>
+          <span className="text-[9px] font-bold mt-1" style={{ color: "#f97316" }}>Publier</span>
         </Link>
 
         {RIGHT_NAV.map((item) => (

@@ -203,7 +203,7 @@ export default function PublierRapidePage() {
         <button
           onClick={() => router.push(`/annonces/${published.id}`)}
           className="w-full flex items-center justify-center gap-2 rounded-2xl font-black text-white mb-3"
-          style={{ minHeight: 52, background: "#c8901e" }}
+          style={{ minHeight: 52, background: "#f97316" }}
         >
           <CheckCircle2 className="w-5 h-5" /> Voir mon annonce
         </button>
@@ -222,7 +222,7 @@ export default function PublierRapidePage() {
       {/* Header */}
       <div className="mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-3"
-          style={{ background: "rgba(200,144,30,0.15)", color: "var(--BienLoger-amber-light)", border: "1px solid rgba(200,144,30,0.25)" }}>
+          style={{ background: "rgba(249,115,22,0.15)", color: "var(--BienLoger-amber-light)", border: "1px solid rgba(249,115,22,0.25)" }}>
           ⚡ Publication rapide
         </div>
         <h1 className="text-2xl font-black text-white mb-1">Publie ton bien</h1>
@@ -278,9 +278,9 @@ export default function PublierRapidePage() {
                 className={cn("flex flex-col items-center gap-1 py-3 rounded-xl border-2 font-semibold text-xs transition-all")}
                 style={{
                   minHeight: 60,
-                  borderColor: form.type === t.id ? "#c8901e" : "rgba(255,255,255,0.12)",
-                  background: form.type === t.id ? "rgba(200,144,30,0.12)" : "rgba(255,255,255,0.04)",
-                  color: form.type === t.id ? "#daa84a" : "rgba(255,255,255,0.60)",
+                  borderColor: form.type === t.id ? "#f97316" : "rgba(255,255,255,0.12)",
+                  background: form.type === t.id ? "rgba(249,115,22,0.12)" : "rgba(255,255,255,0.04)",
+                  color: form.type === t.id ? "#f97316" : "rgba(255,255,255,0.60)",
                 }}>
                 <span className="text-xl">{t.emoji}</span>
                 {t.label}
@@ -298,9 +298,9 @@ export default function PublierRapidePage() {
                 className="py-4 rounded-xl border-2 font-bold text-sm transition-all"
                 style={{
                   minHeight: 52,
-                  borderColor: form.txType === t ? "#c8901e" : "rgba(255,255,255,0.12)",
-                  background: form.txType === t ? "rgba(200,144,30,0.12)" : "rgba(255,255,255,0.04)",
-                  color: form.txType === t ? "#daa84a" : "rgba(255,255,255,0.50)",
+                  borderColor: form.txType === t ? "#f97316" : "rgba(255,255,255,0.12)",
+                  background: form.txType === t ? "rgba(249,115,22,0.12)" : "rgba(255,255,255,0.04)",
+                  color: form.txType === t ? "#f97316" : "rgba(255,255,255,0.50)",
                 }}>
                 {t === "rent" ? "🔑 À Louer" : "💰 À Vendre"}
               </button>
@@ -320,7 +320,7 @@ export default function PublierRapidePage() {
             className="w-full rounded-xl px-4 py-3 text-white font-semibold focus:outline-none"
             style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16, minHeight: 52 }}
           />
-          {priceLabel && <p className="text-[#daa84a] font-bold text-sm mt-1.5 ml-1">{priceLabel}{form.txType === "rent" ? "/mois" : ""}</p>}
+          {priceLabel && <p className="text-[#f97316] font-bold text-sm mt-1.5 ml-1">{priceLabel}{form.txType === "rent" ? "/mois" : ""}</p>}
         </div>
 
         {/* Quartier */}
@@ -367,7 +367,7 @@ export default function PublierRapidePage() {
           className="w-full flex items-center justify-center gap-2 rounded-2xl font-black text-white transition-all"
           style={{
             minHeight: 56, fontSize: 15,
-            background: canSubmit && !submitting ? "#c8901e" : "rgba(255,255,255,0.08)",
+            background: canSubmit && !submitting ? "#f97316" : "rgba(255,255,255,0.08)",
             color: canSubmit && !submitting ? "#fff" : "rgba(255,255,255,0.30)",
             boxShadow: canSubmit && !submitting ? "0 8px 32px rgba(200,144,30,0.35)" : "none",
           }}
@@ -383,7 +383,7 @@ export default function PublierRapidePage() {
 
         <p className="text-center text-white/30 text-xs">
           En publiant, vous acceptez nos{" "}
-          <a href="/cgv" className="text-[#daa84a] hover:underline">conditions d&apos;utilisation</a>.
+          <a href="/cgv" className="text-[#f97316] hover:underline">conditions d&apos;utilisation</a>.
           Publication gratuite, visible immédiatement.
         </p>
 

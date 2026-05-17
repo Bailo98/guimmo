@@ -38,7 +38,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
                 { label: "Agents BienLoger", href: "/agents" },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm transition-colors hover:text-[#f7f2e6]" style={{ color: "var(--BienLoger-cream-dim)" }}>
+                  <Link href={l.href} className="text-sm transition-colors hover:text-[#f0fdf4]" style={{ color: "var(--BienLoger-cream-dim)" }}>
                     {l.label}
                   </Link>
                 </li>
@@ -58,7 +58,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
                 { label: "Taouyah", href: "/annonces?neighborhood=taouyah" },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm transition-colors hover:text-[#f7f2e6]" style={{ color: "var(--BienLoger-cream-dim)" }}>
+                  <Link href={l.href} className="text-sm transition-colors hover:text-[#f0fdf4]" style={{ color: "var(--BienLoger-cream-dim)" }}>
                     {l.label}
                   </Link>
                 </li>
@@ -78,7 +78,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
                 { label: "Mentions légales", href: "/mentions-legales" },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm transition-colors hover:text-[#f7f2e6]" style={{ color: "var(--BienLoger-cream-dim)" }}>
+                  <Link href={l.href} className="text-sm transition-colors hover:text-[#f0fdf4]" style={{ color: "var(--BienLoger-cream-dim)" }}>
                     {l.label}
                   </Link>
                 </li>

@@ -62,7 +62,7 @@ export default function TarifsPage() {
         {/* Hero free card */}
         <div
           className="rounded-3xl p-8 md:p-12 text-center relative overflow-hidden"
-          style={{ background: "linear-gradient(135deg, rgba(200,144,30,0.18) 0%, rgba(110,201,122,0.12) 100%)", border: "1px solid rgba(200,144,30,0.30)" }}
+          style={{ background: "linear-gradient(135deg, rgba(200,144,30,0.18) 0%, rgba(34,197,94,0.12) 100%)", border: "1px solid rgba(200,144,30,0.30)" }}
         >
           <div className="text-6xl mb-4">🎉</div>
           <div className="inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4" style={{ background: "rgba(200,144,30,0.20)", border: "1px solid rgba(200,144,30,0.35)", color: "var(--BienLoger-amber-light)" }}>
@@ -74,7 +74,7 @@ export default function TarifsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left mb-8 max-w-xl mx-auto">
             {FREE_FEATURES.map((f) => (
               <div key={f} className="flex items-start gap-2.5">
-                <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "var(--BienLoger-green, #6ec97a)" }} />
+                <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "var(--BienLoger-green, #22c55e)" }} />
                 <span className="text-white/75 text-sm">{f}</span>
               </div>
             ))}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -16,7 +16,7 @@ const DashboardChart = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div style={{ height: 140, background: "#1a2e1e", borderRadius: "0 12px 12px 0", borderLeft: "3px solid rgba(200,144,30,0.20)", marginBottom: 24 }} />
+      <div style={{ height: 140, background: "#0f2210", borderRadius: "0 12px 12px 0", borderLeft: "3px solid rgba(200,144,30,0.20)", marginBottom: 24 }} />
     ),
   }
 );
@@ -200,7 +200,7 @@ function ProfileForm({ user, profile, refreshProfile }: {
         {...props}
         style={inputCss}
         onFocus={(e) => (e.currentTarget.style.borderColor = "var(--bl-amber)")}
-        onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(240,230,204,0.15)")}
+        onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(134,239,172,0.15)")}
       />
     );
   }
@@ -241,7 +241,7 @@ function ProfileForm({ user, profile, refreshProfile }: {
               placeholder="Décrivez votre expertise..."
               style={{ ...inputCss, height: "auto", padding: "12px 14px", resize: "none" }}
               onFocus={(e) => (e.currentTarget.style.borderColor = "var(--bl-amber)")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(240,230,204,0.15)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(134,239,172,0.15)")}
             />
           </div>
         )}
@@ -271,7 +271,7 @@ function ProfileForm({ user, profile, refreshProfile }: {
           {profile?.is_verified_pro ? "Annonces illimitées · Badge vérifié · Priorité dans les résultats" : "Jusqu'à 5 annonces · Visibilité standard"}
         </p>
         <Link href="/tarifs" className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
-          style={{ background: "rgba(200,144,30,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.25)" }}>
+          style={{ background: "rgba(249,115,22,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(249,115,22,0.25)" }}>
           {profile?.is_verified_pro ? "Gérer l'abonnement" : "Passer Pro"} →
         </Link>
       </div>
@@ -419,7 +419,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
                   <p className="font-bold text-sm mt-1" style={{ color: "var(--bl-amber-light)" }}>{fmtGNF(listing.price, listing.price_period)}</p>
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                     {listing.status === "pending" ? (
-                      <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ background: "rgba(200,144,30,0.15)", color: "#daa84a" }}>
+                      <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ background: "rgba(249,115,22,0.15)", color: "#f97316" }}>
                         ⏳ En attente de validation
                       </span>
                     ) : (
@@ -457,18 +457,18 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
                         setActionLoading(null);
                       }}
                       disabled={busy || isRenewBusy}
-                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-[#daa84a] transition-colors hover:bg-amber-900/10"
+                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-[#f97316] transition-colors hover:bg-amber-900/10"
                       style={{ border: "1px solid rgba(200,144,30,0.30)" }}
                     >
-                      {isRenewBusy ? <div className="w-3.5 h-3.5 border border-[#daa84a] border-t-transparent rounded-full animate-spin" /> : <RotateCcw className="w-3.5 h-3.5" />}
+                      {isRenewBusy ? <div className="w-3.5 h-3.5 border border-[#f97316] border-t-transparent rounded-full animate-spin" /> : <RotateCcw className="w-3.5 h-3.5" />}
                       Renouveler
                     </button>
                   );
                 })()}
                 <button onClick={() => toggleAvailability(listing)} disabled={busy}
                   className={cn("flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-colors",
-                    listing.available_now ? "text-red-400 hover:bg-red-900/20" : "text-[#6ec97a] hover:bg-green-900/20")}
-                  style={{ border: listing.available_now ? "1px solid rgba(240,68,68,0.25)" : "1px solid rgba(110,201,122,0.25)" }}>
+                    listing.available_now ? "text-red-400 hover:bg-red-900/20" : "text-[#22c55e] hover:bg-green-900/20")}
+                  style={{ border: listing.available_now ? "1px solid rgba(240,68,68,0.25)" : "1px solid rgba(34,197,94,0.25)" }}>
                   {isAvailBusy ? <div className="w-3.5 h-3.5 border border-current border-t-transparent rounded-full animate-spin" />
                     : listing.available_now ? <><XCircle className="w-3.5 h-3.5" /> Marquer loué</>
                     : <><RotateCcw className="w-3.5 h-3.5" /> Remettre dispo</>}
@@ -666,17 +666,17 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
           ) : (
             <>
               <div className="grid grid-cols-2 gap-3 mb-6">
-                <StatCard label="Vues 7 jours" value={totalViews} sub="toutes annonces" borderColor="#c8901e" />
-                <StatCard label="Clics WhatsApp" value={totalWA} sub="7 derniers jours" borderColor="#6ec97a" />
-                <StatCard label="Messages reçus" value={msgCount} sub="cette semaine" borderColor="#daa84a" />
-                <StatCard label="Annonces actives" value={activeCount} sub="sur 5 max" borderColor="#6ec97a" />
+                <StatCard label="Vues 7 jours" value={totalViews} sub="toutes annonces" borderColor="#f97316" />
+                <StatCard label="Clics WhatsApp" value={totalWA} sub="7 derniers jours" borderColor="#22c55e" />
+                <StatCard label="Messages reçus" value={msgCount} sub="cette semaine" borderColor="#f97316" />
+                <StatCard label="Annonces actives" value={activeCount} sub="sur 5 max" borderColor="#22c55e" />
               </div>
 
               <DashboardChart
                 type="bar"
                 title="Vues par jour — 7 jours"
                 data={statsData.map((d) => ({ ...d, label: fmtDate(d.date) }))}
-                series={[{ dataKey: "views", name: "Vues", color: "#c8901e" }]}
+                series={[{ dataKey: "views", name: "Vues", color: "#f97316" }]}
               />
 
               <SectionHeader title="Mes annonces" action={
@@ -843,11 +843,11 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
                     {s.transaction_type && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "rgba(240,230,204,0.07)", color: "var(--bl-cream-dim)" }}>{s.transaction_type === "rent" ? "Location" : "Vente"}</span>}
                   </div>
                   <div className="flex items-center gap-2">
-                    <Link href={buildUrl(s)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold" style={{ background: "rgba(200,144,30,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.25)" }}>
+                    <Link href={buildUrl(s)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold" style={{ background: "rgba(249,115,22,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(249,115,22,0.25)" }}>
                       Voir les annonces <ChevronRight className="w-3.5 h-3.5" />
                     </Link>
                     <button onClick={() => toggleNotify(s)} className="flex items-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold"
-                      style={s.notify_whatsapp ? { background: "rgba(110,201,122,0.12)", color: "#6ec97a", border: "1px solid rgba(110,201,122,0.25)" } : { background: "rgba(240,230,204,0.05)", color: "var(--bl-cream-faint)", border: "1px solid var(--bl-border)" }}>
+                      style={s.notify_whatsapp ? { background: "rgba(34,197,94,0.12)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.25)" } : { background: "rgba(240,230,204,0.05)", color: "var(--bl-cream-faint)", border: "1px solid var(--bl-border)" }}>
                       {s.notify_whatsapp ? <Bell className="w-3.5 h-3.5" /> : <BellOff className="w-3.5 h-3.5" />} Alerte
                     </button>
                   </div>
@@ -945,11 +945,11 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
           ) : (
             <>
               <div className="grid grid-cols-2 gap-3 mb-6">
-                <StatCard label="Vues ce mois"  value={totalViews}  borderColor="#c8901e" />
-                <StatCard label="Clics WhatsApp" value={totalWA}    borderColor="#6ec97a" />
-                <StatCard label="Messages reçus" value={msgCount}   borderColor="#daa84a" />
-                <StatCard label="Annonces actives" value={activeCount} borderColor="#6ec97a" />
-                <StatCard label="Statut" value={profile?.is_verified_pro ? "✓ Pro" : "Agent"} sub={profile?.is_verified_pro ? "Vérifié" : "Standard"} borderColor="#daa84a" />
+                <StatCard label="Vues ce mois"  value={totalViews}  borderColor="#f97316" />
+                <StatCard label="Clics WhatsApp" value={totalWA}    borderColor="#22c55e" />
+                <StatCard label="Messages reçus" value={msgCount}   borderColor="#f97316" />
+                <StatCard label="Annonces actives" value={activeCount} borderColor="#22c55e" />
+                <StatCard label="Statut" value={profile?.is_verified_pro ? "✓ Pro" : "Agent"} sub={profile?.is_verified_pro ? "Vérifié" : "Standard"} borderColor="#f97316" />
               </div>
 
               <DashboardChart
@@ -957,7 +957,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
                 title="Vues sur 30 jours"
                 data={chartLine}
                 height={160}
-                series={[{ dataKey: "views", name: "Vues", color: "#c8901e" }]}
+                series={[{ dataKey: "views", name: "Vues", color: "#f97316" }]}
                 ticks={chartSampled.map((d) => d.label)}
                 showDots
               />
@@ -1054,7 +1054,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
             data={chartLine}
             height={200}
             series={[
-              { dataKey: "views", name: "Vues", color: "#c8901e" },
+              { dataKey: "views", name: "Vues", color: "#f97316" },
               { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
             ]}
             ticks={chartSampled.map((d) => d.label)}
@@ -1065,7 +1065,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
         <>
           <SectionHeader title="Mon profil" />
           {profile?.is_verified_pro && (
-            <div className="flex items-center gap-2 mb-4 px-3 py-2.5 rounded-xl" style={{ background: "rgba(200,144,30,0.10)", border: "1px solid rgba(200,144,30,0.25)" }}>
+            <div className="flex items-center gap-2 mb-4 px-3 py-2.5 rounded-xl" style={{ background: "rgba(249,115,22,0.10)", border: "1px solid rgba(249,115,22,0.25)" }}>
               <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: "var(--bl-amber)" }} />
               <p className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>Agent professionnel vérifié</p>
             </div>
@@ -1157,12 +1157,12 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
           ) : (
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-                <StatCard label="Vues totales (30j)"   value={totalViews}  borderColor="#c8901e" />
-                <StatCard label="Annonces actives"     value={activeCount} sub={`${totalCount} au total`} borderColor="#6ec97a" />
-                <StatCard label="Contacts WhatsApp"    value={totalWA}     sub="30 derniers jours" borderColor="#6ec97a" />
-                <StatCard label="Messages reçus"       value={msgCount}    sub="ce mois" borderColor="#daa84a" />
-                <StatCard label="Leads"                value={leads.length} sub={<Link href="/messages" style={{ color: "var(--bl-amber)" }}>Voir messages →</Link>} borderColor="#c8901e" />
-                <StatCard label="Statut"               value={profile?.is_verified_pro ? "Premium ✓" : "Agence"} sub="Plan actuel" borderColor="#daa84a" />
+                <StatCard label="Vues totales (30j)"   value={totalViews}  borderColor="#f97316" />
+                <StatCard label="Annonces actives"     value={activeCount} sub={`${totalCount} au total`} borderColor="#22c55e" />
+                <StatCard label="Contacts WhatsApp"    value={totalWA}     sub="30 derniers jours" borderColor="#22c55e" />
+                <StatCard label="Messages reçus"       value={msgCount}    sub="ce mois" borderColor="#f97316" />
+                <StatCard label="Leads"                value={leads.length} sub={<Link href="/messages" style={{ color: "var(--bl-amber)" }}>Voir messages →</Link>} borderColor="#f97316" />
+                <StatCard label="Statut"               value={profile?.is_verified_pro ? "Premium ✓" : "Agence"} sub="Plan actuel" borderColor="#f97316" />
               </div>
 
               <DashboardChart
@@ -1171,7 +1171,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
                 data={chartData}
                 height={160}
                 series={[
-                  { dataKey: "views", name: "Vues", color: "#c8901e" },
+                  { dataKey: "views", name: "Vues", color: "#f97316" },
                   { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
                 ]}
                 ticks={chartSampled.map((d) => d.label)}
@@ -1180,7 +1180,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="bl-section-title">Top annonces</h2>
                 <button onClick={exportCSV} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
-                  style={{ background: "rgba(200,144,30,0.10)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.25)" }}>
+                  style={{ background: "rgba(249,115,22,0.10)", color: "var(--bl-amber)", border: "1px solid rgba(249,115,22,0.25)" }}>
                   <Download className="w-3.5 h-3.5" /> Exporter CSV
                 </button>
               </div>
@@ -1209,7 +1209,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
           <SectionHeader title="Leads de l'agence" subtitle="Contacts reçus récemment" action={
             leads.length > 0 ? (
               <button onClick={exportCSV} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg"
-                style={{ background: "rgba(200,144,30,0.10)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.25)" }}>
+                style={{ background: "rgba(249,115,22,0.10)", color: "var(--bl-amber)", border: "1px solid rgba(249,115,22,0.25)" }}>
                 <Download className="w-3.5 h-3.5" /> CSV
               </button>
             ) : undefined
@@ -1219,7 +1219,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
               <Phone className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
               <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucun lead</p>
               <p className="text-sm mb-4" style={{ color: "var(--bl-cream-faint)" }}>Tous vos contacts reçus apparaîtront ici.</p>
-              <Link href="/messages" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm" style={{ background: "rgba(200,144,30,0.15)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.30)" }}>Voir les messages</Link>
+              <Link href="/messages" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm" style={{ background: "rgba(249,115,22,0.15)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.30)" }}>Voir les messages</Link>
             </div>
           ) : (
             <div className="space-y-2">
@@ -1261,7 +1261,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
             data={chartData}
             height={200}
             series={[
-              { dataKey: "views", name: "Vues", color: "#c8901e" },
+              { dataKey: "views", name: "Vues", color: "#f97316" },
               { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
             ]}
             ticks={chartSampled.map((d) => d.label)}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import Link from "next/link";
 import { Mail, CheckCircle } from "lucide-react";
@@ -43,7 +43,7 @@ export default function MotDePasseOubliePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#111a14] flex flex-col">
+    <div className="min-h-screen bg-[#0a1a0a] flex flex-col">
       <div className="p-4">
         <Logo />
       </div>
@@ -67,7 +67,7 @@ export default function MotDePasseOubliePage() {
                   type="button"
                   onClick={() => { setTab(t); setError(null); setSent(false); }}
                   className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
-                    tab === t ? "bg-[#c8901e] text-white" : "text-white/50 hover:text-white"
+                    tab === t ? "bg-[#f97316] text-white" : "text-white/50 hover:text-white"
                   }`}
                   style={tab !== t ? { background: "rgba(255,255,255,0.05)" } : {}}
                 >
@@ -80,7 +80,7 @@ export default function MotDePasseOubliePage() {
             {tab === "phone" && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-4 text-sm leading-relaxed"
-                  style={{ background: "rgba(240,230,204,0.05)", border: "1px solid rgba(240,230,204,0.10)", color: "rgba(240,230,204,0.75)" }}>
+                  style={{ background: "rgba(240,230,204,0.05)", border: "1px solid rgba(134,239,172,0.10)", color: "rgba(187,247,208,0.75)" }}>
                   Pour réinitialiser votre mot de passe par téléphone, contactez notre équipe sur WhatsApp.
                   Nous vous aiderons en quelques minutes.
                 </div>
@@ -94,8 +94,8 @@ export default function MotDePasseOubliePage() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+224 6XX XXX XXX"
-                    style={{ ...INPUT, width: "100%", borderRadius: 12, padding: "12px 16px", color: "#f7f2e6" }}
-                    className="focus:outline-none focus:ring-2 focus:ring-[#c8901e] placeholder:text-white/30"
+                    style={{ ...INPUT, width: "100%", borderRadius: 12, padding: "12px 16px", color: "#f0fdf4" }}
+                    className="focus:outline-none focus:ring-2 focus:ring-[#f97316] placeholder:text-white/30"
                   />
                 </div>
 
@@ -138,7 +138,7 @@ export default function MotDePasseOubliePage() {
                           placeholder="vous@email.com"
                           required
                           style={{ ...INPUT, width: "100%" }}
-                          className="rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e]"
+                          className="rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316]"
                         />
                       </div>
                     </div>
@@ -158,7 +158,7 @@ export default function MotDePasseOubliePage() {
             )}
 
             <p className="text-center text-sm text-white/40 mt-6">
-              <Link href="/connexion" className="text-[#daa84a] hover:underline">
+              <Link href="/connexion" className="text-[#f97316] hover:underline">
                 ← Retour à la connexion
               </Link>
             </p>

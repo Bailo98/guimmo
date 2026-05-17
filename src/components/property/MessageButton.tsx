@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MessageSquare, Send, X, Loader2 } from "lucide-react";
@@ -98,7 +98,7 @@ export function MessageButton({
         disabled={checking}
         className={
           className ??
-          "flex items-center justify-center gap-2 w-full bg-[#1a2e1e] hover:bg-[#203a24] text-[#f7f2e6] font-semibold py-3 px-4 rounded-xl transition-colors border border-[rgba(240,230,204,0.08)] text-sm disabled:opacity-60"
+          "flex items-center justify-center gap-2 w-full bg-[#0f2210] hover:bg-[#203a24] text-[#f0fdf4] font-semibold py-3 px-4 rounded-xl transition-colors border border-[rgba(134,239,172,0.08)] text-sm disabled:opacity-60"
         }
       >
         {checking
@@ -110,17 +110,17 @@ export function MessageButton({
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-[#111a14] rounded-3xl border border-[rgba(240,230,204,0.10)] shadow-2xl">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[rgba(240,230,204,0.08)]">
+          <div className="w-full max-w-md bg-[#0a1a0a] rounded-3xl border border-[rgba(134,239,172,0.10)] shadow-2xl">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-[rgba(134,239,172,0.08)]">
               <div>
-                <h2 className="font-bold text-[#f7f2e6] text-base">Envoyer un message</h2>
+                <h2 className="font-bold text-[#f0fdf4] text-base">Envoyer un message</h2>
                 <p className="text-xs text-[rgba(240,230,204,0.50)] truncate mt-0.5 max-w-[260px]">
                   {propertyTitle}
                 </p>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[rgba(240,230,204,0.08)] transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[rgba(134,239,172,0.08)] transition-colors"
               >
                 <X className="w-4 h-4 text-[rgba(240,230,204,0.50)]" />
               </button>
@@ -136,14 +136,14 @@ export function MessageButton({
                 required
                 autoFocus
                 style={{ fontSize: 16 }}
-                className="w-full bg-[#1a2e1e] border border-[rgba(240,230,204,0.10)] rounded-xl px-4 py-3 text-sm text-[#f7f2e6] placeholder:text-[rgba(240,230,204,0.35)] focus:outline-none focus:ring-2 focus:ring-[#c8901e]/50 resize-none"
+                className="w-full bg-[#0f2210] border border-[rgba(134,239,172,0.10)] rounded-xl px-4 py-3 text-sm text-[#f0fdf4] placeholder:text-[rgba(240,230,204,0.35)] focus:outline-none focus:ring-2 focus:ring-[#f97316]/50 resize-none"
               />
               <div className="flex items-center justify-between">
                 <span className="text-xs text-[rgba(240,230,204,0.40)]">{content.length}/2000</span>
                 <button
                   type="submit"
                   disabled={!content.trim() || sending}
-                  className="flex items-center gap-2 bg-[#c8901e] hover:bg-[#b87c18] disabled:opacity-50 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm"
+                  className="flex items-center gap-2 bg-[#f97316] hover:bg-[#ea6c0a] disabled:opacity-50 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm"
                 >
                   <Send className="w-4 h-4" />
                   {sending ? "Envoi…" : "Envoyer"}

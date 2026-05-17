@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { Flag, CheckCircle, XCircle, RefreshCw } from "lucide-react";
@@ -12,10 +12,10 @@ const TYPE_LABELS: Record<string, string> = {
   shop: "Boutique", land: "Terrain",
 };
 
-const ACCENT = "#c8901e";
+const ACCENT = "#f97316";
 const S_CARD: React.CSSProperties = {
   background: "rgba(240,230,204,0.03)",
-  border: "1px solid rgba(240,230,204,0.10)",
+  border: "1px solid rgba(134,239,172,0.10)",
   borderRadius: 16,
   padding: "14px 16px",
 };
@@ -132,7 +132,7 @@ export default function AdminModerationPage() {
     borderRadius: 10,
     border: "none",
     background: active ? ACCENT : "transparent",
-    color: active ? "#fff" : "rgba(240,230,204,0.55)",
+    color: active ? "#fff" : "rgba(187,247,208,0.55)",
     fontWeight: 700,
     fontSize: 14,
     cursor: "pointer",
@@ -144,7 +144,7 @@ export default function AdminModerationPage() {
 
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ color: "#f7f2e6", fontWeight: 800, fontSize: 24, margin: "0 0 4px" }}>
+        <h1 style={{ color: "#f0fdf4", fontWeight: 800, fontSize: 24, margin: "0 0 4px" }}>
           Modération
         </h1>
         <p style={{ color: "rgba(240,230,204,0.45)", fontSize: 13, margin: 0 }}>
@@ -172,7 +172,7 @@ export default function AdminModerationPage() {
         </button>
         <button
           onClick={load}
-          style={{ padding: "8px 12px", borderRadius: 10, border: "none", background: "transparent", color: "rgba(240,230,204,0.4)", cursor: "pointer" }}
+          style={{ padding: "8px 12px", borderRadius: 10, border: "none", background: "transparent", color: "rgba(134,239,172,0.4)", cursor: "pointer" }}
           title="Actualiser"
         >
           <RefreshCw size={15} />
@@ -189,8 +189,8 @@ export default function AdminModerationPage() {
         /* ── Pending listings ── */
         pending.length === 0 ? (
           <div style={{ ...S_CARD, textAlign: "center", padding: "48px 20px" }}>
-            <CheckCircle size={32} style={{ color: "#6ec97a", margin: "0 auto 12px", display: "block" }} />
-            <p style={{ color: "#f7f2e6", fontWeight: 700, marginBottom: 4 }}>File vide !</p>
+            <CheckCircle size={32} style={{ color: "#22c55e", margin: "0 auto 12px", display: "block" }} />
+            <p style={{ color: "#f0fdf4", fontWeight: 700, marginBottom: 4 }}>File vide !</p>
             <p style={{ color: "rgba(240,230,204,0.45)", fontSize: 13 }}>Toutes les annonces ont été traitées.</p>
           </div>
         ) : (
@@ -202,11 +202,11 @@ export default function AdminModerationPage() {
                   <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 2 }}>
-                        <p style={{ color: "#f7f2e6", fontWeight: 700, fontSize: 15, margin: 0 }}>{prop.title}</p>
-                        <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "rgba(200,144,30,0.15)", color: ACCENT }}>
+                        <p style={{ color: "#f0fdf4", fontWeight: 700, fontSize: 15, margin: 0 }}>{prop.title}</p>
+                        <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "rgba(249,115,22,0.15)", color: ACCENT }}>
                           {TYPE_LABELS[prop.type] ?? prop.type}
                         </span>
-                        <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: "rgba(240,230,204,0.07)", color: "rgba(240,230,204,0.55)" }}>
+                        <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: "rgba(240,230,204,0.07)", color: "rgba(187,247,208,0.55)" }}>
                           {prop.transaction_type === "rent" ? "Location" : "Vente"}
                         </span>
                       </div>
@@ -239,7 +239,7 @@ export default function AdminModerationPage() {
                       href={`/annonces/${prop.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ padding: "9px 14px", borderRadius: 10, border: "1px solid rgba(240,230,204,0.12)", color: "rgba(240,230,204,0.5)", fontWeight: 600, fontSize: 12, textDecoration: "none", whiteSpace: "nowrap" }}
+                      style={{ padding: "9px 14px", borderRadius: 10, border: "1px solid rgba(134,239,172,0.12)", color: "rgba(134,239,172,0.5)", fontWeight: 600, fontSize: 12, textDecoration: "none", whiteSpace: "nowrap" }}
                     >
                       Voir →
                     </a>
@@ -256,7 +256,7 @@ export default function AdminModerationPage() {
         reports.length === 0 ? (
           <div style={{ ...S_CARD, textAlign: "center", padding: "48px 20px" }}>
             <Flag size={32} style={{ color: "rgba(240,230,204,0.25)", margin: "0 auto 12px", display: "block" }} />
-            <p style={{ color: "#f7f2e6", fontWeight: 700, marginBottom: 4 }}>Aucun signalement en attente</p>
+            <p style={{ color: "#f0fdf4", fontWeight: 700, marginBottom: 4 }}>Aucun signalement en attente</p>
             <p style={{ color: "rgba(240,230,204,0.45)", fontSize: 13 }}>Tous les signalements ont été traités.</p>
           </div>
         ) : (
@@ -270,7 +270,7 @@ export default function AdminModerationPage() {
               return (
                 <div key={rep.id} style={{ ...S_CARD, borderColor: "rgba(239,68,68,0.25)", opacity: busy ? 0.6 : 1 }}>
                   <div style={{ marginBottom: 10 }}>
-                    <p style={{ color: "#f7f2e6", fontWeight: 700, fontSize: 14, margin: "0 0 3px" }}>{propTitle}</p>
+                    <p style={{ color: "#f0fdf4", fontWeight: 700, fontSize: 14, margin: "0 0 3px" }}>{propTitle}</p>
                     <p style={{ color: "#f87171", fontSize: 12, margin: "0 0 2px" }}>{rep.reason ?? "Raison non précisée"}</p>
                     <p style={{ color: "rgba(240,230,204,0.35)", fontSize: 11, margin: 0 }}>
                       Signalé par {reporterName} · {fmtDate(rep.created_at)}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { Bell, BellOff, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -60,7 +60,7 @@ export function SaveSearchButton(props: Props) {
           padding: "9px 16px", borderRadius: 10,
           border: saved ? "1px solid rgba(110,201,122,0.30)" : "1px solid rgba(200,144,30,0.30)",
           background: saved ? "rgba(110,201,122,0.08)" : "rgba(200,144,30,0.08)",
-          color: saved ? "#6ec97a" : "#daa84a",
+          color: saved ? "#22c55e" : "#f97316",
           fontWeight: 700, fontSize: 13, cursor: saved ? "default" : "pointer",
           opacity: saving ? 0.7 : 1, transition: "opacity 0.15s",
           whiteSpace: "nowrap",

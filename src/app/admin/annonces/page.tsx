@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
@@ -8,11 +8,11 @@ import { formatPrice, timeAgo } from "@/lib/utils";
 import { toast } from "@/lib/toast";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
-const SURFACE  = "#1a2e1e";
-const BORDER   = "rgba(240,230,204,0.08)";
-const TEXT_PRI = "#f7f2e6";
-const TEXT_SEC = "rgba(240,230,204,0.55)";
-const ACCENT   = "#c8901e";
+const SURFACE  = "#0f2210";
+const BORDER   = "rgba(134,239,172,0.08)";
+const TEXT_PRI = "#f0fdf4";
+const TEXT_SEC = "rgba(187,247,208,0.55)";
+const ACCENT   = "#f97316";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 type DbStatus = "active" | "pending" | "paused" | "sold";
@@ -33,7 +33,7 @@ interface Property {
 }
 
 const STATUS_LABELS: Record<DbStatus, { label: string; color: string; bg: string }> = {
-  active:  { label: "Actif",      color: "#6ec97a", bg: "rgba(110,201,122,0.15)" },
+  active:  { label: "Actif",      color: "#22c55e", bg: "rgba(110,201,122,0.15)" },
   pending: { label: "En attente", color: "#fb923c", bg: "rgba(251,146,60,0.15)" },
   paused:  { label: "Suspendu",   color: "#ef4444", bg: "rgba(239,68,68,0.15)" },
   sold:    { label: "Vendu",      color: TEXT_SEC,  bg: "rgba(240,230,204,0.06)" },
@@ -295,9 +295,9 @@ export default function AdminAnnoncesPage() {
                       onClick={() => handleApprove(p.id)}
                       disabled={p.status === "active"}
                       title="Approuver"
-                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(110,201,122,0.12)", color: "#6ec97a", border: "none", cursor: "pointer", opacity: p.status === "active" ? 0.35 : 1, transition: "background 0.12s" }}
-                      onMouseEnter={(e) => { if (p.status !== "active") (e.currentTarget as HTMLButtonElement).style.background = "rgba(110,201,122,0.25)"; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(110,201,122,0.12)"; }}
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(34,197,94,0.12)", color: "#22c55e", border: "none", cursor: "pointer", opacity: p.status === "active" ? 0.35 : 1, transition: "background 0.12s" }}
+                      onMouseEnter={(e) => { if (p.status !== "active") (e.currentTarget as HTMLButtonElement).style.background = "rgba(34,197,94,0.25)"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(34,197,94,0.12)"; }}
                     >
                       <CheckCircle size={15} />
                     </button>
@@ -305,9 +305,9 @@ export default function AdminAnnoncesPage() {
                       onClick={() => handleSuspend(p.id)}
                       disabled={p.status === "paused"}
                       title="Suspendre"
-                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: `rgba(200,144,30,0.12)`, color: ACCENT, border: "none", cursor: "pointer", opacity: p.status === "paused" ? 0.35 : 1, transition: "background 0.12s" }}
-                      onMouseEnter={(e) => { if (p.status !== "paused") (e.currentTarget as HTMLButtonElement).style.background = "rgba(200,144,30,0.25)"; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(200,144,30,0.12)"; }}
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: `rgba(249,115,22,0.12)`, color: ACCENT, border: "none", cursor: "pointer", opacity: p.status === "paused" ? 0.35 : 1, transition: "background 0.12s" }}
+                      onMouseEnter={(e) => { if (p.status !== "paused") (e.currentTarget as HTMLButtonElement).style.background = "rgba(249,115,22,0.25)"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(249,115,22,0.12)"; }}
                     >
                       <XCircle size={15} />
                     </button>
@@ -335,7 +335,7 @@ export default function AdminAnnoncesPage() {
           onClick={() => setConfirmDelete(null)}
         >
           <div
-            style={{ background: "#1a2e1e", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
+            style={{ background: "#0f2210", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>

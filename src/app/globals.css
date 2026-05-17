@@ -57,48 +57,48 @@
 
 /* BienLoger Design System tokens */
 :root {
-  --guimmo-bg:          #111a14;
-  --guimmo-bg-alt:      #0d1610;
-  --guimmo-surface:     #1a2e1e;
-  --guimmo-amber:       #c8901e;
-  --guimmo-amber-light: #daa84a;
-  --guimmo-cream:       #f7f2e6;
-  --guimmo-cream-dim:   rgba(240,230,204,0.65);
-  --guimmo-border:      rgba(240,230,204,0.12);
-  --guimmo-green:       #6ec97a;
+  --guimmo-bg:          #0a1a0a;
+  --guimmo-bg-alt:      #050f05;
+  --guimmo-surface:     #0f2210;
+  --guimmo-amber:       #f97316;
+  --guimmo-amber-light: #fb923c;
+  --guimmo-cream:       #f0fdf4;
+  --guimmo-cream-dim:   rgba(187,247,208,0.65);
+  --guimmo-border:      rgba(134,239,172,0.12);
+  --guimmo-green:       #22c55e;
 
-  /* ── Concept C "Chaleur Africaine" ── */
-  --bl-sidebar:     #0d1a10;
-  --bl-bg:          #111a14;
-  --bl-surface:     #1a2e1e;
-  --bl-surface-2:   #0d1610;
-  --bl-amber:       #c8901e;
-  --bl-amber-light: #daa84a;
-  --bl-green:       #6ec97a;
-  --bl-cream:       #f7f2e6;
-  --bl-cream-dim:   rgba(240,230,204,0.75);
-  --bl-cream-faint: rgba(240,230,204,0.55);
-  --bl-border:      rgba(240,230,204,0.08);
-  --bl-border-md:   rgba(240,230,204,0.15);
+  /* ── Dark Green + Orange theme ── */
+  --bl-sidebar:     #050f05;
+  --bl-bg:          #0a1a0a;
+  --bl-surface:     #0f2210;
+  --bl-surface-2:   #050f05;
+  --bl-amber:       #f97316;
+  --bl-amber-light: #fb923c;
+  --bl-green:       #22c55e;
+  --bl-cream:       #f0fdf4;
+  --bl-cream-dim:   rgba(187,247,208,0.75);
+  --bl-cream-faint: rgba(187,247,208,0.55);
+  --bl-border:      rgba(134,239,172,0.08);
+  --bl-border-md:   rgba(134,239,172,0.15);
 
   /* --BienLoger-* aliases — used across layout/page components */
-  --BienLoger-bg:          #111a14;
-  --BienLoger-bg-alt:      #0d1610;
-  --BienLoger-surface:     #1a2e1e;
-  --BienLoger-amber:       #c8901e;
-  --BienLoger-amber-light: #daa84a;
-  --BienLoger-cream:       #f7f2e6;
-  --BienLoger-cream-dim:   rgba(240,230,204,0.75);
-  --BienLoger-cream-faint: rgba(240,230,204,0.55);
-  --BienLoger-border:      rgba(240,230,204,0.08);
-  --BienLoger-border-md:   rgba(240,230,204,0.15);
-  --BienLoger-green:       #6ec97a;
-  --BienLoger-sidebar:     #0d1a10;
+  --BienLoger-bg:          #0a1a0a;
+  --BienLoger-bg-alt:      #050f05;
+  --BienLoger-surface:     #0f2210;
+  --BienLoger-amber:       #f97316;
+  --BienLoger-amber-light: #fb923c;
+  --BienLoger-cream:       #f0fdf4;
+  --BienLoger-cream-dim:   rgba(187,247,208,0.75);
+  --BienLoger-cream-faint: rgba(187,247,208,0.55);
+  --BienLoger-border:      rgba(134,239,172,0.08);
+  --BienLoger-border-md:   rgba(134,239,172,0.15);
+  --BienLoger-green:       #22c55e;
+  --BienLoger-sidebar:     #050f05;
 
   color-scheme: dark;
 }
 
-/* ── Concept C reusable classes ── */
+/* ── Reusable UI classes ── */
 .bl-stat-card {
   background: var(--bl-surface);
   border-left: 3px solid var(--bl-amber);
@@ -108,7 +108,7 @@
 .bl-stat-label {
   font-size: 9px;
   letter-spacing: 1.5px;
-  color: rgba(240,230,204,0.80);
+  color: rgba(187,247,208,0.80);
   text-transform: uppercase;
   font-weight: 500;
   margin-bottom: 4px;
@@ -124,21 +124,21 @@
 }
 .bl-section-title {
   font-family: var(--font-playfair);
-  color: var(--bl-amber-light);
+  color: var(--bl-green);
   font-size: 20px;
   font-weight: 700;
 }
 .bl-section-label {
   font-size: 9px;
   letter-spacing: 1.5px;
-  color: rgba(240,230,204,0.80);
+  color: rgba(187,247,208,0.80);
   text-transform: uppercase;
   font-weight: 500;
 }
 .bl-badge-active {
-  background: rgba(110,201,122,0.12);
-  color: #6ec97a;
-  border: 1px solid rgba(110,201,122,0.25);
+  background: rgba(34,197,94,0.12);
+  color: #22c55e;
+  border: 1px solid rgba(34,197,94,0.25);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 11px;
@@ -154,18 +154,18 @@
   font-weight: 500;
 }
 .bl-badge-paused {
-  background: rgba(200,144,30,0.12);
-  color: #daa84a;
-  border: 1px solid rgba(200,144,30,0.25);
+  background: rgba(249,115,22,0.12);
+  color: #fb923c;
+  border: 1px solid rgba(249,115,22,0.25);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 11px;
   font-weight: 500;
 }
 .bl-badge-pro {
-  background: rgba(218,168,74,0.12);
-  color: #daa84a;
-  border: 1px solid rgba(218,168,74,0.30);
+  background: rgba(249,115,22,0.12);
+  color: #fb923c;
+  border: 1px solid rgba(249,115,22,0.30);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 11px;
@@ -184,13 +184,13 @@
   border-left: 3px solid transparent;
 }
 .bl-nav-item:hover {
-  background: rgba(240,230,204,0.04);
+  background: rgba(34,197,94,0.05);
   color: var(--bl-cream);
 }
 .bl-nav-item.active {
-  border-left-color: var(--bl-amber);
-  background: rgba(200,144,30,0.10);
-  color: var(--bl-amber);
+  border-left-color: var(--bl-green);
+  background: rgba(34,197,94,0.10);
+  color: var(--bl-green);
   border-radius: 0 10px 10px 0;
 }
 .dark {
@@ -221,15 +221,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   background-color: var(--guimmo-bg);
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2322c55e' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   color: var(--guimmo-cream);
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #F97316; }
+::-webkit-scrollbar-thumb { background: #1a3a1a; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #22c55e; }
 
 /* Utility classes */
 .text-gradient {
@@ -240,17 +240,17 @@ body {
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(10, 26, 10, 0.7);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(134, 239, 172, 0.10);
 }
 
 .glass-dark {
-  background: rgba(30, 36, 48, 0.9);
+  background: rgba(5, 15, 5, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(134, 239, 172, 0.08);
 }
 
 .skeleton {

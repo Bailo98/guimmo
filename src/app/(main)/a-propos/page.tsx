@@ -72,7 +72,7 @@ export default function AProposPage() {
         <h2 className="text-xl font-black mb-2">Rejoignez la communauté BienLoger</h2>
         <p className="text-white/80 mb-6 text-sm">Publiez votre bien ou trouvez votre logement dès maintenant.</p>
         <div className="flex flex-wrap gap-3 justify-center">
-          <Link href="/annonces" className="flex items-center gap-2 bg-[#f7f2e6] text-[#111a14] font-bold px-6 py-3 rounded-xl hover:bg-white/90 transition-colors text-sm">
+          <Link href="/annonces" className="flex items-center gap-2 bg-[#f0fdf4] text-[#0a1a0a] font-bold px-6 py-3 rounded-xl hover:bg-white/90 transition-colors text-sm">
             Voir les annonces <ArrowRight className="w-4 h-4" />
           </Link>
           <Link href="/publier" className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm border border-white/30">

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
@@ -88,7 +88,7 @@ export function AgentApplicationForm() {
         className="w-full flex items-center justify-center gap-2 rounded-xl font-bold text-white text-sm"
         style={{
           minHeight: 52,
-          background: canSubmit && !loading ? "#c8901e" : "rgba(255,255,255,0.08)",
+          background: canSubmit && !loading ? "#f97316" : "rgba(255,255,255,0.08)",
           color: canSubmit && !loading ? "#fff" : "rgba(255,255,255,0.30)",
         }}
       >

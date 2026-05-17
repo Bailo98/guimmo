@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Lock, Eye, EyeOff, CheckCircle } from "lucide-react";
@@ -48,7 +48,7 @@ export default function ResetPasswordPage() {
   } as const;
 
   return (
-    <div className="min-h-screen bg-[#111a14] flex flex-col">
+    <div className="min-h-screen bg-[#0a1a0a] flex flex-col">
       <div className="p-4">
         <Logo />
       </div>
@@ -87,7 +87,7 @@ export default function ResetPasswordPage() {
                       required
                       minLength={8}
                       style={{ ...INPUT, fontSize: 16 }}
-                      className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e]"
+                      className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316]"
                     />
                     <button type="button" onClick={() => setShowPwd(!showPwd)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white">
@@ -109,7 +109,7 @@ export default function ResetPasswordPage() {
                       placeholder="Répétez le mot de passe"
                       required
                       style={{ ...INPUT, fontSize: 16 }}
-                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e]"
+                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316]"
                     />
                   </div>
                 </div>

@@ -50,7 +50,7 @@ export function Header() {
   return (
     <header
       className="sticky top-0 z-40 transition-all duration-300"
-      style={{ background: "rgba(15,15,15,0.80)", backdropFilter: "blur(16px) saturate(180%)", WebkitBackdropFilter: "blur(16px) saturate(180%)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "rgba(10,26,10,0.95)", backdropFilter: "blur(16px) saturate(180%)", WebkitBackdropFilter: "blur(16px) saturate(180%)", borderBottom: "1px solid rgba(134,239,172,0.08)" }}
     >
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
         <Logo />
@@ -82,7 +82,7 @@ export function Header() {
           {isProprietaire && (
             <Link
               href="/publier"
-              className="hidden md:flex items-center gap-1.5 bg-[#c8901e] hover:bg-[#b87c18] text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors shadow-[0_4px_20px_rgba(200,144,30,0.3)]"
+              className="hidden md:flex items-center gap-1.5 bg-[#f97316] hover:bg-[#ea6c0a] text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
             >
               <Plus className="w-4 h-4" />
               Publier
@@ -142,7 +142,7 @@ export function Header() {
                 Connexion
               </Link>
               <Link href="/inscription"
-                className="text-sm font-bold text-white bg-[#c8901e] hover:bg-[#b87c18] transition-colors px-4 py-2 rounded-xl">
+                className="text-sm font-bold text-white bg-[#f97316] hover:bg-[#ea6c0a] transition-colors px-4 py-2 rounded-xl">
                 S&apos;inscrire
               </Link>
             </div>
@@ -203,7 +203,7 @@ export function Header() {
           )}
           {isProprietaire && (
             <Link href="/publier" onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center gap-2 bg-[#c8901e] text-white font-bold py-3 rounded-xl mt-2">
+              className="flex items-center justify-center gap-2 bg-[#f97316] hover:bg-[#ea6c0a] text-white font-bold py-3 rounded-xl mt-2">
               <Plus className="w-4 h-4" /> Publier une annonce
             </Link>
           )}

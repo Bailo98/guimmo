@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -123,7 +123,7 @@ function InscriptionForm() {
   const selectedRole = USER_ROLES.find((r) => r.value === role);
 
   return (
-    <div className="min-h-screen bg-[#111a14] flex flex-col">
+    <div className="min-h-screen bg-[#0a1a0a] flex flex-col">
       <div className="p-4 flex items-center justify-between">
         <Logo size="lg" />
         <Link href="/connexion" className="text-sm text-[rgba(240,230,204,0.50)] hover:text-white transition-colors">
@@ -140,8 +140,8 @@ function InscriptionForm() {
                 key={s}
                 className={cn(
                   "h-1.5 rounded-full transition-all duration-300",
-                  s < step  ? "bg-[#c8901e] w-12"
-                  : s === step ? "bg-[#c8901e] w-16"
+                  s < step  ? "bg-[#f97316] w-12"
+                  : s === step ? "bg-[#f97316] w-16"
                   : "bg-[#2a3040] w-8"
                 )}
               />
@@ -167,23 +167,23 @@ function InscriptionForm() {
                       className={cn(
                         "w-full flex items-center gap-3 p-4 rounded-2xl border transition-all text-left",
                         role === r.value
-                          ? "border-[#c8901e] bg-[rgba(200,144,30,0.10)]"
+                          ? "border-[#f97316] bg-[rgba(249,115,22,0.10)]"
                           : "hover:border-white/20"
                       )}
                       style={{
                         minHeight: 80,
-                        borderColor: role === r.value ? "#c8901e" : "rgba(240,230,204,0.12)",
-                        background: role === r.value ? "rgba(200,144,30,0.10)" : "#1a2e1e",
+                        borderColor: role === r.value ? "#f97316" : "rgba(134,239,172,0.12)",
+                        background: role === r.value ? "rgba(249,115,22,0.10)" : "#0f2210",
                       }}
                     >
                       <span style={{ fontSize: 32, lineHeight: 1, flexShrink: 0 }}>{r.icon}</span>
                       <div className="flex-1">
-                        <p className={cn("font-semibold text-sm", role === r.value ? "text-[#daa84a]" : "text-white")}>
+                        <p className={cn("font-semibold text-sm", role === r.value ? "text-[#f97316]" : "text-white")}>
                           {r.label}
                         </p>
                         <p className="text-[rgba(240,230,204,0.50)] text-xs mt-0.5">{r.desc}</p>
                       </div>
-                      {role === r.value && <CheckCircle className="w-4 h-4 text-[#daa84a] flex-shrink-0" />}
+                      {role === r.value && <CheckCircle className="w-4 h-4 text-[#f97316] flex-shrink-0" />}
                     </button>
                   ))}
                 </div>
@@ -226,7 +226,7 @@ function InscriptionForm() {
                       onClick={() => switchMode(m)}
                       className={cn(
                         "flex-1 py-2.5 text-sm font-semibold transition-colors",
-                        mode === m ? "bg-[#c8901e] text-white" : "text-white/50 hover:text-white"
+                        mode === m ? "bg-[#f97316] text-white" : "text-white/50 hover:text-white"
                       )}
                       style={mode !== m ? { background: "rgba(255,255,255,0.05)" } : {}}
                     >
@@ -238,7 +238,7 @@ function InscriptionForm() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Nom */}
                   <div>
-                    <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
+                    <label className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
                       {role === "agency" ? "Nom de l'agence" : "Votre nom complet"}
                     </label>
                     <div className="relative">
@@ -250,7 +250,7 @@ function InscriptionForm() {
                         placeholder={role === "agency" ? "Conakry Premium Immo" : "Mamadou Diallo"}
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm"
+                        className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm"
                         style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                         required
                         autoComplete="name"
@@ -261,7 +261,7 @@ function InscriptionForm() {
                   {/* Nom de l'agence si agent */}
                   {isAgentOrAgency && (
                     <div>
-                      <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
+                      <label className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
                         {role === "agency" ? "Raison sociale" : "Agence de rattachement"}
                         <span className="text-white/30 font-normal ml-1">(optionnel)</span>
                       </label>
@@ -272,7 +272,7 @@ function InscriptionForm() {
                           placeholder="Ex: Immo Guinée SARL"
                           value={form.agencyName}
                           onChange={(e) => setForm({ ...form, agencyName: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm"
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm"
                           style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                         />
                       </div>
@@ -282,7 +282,7 @@ function InscriptionForm() {
                   {/* Bio si agent/agence */}
                   {isAgentOrAgency && (
                     <div>
-                      <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
+                      <label className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
                         Bio courte
                         <span className="text-white/30 font-normal ml-1">(optionnel)</span>
                       </label>
@@ -292,7 +292,7 @@ function InscriptionForm() {
                         value={form.bio}
                         onChange={(e) => setForm({ ...form, bio: e.target.value })}
                         maxLength={200}
-                        className="w-full rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm resize-none"
+                        className="w-full rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm resize-none"
                         style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                       />
                     </div>
@@ -301,7 +301,7 @@ function InscriptionForm() {
                   {/* Téléphone ou email */}
                   {mode === "phone" ? (
                     <div>
-                      <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
+                      <label className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
                         Numéro de téléphone
                       </label>
                       <div className="relative">
@@ -311,19 +311,19 @@ function InscriptionForm() {
                           placeholder="+224 628 222 510"
                           value={form.phone}
                           onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm"
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm"
                           style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                           required
                           autoComplete="tel"
                         />
                       </div>
-                      <button type="button" onClick={() => switchMode("email")} className="text-xs text-[#daa84a] hover:underline mt-1.5 block">
+                      <button type="button" onClick={() => switchMode("email")} className="text-xs text-[#f97316] hover:underline mt-1.5 block">
                         Utiliser mon email à la place →
                       </button>
                     </div>
                   ) : (
                     <div>
-                      <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
+                      <label className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
                         Adresse email
                       </label>
                       <div className="relative">
@@ -333,13 +333,13 @@ function InscriptionForm() {
                           placeholder="vous@email.com"
                           value={form.email}
                           onChange={(e) => setForm({ ...form, email: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e] text-sm"
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316] text-sm"
                           style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
                           required
                           autoComplete="email"
                         />
                       </div>
-                      <button type="button" onClick={() => switchMode("phone")} className="text-xs text-[#daa84a] hover:underline mt-1.5 block">
+                      <button type="button" onClick={() => switchMode("phone")} className="text-xs text-[#f97316] hover:underline mt-1.5 block">
                         ← Utiliser mon numéro de téléphone
                       </button>
                     </div>
@@ -347,7 +347,7 @@ function InscriptionForm() {
 
                   {/* Mot de passe */}
                   <div>
-                    <label className="block text-sm font-semibold text-[rgba(240,230,204,0.75)] mb-2">
+                    <label className="block text-sm font-semibold text-[rgba(187,247,208,0.75)] mb-2">
                       Mot de passe
                     </label>
                     <div className="relative">
@@ -357,7 +357,7 @@ function InscriptionForm() {
                         placeholder="•••••••• (min. 8 caractères)"
                         value={form.password}
                         onChange={(e) => setForm({ ...form, password: e.target.value })}
-                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#c8901e]"
+                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#f97316]"
                         style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16 }}
                         required
                         minLength={8}
@@ -391,7 +391,7 @@ function InscriptionForm() {
 
                 <p className="text-[rgba(240,230,204,0.50)] text-xs text-center mt-4">
                   En créant un compte, vous acceptez nos{" "}
-                  <Link href="/cgv" className="text-[#daa84a] hover:underline">
+                  <Link href="/cgv" className="text-[#f97316] hover:underline">
                     conditions d&apos;utilisation
                   </Link>
                 </p>
@@ -406,7 +406,7 @@ function InscriptionForm() {
 
 export default function InscriptionPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#111a14]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0a1a0a]" />}>
       <InscriptionForm />
     </Suspense>
   );

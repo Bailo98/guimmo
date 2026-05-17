@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { Flag, X, Loader2, CheckCircle2 } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
@@ -60,7 +60,7 @@ export function ReportButton({ propertyId }: Props) {
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
       <div
         className="w-full max-w-md rounded-3xl p-6 space-y-5"
-        style={{ background: "#111a14", border: "1px solid rgba(255,255,255,0.10)" }}
+        style={{ background: "#0a1a0a", border: "1px solid rgba(255,255,255,0.10)" }}
       >
         {done ? (
           <div className="text-center py-4 space-y-3">

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
@@ -92,10 +92,10 @@ function buildConversations(messages: DbMessage[], userId: string): Conversation
 function EmptyMessages() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
-      <div className="w-20 h-20 rounded-full bg-[#c8901e]/10 flex items-center justify-center mb-5">
-        <MessageSquare className="w-9 h-9 text-[#daa84a]" />
+      <div className="w-20 h-20 rounded-full bg-[#f97316]/10 flex items-center justify-center mb-5">
+        <MessageSquare className="w-9 h-9 text-[#f97316]" />
       </div>
-      <h1 className="text-xl font-bold text-[#f7f2e6] mb-2">
+      <h1 className="text-xl font-bold text-[#f0fdf4] mb-2">
         Aucun message pour l&apos;instant
       </h1>
       <p className="text-[rgba(240,230,204,0.50)] max-w-xs mb-6">
@@ -103,7 +103,7 @@ function EmptyMessages() {
       </p>
       <Link
         href="/annonces"
-        className="bg-[#c8901e] hover:bg-[#b87c18] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+        className="bg-[#f97316] hover:bg-[#ea6c0a] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
       >
         Explorer les annonces
       </Link>
@@ -223,7 +223,7 @@ export default function MessagesPage() {
   if (authLoading || fetching) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-2 border-[#c8901e] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#f97316] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -240,9 +240,9 @@ export default function MessagesPage() {
 
       {/* Header */}
       <div className="flex items-center gap-3 mb-5">
-        <h1 className="text-xl font-bold text-[#f7f2e6]">Messages</h1>
+        <h1 className="text-xl font-bold text-[#f0fdf4]">Messages</h1>
         {totalUnread > 0 && (
-          <span className="bg-[#c8901e] text-white text-xs font-bold px-2.5 py-1 rounded-full">
+          <span className="bg-[#f97316] text-white text-xs font-bold px-2.5 py-1 rounded-full">
             {totalUnread} non lu{totalUnread > 1 ? "s" : ""}
           </span>
         )}
@@ -261,18 +261,18 @@ export default function MessagesPage() {
                 }}
                 onTouchEnd={() => { if (longPressTimer.current) clearTimeout(longPressTimer.current); }}
                 onTouchMove={() => { if (longPressTimer.current) clearTimeout(longPressTimer.current); }}
-                className="w-full text-left flex items-start gap-3 p-4 rounded-2xl border border-[rgba(240,230,204,0.08)] hover:border-[rgba(240,230,204,0.16)] hover:bg-[rgba(240,230,204,0.03)] transition-all"
-                style={{ background: "#1a2e1e" }}
+                className="w-full text-left flex items-start gap-3 p-4 rounded-2xl border border-[rgba(134,239,172,0.08)] hover:border-[rgba(240,230,204,0.16)] hover:bg-[rgba(240,230,204,0.03)] transition-all"
+                style={{ background: "#0f2210" }}
               >
                 {/* Avatar */}
-                <div className="w-12 h-12 rounded-xl bg-[#c8901e] flex-shrink-0 flex items-center justify-center text-white font-bold text-lg">
+                <div className="w-12 h-12 rounded-xl bg-[#f97316] flex-shrink-0 flex items-center justify-center text-white font-bold text-lg">
                   {initial}
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2 mb-0.5">
-                    <p className="font-semibold text-[#f7f2e6] text-[15px] truncate">{conv.otherUserName}</p>
+                    <p className="font-semibold text-[#f0fdf4] text-[15px] truncate">{conv.otherUserName}</p>
                     {conv.lastMessage && (
                       <span className="text-[11px] text-[rgba(240,230,204,0.40)] flex-shrink-0">
                         {formatTime(conv.lastMessage.created_at)}
@@ -281,14 +281,14 @@ export default function MessagesPage() {
                   </div>
                   <div className="flex items-center gap-1 mb-1">
                     <Home className="w-3 h-3 text-[rgba(240,230,204,0.40)] flex-shrink-0" />
-                    <p className="text-xs text-[#daa84a] font-medium truncate">{conv.propertyTitle}</p>
+                    <p className="text-xs text-[#f97316] font-medium truncate">{conv.propertyTitle}</p>
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-[13px] text-[rgba(240,230,204,0.55)] truncate leading-snug">
+                    <p className="text-[13px] text-[rgba(187,247,208,0.55)] truncate leading-snug">
                       {conv.lastMessage?.content ?? ""}
                     </p>
                     {conv.unreadCount > 0 && (
-                      <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-[#c8901e] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                      <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-[#f97316] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                         {conv.unreadCount > 9 ? "9+" : conv.unreadCount}
                       </span>
                     )}
@@ -312,7 +312,7 @@ export default function MessagesPage() {
                   onClick={() => setContextMenu(null)}
                 >
                   <div
-                    className="bg-[#1a2e1e] rounded-2xl border border-[rgba(240,230,204,0.12)] overflow-hidden min-w-[180px] shadow-xl"
+                    className="bg-[#0f2210] rounded-2xl border border-[rgba(134,239,172,0.12)] overflow-hidden min-w-[180px] shadow-xl"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <button
@@ -323,7 +323,7 @@ export default function MessagesPage() {
                     </button>
                     <button
                       onClick={() => setContextMenu(null)}
-                      className="flex items-center w-full px-4 py-3 text-[rgba(240,230,204,0.50)] text-sm border-t border-[rgba(240,230,204,0.10)]"
+                      className="flex items-center w-full px-4 py-3 text-[rgba(240,230,204,0.50)] text-sm border-t border-[rgba(134,239,172,0.10)]"
                     >
                       Annuler
                     </button>

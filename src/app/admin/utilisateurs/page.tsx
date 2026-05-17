@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { CheckCircle, Shield, Search, Trash2, X } from "lucide-react";
@@ -6,11 +6,11 @@ import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabase";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
-const SURFACE  = "#1a2e1e";
-const BORDER   = "rgba(240,230,204,0.08)";
-const TEXT_PRI = "#f7f2e6";
-const TEXT_SEC = "rgba(240,230,204,0.55)";
-const ACCENT   = "#c8901e";
+const SURFACE  = "#0f2210";
+const BORDER   = "rgba(134,239,172,0.08)";
+const TEXT_PRI = "#f0fdf4";
+const TEXT_SEC = "rgba(187,247,208,0.55)";
+const ACCENT   = "#f97316";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Profile {
@@ -29,7 +29,7 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-  buyer: TEXT_SEC, owner: "#6ec97a", agent: "#60a5fa",
+  buyer: TEXT_SEC, owner: "#22c55e", agent: "#60a5fa",
   agency: "#a78bfa", admin: ACCENT,
 };
 
@@ -169,7 +169,7 @@ export default function AdminUtilisateursPage() {
                         {u.full_name || "Sans nom"}
                       </p>
                       {u.is_verified && (
-                        <CheckCircle size={14} color="#6ec97a" />
+                        <CheckCircle size={14} color="#22c55e" />
                       )}
                       {u.role && (
                         <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, color: roleColor, background: `${roleColor}18` }}>
@@ -218,7 +218,7 @@ export default function AdminUtilisateursPage() {
           onClick={() => setConfirmDelete(null)}
         >
           <div
-            style={{ background: "#1a2e1e", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
+            style={{ background: "#0f2210", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>

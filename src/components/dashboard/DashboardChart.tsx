@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import {
   BarChart, Bar, LineChart, Line,
   XAxis, YAxis, Tooltip, ResponsiveContainer,
@@ -25,9 +25,9 @@ const TICK = { fill: "rgba(240,230,204,0.35)", fontSize: 10 };
 const TOOLTIP_STYLE = {
   contentStyle: {
     background: "#0d1a10",
-    border: "1px solid rgba(240,230,204,0.15)",
+    border: "1px solid rgba(134,239,172,0.15)",
     borderRadius: 8,
-    color: "#f7f2e6",
+    color: "#f0fdf4",
     fontSize: 12,
   },
   cursor: { fill: "rgba(200,144,30,0.08)" },
@@ -71,7 +71,7 @@ export default function DashboardChart({
                 dataKey={s.dataKey}
                 name={s.name}
                 fill={s.color}
-                activeBar={{ fill: "#daa84a" }}
+                activeBar={{ fill: "#f97316" }}
                 radius={[3, 3, 0, 0]}
               />
             ))}
@@ -95,8 +95,8 @@ export default function DashboardChart({
                 name={s.name}
                 stroke={s.color}
                 strokeWidth={2}
-                dot={showDots && i === 0 ? { fill: "#daa84a", r: 3, strokeWidth: 0 } : false}
-                activeDot={showDots && i === 0 ? { r: 5, fill: "#daa84a" } : { r: 4 }}
+                dot={showDots && i === 0 ? { fill: "#f97316", r: 3, strokeWidth: 0 } : false}
+                activeDot={showDots && i === 0 ? { r: 5, fill: "#f97316" } : { r: 4 }}
               />
             ))}
           </LineChart>

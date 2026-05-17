@@ -233,7 +233,7 @@ function AnnoncesContent() {
   const activeFilterCount = [neighborhood, type, tx, hasPriceFilter ? "price" : ""].filter(Boolean).length;
 
   return (
-    <div className="bg-[#111a14] min-h-screen">
+    <div className="bg-[#0a1a0a] min-h-screen">
       {/* ── Sticky filter bar ───────────────────────────────────── */}
       <div className="sticky top-16 z-30 -mx-0 px-4 pt-4 pb-3 space-y-3" style={{ background: "rgba(15,15,15,0.97)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
         {/* Search pill + filter button */}
@@ -256,7 +256,7 @@ function AnnoncesContent() {
             aria-label="Rechercher les biens près de moi"
             className={cn(
               "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all",
-              nearbyCoords ? "text-[#6ec97a]" : "text-white/50 hover:text-white"
+              nearbyCoords ? "text-[#22c55e]" : "text-white/50 hover:text-white"
             )}
             style={nearbyCoords
               ? { background: "rgba(110,201,122,0.15)", border: "1px solid rgba(110,201,122,0.35)" }
@@ -365,7 +365,7 @@ function AnnoncesContent() {
                 <span className="font-bold text-white">{filtered.length}</span>{" "}
                 annonce{filtered.length !== 1 ? "s" : ""}
                 {hasFilters && (
-                  <button onClick={clearFilters} className="ml-2 text-[#daa84a] hover:underline text-xs">
+                  <button onClick={clearFilters} className="ml-2 text-[#f97316] hover:underline text-xs">
                     (voir tout)
                   </button>
                 )}
@@ -419,7 +419,7 @@ function AnnoncesContent() {
                 <button
                   onClick={() => setPage(safePage - 1)}
                   disabled={safePage === 1}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#daa84a] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#f97316] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -449,7 +449,7 @@ function AnnoncesContent() {
                 <button
                   onClick={() => setPage(safePage + 1)}
                   disabled={safePage === totalPages}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#daa84a] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#f97316] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
                 >
                   <ChevronRight className="w-4 h-4" />

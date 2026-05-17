@@ -11,12 +11,12 @@ import { supabase } from "@/lib/supabase";
 import { Avatar } from "@/components/ui/Avatar";
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
-const BG_SIDEBAR  = "#0a1209";
-const BORDER      = "rgba(240,230,204,0.08)";
-const TEXT_PRI    = "#f7f2e6";
-const TEXT_SEC    = "rgba(240,230,204,0.55)";
-const ACCENT      = "#c8901e";
-const SEPARATOR   = "rgba(240,230,204,0.06)";
+const BG_SIDEBAR  = "#050f05";
+const BORDER      = "rgba(134,239,172,0.08)";
+const TEXT_PRI    = "#f0fdf4";
+const TEXT_SEC    = "rgba(187,247,208,0.55)";
+const ACCENT      = "#f97316";
+const SEPARATOR   = "rgba(134,239,172,0.06)";
 
 // ─── Nav items ────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
@@ -69,7 +69,7 @@ function NavLink({
         padding: "10px 16px",
         borderRadius: 10,
         borderLeft: `3px solid ${isActive ? ACCENT : "transparent"}`,
-        background: isActive ? "rgba(200,144,30,0.15)" : "transparent",
+        background: isActive ? "rgba(249,115,22,0.15)" : "transparent",
         color: isActive ? ACCENT : TEXT_SEC,
         fontSize: 14, fontWeight: 500,
         textDecoration: "none",
@@ -77,7 +77,7 @@ function NavLink({
       }}
       onMouseEnter={(e) => {
         if (!isActive) {
-          (e.currentTarget as HTMLAnchorElement).style.background = "rgba(240,230,204,0.05)";
+          (e.currentTarget as HTMLAnchorElement).style.background = "rgba(134,239,172,0.05)";
           (e.currentTarget as HTMLAnchorElement).style.color = TEXT_PRI;
         }
       }}
@@ -222,7 +222,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (loading || !user || (profile !== null && profile.role !== "admin")) {
     return (
-      <div style={{ minHeight: "100vh", background: "#111a14", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ minHeight: "100vh", background: "#0a1a0a", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ width: 36, height: 36, borderRadius: "50%", border: `2px solid ${ACCENT}`, borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -232,7 +232,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const sidebarProps = { pathname, pendingReports, pendingMod, user, profile, onSignOut: handleSignOut };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#111a14" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "#0a1a0a" }}>
 
       {/* ── Desktop sidebar ── */}
       <aside
@@ -277,7 +277,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div style={{ position: "absolute", top: 12, right: 12 }}>
           <button
             onClick={() => setDrawerOpen(false)}
-            style={{ padding: 6, borderRadius: 8, border: "none", background: "rgba(240,230,204,0.08)", color: TEXT_SEC, cursor: "pointer" }}
+            style={{ padding: 6, borderRadius: 8, border: "none", background: "rgba(134,239,172,0.08)", color: TEXT_SEC, cursor: "pointer" }}
           >
             <X size={18} />
           </button>

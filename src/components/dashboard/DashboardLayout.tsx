@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { Menu, X, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -48,7 +48,7 @@ function SidebarLogo() {
   return (
     <div className="flex items-center gap-2.5 px-5 py-5" style={{ borderBottom: "1px solid var(--bl-border)" }}>
       <div style={{
-        width: 36, height: 36, background: "#c8901e", borderRadius: 8,
+        width: 36, height: 36, background: "#f97316", borderRadius: 8,
         display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
       }}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -161,7 +161,7 @@ export function DashboardLayout({ tabs, active, onChange, signOut, userName, use
             <div className="flex items-center justify-between px-4 py-4" style={{ borderBottom: "1px solid var(--bl-border)" }}>
               <div className="flex items-center gap-2.5">
                 <div style={{
-                  width: 32, height: 32, background: "#c8901e", borderRadius: 8,
+                  width: 32, height: 32, background: "#f97316", borderRadius: 8,
                   display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                 }}>
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

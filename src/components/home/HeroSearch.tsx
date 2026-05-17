@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
@@ -87,7 +87,7 @@ export function HeroSearch() {
             style={{
               minHeight: "44px",
               ...(tab === t
-                ? { background: "#f7f2e6", color: "#111a14" }
+                ? { background: "#f0fdf4", color: "#0a1a0a" }
                 : { color: "rgba(247,242,230,0.55)" }),
             }}
           >
@@ -113,14 +113,14 @@ export function HeroSearch() {
               onChange={(e) => {
                 setNeighborhood(e.target.value);
                 (e.target as HTMLSelectElement).style.color = e.target.value
-                  ? "#f7f2e6"
+                  ? "#f0fdf4"
                   : "rgba(247,242,230,0.55)";
               }}
               style={SELECT_BASE}
             >
-              <option value="" style={{ color: "#111a14" }}>Tous les quartiers</option>
+              <option value="" style={{ color: "#0a1a0a" }}>Tous les quartiers</option>
               {QUARTIERS.map((q) => (
-                <option key={q.id} value={q.id} style={{ color: "#111a14" }}>
+                <option key={q.id} value={q.id} style={{ color: "#0a1a0a" }}>
                   {q.name}
                 </option>
               ))}
@@ -142,14 +142,14 @@ export function HeroSearch() {
               onChange={(e) => {
                 setType(e.target.value);
                 (e.target as HTMLSelectElement).style.color = e.target.value
-                  ? "#f7f2e6"
+                  ? "#f0fdf4"
                   : "rgba(247,242,230,0.55)";
               }}
               style={SELECT_BASE}
             >
-              <option value="" style={{ color: "#111a14" }}>Tous les types</option>
+              <option value="" style={{ color: "#0a1a0a" }}>Tous les types</option>
               {TYPES.map((t) => (
-                <option key={t.id} value={t.id} style={{ color: "#111a14" }}>
+                <option key={t.id} value={t.id} style={{ color: "#0a1a0a" }}>
                   {t.name}
                 </option>
               ))}
@@ -163,9 +163,9 @@ export function HeroSearch() {
         <button
           onClick={handleSearch}
           className="flex-1 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-colors"
-          style={{ background: "#c8901e", color: "#fff", minHeight: "52px" }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "#b87c18"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "#c8901e"; }}
+          style={{ background: "#f97316", color: "#fff", minHeight: "52px" }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "#ea6c0a"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "#f97316"; }}
         >
           <Search className="w-4 h-4" />
           Rechercher

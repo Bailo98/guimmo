@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { ArrowLeft, MapPin, Bed, Bath, Square, Phone, CheckCircle, XCircle } from "lucide-react";
@@ -176,11 +176,11 @@ export default async function PropertyDetailPage({ params }: Props) {
   else
     otherEquip.push({ icon: "🏠", label: "RDC" });
 
-  const CARD_AVAIL = { background: "#1a3d2e", border: "1px solid rgba(240,230,204,0.10)" };
+  const CARD_AVAIL = { background: "#1a3d2e", border: "1px solid rgba(134,239,172,0.10)" };
   const CARD_NONE  = { background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.20)" };
 
   return (
-    <div className="bg-[#111a14] pb-32 md:pb-12">
+    <div className="bg-[#0a1a0a] pb-32 md:pb-12">
 
       {/* Back nav */}
       <div className="absolute top-[64px] left-0 right-0 z-20 flex items-center gap-3 px-4 pt-4">
@@ -203,7 +203,7 @@ export default async function PropertyDetailPage({ params }: Props) {
       {videoUrl && (
         <div style={{ background: "#0a1209" }}>
           <div style={{ maxWidth: 900, margin: "0 auto", padding: "56px 0 0" }}>
-            <p style={{ color: "#f7f2e6", fontSize: 14, fontWeight: 600, padding: "12px 16px 8px" }}>
+            <p style={{ color: "#f0fdf4", fontSize: 14, fontWeight: 600, padding: "12px 16px 8px" }}>
               🎥 Visite vidéo
             </p>
             <video
@@ -347,8 +347,8 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <span style={{ fontSize: 28, display: "block", marginBottom: 8 }}>
                       {WATER_INFO[waterKey]?.icon ?? "💧"}
                     </span>
-                    <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(240,230,204,0.55)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 4 }}>EAU</p>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: "#f7f2e6" }}>
+                    <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(187,247,208,0.55)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 4 }}>EAU</p>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: "#f0fdf4" }}>
                       {WATER_INFO[waterKey]?.label ?? waterKey}
                     </p>
                   </div>
@@ -357,8 +357,8 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <span style={{ fontSize: 28, display: "block", marginBottom: 8 }}>
                       {ELEC_INFO[elecKey]?.icon ?? "⚡"}
                     </span>
-                    <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(240,230,204,0.55)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 4 }}>ÉLECTRICITÉ</p>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: "#f7f2e6" }}>
+                    <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(187,247,208,0.55)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 4 }}>ÉLECTRICITÉ</p>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: "#f0fdf4" }}>
                       {ELEC_INFO[elecKey]?.label ?? elecKey}
                     </p>
                   </div>
@@ -367,8 +367,8 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <span style={{ fontSize: 28, display: "block", marginBottom: 8 }}>
                       {INET_INFO[inetKey]?.icon ?? "📶"}
                     </span>
-                    <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(240,230,204,0.55)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 4 }}>INTERNET</p>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: "#f7f2e6" }}>
+                    <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(187,247,208,0.55)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 4 }}>INTERNET</p>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: "#f0fdf4" }}>
                       {INET_INFO[inetKey]?.label ?? inetKey}
                     </p>
                   </div>
@@ -382,7 +382,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                     {otherEquip.map((eq) => (
                       <span key={eq.label} style={{
-                        background: "rgba(240,230,204,0.07)", border: "1px solid rgba(240,230,204,0.12)",
+                        background: "rgba(240,230,204,0.07)", border: "1px solid rgba(134,239,172,0.12)",
                         color: "rgba(240,230,204,0.70)", borderRadius: 999,
                         padding: "6px 14px", fontSize: 12,
                       }}>
@@ -430,12 +430,12 @@ export default async function PropertyDetailPage({ params }: Props) {
                   )}
                   <div className="flex flex-wrap gap-2">
                     {(profileData as {is_verified?: boolean} | null)?.is_verified && (
-                      <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(110,201,122,0.15)", color: "#6ec97a", border: "1px solid rgba(110,201,122,0.25)" }}>
+                      <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(110,201,122,0.15)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.25)" }}>
                         ✓ Propriétaire vérifié BienLoger
                       </span>
                     )}
                     {(property.property_images?.length ?? 0) > 0 && (
-                      <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(200,144,30,0.15)", color: "#daa84a", border: "1px solid rgba(200,144,30,0.25)" }}>
+                      <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(249,115,22,0.15)", color: "#f97316", border: "1px solid rgba(249,115,22,0.25)" }}>
                         📷 Photos réelles
                       </span>
                     )}
@@ -513,7 +513,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                 {/* Visit */}
                 <a href={visitUrl} target="_blank" rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 w-full font-semibold py-3 px-4 rounded-xl transition-colors text-sm"
-                  style={{ background: "rgba(240,230,204,0.08)", border: "1px solid rgba(240,230,204,0.20)", color: "#f7f2e6", minHeight: 48 }}>
+                  style={{ background: "rgba(134,239,172,0.08)", border: "1px solid rgba(240,230,204,0.20)", color: "#f0fdf4", minHeight: 48 }}>
                   📅 Visiter
                 </a>
 
@@ -552,7 +552,7 @@ export default async function PropertyDetailPage({ params }: Props) {
         <div className="flex gap-2">
           <a href={visitUrl} target="_blank" rel="noopener noreferrer"
             className="flex-1 flex items-center justify-center gap-1.5 text-white font-semibold rounded-xl text-sm"
-            style={{ background: "rgba(240,230,204,0.08)", border: "1px solid rgba(240,230,204,0.20)", minHeight: "48px" }}>
+            style={{ background: "rgba(134,239,172,0.08)", border: "1px solid rgba(240,230,204,0.20)", minHeight: "48px" }}>
             📅 Visiter
           </a>
           <a href={phoneUrl}
