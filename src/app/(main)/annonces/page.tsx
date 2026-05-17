@@ -7,6 +7,7 @@ import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { NearbySection } from "@/components/ui/NearbySection";
 import { VoiceSearchButton } from "@/components/ui/VoiceSearchButton";
 import { fetchProperties } from "@/lib/properties";
+import { SaveSearchButton } from "@/components/SaveSearchButton";
 import { cn } from "@/lib/utils";
 import type { Property } from "@/types";
 
@@ -355,7 +356,7 @@ function AnnoncesContent() {
           </div>
         )}
         {/* Results count */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
           <p className="text-sm text-[#6B7280]">
             {loading ? (
               <span className="inline-block w-24 h-4 bg-white/10 rounded animate-pulse" />
@@ -371,9 +372,20 @@ function AnnoncesContent() {
               </>
             )}
           </p>
-          {!loading && totalPages > 1 && (
-            <p className="text-xs text-white/40">Page {safePage} / {totalPages}</p>
-          )}
+          <div className="flex items-center gap-3">
+            {hasFilters && !loading && (
+              <SaveSearchButton
+                neighborhood={neighborhood || undefined}
+                type={type || undefined}
+                transactionType={tx || undefined}
+                priceMin={priceMin > 0 ? priceMin : undefined}
+                priceMax={priceMax < Infinity ? priceMax : undefined}
+              />
+            )}
+            {!loading && totalPages > 1 && (
+              <p className="text-xs text-white/40">Page {safePage} / {totalPages}</p>
+            )}
+          </div>
         </div>
 
         {/* Grid */}
