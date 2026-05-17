@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { ArrowLeft, MapPin, Bed, Bath, Square, Phone, CheckCircle, XCircle } from "lucide-react";
 import { ListingScore } from "@/components/ListingScore";
+import { Avatar } from "@/components/ui/Avatar";
 import { PhotoGallery } from "./PhotoGallery";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { MessageButton } from "@/components/property/MessageButton";
@@ -101,7 +102,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   if (row.owner_id) {
     const { data } = await db
       .from("profiles")
-      .select("id, full_name, phone, role, is_verified, created_at")
+      .select("id, full_name, phone, role, is_verified, created_at, avatar_url")
       .eq("id", row.owner_id)
       .maybeSingle();
     profileData = data;
@@ -477,6 +478,23 @@ export default async function PropertyDetailPage({ params }: Props) {
             {/* ── Sidebar (desktop) ── */}
             <div className="hidden lg:block lg:col-span-1">
               <div className="sticky top-20 rounded-2xl p-5 space-y-3" style={{ background: "rgba(255,255,255,0.07)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", border: "1px solid rgba(255,255,255,0.10)" }}>
+                {profileData && (
+                  <div className="flex items-center gap-3 pb-3 border-b border-white/8">
+                    <Avatar
+                      url={(profileData as { avatar_url?: string | null }).avatar_url}
+                      name={(profileData as { full_name?: string | null }).full_name ?? undefined}
+                      size="sm"
+                    />
+                    <div className="min-w-0">
+                      <p className="text-white font-semibold text-sm truncate">
+                        {(profileData as { full_name?: string | null }).full_name ?? "Propriétaire"}
+                      </p>
+                      {(profileData as { is_verified?: boolean }).is_verified && (
+                        <p className="text-green-400 text-xs">✓ Vérifié</p>
+                      )}
+                    </div>
+                  </div>
+                )}
                 <div className="text-center pb-3 border-b border-white/8">
                   <p className="text-3xl font-black text-white">
                     {formatGNF(property.price, property.price_period)}

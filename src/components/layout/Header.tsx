@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth-context";
 import { Logo } from "@/components/ui/Logo";
+import { Avatar } from "@/components/ui/Avatar";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -39,7 +40,6 @@ export function Header() {
   }
 
   const displayName = profile?.full_name ?? user?.email?.split("@")[0] ?? "Mon compte";
-  const initials = displayName.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
   const role = profile?.role ?? "buyer";
   const isAdmin = role === "admin";
   const isProprietaire = ["proprietaire", "owner", "agent", "agence", "admin"].includes(role);
@@ -95,9 +95,7 @@ export function Header() {
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="flex items-center gap-2 px-2 py-1.5 rounded-xl transition-colors hover:bg-white/10"
               >
-                <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.20)" }}>
-                  {initials || <User className="w-3.5 h-3.5" />}
-                </div>
+                <Avatar url={profile?.avatar_url} name={displayName} size="sm" />
                 <span className="text-sm font-medium max-w-[100px] truncate text-white/90">
                   {displayName.split(" ")[0]}
                 </span>

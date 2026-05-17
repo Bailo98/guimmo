@@ -28,6 +28,7 @@ import { DashboardLayout, type DashTab } from "@/components/dashboard/DashboardL
 import { StatCard } from "@/components/dashboard/StatCard";
 import { StatusBadge } from "@/components/dashboard/StatusBadge";
 import { SectionHeader } from "@/components/dashboard/SectionHeader";
+import { AvatarUpload } from "@/components/ui/AvatarUpload";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -162,9 +163,6 @@ function ProfileForm({ user, profile, refreshProfile }: {
   const isAgence = profile?.account_type === "agence" || profile?.role === "agence";
   const isPro    = ["agent","agence"].includes(profile?.account_type ?? "");
 
-  const displayName = profile?.full_name ?? user.email?.split("@")[0] ?? "?";
-  const initials = displayName.split(" ").map((w: string) => w[0]).join("").slice(0,2).toUpperCase();
-
   async function save() {
     if (!supabase || !fullName.trim()) return;
     setSaving(true);
@@ -211,15 +209,12 @@ function ProfileForm({ user, profile, refreshProfile }: {
     <div>
       {/* Avatar */}
       <div className="flex flex-col items-center mb-6">
-        {profile?.avatar_url ? (
-          <Image src={profile.avatar_url} alt={displayName} width={80} height={80} className="rounded-full object-cover mb-2" />
-        ) : (
-          <div className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-black mb-2"
-            style={{ background: "var(--bl-amber)", color: "#fff" }}>
-            {initials}
-          </div>
-        )}
-        <p className="text-xs font-semibold" style={{ color: "var(--bl-cream-faint)" }}>Photo de profil</p>
+        <AvatarUpload
+          userId={user.id}
+          currentUrl={profile?.avatar_url}
+          name={profile?.full_name}
+          onSuccess={() => { void refreshProfile(); }}
+        />
       </div>
 
       <div className="space-y-4 mb-6">

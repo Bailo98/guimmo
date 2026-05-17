@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
+import { Avatar } from "@/components/ui/Avatar";
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const BG_SIDEBAR  = "#0a1209";
@@ -110,13 +111,10 @@ function SidebarContent({
   pendingReports: number;
   pendingMod: number;
   user: { email?: string } | null;
-  profile: { full_name?: string | null; role?: string } | null;
+  profile: { full_name?: string | null; role?: string; avatar_url?: string | null } | null;
   onSignOut: () => void;
   onNavClick?: () => void;
 }) {
-  const initials = (profile?.full_name ?? user?.email ?? "A")
-    .split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
-
   function isActive(href: string) {
     if (href === "/admin") return pathname === "/admin";
     return pathname.startsWith(href);
@@ -155,13 +153,7 @@ function SidebarContent({
       {/* Bottom: user + logout */}
       <div style={{ padding: "12px 10px", borderTop: `1px solid ${BORDER}` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", marginBottom: 4 }}>
-          <div style={{
-            width: 34, height: 34, borderRadius: "50%", background: ACCENT, flexShrink: 0,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            color: "white", fontSize: 13, fontWeight: 700,
-          }}>
-            {initials}
-          </div>
+          <Avatar url={profile?.avatar_url} name={profile?.full_name ?? user?.email ?? "Admin"} size="sm" />
           <div style={{ flex: 1, minWidth: 0 }}>
             <p style={{ color: TEXT_PRI, fontSize: 13, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {profile?.full_name ?? "Admin"}

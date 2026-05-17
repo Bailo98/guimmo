@@ -1,6 +1,6 @@
 ﻿import type { Metadata } from "next";
-import Image from "next/image";
 import { MapPin, MessageCircle, UserCheck } from "lucide-react";
+import { Avatar } from "@/components/ui/Avatar";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { NEIGHBORHOODS } from "@/data/neighborhoods";
 import { AgentApplicationForm } from "./AgentApplicationForm";
@@ -98,16 +98,12 @@ export default async function AgentsPage() {
                   style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
                 >
                   {/* Avatar */}
-                  <div
-                    className="w-14 h-14 rounded-2xl overflow-hidden flex-shrink-0 flex items-center justify-center text-2xl font-black text-white/60"
-                    style={{ background: "rgba(200,144,30,0.15)", border: "1px solid rgba(200,144,30,0.20)" }}
-                  >
-                    {agent.photo_url ? (
-                      <Image src={agent.photo_url} alt={agent.name} width={56} height={56} className="object-cover w-full h-full" />
-                    ) : (
-                      agent.name[0]
-                    )}
-                  </div>
+                  <Avatar
+                    url={agent.photo_url}
+                    name={agent.name}
+                    size="md"
+                    style={{ width: 56, height: 56, borderRadius: 12, flexShrink: 0 }}
+                  />
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
