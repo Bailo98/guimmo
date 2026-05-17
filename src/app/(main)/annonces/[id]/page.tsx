@@ -102,7 +102,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   if (row.owner_id) {
     const { data } = await db
       .from("profiles")
-      .select("id, full_name, phone, role, is_verified, created_at, avatar_url")
+      .select("id, full_name, role, is_verified, created_at, avatar_url")
       .eq("id", row.owner_id)
       .maybeSingle();
     profileData = data;
@@ -143,8 +143,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   }
 
   const neighborhoodLabel = getNeighborhoodName(property.neighborhood);
-  type ProfileData = { phone?: string } | null;
-  const phone = property.contact_phone ?? (profileData as ProfileData)?.phone ?? "+224 620 00 00 00";
+  const phone = property.contact_phone ?? "+224 620 00 00 00";
   const whatsappPhone = phone.replace(/\D/g, "");
   const contactMsg = encodeURIComponent(
     `Bonjour, je suis intéressé par votre annonce "${property.title}" sur BienLoger`

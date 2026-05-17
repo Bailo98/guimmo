@@ -276,6 +276,19 @@ export default function PublierPage() {
       return;
     }
 
+    if (form.phone) {
+      const digitsOnly = form.phone.replace(/[\s+\-().]/g, "");
+      if (!/^\d{7,15}$/.test(digitsOnly)) {
+        toast("Numéro de téléphone invalide (7–15 chiffres)", "error");
+        return;
+      }
+    }
+
+    if ((form.locationDetail ?? "").length > 2000) {
+      toast("Description trop longue (max 2000 caractères)", "error");
+      return;
+    }
+
     setError(null);
 
     // Validate required fields before hitting the DB

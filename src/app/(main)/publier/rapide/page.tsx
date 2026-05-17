@@ -74,6 +74,19 @@ export default function PublierRapidePage() {
       }
 
       const priceNum = parseInt(form.price.replace(/\D/g, ""), 10);
+      if (!priceNum || priceNum <= 0) {
+        toast("Veuillez saisir un prix valide", "error");
+        setSubmitting(false);
+        return;
+      }
+
+      const digitsOnly = form.phone.replace(/[\s+\-().]/g, "");
+      if (!/^\d{7,15}$/.test(digitsOnly)) {
+        toast("Numéro de téléphone invalide (7–15 chiffres)", "error");
+        setSubmitting(false);
+        return;
+      }
+
       const nbName   = NEIGHBORHOODS.find((n) => n.id === form.neighborhood)?.name ?? form.neighborhood;
       const propType = form.type || "house";
       const title    = `${TYPE_OPTIONS.find((t) => t.id === propType)?.label ?? "Bien"} à ${nbName}`;
