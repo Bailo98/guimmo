@@ -1,0 +1,17 @@
+[project]
+project_id = "kqshknfrtlbjaufkdeeg"
+
+[functions.expire-listings]
+verify_jwt = false
+
+[functions.notify-saved-searches]
+verify_jwt = false
+
+[functions.monthly-report]
+verify_jwt = false
+
+[functions.auto-moderate]
+verify_jwt = false
+
+[functions.cleanup]
+verify_jwt = false
