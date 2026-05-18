@@ -3,7 +3,6 @@ import Image from "next/image";
 import { MapPin, ChevronRight, Bed, Square, CheckCircle2 } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { RecentlyViewedSection } from "@/components/ui/RecentlyViewedSection";
-import { HeroNavbar } from "@/components/home/HeroNavbar";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { formatPrice } from "@/lib/utils";
 import { createClient } from "@supabase/supabase-js";
@@ -215,8 +214,6 @@ export default async function HomePage() {
           }}
         />
 
-        {/* Custom navbar */}
-        <HeroNavbar />
 
         {/* Hero content */}
         <div className="relative flex-1 flex items-center w-full max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16">

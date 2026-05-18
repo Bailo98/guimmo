@@ -44,7 +44,7 @@ export function Header() {
   const isAdmin = role === "admin";
   const isProprietaire = ["proprietaire", "owner", "agent", "agence", "admin"].includes(role);
 
-  const NO_HEADER = ["/", "/inscription", "/connexion", "/mot-de-passe-oublie"];
+  const NO_HEADER = ["/inscription", "/connexion", "/mot-de-passe-oublie"];
   if (NO_HEADER.includes(pathname)) return null;
 
   return (
