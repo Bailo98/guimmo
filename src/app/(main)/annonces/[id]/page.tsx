@@ -9,6 +9,7 @@ import { PropertyCard } from "@/components/ui/PropertyCard";
 import { MessageButton } from "@/components/property/MessageButton";
 import { ReportButton } from "@/components/property/ReportButton";
 import { PropertyShareButton } from "@/components/property/PropertyShareButton";
+import { VisitButton } from "@/components/property/VisitButton";
 import type { VTRoom } from "@/components/VirtualTour";
 import VirtualTourWrapper from "@/components/VirtualTourWrapper";
 import { getNeighborhoodName } from "@/data/neighborhoods";
@@ -546,11 +547,11 @@ export default async function PropertyDetailPage({ params }: Props) {
           💬 WhatsApp
         </a>
         <div className="flex gap-2">
-          <a href={visitUrl} target="_blank" rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-1.5 text-white font-semibold rounded-xl text-sm"
-            style={{ background: "#1e2a30", border: "1px solid rgba(255,255,255,0.20)", minHeight: "48px" }}>
-            📅 Visiter
-          </a>
+          <VisitButton
+            propertyId={property.id}
+            ownerId={property.owner_id}
+            propertyTitle={property.title}
+          />
           <a href={phoneUrl}
             className="flex-1 flex items-center justify-center gap-2 text-white font-semibold rounded-xl text-sm"
             style={{ background: "#1a252b", border: "1px solid #1e2a30", minHeight: "48px" }}>

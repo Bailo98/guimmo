@@ -7,7 +7,7 @@ import {
   Plus, Eye, MapPin, LogOut, Pencil, Trash2, User,
   CheckCircle, XCircle, RotateCcw, AlertTriangle, Search,
   Bell, BellOff, Heart, MessageCircle, BarChart2, Home,
-  TrendingUp, Phone, Building2, ChevronRight, Download,
+  TrendingUp, Phone, Building2, ChevronRight, Download, Calendar,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 
@@ -53,6 +53,13 @@ interface Lead {
   id: string; sender_id: string; property_id: string | null;
   message: string; created_at: string;
   sender_name: string | null; sender_phone: string | null;
+}
+interface VisitRequest {
+  id: string; property_id: string; visitor_id: string;
+  visitor_name: string; visitor_phone: string; visitor_email: string | null;
+  preferred_date: string; preferred_time: string;
+  message: string | null; status: string; created_at: string;
+  properties?: { title: string; neighborhood: string } | null;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -606,6 +613,109 @@ function MonthlyReportSection({ userId }: { userId: string }) {
   );
 }
 
+// ─── VISIT REQUESTS MANAGER ───────────────────────────────────────────────────
+
+const TIME_LABEL: Record<string, string> = {
+  morning: "Matin (8h–12h)",
+  afternoon: "Après-midi (12h–17h)",
+  evening: "Soir (17h–20h)",
+};
+
+function VisitRequestsManager({ userId }: { userId: string }) {
+  const [visits, setVisits]   = useState<VisitRequest[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    if (!supabase) return;
+    setLoading(true);
+    const { data } = await supabase
+      .from("visit_requests")
+      .select("*, properties(title, neighborhood)")
+      .eq("owner_id", userId)
+      .order("created_at", { ascending: false });
+    setVisits((data ?? []) as VisitRequest[]);
+    setLoading(false);
+  }, [userId]);
+
+  useEffect(() => { load(); }, [load]);
+
+  async function updateStatus(id: string, status: "confirmed" | "rejected") {
+    if (!supabase) return;
+    await supabase.from("visit_requests").update({ status }).eq("id", id);
+    setVisits((prev) => prev.map((v) => v.id === id ? { ...v, status } : v));
+    toast(status === "confirmed" ? "✅ Visite confirmée" : "Demande refusée", status === "confirmed" ? "success" : "error");
+  }
+
+  const statusBadge = (s: string) => {
+    if (s === "confirmed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e" }}>Confirmée</span>;
+    if (s === "rejected")  return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)",  color: "#ef4444" }}>Refusée</span>;
+    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(233,233,0,0.15)", color: "#E9E900" }}>En attente</span>;
+  };
+
+  if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: "#1a252b" }} />)}</div>;
+
+  if (visits.length === 0) return (
+    <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
+      <Calendar className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
+      <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucune demande de visite</p>
+      <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Les demandes apparaîtront ici.</p>
+    </div>
+  );
+
+  return (
+    <div className="space-y-3">
+      {visits.map((v) => {
+        const ini = v.visitor_name.split(" ").map((w:string) => w[0]).join("").slice(0,2).toUpperCase();
+        const wa  = v.visitor_phone.replace(/\D/g, "");
+        const dateLabel = new Date(v.preferred_date + "T00:00:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
+        return (
+          <div key={v.id} className="rounded-2xl p-4 space-y-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                  style={{ background: "rgba(233,233,0,0.15)", color: "#E9E900" }}>{ini}</div>
+                <div>
+                  <p className="text-sm font-bold" style={{ color: "var(--bl-cream)" }}>{v.visitor_name}</p>
+                  <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>{v.properties?.title ?? v.property_id}</p>
+                </div>
+              </div>
+              {statusBadge(v.status)}
+            </div>
+            <div className="flex items-center gap-4 text-xs" style={{ color: "var(--bl-cream-dim)" }}>
+              <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{dateLabel} · {TIME_LABEL[v.preferred_time] ?? v.preferred_time}</span>
+            </div>
+            {v.message && <p className="text-xs px-3 py-2 rounded-lg" style={{ background: "rgba(255,255,255,0.04)", color: "var(--bl-cream-dim)" }}>{v.message}</p>}
+            <div className="flex items-center gap-2">
+              <a href={`tel:${v.visitor_phone}`}
+                className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold py-2 rounded-lg"
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}>
+                <Phone className="w-3.5 h-3.5" /> {v.visitor_phone}
+              </a>
+              <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-center px-3 py-2 rounded-lg text-xs font-bold"
+                style={{ background: "#25D366", color: "#fff" }}>WA</a>
+              {v.status === "pending" && (
+                <>
+                  <button onClick={() => updateStatus(v.id, "confirmed")}
+                    className="flex items-center justify-center px-3 py-2 rounded-lg text-xs font-bold"
+                    style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.30)" }}>
+                    <CheckCircle className="w-3.5 h-3.5" />
+                  </button>
+                  <button onClick={() => updateStatus(v.id, "rejected")}
+                    className="flex items-center justify-center px-3 py-2 rounded-lg text-xs font-bold"
+                    style={{ background: "rgba(239,68,68,0.10)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.25)" }}>
+                    <XCircle className="w-3.5 h-3.5" />
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── DASHBOARD PROPRIÉTAIRE ───────────────────────────────────────────────────
 
 function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
@@ -637,6 +747,7 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
   const tabs: DashTab[] = [
     { key: "dashboard", label: "Tableau de bord", icon: <BarChart2 className="w-4 h-4" /> },
     { key: "annonces",  label: "Mes annonces",    icon: <Home className="w-4 h-4" /> },
+    { key: "visites",   label: "Visites",         icon: <Calendar className="w-4 h-4" /> },
     { key: "messages",  label: "Messages",        icon: <MessageCircle className="w-4 h-4" /> },
     { key: "profil",    label: "Profil",          icon: <User className="w-4 h-4" /> },
   ];
@@ -695,6 +806,12 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
             </Link>
           } />
           <ListingsManager userId={user.id} />
+        </>
+      )}
+      {tab === "visites" && (
+        <>
+          <SectionHeader title="Demandes de visite" subtitle="Reçues sur vos annonces" />
+          <VisitRequestsManager userId={user.id} />
         </>
       )}
       {tab === "messages" && (
@@ -914,6 +1031,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
   const tabs: DashTab[] = [
     { key: "dashboard",    label: "Dashboard",    icon: <BarChart2 className="w-4 h-4" /> },
     { key: "annonces",     label: "Annonces",     icon: <Home className="w-4 h-4" /> },
+    { key: "visites",      label: "Visites",      icon: <Calendar className="w-4 h-4" /> },
     { key: "leads",        label: "Leads",        icon: <Phone className="w-4 h-4" /> },
     { key: "statistiques", label: "Statistiques", icon: <TrendingUp className="w-4 h-4" /> },
     { key: "profil",       label: "Profil",       icon: <User className="w-4 h-4" /> },
@@ -1002,6 +1120,12 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
         </>
       )}
       {tab === "annonces" && <><SectionHeader title="Mes annonces" /><ListingsManager userId={user.id} /></>}
+      {tab === "visites" && (
+        <>
+          <SectionHeader title="Demandes de visite" subtitle="Reçues sur vos annonces" />
+          <VisitRequestsManager userId={user.id} />
+        </>
+      )}
       {tab === "leads" && (
         <>
           <SectionHeader title="Leads" subtitle="Tous vos contacts reçus" />
@@ -1109,6 +1233,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
   const tabs: DashTab[] = [
     { key: "dashboard", label: "Dashboard",     icon: <BarChart2 className="w-4 h-4" /> },
     { key: "annonces",  label: "Annonces",      icon: <Home className="w-4 h-4" /> },
+    { key: "visites",   label: "Visites",       icon: <Calendar className="w-4 h-4" /> },
     { key: "equipe",    label: "Équipe",        icon: <Building2 className="w-4 h-4" /> },
     { key: "leads",     label: "Leads",         icon: <Phone className="w-4 h-4" /> },
     { key: "stats",     label: "Statistiques",  icon: <TrendingUp className="w-4 h-4" /> },
@@ -1186,6 +1311,12 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
         </>
       )}
       {tab === "annonces" && <><SectionHeader title="Toutes les annonces" /><ListingsManager userId={user.id} /></>}
+      {tab === "visites" && (
+        <>
+          <SectionHeader title="Demandes de visite" subtitle="Reçues sur vos annonces" />
+          <VisitRequestsManager userId={user.id} />
+        </>
+      )}
       {tab === "equipe" && (
         <>
           <SectionHeader title="Performance équipe" subtitle="Bientôt disponible" />
