@@ -1,15 +1,15 @@
-﻿"use client";
+"use client";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { Flag, X, Loader2, CheckCircle2 } from "lucide-react";
-
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 const REASONS = [
-  { id: "fraud",        label: "Annonce frauduleuse / arnaque" },
-  { id: "already_taken",label: "Logement déjà loué / vendu" },
-  { id: "fake_photos",  label: "Photos fausses ou volées" },
-  { id: "wrong_price",  label: "Prix incorrect" },
-  { id: "other",        label: "Autre" },
+  { id: "fraud",         label: "Annonce frauduleuse / arnaque" },
+  { id: "already_taken", label: "Logement déjà loué / vendu" },
+  { id: "fake_photos",   label: "Photos fausses ou volées" },
+  { id: "wrong_price",   label: "Prix incorrect" },
+  { id: "other",         label: "Autre" },
 ];
 
 interface Props {
@@ -17,29 +17,34 @@ interface Props {
 }
 
 export function ReportButton({ propertyId }: Props) {
-  const [open, setOpen]             = useState(false);
-  const [reason, setReason]         = useState("");
-  const [details, setDetails]       = useState("");
+  const [open, setOpen]                   = useState(false);
+  const [reason, setReason]               = useState("");
+  const [details, setDetails]             = useState("");
   const [reporterPhone, setReporterPhone] = useState("");
-  const [loading, setLoading]       = useState(false);
-  const [done, setDone]             = useState(false);
-  const [hovered, setHovered]       = useState(false);
+  const [loading, setLoading]             = useState(false);
+  const [done, setDone]                   = useState(false);
+  const [hovered, setHovered]             = useState(false);
+
+  function openModal() {
+    setOpen(true);
+    document.body.style.overflow = "hidden";
+  }
 
   function close() {
     setOpen(false);
     document.body.style.overflow = "";
+    setTimeout(() => { setDone(false); setReason(""); setDetails(""); setReporterPhone(""); }, 300);
   }
 
   async function submit() {
     if (!reason) return;
     setLoading(true);
-
     try {
       if (isSupabaseConfigured && supabase) {
         await supabase.from("reports").insert({
-          property_id:   propertyId,
+          property_id:    propertyId,
           reason,
-          details:       details.trim() || null,
+          details:        details.trim() || null,
           reporter_phone: reporterPhone.trim() || null,
         });
       }
@@ -51,52 +56,32 @@ export function ReportButton({ propertyId }: Props) {
     }
   }
 
-  if (!open) {
-    return (
-      <button
-        onClick={() => { setOpen(true); document.body.style.overflow = "hidden"; }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs transition-all"
-        style={{
-          border: hovered ? "1px solid rgba(239,68,68,0.3)" : "1px solid rgba(255,255,255,0.12)",
-          background: "rgba(255,255,255,0.04)",
-          color: hovered ? "#ef4444" : "#aaaaaa",
-        }}
-      >
-        <Flag className="w-3.5 h-3.5" />
-        Signaler cette annonce
-      </button>
-    );
-  }
-
-  return (
+  const modal = (
     <div
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 99999,
-        background: "rgba(0,0,0,0.8)",
+        zIndex: 2147483647,
+        background: "rgba(0,0,0,0.85)",
         backdropFilter: "blur(8px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         padding: 16,
       }}
+      onClick={(e) => { if (e.target === e.currentTarget) close(); }}
     >
       <div
+        className="space-y-5"
         style={{
           position: "relative",
-          zIndex: 100000,
           background: "#1a252b",
           borderRadius: 20,
           padding: 24,
           width: "100%",
-          maxWidth: 480,
-          maxHeight: "70vh",
+          maxWidth: 460,
+          maxHeight: "80vh",
           overflowY: "auto",
-          margin: "auto",
-          border: "1px solid rgba(255,255,255,0.10)",
         }}
       >
         {done ? (
@@ -105,7 +90,7 @@ export function ReportButton({ propertyId }: Props) {
             <p className="text-white font-bold text-lg">Merci pour votre signalement</p>
             <p className="text-white/50 text-sm">Notre équipe va examiner cette annonce.</p>
             <button
-              onClick={() => { close(); setDone(false); setReason(""); setDetails(""); setReporterPhone(""); }}
+              onClick={close}
               className="mt-2 px-5 py-2.5 rounded-xl text-white font-bold text-sm"
               style={{ background: "rgba(255,255,255,0.10)" }}
             >
@@ -140,11 +125,13 @@ export function ReportButton({ propertyId }: Props) {
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all"
                   style={{
                     background: reason === r.id ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.04)",
-                    border: reason === r.id ? "1px solid rgba(239,68,68,0.40)" : "1px solid rgba(255,255,255,0.08)",
+                    border:     reason === r.id ? "1px solid rgba(239,68,68,0.40)" : "1px solid rgba(255,255,255,0.08)",
                   }}
                 >
-                  <div className="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0"
-                    style={{ borderColor: reason === r.id ? "#ef4444" : "rgba(255,255,255,0.25)" }}>
+                  <div
+                    className="w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+                    style={{ borderColor: reason === r.id ? "#ef4444" : "rgba(255,255,255,0.25)" }}
+                  >
                     {reason === r.id && <div className="w-2 h-2 rounded-full bg-red-500" />}
                   </div>
                   <span className="text-white/80 text-sm">{r.label}</span>
@@ -180,7 +167,7 @@ export function ReportButton({ propertyId }: Props) {
               style={{
                 minHeight: 52,
                 background: reason && !loading ? "#dc2626" : "rgba(255,255,255,0.08)",
-                color: reason && !loading ? "#fff" : "rgba(255,255,255,0.30)",
+                color:      reason && !loading ? "#fff"    : "rgba(255,255,255,0.30)",
               }}
             >
               {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Envoi…</> : "🚩 Envoyer le signalement"}
@@ -189,5 +176,26 @@ export function ReportButton({ propertyId }: Props) {
         )}
       </div>
     </div>
+  );
+
+  return (
+    <>
+      <button
+        onClick={openModal}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs transition-all"
+        style={{
+          border:     hovered ? "1px solid rgba(239,68,68,0.3)" : "1px solid rgba(255,255,255,0.12)",
+          background: "rgba(255,255,255,0.04)",
+          color:      hovered ? "#ef4444" : "#aaaaaa",
+        }}
+      >
+        <Flag className="w-3.5 h-3.5" />
+        Signaler cette annonce
+      </button>
+
+      {open && typeof document !== "undefined" && createPortal(modal, document.body)}
+    </>
   );
 }
