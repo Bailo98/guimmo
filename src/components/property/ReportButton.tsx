@@ -25,6 +25,11 @@ export function ReportButton({ propertyId }: Props) {
   const [done, setDone]             = useState(false);
   const [hovered, setHovered]       = useState(false);
 
+  function close() {
+    setOpen(false);
+    document.body.style.overflow = "";
+  }
+
   async function submit() {
     if (!reason) return;
     setLoading(true);
@@ -49,7 +54,7 @@ export function ReportButton({ propertyId }: Props) {
   if (!open) {
     return (
       <button
-        onClick={() => setOpen(true)}
+        onClick={() => { setOpen(true); document.body.style.overflow = "hidden"; }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs transition-all"
@@ -67,12 +72,32 @@ export function ReportButton({ propertyId }: Props) {
 
   return (
     <div
-      className="fixed inset-0 flex items-end sm:items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)", zIndex: 9999, paddingBottom: 120 }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 99999,
+        background: "rgba(0,0,0,0.8)",
+        backdropFilter: "blur(8px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+      }}
     >
       <div
-        className="w-full max-w-md rounded-3xl p-6 space-y-5"
-        style={{ background: "#0A1216", border: "1px solid rgba(255,255,255,0.10)", zIndex: 10000 }}
+        style={{
+          position: "relative",
+          zIndex: 100000,
+          background: "#1a252b",
+          borderRadius: 20,
+          padding: 24,
+          width: "100%",
+          maxWidth: 480,
+          maxHeight: "70vh",
+          overflowY: "auto",
+          margin: "auto",
+          border: "1px solid rgba(255,255,255,0.10)",
+        }}
       >
         {done ? (
           <div className="text-center py-4 space-y-3">
@@ -80,7 +105,7 @@ export function ReportButton({ propertyId }: Props) {
             <p className="text-white font-bold text-lg">Merci pour votre signalement</p>
             <p className="text-white/50 text-sm">Notre équipe va examiner cette annonce.</p>
             <button
-              onClick={() => { setOpen(false); setDone(false); setReason(""); setDetails(""); setReporterPhone(""); }}
+              onClick={() => { close(); setDone(false); setReason(""); setDetails(""); setReporterPhone(""); }}
               className="mt-2 px-5 py-2.5 rounded-xl text-white font-bold text-sm"
               style={{ background: "rgba(255,255,255,0.10)" }}
             >
@@ -96,7 +121,7 @@ export function ReportButton({ propertyId }: Props) {
                 <h2 className="text-white font-black text-base">Pourquoi signalez-vous cette annonce ?</h2>
               </div>
               <button
-                onClick={() => setOpen(false)}
+                onClick={close}
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:text-white transition-colors"
                 style={{ background: "rgba(255,255,255,0.08)" }}
               >

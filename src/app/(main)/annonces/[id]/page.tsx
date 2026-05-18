@@ -538,7 +538,7 @@ export default async function PropertyDetailPage({ params }: Props) {
       </div>
 
       {/* Mobile sticky CTA */}
-      <div className="lg:hidden fixed bottom-16 left-0 right-0 z-40 px-4 pt-3 space-y-2" style={{ background: "rgba(10,18,22,0.97)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderTop: "1px solid #1e2a30", paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
+      <div className="lg:hidden fixed bottom-16 left-0 right-0 z-[50] px-4 pt-3 space-y-2" style={{ background: "rgba(10,18,22,0.97)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderTop: "1px solid #1e2a30", paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
         <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#c4c400] active:scale-[0.99] text-white font-bold rounded-2xl text-sm shadow-[0_4px_20px_rgba(37,211,102,0.35)]"
           style={{ minHeight: "52px" }}>
