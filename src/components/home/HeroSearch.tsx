@@ -67,11 +67,10 @@ export function HeroSearch() {
 
   return (
     <div
-      className="rounded-2xl p-3 sm:p-4 w-full"
+      className="rounded-2xl p-3 sm:p-4 w-full max-w-[640px] lg:max-w-[680px] mx-auto"
       style={{
         background: "#111a1f",
         border: "1px solid #1e2a30",
-        maxWidth: "min(520px, 100%)",
       }}
     >
       {/* Tabs — pleine largeur, 50/50 */}

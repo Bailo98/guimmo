@@ -16,7 +16,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   return (
     <ToastProvider>
       <Header />
-      <main className="min-h-screen pb-[calc(64px+env(safe-area-inset-bottom,0px))] md:pb-0">
+      <main className="min-h-screen pt-[72px] pb-[calc(64px+env(safe-area-inset-bottom,0px))] md:pb-0">
         <PageTransition>{children}</PageTransition>
       </main>
       <Footer whatsappNumber={whatsappNumber} />

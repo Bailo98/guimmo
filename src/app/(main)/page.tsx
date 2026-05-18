@@ -223,7 +223,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-20 items-center w-full">
 
             {/* ── Left column ── */}
-            <div className="text-center lg:text-left" style={{ maxWidth: "560px" }}>
+            <div className="text-center lg:text-left">
               {/* Badge pill */}
               <div
                 className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-8"

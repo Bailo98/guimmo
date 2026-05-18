@@ -49,10 +49,10 @@ export function Header() {
 
   return (
     <header
-      className="sticky top-0 z-40 transition-all duration-300"
+      className="fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300"
       style={{ background: "rgba(10,18,22,0.97)", backdropFilter: "blur(16px) saturate(180%)", WebkitBackdropFilter: "blur(16px) saturate(180%)", borderBottom: "1px solid #1e2a30" }}
     >
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 h-[72px] flex items-center justify-between gap-4">
         <Logo />
 
         <nav className="hidden md:flex items-center gap-1">
