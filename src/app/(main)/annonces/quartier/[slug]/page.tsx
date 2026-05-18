@@ -6,6 +6,7 @@ import { PropertyCard } from "@/components/ui/PropertyCard";
 import { NEIGHBORHOODS, getNeighborhoodName } from "@/data/neighborhoods";
 import type { Metadata } from "next";
 import type { Property } from "@/types";
+import { formatPrice } from "@/lib/utils";
 
 const SLUGS = [
   "kipe", "hamdallaye", "dixinn", "ratoma", "taouyah", "sonfonia",
@@ -69,9 +70,7 @@ export default async function QuartierPage({ params }: Props) {
       ? Math.round(properties.reduce((s, p) => s + p.price, 0) / properties.length)
       : null;
 
-  const avgFormatted = avgPrice
-    ? new Intl.NumberFormat("fr-GN", { maximumFractionDigits: 0 }).format(avgPrice)
-    : null;
+  const avgFormatted = avgPrice ? formatPrice(avgPrice) : null;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 pb-24">
@@ -114,7 +113,7 @@ export default async function QuartierPage({ params }: Props) {
           {avgFormatted && (
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
               style={{ background: "rgba(233,233,0,0.12)", border: "1px solid rgba(233,233,0,0.25)", color: "#E9E900" }}>
-              Prix moyen : {avgFormatted} GNF
+              Prix moyen : {avgFormatted}
             </div>
           )}
         </div>

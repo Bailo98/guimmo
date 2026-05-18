@@ -5,6 +5,7 @@ import { Flag, CheckCircle, XCircle, RefreshCw } from "lucide-react";
 import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabase";
 import { getNeighborhoodName } from "@/data/neighborhoods";
+import { formatPrice } from "@/lib/utils";
 
 const TYPE_LABELS: Record<string, string> = {
   apartment: "Appartement", studio: "Studio", villa: "Villa",
@@ -44,10 +45,6 @@ interface Report {
   reporter?: { full_name: string | null; email: string | null } | null;
 }
 
-function fmtGNF(n: number, period: string | null) {
-  const fmt = new Intl.NumberFormat("fr-GN", { maximumFractionDigits: 0 }).format(n);
-  return period === "month" ? `${fmt} GNF/mois` : `${fmt} GNF`;
-}
 
 function fmtDate(s: string) {
   return new Date(s).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
@@ -211,7 +208,7 @@ export default function AdminModerationPage() {
                         </span>
                       </div>
                       <p style={{ color: "#666666", fontSize: 12, margin: "0 0 4px" }}>
-                        {getNeighborhoodName(prop.neighborhood)}, Conakry · {fmtGNF(prop.price, prop.price_period)} · {fmtDate(prop.created_at)}
+                        {getNeighborhoodName(prop.neighborhood)}, Conakry · {formatPrice(prop.price, "GNF", prop.price_period)} · {fmtDate(prop.created_at)}
                       </p>
                       {prop.contact_phone && (
                         <p style={{ color: "#666666", fontSize: 11, margin: 0 }}>

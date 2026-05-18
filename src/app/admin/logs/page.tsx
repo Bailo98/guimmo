@@ -8,7 +8,7 @@ const LOGS = [
   { id: 5, action: "info", message: "Nouvel utilisateur inscrit: Mariama Diallo", admin: "Système", date: "2026-05-08 09:05", icon: "info" },
   { id: 6, action: "delete", message: "Compte utilisateur 'spam123' supprimé", admin: "Admin Principal", date: "2026-05-07 15:30", icon: "trash" },
   { id: 7, action: "warning", message: "Boost expiré pour 'Villa Hamdallaye'", admin: "Système", date: "2026-05-07 00:00", icon: "alert" },
-  { id: 8, action: "info", message: "Paiement de 50 000 GNF reçu - Mamadou Keita", admin: "Système", date: "2026-05-06 12:18", icon: "info" },
+  { id: 8, action: "info", message: "Paiement de 50.000 GNF reçu - Mamadou Keita", admin: "Système", date: "2026-05-06 12:18", icon: "info" },
   { id: 9, action: "approve", message: "Annonce 'Bureau Kaloum' approuvée", admin: "Admin Principal", date: "2026-05-05 10:45", icon: "check" },
   { id: 10, action: "warning", message: "3 tentatives de connexion échouées - IP 196.168.1.45", admin: "Système", date: "2026-05-04 22:10", icon: "alert" },
 ];

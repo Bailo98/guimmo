@@ -13,6 +13,7 @@ import type { VTRoom } from "@/components/VirtualTour";
 import VirtualTourWrapper from "@/components/VirtualTourWrapper";
 import { getNeighborhoodName } from "@/data/neighborhoods";
 import type { Metadata } from "next";
+import { formatPrice } from "@/lib/utils";
 import type { Property } from "@/types";
 
 interface Props {
@@ -41,11 +42,6 @@ const INET_INFO: Record<string, { icon: string; label: string }> = {
   none: { icon: "❌", label: "Pas d'internet" },
 };
 
-function formatGNF(amount: number, period?: string | null): string {
-  const formatted = new Intl.NumberFormat("fr-GN", { maximumFractionDigits: 0 }).format(amount);
-  const base = `${formatted} GNF`;
-  return period === "month" ? `${base}/mois` : base;
-}
 
 
 export const revalidate = 60;
@@ -66,8 +62,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .single();
   if (!data) return { title: "Annonce introuvable — BienLoger" };
   const neighborhoodLabel = getNeighborhoodName((data as { neighborhood?: string }).neighborhood ?? "");
-  const priceFormatted = new Intl.NumberFormat("fr-GN", { maximumFractionDigits: 0 }).format((data as { price?: number }).price ?? 0);
-  const ogDescription = (data.description ?? `${neighborhoodLabel} — ${priceFormatted} GNF`).slice(0, 160);
+  const priceFormatted = formatPrice((data as { price?: number }).price ?? 0);
+  const ogDescription = (data.description ?? `${neighborhoodLabel} — ${priceFormatted}`).slice(0, 160);
   const image = ((data as { property_images?: { url: string }[] }).property_images ?? [])[0]?.url;
   return {
     title: data.title,
@@ -280,7 +276,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <PropertyShareButton
                       title={property.title}
                       neighborhood={neighborhoodLabel}
-                      price={formatGNF(property.price, property.price_period)}
+                      price={formatPrice(property.price, "GNF", property.price_period)}
                       rooms={property.rooms}
                       bathrooms={property.bathrooms}
                       surface={property.surface}
@@ -294,7 +290,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <span className="text-white/60">{neighborhoodLabel}, {property.city}</span>
                 </div>
                 <p className="text-2xl md:text-3xl font-black mt-3" style={{ color: "#E9E900" }}>
-                  {formatGNF(property.price, property.price_period)}
+                  {formatPrice(property.price, "GNF", property.price_period)}
                 </p>
               </div>
 
@@ -496,7 +492,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                 )}
                 <div className="text-center pb-3 border-b border-white/8">
                   <p className="text-3xl font-black text-white">
-                    {formatGNF(property.price, property.price_period)}
+                    {formatPrice(property.price, "GNF", property.price_period)}
                   </p>
                   <p className="text-white/50 text-sm mt-1">
                     {neighborhoodLabel} · {TYPE_LABELS[property.type] ?? property.type}

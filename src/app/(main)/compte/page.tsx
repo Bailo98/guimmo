@@ -23,7 +23,7 @@ const DashboardChart = dynamic(
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { DashboardLayout, type DashTab } from "@/components/dashboard/DashboardLayout";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { StatusBadge } from "@/components/dashboard/StatusBadge";
@@ -68,10 +68,6 @@ const TL: Record<string, string> = {
   apartment: "Appartement", house: "Maison", studio: "Studio",
   villa: "Villa", room: "Chambre", office: "Bureau", shop: "Boutique",
 };
-function fmtGNF(n: number, period?: string | null) {
-  const f = new Intl.NumberFormat("fr-GN", { maximumFractionDigits: 0 }).format(n);
-  return period === "month" ? `${f} GNF/mois` : `${f} GNF`;
-}
 function fmtDate(iso: string) {
   const d = new Date(iso);
   return `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}`;
@@ -416,7 +412,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
                   <div className="flex items-center gap-1 text-xs mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>
                     <MapPin className="w-3 h-3 flex-shrink-0" />{NL[listing.neighborhood] ?? listing.neighborhood}
                   </div>
-                  <p className="font-bold text-sm mt-1" style={{ color: "var(--bl-amber-light)" }}>{fmtGNF(listing.price, listing.price_period)}</p>
+                  <p className="font-bold text-sm mt-1" style={{ color: "var(--bl-amber-light)" }}>{formatPrice(listing.price, "GNF", listing.price_period)}</p>
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                     {listing.status === "pending" ? (
                       <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ background: "rgba(233,233,0,0.15)", color: "#E9E900" }}>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Calculator, ChevronRight, Info, TrendingUp } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 
 const NEIGHBORHOODS = [
   { id: "kipe", name: "Kipé" },
@@ -65,9 +65,6 @@ function estimate(
   return { min: Math.round(mid * 0.85), max: Math.round(mid * 1.15), mid };
 }
 
-function formatGNF(amount: number): string {
-  return `${amount.toLocaleString("fr-FR")} GNF`;
-}
 
 export default function EstimateurPage() {
   const [neighborhood, setNeighborhood] = useState("kipe");
@@ -251,7 +248,7 @@ export default function EstimateurPage() {
                   <div className="text-center mb-5">
                     <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">Fourchette estimée</p>
                     <p className="text-2xl font-black text-slate-800 dark:text-white">
-                      {formatGNF(result.min)} — {formatGNF(result.max)}
+                      {formatPrice(result.min)} — {formatPrice(result.max)}
                     </p>
                     <p className="text-xs text-slate-400 mt-1">par mois</p>
                   </div>
@@ -260,7 +257,7 @@ export default function EstimateurPage() {
                   <div className="bg-gradient-to-br from-[#E9E900]/10 to-[#c4c400]/5 border border-[#E9E900]/20 rounded-xl p-4 text-center mb-5">
                     <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Prix estimé</p>
                     <p className="text-3xl font-black text-[#E9E900]">
-                      {formatGNF(result.mid)}
+                      {formatPrice(result.mid)}
                     </p>
                     <p className="text-xs text-slate-400 mt-1">par mois</p>
                   </div>
@@ -274,7 +271,7 @@ export default function EstimateurPage() {
                     <div>
                       <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
                         <span>Votre bien</span>
-                        <span>{formatGNF(result.mid)}</span>
+                        <span>{formatPrice(result.mid)}</span>
                       </div>
                       <div className="h-3 bg-slate-100 dark:bg-[#0f1117] rounded-full overflow-hidden">
                         <div
@@ -287,7 +284,7 @@ export default function EstimateurPage() {
                     <div>
                       <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
                         <span>Prix moyen quartier</span>
-                        <span>{formatGNF(avgMarket)}</span>
+                        <span>{formatPrice(avgMarket)}</span>
                       </div>
                       <div className="h-3 bg-slate-100 dark:bg-[#0f1117] rounded-full overflow-hidden">
                         <div

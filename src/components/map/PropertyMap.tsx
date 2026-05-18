@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Flame } from "lucide-react";
 import type { Property } from "@/types";
 import { NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 
 interface PropertyMapProps {
   properties: Property[];
@@ -49,11 +49,7 @@ function buildMarkers(
       const jitter = () => (Math.random() - 0.5) * 0.003;
       const position: [number, number] = [coords[0] + jitter(), coords[1] + jitter()];
 
-      const formattedPrice = new Intl.NumberFormat("fr-GN", {
-        style: "currency",
-        currency: "GNF",
-        maximumFractionDigits: 0,
-      }).format(property.price);
+      const formattedPrice = formatPrice(property.price);
 
       const popup = L.popup({ maxWidth: 240, className: "leaflet-popup-custom" }).setContent(`
         <div style="font-family:system-ui,sans-serif;padding:4px 0;">

@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { TrendingUp } from "lucide-react";
+import { formatPrice } from "@/lib/utils";
 import {
   LineChart,
   Line,
@@ -15,12 +16,6 @@ interface Props {
   transactionType: string;
 }
 
-const formatGNF = (value: number) =>
-  new Intl.NumberFormat("fr-GN", {
-    style: "currency",
-    currency: "GNF",
-    maximumFractionDigits: 0,
-  }).format(value);
 
 function generatePriceData(currentPrice: number) {
   const months = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin"];
@@ -40,7 +35,7 @@ function CustomTooltip({ active, payload, label }: any) {
     return (
       <div className="bg-[#1e2430] border border-[#2a3040] rounded-lg px-3 py-2 shadow-xl">
         <p className="text-slate-400 text-xs mb-0.5">{label}</p>
-        <p className="text-white font-bold text-sm">{formatGNF(payload[0].value)}</p>
+        <p className="text-white font-bold text-sm">{formatPrice(payload[0].value)}</p>
       </div>
     );
   }

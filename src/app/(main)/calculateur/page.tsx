@@ -7,10 +7,6 @@ import { Calculator, Info, ChevronRight } from "lucide-react";
 
 const CHARGE_PRESETS = [100000, 200000, 300000];
 
-function formatGNF(v: number) {
-  return `${v.toLocaleString("fr-FR")} GNF`;
-}
-
 export default function CalculateurPage() {
   const [revenu, setRevenu] = useState(5000000);
   const [charges, setCharges] = useState(200000);
@@ -45,7 +41,7 @@ export default function CalculateurPage() {
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Revenu mensuel</label>
-            <span className="text-[#E9E900] font-bold text-sm">{formatGNF(revenu)}</span>
+            <span className="text-[#E9E900] font-bold text-sm">{formatPrice(revenu)}</span>
           </div>
           <input
             type="range"
@@ -86,7 +82,7 @@ export default function CalculateurPage() {
                     : "border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-400 hover:border-[#E9E900] hover:text-[#E9E900]"
                 }`}
               >
-                {formatGNF(preset)}
+                {formatPrice(preset)}
               </button>
             ))}
             <button
@@ -110,7 +106,7 @@ export default function CalculateurPage() {
             />
           )}
           <p className="text-xs text-slate-400 mt-1">
-            Charges actuelles : <span className="font-semibold text-slate-600 dark:text-slate-300">{formatGNF(chargesValue)}</span>
+            Charges actuelles : <span className="font-semibold text-slate-600 dark:text-slate-300">{formatPrice(chargesValue)}</span>
           </p>
         </div>
       </div>
@@ -121,9 +117,9 @@ export default function CalculateurPage() {
         style={{ background: "linear-gradient(135deg, #E9E900, #c4c400)" }}
       >
         <p className="text-orange-100 text-sm font-medium mb-1">Budget maximum recommandé pour le loyer</p>
-        <p className="text-4xl font-black mb-1">{formatGNF(budgetMax)}</p>
+        <p className="text-4xl font-black mb-1">{formatPrice(budgetMax)}</p>
         <p className="text-orange-100 text-xs">
-          = ({formatGNF(revenu)} - {formatGNF(chargesValue)}) × 33%
+          = ({formatPrice(revenu)} - {formatPrice(chargesValue)}) × 33%
         </p>
         <div className="mt-4 pt-4 border-t border-white/20 flex items-start gap-2">
           <Info className="w-4 h-4 text-orange-100 flex-shrink-0 mt-0.5" />
@@ -156,7 +152,7 @@ export default function CalculateurPage() {
         ) : filteredProperties.length === 0 ? (
           <div className="bg-[#2c2f36] rounded-2xl p-8 border border-[#1e2a30] text-center">
             <p className="text-slate-500 dark:text-slate-400 text-sm mb-2">
-              Aucune annonce disponible pour un budget de {formatGNF(budgetMax)}.
+              Aucune annonce disponible pour un budget de {formatPrice(budgetMax)}.
             </p>
             <p className="text-slate-400 text-xs">
               Essayez d&apos;augmenter votre revenu ou de réduire vos charges.

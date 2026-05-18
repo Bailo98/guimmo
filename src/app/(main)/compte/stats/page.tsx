@@ -191,7 +191,7 @@ export default function StatsPage() {
               <div className="bg-orange-50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-900/30 rounded-xl p-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-slate-600 dark:text-slate-300">Montant du boost (7 jours)</span>
-                  <span className="font-black text-lg" style={{ color: "#FF7900" }}>50 000 GNF</span>
+                  <span className="font-black text-lg" style={{ color: "#FF7900" }}>50.000 GNF</span>
                 </div>
               </div>
 

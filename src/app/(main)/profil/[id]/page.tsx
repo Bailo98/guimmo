@@ -4,6 +4,7 @@ import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { MapPin, CheckCircle, Phone } from "lucide-react";
 import type { Metadata } from "next";
+import { formatPrice } from "@/lib/utils";
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -21,11 +22,6 @@ const ROLE_LABELS: Record<string, string> = {
   chercheur: "Chercheur", buyer: "Chercheur",
   admin: "Admin",
 };
-
-function formatGNF(n: number, period?: string | null) {
-  const f = new Intl.NumberFormat("fr-GN", { maximumFractionDigits: 0 }).format(n);
-  return period === "month" ? `${f} GNF/mois` : `${f} GNF`;
-}
 
 function getDB() {
   return createClient(
@@ -146,7 +142,7 @@ export default async function ProfilPage({ params }: Props) {
                     {NEIGHBORHOOD_LABELS[l.neighborhood] ?? l.neighborhood}
                   </div>
                   <p className="text-[#E9E900] font-bold text-sm mt-1">
-                    {formatGNF(l.price, l.price_period)}
+                    {formatPrice(l.price, "GNF", l.price_period)}
                   </p>
                 </div>
               </Link>

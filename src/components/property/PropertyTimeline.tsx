@@ -1,4 +1,5 @@
 ﻿import { History } from "lucide-react";
+import { formatPrice } from "@/lib/utils";
 
 interface TimelineEvent {
   date: Date;
@@ -39,7 +40,7 @@ function buildTimeline(
     const oldPrice = Math.round(price * 1.1);
     events.push({
       date: priceDate,
-      label: `Prix réduit de ${oldPrice.toLocaleString()} → ${price.toLocaleString()} GNF`,
+      label: `Prix réduit de ${formatPrice(oldPrice)} → ${formatPrice(price)}`,
       type: "price",
       icon: "💰",
     });

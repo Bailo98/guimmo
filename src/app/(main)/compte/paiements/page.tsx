@@ -53,7 +53,7 @@ export default function PaiementsPage() {
         </div>
         <div className="flex-1">
           <p className="font-semibold text-slate-900 dark:text-white text-sm">Booster une annonce</p>
-          <p className="text-slate-400 text-xs">À partir de 50 000 GNF / 7 jours</p>
+          <p className="text-slate-400 text-xs">À partir de 50.000 GNF / 7 jours</p>
         </div>
         <Link href="/tarifs" className="flex items-center gap-1 text-[#E9E900] text-sm font-bold hover:underline flex-shrink-0">
           Voir <ArrowRight className="w-3 h-3" />

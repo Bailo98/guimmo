@@ -6,6 +6,7 @@ import { Upload, X, CheckCircle, Loader2, AlertTriangle, Download } from "lucide
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
 import { useAuth } from "@/lib/auth-context";
+import { formatPrice } from "@/lib/utils";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
 const SURFACE  = "#111a1f";
@@ -225,7 +226,7 @@ export default function AdminImportPage() {
                       <td style={{ padding: "8px 12px", color: TEXT_PRI, fontWeight: 500, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.data.title}</td>
                       <td style={{ padding: "8px 12px", color: TEXT_SEC, whiteSpace: "nowrap" }}>{r.data.type}</td>
                       <td style={{ padding: "8px 12px", color: TEXT_SEC, whiteSpace: "nowrap" }}>{r.data.transaction_type}</td>
-                      <td style={{ padding: "8px 12px", color: ACCENT, fontWeight: 700, whiteSpace: "nowrap" }}>{Number(r.data.price).toLocaleString("fr-FR")} GNF</td>
+                      <td style={{ padding: "8px 12px", color: ACCENT, fontWeight: 700, whiteSpace: "nowrap" }}>{formatPrice(Number(r.data.price))}</td>
                       <td style={{ padding: "8px 12px", color: TEXT_SEC, whiteSpace: "nowrap" }}>{r.data.neighborhood}</td>
                       <td style={{ padding: "8px 12px", whiteSpace: "nowrap" }}>
                         {r.valid ? (

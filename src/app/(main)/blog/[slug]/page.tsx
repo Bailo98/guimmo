@@ -123,11 +123,11 @@ function getArticleContent(slug: string, article: (typeof ARTICLES)[0]): string 
 <h2>Tendances des prix par quartier</h2>
 <p>L'analyse des annonces publiées sur BienLoger révèle les dynamiques suivantes :</p>
 <ul>
-  <li><strong>Kaloum</strong> : prix moyen 3 000 000 GNF/mois pour un appartement. Demande stable, offre limitée.</li>
-  <li><strong>Dixinn</strong> : 2 500 000 GNF/mois en moyenne. Quartier diplomatique très prisé des expatriés.</li>
-  <li><strong>Kipé</strong> : 2 000 000 GNF/mois. Forte croissance (+18% en 2 ans), infrastructures en amélioration.</li>
-  <li><strong>Taouyah</strong> : 2 200 000 GNF/mois. Nouveau quartier résidentiel en plein essor, calme et verdoyant.</li>
-  <li><strong>Madina</strong> : 1 200 000 GNF/mois. Marché populaire très animé, idéal pour les petits budgets.</li>
+  <li><strong>Kaloum</strong> : prix moyen 3.000.000 GNF/mois pour un appartement. Demande stable, offre limitée.</li>
+  <li><strong>Dixinn</strong> : 2.500.000 GNF/mois en moyenne. Quartier diplomatique très prisé des expatriés.</li>
+  <li><strong>Kipé</strong> : 2.000.000 GNF/mois. Forte croissance (+18% en 2 ans), infrastructures en amélioration.</li>
+  <li><strong>Taouyah</strong> : 2.200.000 GNF/mois. Nouveau quartier résidentiel en plein essor, calme et verdoyant.</li>
+  <li><strong>Madina</strong> : 1.200.000 GNF/mois. Marché populaire très animé, idéal pour les petits budgets.</li>
 </ul>
 
 <h2>Facteurs d'évolution du marché</h2>

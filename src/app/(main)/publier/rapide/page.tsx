@@ -6,7 +6,7 @@ import { Camera, Upload, X, Phone, MapPin, CheckCircle2, Loader2 } from "lucide-
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
 import { NEIGHBORHOODS } from "@/data/neighborhoods";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 
 const COMMUNES = ["Ratoma", "Dixinn", "Matam", "Kaloum", "Matoto", "Coyah"];
 
@@ -24,7 +24,7 @@ type PType = typeof TYPE_OPTIONS[number]["id"];
 function formatGNF(raw: string): string {
   const n = parseInt(raw.replace(/\D/g, ""), 10);
   if (isNaN(n) || n === 0) return "";
-  return new Intl.NumberFormat("fr-GN", { maximumFractionDigits: 0 }).format(n) + " GNF";
+  return formatPrice(n);
 }
 
 export default function PublierRapidePage() {

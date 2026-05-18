@@ -15,7 +15,7 @@ const TESTIMONIALS = [
     rating: 5,
     text: "J'ai trouvé mon appartement en 3 jours grâce à BienLoger. Les photos correspondaient exactement à la réalité, et le propriétaire était très réactif sur WhatsApp.",
     neighborhood: "Kipé",
-    saved: "500 000 GNF/mois",
+    saved: "500.000 GNF/mois",
   },
   {
     name: "Fatoumata Bah",
@@ -31,7 +31,7 @@ const TESTIMONIALS = [
     rating: 4,
     text: "Super plateforme ! La carte interactive m'a permis de trouver exactement le quartier que je voulais. J'aurais aimé encore plus de photos.",
     neighborhood: "Hamdallaye",
-    saved: "1 200 000 GNF",
+    saved: "1.200.000 GNF",
   },
   {
     name: "Aissatou Camara",
@@ -63,7 +63,7 @@ const TESTIMONIALS = [
     rating: 5,
     text: "Le calculateur de budget est vraiment pratique. Ça m'a aidé à définir clairement ce que je pouvais me permettre avant de chercher.",
     neighborhood: "Dixinn",
-    saved: "800 000 GNF",
+    saved: "800.000 GNF",
   },
   {
     name: "Kadiatou Konaté",
@@ -79,7 +79,7 @@ const TESTIMONIALS = [
     rating: 4,
     text: "Très bonne expérience. Le processus de réservation de visite est simple et j'ai pu visiter 4 appartements en une journée grâce à la carte.",
     neighborhood: "Kaloum",
-    saved: "300 000 GNF",
+    saved: "300.000 GNF",
   },
 ];
 

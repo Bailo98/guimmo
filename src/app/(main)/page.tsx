@@ -60,12 +60,12 @@ const HERO_GRADIENTS: [string, string][] = [
 ];
 
 const POPULAR_NEIGHBORHOODS = [
-  { id: "kipe",       name: "Kipé",       avgPrice: "2 500 000 GNF/mois" },
-  { id: "hamdallaye", name: "Hamdallaye", avgPrice: "1 800 000 GNF/mois" },
-  { id: "dixinn",     name: "Dixinn",     avgPrice: "3 200 000 GNF/mois" },
-  { id: "ratoma",     name: "Ratoma",     avgPrice: "1 500 000 GNF/mois" },
-  { id: "taouyah",    name: "Taouyah",    avgPrice: "2 000 000 GNF/mois" },
-  { id: "sonfonia",   name: "Sonfonia",   avgPrice: "1 200 000 GNF/mois" },
+  { id: "kipe",       name: "Kipé",       avgPrice: "2.500.000 GNF/mois" },
+  { id: "hamdallaye", name: "Hamdallaye", avgPrice: "1.800.000 GNF/mois" },
+  { id: "dixinn",     name: "Dixinn",     avgPrice: "3.200.000 GNF/mois" },
+  { id: "ratoma",     name: "Ratoma",     avgPrice: "1.500.000 GNF/mois" },
+  { id: "taouyah",    name: "Taouyah",    avgPrice: "2.000.000 GNF/mois" },
+  { id: "sonfonia",   name: "Sonfonia",   avgPrice: "1.200.000 GNF/mois" },
 ];
 
 const WHY_BienLoger = [

@@ -10,7 +10,7 @@ import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
 import { NEIGHBORHOODS } from "@/data/neighborhoods";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 
 type PType = "apartment" | "house" | "studio" | "villa" | "room" | "land";
 type TxType = "rent" | "sale";
@@ -66,7 +66,7 @@ interface FormState {
 function formatGNF(raw: string): string {
   const n = parseInt(raw.replace(/\D/g, ""), 10);
   if (isNaN(n) || n === 0) return "";
-  return new Intl.NumberFormat("fr-GN", { maximumFractionDigits: 0 }).format(n) + " GNF";
+  return formatPrice(n);
 }
 
 function generateTitle(type: string, rooms: number, neighborhood: string): string {

@@ -5,8 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatPrice(amount: number, currency = "GNF"): string {
-  return `${amount.toLocaleString("fr-FR")} ${currency}`;
+export function formatPrice(amount: number, currency = "GNF", period?: string | null): string {
+  const formatted = amount.toLocaleString("fr-FR").replace(/ /g, ".").replace(/\s/g, ".");
+  const base = `${formatted} ${currency}`;
+  if (period === "month") return `${base}/mois`;
+  if (period === "year") return `${base}/an`;
+  return base;
 }
 
 export function formatDate(date: Date | string): string {

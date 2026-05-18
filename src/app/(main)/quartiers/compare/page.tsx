@@ -2,6 +2,7 @@
 import { useState, useMemo } from "react";
 import { MapPin, TrendingUp, TrendingDown, Minus, Home, Car, Trees, ShoppingBag, School } from "lucide-react";
 import Link from "next/link";
+import { formatPrice } from "@/lib/utils";
 
 const NEIGHBORHOODS = [
   { id: "kipe", label: "Kipé", avgRent: 3200000, avgSale: 450000000, surface: 85, transport: 4, green: 3, shops: 4, schools: 4, safety: 4, desc: "Quartier résidentiel prisé, calme et bien équipé." },
@@ -28,9 +29,6 @@ function Stars({ value }: { value: number }) {
   );
 }
 
-function formatPrice(n: number) {
-  return `${n.toLocaleString("fr-FR")} GNF`;
-}
 
 type Neighborhood = typeof NEIGHBORHOODS[0];
 

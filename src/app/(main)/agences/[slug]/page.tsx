@@ -4,6 +4,7 @@ import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { CheckCircle, MapPin, Phone, MessageCircle, Building2 } from "lucide-react";
 import type { Metadata } from "next";
+import { formatPrice } from "@/lib/utils";
 
 // slug = profile UUID for agency accounts
 interface Props { params: Promise<{ slug: string }> }
@@ -15,11 +16,6 @@ const NEIGHBORHOOD_LABELS: Record<string, string> = {
   dixinn: "Dixinn", matam: "Matam", madina: "Madina",
   kaloum: "Kaloum", matoto: "Matoto Centre", sangoyah: "Sangoyah",
 };
-
-function formatGNF(n: number, period?: string | null) {
-  const f = new Intl.NumberFormat("fr-GN", { maximumFractionDigits: 0 }).format(n);
-  return period === "month" ? `${f} GNF/mois` : `${f} GNF`;
-}
 
 function getDB() {
   return createClient(
@@ -190,7 +186,7 @@ export default async function AgenceProfilePage({ params }: Props) {
                       <MapPin className="w-3 h-3 flex-shrink-0" />
                       {NEIGHBORHOOD_LABELS[listing.neighborhood] ?? listing.neighborhood}
                     </div>
-                    <p className="font-bold text-sm" style={{ color: "var(--bl-amber)" }}>{formatGNF(listing.price, listing.price_period)}</p>
+                    <p className="font-bold text-sm" style={{ color: "var(--bl-amber)" }}>{formatPrice(listing.price, "GNF", listing.price_period)}</p>
                   </div>
                 </Link>
               );
