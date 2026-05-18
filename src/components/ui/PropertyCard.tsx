@@ -1,8 +1,8 @@
-﻿"use client";
-import { useState } from "react";
+"use client";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { Heart, ChevronLeft, ChevronRight, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
@@ -41,8 +41,16 @@ export function PropertyCard({ property, variant = "default", className, index =
   const { toggleFavorite, isFavorite, _hasHydrated } = useAppStore();
   const { user } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [currentImg, setCurrentImg] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+
   const fav = _hasHydrated && isFavorite(property.id);
-  const primaryImage = property.property_images?.find((i) => i.is_primary) ?? property.property_images?.[0];
+  const images = [...(property.property_images ?? [])].sort((a, b) =>
+    a.is_primary === b.is_primary ? 0 : a.is_primary ? -1 : 1
+  );
+  const imgCount = images.length;
+  const primaryImage = images[0];
+
   const neighborhoodLabel = NEIGHBORHOOD_LABELS[property.neighborhood] ?? property.neighborhood;
   const phone = property.contact_phone;
   const sharePrice = property.price_period === "month"
@@ -52,6 +60,31 @@ export function PropertyCard({ property, variant = "default", className, index =
   const shareUrl = `${siteUrl}/annonces/${property.id}`;
   const createdAt = new Date(property.created_at ?? Date.now());
   const isNew = Date.now() - createdAt.getTime() < 7 * 24 * 60 * 60 * 1000;
+
+  function prev(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImg((i) => (i - 1 + imgCount) % imgCount);
+  }
+
+  function next(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImg((i) => (i + 1) % imgCount);
+  }
+
+  function onTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function onTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(dx) < 40) return;
+    if (dx < 0) setCurrentImg((i) => (i + 1) % imgCount);
+    else setCurrentImg((i) => (i - 1 + imgCount) % imgCount);
+  }
 
   // ── Horizontal variant (unchanged) ─────────────────────────────
   if (variant === "horizontal") {
@@ -90,66 +123,128 @@ export function PropertyCard({ property, variant = "default", className, index =
     );
   }
 
-  // ── Default variant — Light card ──────────────────────────────
+  // ── Default variant — Dark card with image slider ──────────────────────────────
   return (
     <div
-      className={cn("group flex flex-col overflow-hidden", className)}
+      className={cn("group flex flex-col", className)}
       style={{
-        background: "#EAEAEA",
-        borderRadius: 16,
-        border: "none",
-        cursor: "pointer",
+        background: "#2c2f36",
+        borderRadius: 20,
+        overflow: "hidden",
         transition: "transform 0.2s ease, box-shadow 0.2s ease",
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLDivElement).style.transform = "translateY(-4px)";
-        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 12px 40px rgba(0,0,0,0.18)";
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 12px 40px rgba(0,0,0,0.35)";
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLDivElement).style.transform = "";
         (e.currentTarget as HTMLDivElement).style.boxShadow = "";
       }}
     >
-      {/* ── Image section ── */}
+      {/* ── Slider section ── */}
       <Link
         href={`/annonces/${property.id}`}
-        className="relative block flex-shrink-0"
-        style={{ height: 210, overflow: "hidden", borderRadius: "16px 16px 0 0" }}
+        className="relative block flex-shrink-0 group/img"
+        style={{ height: 210, overflow: "hidden" }}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
       >
-        {primaryImage ? (
+        {/* Current image or placeholder */}
+        {imgCount > 0 ? (
           <Image
-            src={primaryImage.url}
+            src={images[currentImg].url}
             alt={property.title}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             quality={65}
             priority={index < 4}
             loading={index < 4 ? undefined : "lazy"}
-            style={{ display: "block", width: "100%", height: "100%" }}
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center gap-2"
-            style={{ background: "#d4d4d4" }}>
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-              <polyline points="9,22 9,12 15,12 15,22" />
-            </svg>
-            <span style={{ color: "#999", fontSize: 11 }}>Aucune photo</span>
+            style={{ background: "#1a2026" }}>
+            <Home style={{ width: 40, height: 40, color: "rgba(255,255,255,0.18)", strokeWidth: 1.5 }} />
+            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 11 }}>Aucune photo</span>
           </div>
         )}
 
-        {/* Top badges */}
-        <div className="absolute flex items-center gap-1.5 flex-wrap" style={{ top: 10, left: 10, maxWidth: "calc(100% - 56px)" }}>
+        {/* Left arrow */}
+        {imgCount > 1 && (
+          <button
+            onClick={prev}
+            aria-label="Image précédente"
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover/img:opacity-100 transition-opacity"
+            style={{
+              width: 32, height: 32,
+              background: "rgba(0,0,0,0.55)",
+              border: "none", borderRadius: "50%",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "pointer", color: "#fff",
+              backdropFilter: "blur(4px)",
+            }}
+          >
+            <ChevronLeft style={{ width: 16, height: 16 }} />
+          </button>
+        )}
+
+        {/* Right arrow */}
+        {imgCount > 1 && (
+          <button
+            onClick={next}
+            aria-label="Image suivante"
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover/img:opacity-100 transition-opacity"
+            style={{
+              width: 32, height: 32,
+              background: "rgba(0,0,0,0.55)",
+              border: "none", borderRadius: "50%",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "pointer", color: "#fff",
+              backdropFilter: "blur(4px)",
+            }}
+          >
+            <ChevronRight style={{ width: 16, height: 16 }} />
+          </button>
+        )}
+
+        {/* Dot indicators */}
+        {imgCount > 1 && (
+          <div
+            className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 z-10"
+            style={{ bottom: 10 }}
+          >
+            {images.map((_, i) => (
+              <button
+                key={i}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCurrentImg(i); }}
+                aria-label={`Image ${i + 1}`}
+                style={{
+                  width: i === currentImg ? 16 : 6,
+                  height: 6,
+                  borderRadius: 3,
+                  background: i === currentImg ? "#fff" : "rgba(255,255,255,0.45)",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 0,
+                  transition: "width 0.2s ease, background 0.2s ease",
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Top-left badges */}
+        <div className="absolute flex items-center gap-1.5 flex-wrap" style={{ top: 10, left: 10, maxWidth: "calc(100% - 56px)", zIndex: 10 }}>
           <span style={{ background: "rgba(10,18,22,0.75)", color: "#fff", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 600, whiteSpace: "nowrap", backdropFilter: "blur(4px)" }}>
             {TYPE_LABELS[property.type] ?? property.type}
           </span>
           {property.transaction_type === "rent" ? (
-            <span style={{ background: "rgba(233,233,0,0.15)", color: "#666600", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 600, whiteSpace: "nowrap", border: "1px solid rgba(233,233,0,0.3)" }}>
+            <span style={{ background: "rgba(233,233,0,0.90)", color: "#0A1216", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap" }}>
               Location
             </span>
           ) : (
-            <span style={{ background: "rgba(10,18,22,0.65)", color: "#fff", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 600, whiteSpace: "nowrap", backdropFilter: "blur(4px)" }}>
+            <span style={{ background: "rgba(10,18,22,0.75)", color: "#fff", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 600, whiteSpace: "nowrap", backdropFilter: "blur(4px)" }}>
               Vente
             </span>
           )}
@@ -170,7 +265,7 @@ export function PropertyCard({ property, variant = "default", className, index =
           )}
         </div>
 
-        {/* Favorite button */}
+        {/* Favorite button — top right */}
         <button
           onClick={(e) => {
             e.preventDefault();
@@ -181,7 +276,7 @@ export function PropertyCard({ property, variant = "default", className, index =
           }}
           aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
           style={{
-            position: "absolute", top: 10, right: 10,
+            position: "absolute", top: 10, right: 10, zIndex: 10,
             width: 34, height: 34,
             background: "rgba(10,18,22,0.65)", border: "none", borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
@@ -195,7 +290,7 @@ export function PropertyCard({ property, variant = "default", className, index =
 
         {/* Video badge */}
         {property.video_url && (
-          <div style={{ position: "absolute", bottom: 10, left: 10 }}>
+          <div style={{ position: "absolute", bottom: 10, left: 10, zIndex: 10 }}>
             <span style={{ background: "#E9E900", color: "#0A1216", fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700 }}>
               ▶ Vidéo
             </span>
@@ -203,15 +298,15 @@ export function PropertyCard({ property, variant = "default", className, index =
         )}
       </Link>
 
-      {/* ── Card body (light) ── */}
-      <div style={{ padding: "12px 14px", background: "#EAEAEA", flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
+      {/* ── Card body ── */}
+      <div style={{ padding: "12px 14px", flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
         {/* Title */}
-        <p style={{ fontSize: 14, fontWeight: 700, color: "#0A1216", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <p style={{ fontSize: 14, fontWeight: 700, color: "#ffffff", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {property.title}
         </p>
 
         {/* Neighborhood */}
-        <div style={{ fontSize: 12, color: "#666666", display: "flex", alignItems: "center", gap: 3 }}>
+        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", display: "flex", alignItems: "center", gap: 3 }}>
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}>
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
             <circle cx="12" cy="10" r="3" />
@@ -220,36 +315,36 @@ export function PropertyCard({ property, variant = "default", className, index =
         </div>
 
         {/* Price */}
-        <div style={{ fontSize: 15, fontWeight: 700, color: "#0A1216", display: "flex", alignItems: "baseline", gap: 4 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: "#E9E900", display: "flex", alignItems: "baseline", gap: 4 }}>
           {formatPrice(property.price)}
           {property.price_period === "month" && (
-            <span style={{ fontSize: 11, fontWeight: 400, color: "#666" }}>/mois</span>
+            <span style={{ fontSize: 11, fontWeight: 400, color: "rgba(255,255,255,0.4)" }}>/mois</span>
           )}
           {property.transaction_type === "sale" && property.price_period !== "month" && (
-            <span style={{ fontSize: 11, fontWeight: 400, color: "#666" }}>/vente</span>
+            <span style={{ fontSize: 11, fontWeight: 400, color: "rgba(255,255,255,0.4)" }}>/vente</span>
           )}
         </div>
 
         {/* Specs row */}
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
           {(property.rooms ?? 0) > 0 && (
-            <span style={{ fontSize: 11, color: "#0A1216", display: "flex", alignItems: "center", gap: 3, fontWeight: 500 }}>
-              <span style={{ color: "#E9E900" }}>🛏</span> {property.rooms} ch.
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.65)", display: "flex", alignItems: "center", gap: 3, fontWeight: 500 }}>
+              🛏 {property.rooms} ch.
             </span>
           )}
           {(property.surface ?? 0) > 0 && (
-            <span style={{ fontSize: 11, color: "#0A1216", display: "flex", alignItems: "center", gap: 3, fontWeight: 500 }}>
-              <span style={{ color: "#E9E900" }}>📐</span> {property.surface} m²
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.65)", display: "flex", alignItems: "center", gap: 3, fontWeight: 500 }}>
+              📐 {property.surface} m²
             </span>
           )}
           {property.water_source && property.water_source !== "none" && (
-            <span style={{ fontSize: 11, color: "#666" }}>💧</span>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>💧</span>
           )}
           {property.electricity && property.electricity !== "none" && (
-            <span style={{ fontSize: 11, color: "#666" }}>⚡</span>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>⚡</span>
           )}
           {property.internet === "wifi" && (
-            <span style={{ fontSize: 11, color: "#666" }}>📶</span>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>📶</span>
           )}
         </div>
 
