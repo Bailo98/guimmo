@@ -14,9 +14,10 @@ const REASONS = [
 
 interface Props {
   propertyId: string;
+  propertyTitle?: string;
 }
 
-export function ReportButton({ propertyId }: Props) {
+export function ReportButton({ propertyId, propertyTitle = "" }: Props) {
   const [open, setOpen]                   = useState(false);
   const [reason, setReason]               = useState("");
   const [details, setDetails]             = useState("");
@@ -47,6 +48,17 @@ export function ReportButton({ propertyId }: Props) {
           details:        details.trim() || null,
           reporter_phone: reporterPhone.trim() || null,
         });
+        // Notify admin by email — fire and forget
+        fetch("/api/notify-admin-report", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            propertyTitle,
+            reason,
+            details: details.trim() || null,
+            reporterPhone: reporterPhone.trim() || null,
+          }),
+        }).catch(() => {});
       }
       setDone(true);
     } catch {

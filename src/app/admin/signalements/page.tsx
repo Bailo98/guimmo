@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { AlertTriangle, CheckCircle, EyeOff, Loader2 } from "lucide-react";
+import { AlertTriangle, CheckCircle, EyeOff, Loader2, RefreshCw } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
 
@@ -54,7 +54,11 @@ export default function AdminSignalementsPage() {
     setLoading(false);
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+    const interval = setInterval(load, 30_000);
+    return () => clearInterval(interval);
+  }, [load]);
 
   async function handleMasquer(r: Report) {
     if (!supabase) return;
@@ -100,22 +104,40 @@ export default function AdminSignalementsPage() {
             {loading ? "Chargement…" : `${reports.length} signalement(s)`}
           </p>
         </div>
-        {reports.length > 0 && !loading && (
+        <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
           <button
-            onClick={handleIgnoreAll}
-            disabled={busy === "all"}
+            onClick={() => load()}
+            disabled={loading}
+            title="Actualiser"
             style={{
               display: "flex", alignItems: "center", gap: 6,
-              padding: "8px 16px", borderRadius: 10,
+              padding: "8px 14px", borderRadius: 10,
               border: `1px solid ${BORDER}`, background: "transparent",
-              color: TEXT_PRI, fontSize: 13, fontWeight: 600,
-              cursor: "pointer", flexShrink: 0,
-              opacity: busy === "all" ? 0.5 : 1,
+              color: TEXT_SEC, fontSize: 13, fontWeight: 600,
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.5 : 1,
             }}
           >
-            <CheckCircle size={15} /> Ignorer tout
+            <RefreshCw size={15} style={{ animation: loading ? "spin 0.8s linear infinite" : "none" }} />
+            Actualiser
           </button>
-        )}
+          {reports.length > 0 && !loading && (
+            <button
+              onClick={handleIgnoreAll}
+              disabled={busy === "all"}
+              style={{
+                display: "flex", alignItems: "center", gap: 6,
+                padding: "8px 16px", borderRadius: 10,
+                border: `1px solid ${BORDER}`, background: "transparent",
+                color: TEXT_PRI, fontSize: 13, fontWeight: 600,
+                cursor: "pointer",
+                opacity: busy === "all" ? 0.5 : 1,
+              }}
+            >
+              <CheckCircle size={15} /> Ignorer tout
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Stats badge */}

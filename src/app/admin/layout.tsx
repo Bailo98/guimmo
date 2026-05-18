@@ -1,5 +1,5 @@
 ﻿"use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -196,6 +196,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [pendingReports, setPendingReports] = useState(0);
   const [pendingMod, setPendingMod] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const reportsChannelRef = useRef<ReturnType<NonNullable<typeof supabase>["channel"]> | null>(null);
 
   useEffect(() => {
     if (loading) return;
@@ -205,11 +206,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (!supabase || !user) return;
-    supabase.from("reports").select("*", { count: "exact", head: true })
-      .then(({ count }) => setPendingReports(count ?? 0));
-    supabase.from("properties").select("*", { count: "exact", head: true })
-      .eq("status", "pending")
-      .then(({ count }) => setPendingMod(count ?? 0));
+
+    async function loadCount() {
+      if (!supabase) return;
+      const [{ count: rc }, { count: mc }] = await Promise.all([
+        supabase.from("reports").select("*", { count: "exact", head: true }),
+        supabase.from("properties").select("*", { count: "exact", head: true }).eq("status", "pending"),
+      ]);
+      setPendingReports(rc ?? 0);
+      setPendingMod(mc ?? 0);
+    }
+
+    loadCount();
+
+    if (reportsChannelRef.current) supabase.removeChannel(reportsChannelRef.current);
+    reportsChannelRef.current = supabase
+      .channel("reports-count")
+      .on("postgres_changes", { event: "*", schema: "public", table: "reports" }, () => loadCount())
+      .subscribe();
+
+    return () => {
+      if (reportsChannelRef.current && supabase) supabase.removeChannel(reportsChannelRef.current);
+    };
   }, [user]);
 
   // Close drawer on route change

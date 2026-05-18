@@ -466,7 +466,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* Report — discreet at bottom */}
               <div className="flex justify-center pb-4">
-                <ReportButton propertyId={property.id} />
+                <ReportButton propertyId={property.id} propertyTitle={property.title} />
               </div>
 
             </div>
