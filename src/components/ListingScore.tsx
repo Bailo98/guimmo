@@ -58,7 +58,7 @@ export function ListingScore(props: Props) {
           Score de confiance
         </p>
         <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-          <span style={{ fontWeight: 800, fontSize: 22, color, fontFamily: "var(--font-playfair, 'Playfair Display', serif)" }}>
+          <span style={{ fontWeight: 800, fontSize: 22, color, fontFamily: "var(--font-display), sans-serif" }}>
             {score}
           </span>
           <span style={{ fontSize: 12, color: "rgba(255,255,255,0.45)" }}>/100</span>

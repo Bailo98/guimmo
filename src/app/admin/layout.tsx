@@ -44,7 +44,7 @@ function AdminLogo() {
         </svg>
       </div>
       <div>
-        <p style={{ color: TEXT_PRI, fontWeight: 700, fontSize: 16, fontFamily: "var(--font-playfair), 'Playfair Display', serif", lineHeight: 1.2, letterSpacing: "-0.3px" }}>
+        <p style={{ color: TEXT_PRI, fontWeight: 700, fontSize: 16, fontFamily: "var(--font-display), sans-serif", lineHeight: 1.2, letterSpacing: "-0.3px" }}>
           BienLoger
         </p>
         <p style={{ color: TEXT_SEC, fontSize: 11, lineHeight: 1 }}>Administration</p>
@@ -302,7 +302,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Menu size={22} />
         </button>
         <Link href="/admin" style={{ textDecoration: "none" }}>
-          <span style={{ color: TEXT_PRI, fontWeight: 800, fontSize: 16, fontFamily: "var(--font-nunito), 'Nunito', sans-serif" }}>
+          <span style={{ color: TEXT_PRI, fontWeight: 800, fontSize: 16, fontFamily: "var(--font-display), sans-serif" }}>
             BienLoger
           </span>
         </Link>

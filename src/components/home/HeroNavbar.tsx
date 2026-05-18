@@ -26,7 +26,7 @@ export function HeroNavbar() {
           </svg>
         </div>
         <span style={{
-          fontFamily: "var(--font-playfair), 'Playfair Display', serif",
+          fontFamily: "var(--font-display), sans-serif",
           fontWeight: 700, fontSize: "1.0625rem", color: "#ffffff", letterSpacing: "-0.3px",
         }}>
           BienLoger

@@ -48,7 +48,7 @@ function StatCard({
       ) : (
         <p style={{
           fontSize: "clamp(22px, 4vw, 32px)",
-          fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
+          fontFamily: "var(--font-display), sans-serif",
           fontWeight: 700, color: accentColor, lineHeight: 1,
         }}>
           {value.toLocaleString("fr-FR")}
@@ -144,7 +144,7 @@ export default function AdminDashboardPage() {
       <div style={{ marginBottom: 28 }}>
         <h1 style={{
           color: TEXT_PRI, fontWeight: 900, fontSize: "clamp(20px,4vw,28px)",
-          fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
+          fontFamily: "var(--font-display), sans-serif",
         }}>
           Tableau de bord
         </h1>

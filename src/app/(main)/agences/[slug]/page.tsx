@@ -86,7 +86,7 @@ export default async function AgenceProfilePage({ params }: Props) {
           )}
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
-              <h1 className="text-xl font-black" style={{ color: "var(--bl-cream)", fontFamily: "var(--font-playfair)" }}>{agencyName}</h1>
+              <h1 className="text-xl font-black" style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}>{agencyName}</h1>
               {profile.is_verified_pro && (
                 <span className="bl-badge-pro flex items-center gap-1">
                   <CheckCircle className="w-3 h-3" /> Agence vérifiée

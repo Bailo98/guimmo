@@ -264,7 +264,7 @@ function ProfileForm({ user, profile, refreshProfile }: {
       {/* Mon plan */}
       <div className="rounded-r-2xl p-4 mb-6" style={{ background: "var(--bl-surface)", borderLeft: "3px solid var(--bl-amber-light)" }}>
         <p className="bl-section-label mb-2">Mon plan</p>
-        <p className="font-bold" style={{ color: "var(--bl-cream)", fontFamily: "var(--font-playfair)" }}>
+        <p className="font-bold" style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}>
           {profile?.is_verified_pro ? "Plan Pro" : "Plan Gratuit"}
         </p>
         <p className="text-xs mt-1 mb-3" style={{ color: "var(--bl-cream-faint)" }}>
@@ -654,7 +654,7 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
         <>
           {/* Page header */}
           <div className="mb-6">
-            <h1 style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-amber-light)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>
+            <h1 style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-amber-light)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>
               Bonjour, {displayName}
             </h1>
             <p className="text-sm mt-1" style={{ color: "var(--bl-cream-dim)", fontWeight: 300 }}>Votre activité cette semaine</p>
@@ -934,7 +934,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
       {tab === "dashboard" && (
         <>
           <div className="mb-6">
-            <h1 style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-amber-light)", fontSize: 26, fontWeight: 700 }}>
+            <h1 style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-amber-light)", fontSize: 26, fontWeight: 700 }}>
               Tableau de bord Agent
             </h1>
             <p className="text-sm mt-1" style={{ color: "var(--bl-cream-dim)", fontWeight: 300 }}>Performance sur 30 jours</p>
@@ -1146,7 +1146,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
       {tab === "dashboard" && (
         <>
           <div className="mb-6">
-            <h1 style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-amber-light)", fontSize: 26, fontWeight: 700 }}>
+            <h1 style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-amber-light)", fontSize: 26, fontWeight: 700 }}>
               Dashboard agence
             </h1>
             <p className="text-sm mt-1" style={{ color: "var(--bl-cream-dim)", fontWeight: 300 }}>Performance sur 30 jours</p>

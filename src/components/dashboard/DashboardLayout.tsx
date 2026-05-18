@@ -56,7 +56,7 @@ function SidebarLogo() {
           <polyline points="9 22 9 12 15 12 15 22" />
         </svg>
       </div>
-      <span style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-cream)", fontSize: 18, fontWeight: 700, letterSpacing: "-0.3px" }}>
+      <span style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-cream)", fontSize: 18, fontWeight: 700, letterSpacing: "-0.3px" }}>
         BienLoger
       </span>
     </div>
@@ -130,7 +130,7 @@ export function DashboardLayout({ tabs, active, onChange, signOut, userName, use
           <Menu className="w-5 h-5" />
         </button>
 
-        <span style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-amber)", fontSize: 17, fontWeight: 700 }}>
+        <span style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-amber)", fontSize: 17, fontWeight: 700 }}>
           BienLoger
         </span>
 
@@ -169,7 +169,7 @@ export function DashboardLayout({ tabs, active, onChange, signOut, userName, use
                     <polyline points="9 22 9 12 15 12 15 22" />
                   </svg>
                 </div>
-                <span style={{ fontFamily: "var(--font-playfair)", color: "var(--bl-cream)", fontSize: 17, fontWeight: 700, letterSpacing: "-0.3px" }}>BienLoger</span>
+                <span style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-cream)", fontSize: 17, fontWeight: 700, letterSpacing: "-0.3px" }}>BienLoger</span>
               </div>
               <button
                 onClick={() => setDrawerOpen(false)}

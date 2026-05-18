@@ -32,7 +32,7 @@ export function PageHero({ title, subtitle, badge, align = "left" }: PageHeroPro
         <h1
           className="text-3xl md:text-5xl font-black leading-tight mb-3"
           style={{
-            fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
+            fontFamily: "var(--font-display), sans-serif",
             color: "var(--BienLoger-cream)",
           }}
         >
