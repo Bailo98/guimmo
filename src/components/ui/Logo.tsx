@@ -34,8 +34,9 @@ export function Logo({ size = "md", className, href = "/" }: LogoProps) {
         <HouseIcon size={icon} />
       </div>
       <span style={{
-        fontFamily: "var(--font-playfair), 'Playfair Display', serif",
-        fontSize: text, fontWeight: 700, color: "#ffffff", letterSpacing: "-0.3px",
+        fontFamily: "var(--font-display), sans-serif",
+        fontSize: text, fontWeight: 800, color: "#ffffff",
+        letterSpacing: "0.05em", textTransform: "uppercase",
       }}>
         BienLoger
       </span>

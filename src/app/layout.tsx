@@ -1,5 +1,5 @@
 ﻿import type { Metadata, Viewport } from "next";
-import { Inter, Nunito, Playfair_Display, DM_Sans, Space_Grotesk } from "next/font/google";
+import { Inter, Nunito, Playfair_Display, DM_Sans, Space_Grotesk, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
@@ -39,6 +39,12 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-space-grotesk",
+});
+
+const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["400", "600", "700", "800"],
+  variable: "--font-display",
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://BienLoger.gn";
@@ -81,7 +87,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" suppressHydrationWarning className={spaceGrotesk.variable}>
+    <html lang="fr" suppressHydrationWarning className={`${spaceGrotesk.variable} ${barlowCondensed.variable}`}>
       <head>
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script
@@ -92,7 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="preconnect" href="https://kqshknfrtlbjaufkdeeg.supabase.co" />
       </head>
-      <body className={`${inter.variable} ${nunito.variable} ${playfair.variable} ${dmSans.variable} ${spaceGrotesk.variable} font-sans min-h-screen`} style={{ backgroundColor: "#0A1216", color: "#ffffff" }}>
+      <body className={`${inter.variable} ${nunito.variable} ${playfair.variable} ${dmSans.variable} ${spaceGrotesk.variable} ${barlowCondensed.variable} font-sans min-h-screen`} style={{ backgroundColor: "#0A1216", color: "#ffffff" }}>
         <QueryProvider>
           <AuthProvider>
             <ThemeProvider>{children}</ThemeProvider>

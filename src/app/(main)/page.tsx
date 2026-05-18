@@ -238,18 +238,19 @@ export default async function HomePage() {
               {/* Main title */}
               <h1
                 style={{
-                  fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif",
-                  fontWeight: 900,
-                  fontSize: "clamp(36px, 8vw, 88px)",
-                  lineHeight: 1.05,
+                  fontFamily: "var(--font-display), sans-serif",
+                  fontWeight: 800,
+                  fontSize: "clamp(40px, 8vw, 96px)",
+                  lineHeight: 0.95,
                   color: "#ffffff",
                   marginBottom: "1.5rem",
                   letterSpacing: "-0.02em",
+                  textTransform: "uppercase",
                 }}
               >
                 Trouvez votre<br />
                 logement{" "}
-                <em style={{ color: "#E9E900", fontStyle: "italic" }}>idéal</em><br />
+                <span style={{ color: "#E9E900" }}>idéal</span><br />
                 en Guinée
               </h1>
 
@@ -257,17 +258,18 @@ export default async function HomePage() {
               <p
                 style={{
                   color: "#666666",
-                  fontSize: "1.1rem",
+                  fontSize: "0.8125rem",
                   lineHeight: 1.7,
                   marginBottom: "2.5rem",
                   maxWidth: "500px",
                   margin: "0 auto 2.5rem",
-                  fontFamily: "var(--font-dm-sans), sans-serif",
+                  fontFamily: "var(--font-space-grotesk), sans-serif",
                   fontWeight: 300,
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
                 }}
               >
-                Appartements, maisons, villas — louer ou acheter à Conakry.
-                Simple, rapide, fiable.
+                Appartements · Maisons · Villas
               </p>
 
               {/* Search box */}
@@ -317,7 +319,7 @@ export default async function HomePage() {
               <div key={s.label} className="text-center">
                 <p
                   className="text-3xl md:text-4xl font-black"
-                  style={{ color: "#E9E900", fontFamily: "var(--font-playfair), serif" }}
+                  style={{ color: "#E9E900", fontFamily: "var(--font-display), sans-serif" }}
                 >
                   {s.value}
                 </p>
@@ -343,7 +345,7 @@ export default async function HomePage() {
               <div>
                 <h2
                   className="text-2xl md:text-3xl font-black"
-                  style={{ color: "#ffffff", fontFamily: "var(--font-playfair), serif" }}
+                  style={{ color: "#ffffff", fontFamily: "var(--font-display), sans-serif" }}
                 >
                   Annonces vedettes
                 </h2>
@@ -380,7 +382,7 @@ export default async function HomePage() {
               <div>
                 <h2
                   className="text-2xl md:text-3xl font-black"
-                  style={{ color: "#ffffff", fontFamily: "var(--font-playfair), serif" }}
+                  style={{ color: "#ffffff", fontFamily: "var(--font-display), sans-serif" }}
                 >
                   Annonces récentes
                 </h2>
@@ -418,7 +420,7 @@ export default async function HomePage() {
           <div className="mb-8">
             <h2
               className="text-2xl md:text-3xl font-black"
-              style={{ color: "#ffffff", fontFamily: "var(--font-playfair), serif" }}
+              style={{ color: "#ffffff", fontFamily: "var(--font-display), sans-serif" }}
             >
               Quartiers populaires
             </h2>
@@ -475,7 +477,7 @@ export default async function HomePage() {
           <div className="text-center mb-10">
             <h2
               className="text-2xl md:text-3xl font-black"
-              style={{ color: "#ffffff", fontFamily: "var(--font-playfair), serif" }}
+              style={{ color: "#ffffff", fontFamily: "var(--font-display), sans-serif" }}
             >
               Pourquoi choisir BienLoger ?
             </h2>
@@ -527,7 +529,7 @@ export default async function HomePage() {
           <p className="text-5xl mb-6">🏠</p>
           <h2
             className="text-2xl md:text-4xl font-black mb-4"
-            style={{ color: "#ffffff", fontFamily: "var(--font-playfair), serif" }}
+            style={{ color: "#ffffff", fontFamily: "var(--font-display), sans-serif" }}
           >
             Vous avez un logement à louer ou à vendre ?
           </h2>

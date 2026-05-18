@@ -58,13 +58,15 @@ export function Header() {
         <nav className="hidden md:flex items-center gap-1">
           <Link
             href="/annonces"
-            className={cn("px-3 py-2 rounded-xl text-sm font-medium transition-colors hover:text-white hover:bg-white/10", pathname.startsWith("/annonces") ? "text-white" : "text-white/70")}
+            className={cn("px-3 py-2 rounded-xl transition-colors hover:text-white hover:bg-white/10", pathname.startsWith("/annonces") ? "text-white" : "text-white/70")}
+            style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.12em", textTransform: "uppercase" }}
           >
             Annonces
           </Link>
           <Link
             href="/agents"
-            className={cn("px-3 py-2 rounded-xl text-sm font-medium transition-colors hover:text-white hover:bg-white/10", pathname === "/agents" ? "text-white" : "text-white/70")}
+            className={cn("px-3 py-2 rounded-xl transition-colors hover:text-white hover:bg-white/10", pathname === "/agents" ? "text-white" : "text-white/70")}
+            style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.12em", textTransform: "uppercase" }}
           >
             Agents
           </Link>
