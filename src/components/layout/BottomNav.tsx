@@ -1,7 +1,7 @@
 ﻿"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Plus, User, MessageSquare, Heart } from "lucide-react";
+import { Home, Search, Plus, MessageSquare, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
@@ -15,7 +15,6 @@ const LEFT_NAV = [
 const RIGHT_NAV = [
   { href: "/favoris", icon: Heart, label: "Favoris" },
   { href: "/messages", icon: MessageSquare, label: "Messages", showMsgBadge: true },
-  { href: "/compte", icon: User, label: "Profil" },
 ];
 
 export function BottomNav() {
