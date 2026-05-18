@@ -1,6 +1,7 @@
 ﻿"use client";
 import { useState } from "react";
 import { Flag, X, Loader2, CheckCircle2 } from "lucide-react";
+
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 const REASONS = [
@@ -22,6 +23,7 @@ export function ReportButton({ propertyId }: Props) {
   const [reporterPhone, setReporterPhone] = useState("");
   const [loading, setLoading]       = useState(false);
   const [done, setDone]             = useState(false);
+  const [hovered, setHovered]       = useState(false);
 
   async function submit() {
     if (!reason) return;
@@ -48,7 +50,14 @@ export function ReportButton({ propertyId }: Props) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 text-white/30 hover:text-red-400 transition-colors text-xs"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs transition-all"
+        style={{
+          border: hovered ? "1px solid rgba(239,68,68,0.3)" : "1px solid rgba(255,255,255,0.12)",
+          background: "rgba(255,255,255,0.04)",
+          color: hovered ? "#ef4444" : "#aaaaaa",
+        }}
       >
         <Flag className="w-3.5 h-3.5" />
         Signaler cette annonce
@@ -57,10 +66,13 @@ export function ReportButton({ propertyId }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
+    <div
+      className="fixed inset-0 flex items-end sm:items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)", zIndex: 9999, paddingBottom: 120 }}
+    >
       <div
         className="w-full max-w-md rounded-3xl p-6 space-y-5"
-        style={{ background: "#0A1216", border: "1px solid rgba(255,255,255,0.10)" }}
+        style={{ background: "#0A1216", border: "1px solid rgba(255,255,255,0.10)", zIndex: 10000 }}
       >
         {done ? (
           <div className="text-center py-4 space-y-3">
