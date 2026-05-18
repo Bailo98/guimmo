@@ -30,7 +30,7 @@ export default function AdminPaiementsPage() {
           const s = STATUS[p.status as keyof typeof STATUS];
           const Icon = s.icon;
           return (
-            <div key={i} className="bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-slate-100 dark:border-[#2a3040] flex items-center gap-3">
+            <div key={i} className="bg-[#2c2f36] rounded-2xl p-4 border border-[#1e2a30] flex items-center gap-3">
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-slate-900 dark:text-white text-sm">{p.user}</p>
                 <p className="text-xs text-slate-400">{p.desc} · {p.method} · {p.date}</p>

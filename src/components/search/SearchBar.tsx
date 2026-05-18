@@ -21,7 +21,7 @@ export function SearchBar() {
   }
 
   return (
-    <form onSubmit={handleSearch} className="bg-white dark:bg-[#1e2430] rounded-2xl p-2 shadow-2xl max-w-3xl mx-auto">
+    <form onSubmit={handleSearch} className="bg-[#2c2f36] rounded-2xl p-2 shadow-2xl max-w-3xl mx-auto">
       {/* Transaction type tabs */}
       <div className="flex gap-1 mb-2 p-1 bg-slate-100 dark:bg-[#151922] rounded-xl">
         {[
@@ -34,7 +34,7 @@ export function SearchBar() {
             onClick={() => setTransactionType(t.value)}
             className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors ${
               transactionType === t.value
-                ? "bg-white dark:bg-[#1e2430] text-[#E9E900] shadow-sm"
+                ? "bg-[#2c2f36] text-[#E9E900] shadow-sm"
                 : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
             }`}
           >
@@ -51,7 +51,7 @@ export function SearchBar() {
           <select
             value={neighborhood}
             onChange={(e) => setNeighborhood(e.target.value)}
-            className="w-full appearance-none bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl pl-9 pr-8 py-3 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#E9E900] focus:border-transparent"
+            className="w-full appearance-none bg-[#2c2f36] border border-[#1e2a30] rounded-xl pl-9 pr-8 py-3 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#E9E900] focus:border-transparent"
           >
             <option value="">Tous les quartiers</option>
             {POPULAR_NEIGHBORHOODS.map((n) => (
@@ -66,7 +66,7 @@ export function SearchBar() {
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full appearance-none bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl pl-4 pr-8 py-3 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#E9E900] focus:border-transparent"
+            className="w-full appearance-none bg-[#2c2f36] border border-[#1e2a30] rounded-xl pl-4 pr-8 py-3 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#E9E900] focus:border-transparent"
           >
             <option value="">Tout type</option>
             {PROPERTY_TYPES.map((t) => (

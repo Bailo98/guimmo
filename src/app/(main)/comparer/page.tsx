@@ -21,7 +21,7 @@ interface RowProps {
 
 function CompareRow({ label, values, highlight }: RowProps) {
   return (
-    <tr className="border-b border-slate-100 dark:border-[#2a3040]">
+    <tr className="border-b border-[#1e2a30]">
       <td className="py-3 pr-4 text-xs font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap w-32">{label}</td>
       {values.map((val, i) => (
         <td
@@ -98,7 +98,7 @@ export default function ComparerPage() {
               <th />
               {properties.map((p) => p && (
                 <th key={p.id} className="pb-4 px-3 align-top">
-                  <div className="bg-white dark:bg-[#1e2430] rounded-2xl overflow-hidden border border-slate-100 dark:border-[#2a3040]">
+                  <div className="bg-[#2c2f36] rounded-2xl overflow-hidden border border-[#1e2a30]">
                     {/* Image */}
                     <div className="relative aspect-[4/3] overflow-hidden">
                       {p.property_images?.[0] ? (
@@ -122,7 +122,7 @@ export default function ComparerPage() {
                       <div className="flex gap-1 mt-2">
                         <button
                           onClick={() => removeFromCompare(p.id)}
-                          className="flex-1 text-xs py-1.5 rounded-lg border border-slate-200 dark:border-[#2a3040] text-slate-500 hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center gap-1"
+                          className="flex-1 text-xs py-1.5 rounded-lg border border-[#1e2a30] text-slate-500 hover:text-red-500 hover:border-red-500 transition-colors flex items-center justify-center gap-1"
                         >
                           <X className="w-3 h-3" /> Retirer
                         </button>
@@ -139,7 +139,7 @@ export default function ComparerPage() {
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-[#1e2430] rounded-2xl">
+          <tbody className="bg-[#2c2f36] rounded-2xl">
             <CompareRow
               label="Prix"
               values={properties.map((p) => p ? (

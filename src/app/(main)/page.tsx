@@ -158,7 +158,7 @@ function PreviewCard({ property, index }: PreviewCardProps) {
       {/* Content */}
       <div className="p-3.5" style={{ color: "#0A1216" }}>
         <p className="font-bold text-sm leading-snug line-clamp-1">{property.title}</p>
-        <div className="flex items-center gap-1 text-xs mt-1" style={{ color: "rgba(17,26,20,0.50)" }}>
+        <div className="flex items-center gap-1 text-xs mt-1" style={{ color: "#666666" }}>
           <MapPin className="w-3 h-3 flex-shrink-0" />
           <span>{neighborhoodLabel}</span>
         </div>
@@ -416,16 +416,16 @@ export default async function HomePage() {
       {/* ══════════════════════════════════════════════════════════
           QUARTIERS POPULAIRES — cream background
       ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#ffffff" }} className="py-16">
+      <section style={{ background: "#2c2f36" }} className="py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="mb-8">
             <h2
               className="text-2xl md:text-3xl font-black"
-              style={{ color: "#0A1216", fontFamily: "var(--font-playfair), serif" }}
+              style={{ color: "#ffffff", fontFamily: "var(--font-playfair), serif" }}
             >
               Quartiers populaires
             </h2>
-            <p className="mt-1 text-sm" style={{ color: "rgba(17,26,20,0.55)", fontFamily: "var(--font-dm-sans), sans-serif" }}>
+            <p className="mt-1 text-sm" style={{ color: "#666666", fontFamily: "var(--font-dm-sans), sans-serif" }}>
               Prix moyens à Conakry
             </p>
           </div>
@@ -436,9 +436,8 @@ export default async function HomePage() {
                 href={`/annonces?neighborhood=${n.id}`}
                 className="group rounded-2xl p-5 transition-all hover:-translate-y-0.5"
                 style={{
-                  background: "#fff",
-                  boxShadow: "0 2px 12px rgba(17,26,20,0.08)",
-                  border: "1px solid rgba(17,26,20,0.06)",
+                  background: "#1a252b",
+                  border: "1px solid #1e2a30",
                 }}
               >
                 <div
@@ -449,13 +448,13 @@ export default async function HomePage() {
                 </div>
                 <p
                   className="font-bold text-sm"
-                  style={{ color: "#0A1216" }}
+                  style={{ color: "#ffffff" }}
                 >
                   {n.name}
                 </p>
                 <p
                   className="text-xs mt-1 leading-tight"
-                  style={{ color: "rgba(17,26,20,0.50)" }}
+                  style={{ color: "#666666" }}
                 >
                   {n.avgPrice}
                 </p>
@@ -474,18 +473,18 @@ export default async function HomePage() {
       {/* ══════════════════════════════════════════════════════════
           POURQUOI BienLoger — cream background
       ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#f5f5f5" }} className="py-16">
+      <section style={{ background: "#2c2f36" }} className="py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-10">
             <h2
               className="text-2xl md:text-3xl font-black"
-              style={{ color: "#0A1216", fontFamily: "var(--font-playfair), serif" }}
+              style={{ color: "#ffffff", fontFamily: "var(--font-playfair), serif" }}
             >
               Pourquoi choisir BienLoger ?
             </h2>
             <p
               className="mt-2 text-sm max-w-md mx-auto"
-              style={{ color: "rgba(17,26,20,0.55)", fontFamily: "var(--font-dm-sans), sans-serif" }}
+              style={{ color: "#666666", fontFamily: "var(--font-dm-sans), sans-serif" }}
             >
               La plateforme immobilière conçue pour la réalité guinéenne
             </p>
@@ -495,18 +494,18 @@ export default async function HomePage() {
               <div
                 key={item.title}
                 className="rounded-2xl p-6"
-                style={{ background: "#fff", boxShadow: "0 2px 12px rgba(17,26,20,0.07)" }}
+                style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
               >
                 <span className="text-3xl block mb-4">{item.icon}</span>
                 <h3
                   className="font-bold text-base mb-2"
-                  style={{ color: "#0A1216" }}
+                  style={{ color: "#ffffff" }}
                 >
                   {item.title}
                 </h3>
                 <p
                   className="text-sm leading-relaxed"
-                  style={{ color: "rgba(17,26,20,0.55)", fontFamily: "var(--font-dm-sans), sans-serif" }}
+                  style={{ color: "#666666", fontFamily: "var(--font-dm-sans), sans-serif" }}
                 >
                   {item.desc}
                 </p>
@@ -545,7 +544,7 @@ export default async function HomePage() {
             <Link
               href="/publier"
               className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl transition-opacity hover:opacity-90 text-sm"
-              style={{ background: "#ffffff", color: "#0A1216" }}
+              style={{ background: "#E9E900", color: "#0A1216" }}
             >
               Publier gratuitement
             </Link>

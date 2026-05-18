@@ -84,7 +84,7 @@ export default function ModifierAnnoncePage() {
       <div className="flex items-center gap-3 mb-6">
         <Link
           href="/compte/annonces"
-          className="w-9 h-9 rounded-xl border border-slate-200 dark:border-[#2a3040] flex items-center justify-center text-slate-600 dark:text-slate-300 hover:border-[#E9E900] hover:text-[#E9E900] transition-colors"
+          className="w-9 h-9 rounded-xl border border-[#1e2a30] flex items-center justify-center text-slate-600 dark:text-slate-300 hover:border-[#E9E900] hover:text-[#E9E900] transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
         </Link>
@@ -94,7 +94,7 @@ export default function ModifierAnnoncePage() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-6 border border-slate-100 dark:border-[#2a3040] space-y-5">
+      <div className="bg-[#2c2f36] rounded-2xl p-6 border border-[#1e2a30] space-y-5">
         {/* Title */}
         <div>
           <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">
@@ -106,7 +106,7 @@ export default function ModifierAnnoncePage() {
             onChange={(e) => { setForm((f) => ({ ...f, title: e.target.value })); setErrors((er) => ({ ...er, title: undefined })); }}
             maxLength={80}
             className={cn(
-              "w-full bg-slate-50 dark:bg-[#151922] border rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm",
+              "w-full bg-[#2c2f36] border rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm",
               errors.title ? "border-red-500" : "border-slate-200 dark:border-[#2a3040]"
             )}
           />
@@ -120,7 +120,7 @@ export default function ModifierAnnoncePage() {
             rows={5}
             value={form.description}
             onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-            className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm resize-none"
+            className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm resize-none"
           />
         </div>
 
@@ -134,7 +134,7 @@ export default function ModifierAnnoncePage() {
                 value={form.price}
                 onChange={(e) => { setForm((f) => ({ ...f, price: e.target.value })); setErrors((er) => ({ ...er, price: undefined })); }}
                 className={cn(
-                  "w-full bg-slate-50 dark:bg-[#151922] border rounded-xl px-4 py-3 text-slate-900 dark:text-white text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#E9E900]",
+                  "w-full bg-[#2c2f36] border rounded-xl px-4 py-3 text-slate-900 dark:text-white text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#E9E900]",
                   errors.price ? "border-red-500" : "border-slate-200 dark:border-[#2a3040]"
                 )}
               />
@@ -143,7 +143,7 @@ export default function ModifierAnnoncePage() {
             <select
               value={form.pricePeriod}
               onChange={(e) => setForm((f) => ({ ...f, pricePeriod: e.target.value as "month" | "year" | "total" }))}
-              className="bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-3 text-slate-700 dark:text-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
+              className="bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-3 text-slate-700 dark:text-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
             >
               {PRICE_PERIODS.map((p) => (
                 <option key={p.value} value={p.value}>{p.label}</option>
@@ -161,7 +161,7 @@ export default function ModifierAnnoncePage() {
               "w-full py-3 rounded-xl text-sm font-semibold border transition-colors",
               form.availableNow
                 ? "bg-green-50 dark:bg-green-900/20 border-green-500 text-green-600 dark:text-yellow-400"
-                : "bg-slate-50 dark:bg-[#151922] border-slate-200 dark:border-[#2a3040] text-slate-500 dark:text-slate-400"
+                : "bg-[#2c2f36] border-slate-200 dark:border-[#2a3040] text-slate-500 dark:text-slate-400"
             )}
           >
             {form.availableNow ? "✅ Disponible maintenant" : "Non disponible"}
@@ -177,7 +177,7 @@ export default function ModifierAnnoncePage() {
             onChange={(e) => { setForm((f) => ({ ...f, phone: e.target.value })); setErrors((er) => ({ ...er, phone: undefined })); }}
             placeholder="+224 620 000 000"
             className={cn(
-              "w-full bg-slate-50 dark:bg-[#151922] border rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm",
+              "w-full bg-[#2c2f36] border rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm",
               errors.phone ? "border-red-500" : "border-slate-200 dark:border-[#2a3040]"
             )}
           />
@@ -194,7 +194,7 @@ export default function ModifierAnnoncePage() {
             value={form.whatsapp}
             onChange={(e) => setForm((f) => ({ ...f, whatsapp: e.target.value }))}
             placeholder="+224 620 000 000"
-            className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm"
+            className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm"
           />
         </div>
       </div>
@@ -203,7 +203,7 @@ export default function ModifierAnnoncePage() {
       <div className="mt-4 flex gap-3">
         <Link
           href="/compte/annonces"
-          className="flex items-center gap-1.5 px-4 py-3 rounded-xl border border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 text-sm font-semibold hover:border-[#E9E900] hover:text-[#E9E900] transition-colors"
+          className="flex items-center gap-1.5 px-4 py-3 rounded-xl border border-[#1e2a30] text-slate-600 dark:text-slate-300 text-sm font-semibold hover:border-[#E9E900] hover:text-[#E9E900] transition-colors"
         >
           <ChevronLeft className="w-4 h-4" /> Annuler
         </Link>

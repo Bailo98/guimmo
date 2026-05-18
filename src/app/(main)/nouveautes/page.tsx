@@ -83,7 +83,7 @@ export default function NouveautesPage() {
               className={`inline-flex items-center gap-2 font-bold text-sm px-5 py-2.5 rounded-xl transition-all ${
                 subscribed
                   ? "bg-white/30 text-white cursor-default"
-                  : "bg-white text-[#E9E900] hover:bg-orange-50"
+                  : "bg-[#E9E900] text-[#0A1216] hover:bg-[#c4c400]"
               }`}
             >
               <Bell className={`w-4 h-4 ${subscribed ? "fill-white" : ""}`} />

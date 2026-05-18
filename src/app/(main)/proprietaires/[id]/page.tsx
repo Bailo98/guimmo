@@ -69,7 +69,7 @@ export default async function ProprietaireProfilePage({ params }: Props) {
       </nav>
 
       {/* Profile Header */}
-      <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-6 border border-slate-100 dark:border-[#2a3040] mb-6">
+      <div className="bg-[#2c2f36] rounded-2xl p-6 border border-[#1e2a30] mb-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
           {/* Avatar */}
           <div
@@ -143,7 +143,7 @@ export default async function ProprietaireProfilePage({ params }: Props) {
         ].map((stat) => (
           <div
             key={stat.label}
-            className="bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-slate-100 dark:border-[#2a3040] text-center"
+            className="bg-[#2c2f36] rounded-2xl p-4 border border-[#1e2a30] text-center"
           >
             <p className="text-2xl font-black text-[#E9E900]">{stat.value}</p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center justify-center gap-1">

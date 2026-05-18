@@ -181,7 +181,7 @@ export default function BlogPage() {
               className={
                 cat === activeCategory
                   ? "px-4 py-1.5 rounded-full text-sm font-semibold bg-[#E9E900] text-white cursor-pointer"
-                  : "px-4 py-1.5 rounded-full text-sm font-semibold bg-white dark:bg-[#1e2430] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#2a3040] hover:border-[#E9E900] hover:text-[#E9E900] cursor-pointer transition-colors"
+                  : "px-4 py-1.5 rounded-full text-sm font-semibold bg-[#2c2f36] text-slate-600 dark:text-slate-300 border border-[#1e2a30] hover:border-[#E9E900] hover:text-[#E9E900] cursor-pointer transition-colors"
               }
             >
               {cat}
@@ -205,7 +205,7 @@ export default function BlogPage() {
                 Article à la une
               </p>
               <Link href={`/blog/${featured.slug}`} className="group block">
-                <div className="bg-white dark:bg-[#1e2430] rounded-3xl overflow-hidden border border-slate-100 dark:border-[#2a3040] hover:shadow-2xl transition-shadow duration-300 md:flex">
+                <div className="bg-[#2c2f36] rounded-3xl overflow-hidden border border-[#1e2a30] hover:shadow-2xl transition-shadow duration-300 md:flex">
                   <div className="relative md:w-1/2 aspect-[16/9] md:aspect-auto md:min-h-[360px]">
                     <Image
                       src={featured.image}
@@ -264,7 +264,7 @@ export default function BlogPage() {
                     <Link
                       key={article.slug}
                       href={`/blog/${article.slug}`}
-                      className="group bg-white dark:bg-[#1e2430] rounded-2xl overflow-hidden border border-slate-100 dark:border-[#2a3040] hover:shadow-xl transition-shadow duration-200 flex flex-col"
+                      className="group bg-[#2c2f36] rounded-2xl overflow-hidden border border-[#1e2a30] hover:shadow-xl transition-shadow duration-200 flex flex-col"
                     >
                       <div className="relative aspect-[16/9] overflow-hidden">
                         <Image

@@ -120,10 +120,10 @@ export default function CompareQuartiersPage() {
       </div>
 
       {/* Compare table */}
-      <div className="overflow-x-auto rounded-2xl border border-slate-100 dark:border-[#2a3040] bg-white dark:bg-[#1e2430]">
+      <div className="overflow-x-auto rounded-2xl border border-[#1e2a30] bg-[#2c2f36]">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-100 dark:border-[#2a3040]">
+            <tr className="border-b border-[#1e2a30]">
               <th className="text-left px-5 py-4 text-slate-500 font-semibold w-40">Critère</th>
               {neighborhoods.map((n, i) => (
                 <th key={n.id} className="px-5 py-4 text-center">
@@ -137,7 +137,7 @@ export default function CompareQuartiersPage() {
           </thead>
           <tbody>
             {/* Description row */}
-            <tr className="border-b border-slate-100 dark:border-[#2a3040] bg-slate-50 dark:bg-[#151922]">
+            <tr className="border-b border-[#1e2a30] bg-[#2c2f36]">
               <td className="px-5 py-3 text-slate-500 font-semibold text-xs uppercase tracking-wide">Description</td>
               {neighborhoods.map(n => (
                 <td key={n.id} className="px-5 py-3 text-center text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
@@ -146,7 +146,7 @@ export default function CompareQuartiersPage() {
               ))}
             </tr>
             {CRITERIA.map((c, ci) => (
-              <tr key={c.key} className={`border-b border-slate-100 dark:border-[#2a3040] ${ci % 2 === 0 ? "" : "bg-slate-50 dark:bg-[#151922]"}`}>
+              <tr key={c.key} className={`border-b border-[#1e2a30] ${ci % 2 === 0 ? "" : "bg-[#2c2f36]"}`}>
                 <td className="px-5 py-3.5 text-slate-600 dark:text-slate-400 font-medium">{c.label}</td>
                 {neighborhoods.map((n, i) => (
                   <td key={n.id} className="px-5 py-3.5 text-center">
@@ -177,7 +177,7 @@ export default function CompareQuartiersPage() {
           <Link
             key={n.id}
             href={`/quartiers/${n.id}`}
-            className="flex items-center justify-between p-4 bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] hover:border-[#E9E900] transition-colors group"
+            className="flex items-center justify-between p-4 bg-[#2c2f36] rounded-2xl border border-[#1e2a30] hover:border-[#E9E900] transition-colors group"
           >
             <div>
               <p className="font-bold text-slate-900 dark:text-white">{n.label}</p>

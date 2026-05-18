@@ -150,7 +150,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="fixed bottom-40 left-4 z-50 w-80 md:bottom-24"
           >
-            <div className="flex h-96 flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+            <div className="flex h-96 flex-col overflow-hidden rounded-2xl bg-[#2c2f36] shadow-2xl border border-[#1e2a30]">
               {/* Header */}
               <div className="flex items-center justify-between bg-[#E9E900] px-4 py-3">
                 <div className="flex items-center gap-2">

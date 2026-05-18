@@ -52,8 +52,8 @@ export function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-11 w-80 rounded-2xl shadow-2xl border border-slate-100 dark:border-[#2a3040] bg-white dark:bg-[#1a2030] z-50 overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-[#2a3040]">
+        <div className="absolute right-0 top-11 w-80 rounded-2xl shadow-2xl border border-[#1e2a30] bg-[#2c2f36] z-50 overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e2a30]">
             <span className="font-semibold text-sm text-slate-800 dark:text-slate-100">
               Notifications {count > 0 && <span className="text-[#E9E900]">({count})</span>}
             </span>
@@ -83,7 +83,7 @@ export function NotificationBell() {
                   key={n.id}
                   className={cn(
                     "flex items-start gap-3 px-4 py-3 transition-colors",
-                    !n.read ? "bg-orange-50 dark:bg-orange-900/10" : "bg-white dark:bg-[#1a2030]"
+                    !n.read ? "bg-orange-50 dark:bg-orange-900/10" : "bg-[#2c2f36]"
                   )}
                 >
                   {getIcon(n.type)}

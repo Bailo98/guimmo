@@ -80,7 +80,7 @@ export default function HistoriquePage() {
       {/* Confirm modal */}
       {showConfirm && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-4">
-          <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-6 max-w-sm w-full border border-slate-200 dark:border-[#2a3040] shadow-2xl">
+          <div className="bg-[#2c2f36] rounded-2xl p-6 max-w-sm w-full border border-[#1e2a30] shadow-2xl">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
                 <AlertTriangle className="w-5 h-5 text-red-500" />
@@ -108,7 +108,7 @@ export default function HistoriquePage() {
               </button>
               <button
                 onClick={() => setShowConfirm(false)}
-                className="flex-1 border border-slate-200 dark:border-[#2a3040] text-slate-700 dark:text-slate-300 font-semibold py-2.5 rounded-xl text-sm hover:bg-slate-50 dark:hover:bg-[#2a3040] transition-colors"
+                className="flex-1 border border-[#1e2a30] text-slate-700 dark:text-slate-300 font-semibold py-2.5 rounded-xl text-sm hover:bg-slate-50 dark:hover:bg-[#2a3040] transition-colors"
               >
                 Annuler
               </button>
@@ -139,7 +139,7 @@ export default function HistoriquePage() {
       ) : (
         <>
           {/* Timeline list */}
-          <div className="bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] overflow-hidden mb-8">
+          <div className="bg-[#2c2f36] rounded-2xl border border-[#1e2a30] overflow-hidden mb-8">
             {recentProperties.map((property, index) => {
               const primaryImage = property.property_images?.find((i) => i.is_primary) ?? property.property_images?.[0];
               const neighborhoodLabel = NEIGHBORHOOD_LABELS[property.neighborhood] ?? property.neighborhood;
@@ -151,7 +151,7 @@ export default function HistoriquePage() {
                   href={`/annonces/${property.id}`}
                   className={`flex items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-[#2a3040] transition-colors group ${
                     index !== recentProperties.length - 1
-                      ? "border-b border-slate-100 dark:border-[#2a3040]"
+                      ? "border-b border-[#1e2a30]"
                       : ""
                   }`}
                 >

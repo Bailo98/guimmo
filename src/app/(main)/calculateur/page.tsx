@@ -40,7 +40,7 @@ export default function CalculateurPage() {
       </div>
 
       {/* Calculator card */}
-      <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-6 border border-slate-100 dark:border-[#2a3040] mb-6 space-y-6">
+      <div className="bg-[#2c2f36] rounded-2xl p-6 border border-[#1e2a30] mb-6 space-y-6">
         {/* Revenu */}
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -65,7 +65,7 @@ export default function CalculateurPage() {
             type="number"
             value={revenu}
             onChange={(e) => setRevenu(Math.max(0, parseInt(e.target.value) || 0))}
-            className="mt-3 w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#E9E900] transition-colors"
+            className="mt-3 w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#E9E900] transition-colors"
             placeholder="Entrez votre revenu"
           />
         </div>
@@ -106,7 +106,7 @@ export default function CalculateurPage() {
               value={customChargesValue}
               onChange={(e) => setCustomChargesValue(e.target.value)}
               placeholder="Entrez vos charges en GNF"
-              className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#E9E900] transition-colors"
+              className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#E9E900] transition-colors"
             />
           )}
           <p className="text-xs text-slate-400 mt-1">
@@ -150,11 +150,11 @@ export default function CalculateurPage() {
         </div>
 
         {budgetMax === 0 ? (
-          <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-8 border border-slate-100 dark:border-[#2a3040] text-center">
+          <div className="bg-[#2c2f36] rounded-2xl p-8 border border-[#1e2a30] text-center">
             <p className="text-slate-400 text-sm">Augmentez votre revenu ou réduisez vos charges pour voir des annonces.</p>
           </div>
         ) : filteredProperties.length === 0 ? (
-          <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-8 border border-slate-100 dark:border-[#2a3040] text-center">
+          <div className="bg-[#2c2f36] rounded-2xl p-8 border border-[#1e2a30] text-center">
             <p className="text-slate-500 dark:text-slate-400 text-sm mb-2">
               Aucune annonce disponible pour un budget de {formatGNF(budgetMax)}.
             </p>

@@ -51,7 +51,7 @@ export default function StatsPage() {
         ].map((s) => {
           const Icon = s.icon;
           return (
-            <div key={s.label} className="bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-slate-100 dark:border-[#2a3040]">
+            <div key={s.label} className="bg-[#2c2f36] rounded-2xl p-4 border border-[#1e2a30]">
               <div className={`w-9 h-9 ${s.bg} rounded-xl flex items-center justify-center mb-2`}>
                 <Icon className={`w-4 h-4 ${s.color}`} />
               </div>
@@ -64,7 +64,7 @@ export default function StatsPage() {
       </div>
 
       {/* Weekly chart */}
-      <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-5 border border-slate-100 dark:border-[#2a3040]">
+      <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30]">
         <h2 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-[#E9E900]" /> Vues cette semaine
         </h2>
@@ -80,7 +80,7 @@ export default function StatsPage() {
       </div>
 
       {/* Top properties */}
-      <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-5 border border-slate-100 dark:border-[#2a3040]">
+      <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30]">
         <h2 className="font-bold text-slate-900 dark:text-white mb-4">Top annonces</h2>
         <div className="space-y-3">
           {TOP_PROPERTIES.map((p, i) => (
@@ -106,7 +106,7 @@ export default function StatsPage() {
       </div>
 
       {/* Boost performance */}
-      <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-5 border border-slate-100 dark:border-[#2a3040]">
+      <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30]">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Zap className="w-4 h-4 text-[#E9E900]" /> Performances du boost
@@ -157,7 +157,7 @@ export default function StatsPage() {
       {/* Boost modal */}
       {showBoostModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-6 w-full max-w-md shadow-2xl">
+          <div className="bg-[#2c2f36] rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between mb-5">
               <h3 className="font-black text-slate-900 dark:text-white flex items-center gap-2">
                 <span style={{ color: "#FF7900" }}>⚡</span> Booster une annonce
@@ -179,7 +179,7 @@ export default function StatsPage() {
                 <select
                   value={selectedAnnonce}
                   onChange={(e) => setSelectedAnnonce(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
+                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
                 >
                   {BOOST_ANNONCES.map((a) => (
                     <option key={a.id} value={a.id}>{a.title}</option>
@@ -204,7 +204,7 @@ export default function StatsPage() {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
+                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
                 />
               </div>
 

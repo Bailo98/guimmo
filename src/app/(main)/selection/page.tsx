@@ -182,7 +182,7 @@ export default function SelectionPage() {
 
         {/* Bottom editorial note */}
         {sorted.length > 0 && (
-          <div className="mt-12 bg-white dark:bg-[#1e2430] border border-slate-100 dark:border-[#2a3040] rounded-2xl p-6 text-center">
+          <div className="mt-12 bg-[#2c2f36] border border-[#1e2a30] rounded-2xl p-6 text-center">
             <p className="text-slate-400 dark:text-slate-500 text-sm max-w-lg mx-auto">
               Notre sélection est mise à jour chaque semaine par l&apos;équipe BienLoger. Seuls les biens
               ayant passé notre processus de vérification sont inclus.

@@ -47,7 +47,7 @@ export default function PaiementsPage() {
       </div>
 
       {/* Upgrade CTA */}
-      <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-[#E9E900]/30 flex items-center gap-3">
+      <div className="bg-[#2c2f36] rounded-2xl p-4 border border-[#E9E900]/30 flex items-center gap-3">
         <div className="w-10 h-10 bg-[#E9E900]/10 rounded-xl flex items-center justify-center flex-shrink-0">
           <Zap className="w-5 h-5 text-[#E9E900]" />
         </div>
@@ -68,8 +68,8 @@ export default function PaiementsPage() {
             const s = STATUS[p.status as keyof typeof STATUS];
             const Icon = s.icon;
             return (
-              <div key={i} className="bg-white dark:bg-[#1e2430] rounded-2xl p-4 border border-slate-100 dark:border-[#2a3040] flex items-center gap-3">
-                <div className="w-10 h-10 bg-slate-50 dark:bg-[#151922] rounded-xl flex items-center justify-center flex-shrink-0">
+              <div key={i} className="bg-[#2c2f36] rounded-2xl p-4 border border-[#1e2a30] flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#2c2f36] rounded-xl flex items-center justify-center flex-shrink-0">
                   <CreditCard className="w-5 h-5 text-slate-400" />
                 </div>
                 <div className="flex-1 min-w-0">

@@ -121,7 +121,7 @@ export default function TemoignagesPage() {
       </div>
 
       {/* Stats bar */}
-      <div className="bg-white dark:bg-[#1e2430] border-b border-slate-100 dark:border-[#2a3040]">
+      <div className="bg-[#2c2f36] border-b border-[#1e2a30]">
         <div className="max-w-4xl mx-auto px-4 py-5">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div className="flex flex-col items-center gap-1">
@@ -179,7 +179,7 @@ export default function TemoignagesPage() {
       </div>
 
       {/* Bottom CTA */}
-      <div className="bg-white dark:bg-[#1e2430] border-t border-slate-100 dark:border-[#2a3040]">
+      <div className="bg-[#2c2f36] border-t border-slate-100 dark:border-[#2a3040]">
         <div className="max-w-2xl mx-auto px-4 py-16 text-center">
           <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-3">
             Rejoignez la communauté BienLoger
@@ -196,7 +196,7 @@ export default function TemoignagesPage() {
             </Link>
             <Link
               href="/inscription"
-              className="inline-flex items-center justify-center gap-2 bg-white dark:bg-[#2a3040] border border-slate-200 dark:border-slate-600 text-slate-800 dark:text-white font-bold px-7 py-3.5 rounded-xl hover:border-[#E9E900] transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-[#2c2f36] border border-[#1e2a30] text-white font-bold px-7 py-3.5 rounded-xl hover:border-[#E9E900] transition-colors"
             >
               Créer un compte
             </Link>
@@ -213,7 +213,7 @@ function TestimonialCard({
   testimonial: (typeof TESTIMONIALS)[0];
 }) {
   return (
-    <div className="bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] p-5 flex flex-col gap-3">
+    <div className="bg-[#2c2f36] rounded-2xl border border-[#1e2a30] p-5 flex flex-col gap-3">
       {/* Stars */}
       <StarRating rating={testimonial.rating} />
 

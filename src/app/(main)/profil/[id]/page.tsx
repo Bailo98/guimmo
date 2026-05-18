@@ -76,7 +76,7 @@ export default async function ProfilPage({ params }: Props) {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 pb-24">
       {/* Profile card */}
-      <div className="bg-white dark:bg-[#1e2430] rounded-3xl border border-slate-100 dark:border-[#2a3040] p-6 mb-8 flex flex-col sm:flex-row items-center sm:items-start gap-5">
+      <div className="bg-[#2c2f36] rounded-3xl border border-[#1e2a30] p-6 mb-8 flex flex-col sm:flex-row items-center sm:items-start gap-5">
         {/* Avatar */}
         <div className="w-20 h-20 rounded-2xl bg-[#E9E900] flex-shrink-0 flex items-center justify-center text-white text-2xl font-black overflow-hidden">
           {profile.avatar_url ? (
@@ -130,7 +130,7 @@ export default async function ProfilPage({ params }: Props) {
               <Link
                 key={l.id}
                 href={`/annonces/${l.id}`}
-                className="flex gap-3 bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] p-3 hover:border-[#E9E900]/40 transition-colors"
+                className="flex gap-3 bg-[#2c2f36] rounded-2xl border border-[#1e2a30] p-3 hover:border-[#E9E900]/40 transition-colors"
               >
                 <div className="relative w-24 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-slate-100 dark:bg-[#151922]">
                   {l.primaryImage ? (

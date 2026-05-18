@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Flag, X, Send } from "lucide-react";
@@ -52,7 +52,7 @@ export function ReportButton({ propertyId }: Props) {
           style={{ backdropFilter: "blur(6px)", backgroundColor: "rgba(0,0,0,0.5)" }}
           onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
         >
-          <div className="w-full max-w-sm bg-white dark:bg-[#1e2430] rounded-2xl p-6 border border-slate-100 dark:border-[#2a3040] shadow-2xl">
+          <div className="w-full max-w-sm bg-[#2c2f36] rounded-2xl p-6 border border-[#1e2a30] shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Flag className="w-4 h-4 text-red-500" /> Signaler cette annonce

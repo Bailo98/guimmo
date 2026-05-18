@@ -333,7 +333,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
           <aside className="mt-10 lg:mt-0">
             <div className="lg:sticky lg:top-6 space-y-6">
               {/* Recent articles */}
-              <div className="bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] p-5">
+              <div className="bg-[#2c2f36] rounded-2xl border border-[#1e2a30] p-5">
                 <h3 className="font-bold text-slate-900 dark:text-white mb-4 text-sm uppercase tracking-wider">
                   Articles récents
                 </h3>
@@ -396,7 +396,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
               <Link
                 key={a.slug}
                 href={`/blog/${a.slug}`}
-                className="group bg-white dark:bg-[#1e2430] rounded-2xl overflow-hidden border border-slate-100 dark:border-[#2a3040] hover:shadow-lg transition-shadow flex gap-4"
+                className="group bg-[#2c2f36] rounded-2xl overflow-hidden border border-[#1e2a30] hover:shadow-lg transition-shadow flex gap-4"
               >
                 <div className="relative w-28 flex-shrink-0 aspect-square overflow-hidden">
                   <Image

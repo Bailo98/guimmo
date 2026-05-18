@@ -41,7 +41,7 @@ export default function AdminParametresPage() {
         <p className="text-slate-500 dark:text-slate-400 text-sm">Configuration de la plateforme</p>
       </div>
 
-      <div className="bg-white dark:bg-[#1e2430] rounded-2xl p-5 border border-slate-100 dark:border-[#2a3040] space-y-4">
+      <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30] space-y-4">
         <h2 className="font-semibold text-slate-900 dark:text-white text-sm">Contact WhatsApp support</h2>
         {loading ? (
           <div className="h-10 bg-slate-100 dark:bg-[#151922] rounded-xl animate-pulse" />
@@ -56,7 +56,7 @@ export default function AdminParametresPage() {
                 value={whatsapp}
                 onChange={(e) => setWhatsapp(e.target.value)}
                 placeholder="224628222510"
-                className="w-full bg-slate-50 dark:bg-[#151922] border border-slate-200 dark:border-[#2a3040] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
+                className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
               />
             </div>
             <button

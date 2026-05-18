@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 /* Enable class-based dark mode in Tailwind v4 */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -58,7 +58,7 @@
   --bg-primary:    #0A1216;
   --bg-secondary:  #111a1f;
   --bg-card-dark:  #1a252b;
-  --bg-card-light: #EAEAEA;
+  --bg-card-light: #2c2f36;
   --color-accent:  #E9E900;
   --color-accent-dark: #c4c400;
   --color-text-white: #ffffff;
