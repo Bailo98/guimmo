@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .select("title, description, neighborhood, price, property_images(url)")
     .eq("id", id)
     .single();
-  if (!data) return { title: "Annonce introuvable — BienLoger" };
+  if (!data) return { title: "Annonce introuvable — GuImmo" };
   const neighborhoodLabel = getNeighborhoodName((data as { neighborhood?: string }).neighborhood ?? "");
   const priceFormatted = formatPrice((data as { price?: number }).price ?? 0);
   const ogDescription = (data.description ?? `${neighborhoodLabel} — ${priceFormatted}`).slice(0, 160);
@@ -70,13 +70,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: data.title,
     description: ogDescription,
     openGraph: {
-      title: `${data.title} — BienLoger`,
+      title: `${data.title} — GuImmo`,
       description: ogDescription,
       images: image ? [{ url: image, width: 1200, height: 630 }] : [],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${data.title} — BienLoger`,
+      title: `${data.title} — GuImmo`,
       description: ogDescription,
       images: image ? [image] : [],
     },
@@ -143,7 +143,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   const phone = property.contact_phone ?? "+224 620 00 00 00";
   const whatsappPhone = phone.replace(/\D/g, "");
   const contactMsg = encodeURIComponent(
-    `Bonjour, je suis intéressé par votre annonce "${property.title}" sur BienLoger`
+    `Bonjour, je suis intéressé par votre annonce "${property.title}" sur GuImmo`
   );
   const visitMsg = encodeURIComponent(
     `Bonjour, je souhaite visiter ce logement : "${property.title}" à ${neighborhoodLabel}${shortRef ? ` (Réf: ${shortRef})` : ""}. Quand êtes-vous disponible ?`
@@ -428,7 +428,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <div className="flex flex-wrap gap-2">
                     {(profileData as {is_verified?: boolean} | null)?.is_verified && (
                       <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(233,233,0,0.12)", color: "#E9E900", border: "1px solid rgba(233,233,0,0.30)" }}>
-                        ✓ Propriétaire vérifié BienLoger
+                        ✓ Propriétaire vérifié GuImmo
                       </span>
                     )}
                     {(property.property_images?.length ?? 0) > 0 && (
@@ -524,11 +524,11 @@ export default async function PropertyDetailPage({ params }: Props) {
 
                 <MessageButton propertyId={property.id} ownerId={property.owner_id} propertyTitle={property.title} />
 
-                <p className="text-white/40 text-[11px] text-center">Mentionnez BienLoger lors de votre contact</p>
+                <p className="text-white/40 text-[11px] text-center">Mentionnez GuImmo lors de votre contact</p>
 
                 <div className="pt-3 border-t border-white/8">
                   <p className="text-white/30 text-xs leading-relaxed">
-                    🔒 Ne payez jamais avant de visiter le logement. BienLoger ne demande aucun paiement direct.
+                    🔒 Ne payez jamais avant de visiter le logement. GuImmo ne demande aucun paiement direct.
                   </p>
                 </div>
               </div>

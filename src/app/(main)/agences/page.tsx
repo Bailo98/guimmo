@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Phone, Star, CheckCircle2, Building2, Tag } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Agences immobilières partenaires | BienLoger",
+  title: "Agences immobilières partenaires | GuImmo",
   description:
     "Découvrez nos agences immobilières partenaires à Conakry. Des professionnels vérifiés pour vous accompagner dans votre recherche de logement en Guinée.",
 };
@@ -133,7 +133,7 @@ export default function AgencesPage() {
             Agences immobilières partenaires
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl">
-            Des professionnels de confiance sélectionnés par BienLoger pour vous accompagner
+            Des professionnels de confiance sélectionnés par GuImmo pour vous accompagner
             dans tous vos projets immobiliers à Conakry.
           </p>
 

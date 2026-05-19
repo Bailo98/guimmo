@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin/", "/compte/", "/api/"],
     },
-    sitemap: "https://BienLoger.gn/sitemap.xml",
+    sitemap: "https://GuImmo.gn/sitemap.xml",
   };
 }

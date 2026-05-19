@@ -41,7 +41,7 @@ export async function GET(request: Request) {
 
     if (!error) {
       const response = NextResponse.redirect(`${origin}${next}`);
-      response.cookies.set("BienLoger-auth", "supabase-session", {
+      response.cookies.set("GuImmo-auth", "supabase-session", {
         path: "/",
         maxAge: 60 * 60 * 24 * 30,
       });

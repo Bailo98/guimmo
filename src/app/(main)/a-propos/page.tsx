@@ -19,11 +19,11 @@ const VALUES = [
 
 export default function AProposPage() {
   return (
-    <div style={{ background: "var(--BienLoger-bg)" }}>
+    <div style={{ background: "var(--GuImmo-bg)" }}>
       <PageHero
         title="L'immobilier guinéen, enfin accessible"
-        subtitle="BienLoger est née d'un constat simple : trouver un logement à Conakry était trop difficile, trop opaque et trop risqué. Nous avons changé ça."
-        badge="✦ À propos de BienLoger"
+        subtitle="GuImmo est née d'un constat simple : trouver un logement à Conakry était trop difficile, trop opaque et trop risqué. Nous avons changé ça."
+        badge="✦ À propos de GuImmo"
         align="center"
       />
     <div className="max-w-4xl mx-auto px-4 py-10 pb-24">
@@ -68,8 +68,8 @@ export default function AProposPage() {
       </div>
 
       {/* CTA */}
-      <div className="rounded-2xl p-8 text-center text-white" style={{ background: "linear-gradient(135deg, var(--BienLoger-amber), #8a5e10)" }}>
-        <h2 className="text-xl font-black mb-2">Rejoignez la communauté BienLoger</h2>
+      <div className="rounded-2xl p-8 text-center text-white" style={{ background: "linear-gradient(135deg, var(--GuImmo-amber), #8a5e10)" }}>
+        <h2 className="text-xl font-black mb-2">Rejoignez la communauté GuImmo</h2>
         <p className="text-white/80 mb-6 text-sm">Publiez votre bien ou trouvez votre logement dès maintenant.</p>
         <div className="flex flex-wrap gap-3 justify-center">
           <Link href="/annonces" className="flex items-center gap-2 bg-[#ffffff] text-[#0A1216] font-bold px-6 py-3 rounded-xl hover:bg-white/90 transition-colors text-sm">

@@ -121,7 +121,7 @@ function getArticleContent(slug: string, article: (typeof ARTICLES)[0]): string 
 <p>Les prix ont évolué de manière contrastée selon les quartiers : si Kaloum et Dixinn restent des valeurs sûres mais onéreuses, des zones comme Kipé et Taouyah émergent comme les nouveaux pôles d'attractivité résidentielle.</p>
 
 <h2>Tendances des prix par quartier</h2>
-<p>L'analyse des annonces publiées sur BienLoger révèle les dynamiques suivantes :</p>
+<p>L'analyse des annonces publiées sur GuImmo révèle les dynamiques suivantes :</p>
 <ul>
   <li><strong>Kaloum</strong> : prix moyen 3.000.000 GNF/mois pour un appartement. Demande stable, offre limitée.</li>
   <li><strong>Dixinn</strong> : 2.500.000 GNF/mois en moyenne. Quartier diplomatique très prisé des expatriés.</li>
@@ -136,7 +136,7 @@ function getArticleContent(slug: string, article: (typeof ARTICLES)[0]): string 
   <li>L'urbanisation rapide de Conakry avec l'intégration de nouveaux quartiers périphériques</li>
   <li>Les investissements des Guinéens de la diaspora, notamment depuis l'Europe et les États-Unis</li>
   <li>La professionnalisation progressive du secteur immobilier avec l'émergence d'agences agréées</li>
-  <li>L'essor des plateformes numériques comme BienLoger qui fluidifient le marché</li>
+  <li>L'essor des plateformes numériques comme GuImmo qui fluidifient le marché</li>
 </ul>
 
 <h2>Conseils pour investir intelligemment</h2>
@@ -149,13 +149,13 @@ function getArticleContent(slug: string, article: (typeof ARTICLES)[0]): string 
 </ul>
 
 <h2>Conclusion</h2>
-<p>Le marché immobilier de Conakry offre de réelles opportunités pour qui sait où regarder. Avec une analyse rigoureuse et un accompagnement professionnel, investir à Conakry en 2026 peut s'avérer très rentable. BienLoger vous accompagne dans chaque étape de votre projet immobilier en Guinée.</p>
+<p>Le marché immobilier de Conakry offre de réelles opportunités pour qui sait où regarder. Avec une analyse rigoureuse et un accompagnement professionnel, investir à Conakry en 2026 peut s'avérer très rentable. GuImmo vous accompagne dans chaque étape de votre projet immobilier en Guinée.</p>
     `.trim();
   }
 
   return `
 <h2>Introduction</h2>
-<p>${article.excerpt} Dans cet article, l'équipe BienLoger vous guide à travers les aspects essentiels de ce sujet pour vous aider à naviguer sereinement dans le marché immobilier guinéen.</p>
+<p>${article.excerpt} Dans cet article, l'équipe GuImmo vous guide à travers les aspects essentiels de ce sujet pour vous aider à naviguer sereinement dans le marché immobilier guinéen.</p>
 <p>Que vous soyez locataire, propriétaire ou investisseur, comprendre les spécificités du marché immobilier à Conakry est indispensable pour prendre les bonnes décisions. La capitale guinéenne présente des caractéristiques uniques qui méritent une attention particulière.</p>
 
 <h2>Ce que vous devez savoir</h2>
@@ -173,11 +173,11 @@ function getArticleContent(slug: string, article: (typeof ARTICLES)[0]): string 
   <li>Consultez toujours plusieurs annonces avant de prendre une décision</li>
   <li>Visitez physiquement le bien avant de signer quoi que ce soit</li>
   <li>Faites appel à un tiers de confiance pour les transactions importantes</li>
-  <li>Utilisez des plateformes vérifiées comme BienLoger qui filtrent les annonces frauduleuses</li>
+  <li>Utilisez des plateformes vérifiées comme GuImmo qui filtrent les annonces frauduleuses</li>
 </ul>
 
 <h2>Conclusion</h2>
-<p>En suivant ces conseils, vous maximisez vos chances de trouver le logement idéal à Conakry ou de réussir votre investissement immobilier en Guinée. L'équipe BienLoger est là pour vous accompagner à chaque étape de votre projet.</p>
+<p>En suivant ces conseils, vous maximisez vos chances de trouver le logement idéal à Conakry ou de réussir votre investissement immobilier en Guinée. L'équipe GuImmo est là pour vous accompagner à chaque étape de votre projet.</p>
   `.trim();
 }
 
@@ -196,9 +196,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const article = ARTICLES.find((a) => a.slug === slug);
-  if (!article) return { title: "Article introuvable | BienLoger" };
+  if (!article) return { title: "Article introuvable | GuImmo" };
   return {
-    title: `${article.title} | BienLoger`,
+    title: `${article.title} | GuImmo`,
     description: article.excerpt,
     openGraph: {
       title: article.title,
@@ -265,7 +265,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
               <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1.5">
                   <User className="w-4 h-4" />
-                  Équipe BienLoger
+                  Équipe GuImmo
                 </span>
                 <span className="flex items-center gap-1.5">
                   <Calendar className="w-4 h-4" />

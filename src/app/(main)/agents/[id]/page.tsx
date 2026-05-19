@@ -27,10 +27,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const db = getDB();
   const { data } = await db.from("profiles").select("full_name, bio").eq("id", id).single();
-  if (!data) return { title: "Agent | BienLoger" };
+  if (!data) return { title: "Agent | GuImmo" };
   return {
-    title: `${data.full_name ?? "Agent"} — Agent immobilier | BienLoger`,
-    description: data.bio ?? `Agent immobilier sur BienLoger Guinée`,
+    title: `${data.full_name ?? "Agent"} — Agent immobilier | GuImmo`,
+    description: data.bio ?? `Agent immobilier sur GuImmo Guinée`,
   };
 }
 
@@ -60,7 +60,7 @@ export default async function AgentProfilePage({ params }: Props) {
   const displayName = profile.full_name ?? "Agent";
   const initials = displayName.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
   const waNumber = profile.phone?.replace(/\D/g, "") ?? "";
-  const waMsg = `Bonjour ${displayName}, j'aimerais vous contacter via BienLoger.`;
+  const waMsg = `Bonjour ${displayName}, j'aimerais vous contacter via GuImmo.`;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 pb-24">

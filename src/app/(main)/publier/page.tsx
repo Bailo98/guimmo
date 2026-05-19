@@ -1273,7 +1273,7 @@ export default function PublierPage() {
           </button>
 
           <p className="text-slate-400 text-xs text-center leading-relaxed">
-            En publiant, vous acceptez que votre annonce soit visible par tous les visiteurs de BienLoger.
+            En publiant, vous acceptez que votre annonce soit visible par tous les visiteurs de GuImmo.
           </p>
         </div>
       )}

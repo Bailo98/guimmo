@@ -73,8 +73,8 @@ export default function ParametresPage() {
       await supabase.auth.signOut();
     }
     // Clear cookie
-    document.cookie = "BienLoger-auth=; path=/; max-age=0";
-    localStorage.removeItem("BienLoger-store");
+    document.cookie = "GuImmo-auth=; path=/; max-age=0";
+    localStorage.removeItem("GuImmo-store");
     localStorage.removeItem("logerbien-store");
     window.location.href = "/";
   }
@@ -84,8 +84,8 @@ export default function ParametresPage() {
     if (isSupabaseConfigured && supabase) {
       await supabase.auth.signOut();
     }
-    document.cookie = "BienLoger-auth=; path=/; max-age=0";
-    localStorage.removeItem("BienLoger-store");
+    document.cookie = "GuImmo-auth=; path=/; max-age=0";
+    localStorage.removeItem("GuImmo-store");
     localStorage.removeItem("logerbien-store");
     window.location.href = "/";
   }

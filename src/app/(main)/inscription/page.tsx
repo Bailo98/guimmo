@@ -110,10 +110,10 @@ function InscriptionForm() {
         return;
       }
 
-      document.cookie = `BienLoger-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+      document.cookie = `GuImmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
     } else {
       await new Promise((r) => setTimeout(r, 800));
-      document.cookie = `BienLoger-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+      document.cookie = `GuImmo-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
     }
 
     setLoading(false);

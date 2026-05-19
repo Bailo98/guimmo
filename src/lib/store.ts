@@ -483,7 +483,7 @@ export const useAppStore = create<AppState>()(
       },
     }),
     {
-      name: "BienLoger-store",
+      name: "GuImmo-store",
       partialize: (s) => ({
         theme: s.theme,
         lang: s.lang,

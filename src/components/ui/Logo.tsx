@@ -38,7 +38,7 @@ export function Logo({ size = "md", className, href = "/" }: LogoProps) {
         fontSize: text, fontWeight: 800, color: "#ffffff",
         letterSpacing: "0.05em", textTransform: "uppercase",
       }}>
-        BienLoger
+        GuImmo
       </span>
     </Link>
   );

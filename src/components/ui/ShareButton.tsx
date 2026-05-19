@@ -15,7 +15,7 @@ export function ShareButton({ title, className = "flex items-center gap-1 hover:
     const url = window.location.href;
     if (navigator.share) {
       try {
-        await navigator.share({ title, text: `Découvrez "${title}" sur BienLoger`, url });
+        await navigator.share({ title, text: `Découvrez "${title}" sur GuImmo`, url });
       } catch {
         // user cancelled
       }

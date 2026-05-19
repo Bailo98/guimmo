@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const neighborhood = POPULAR_NEIGHBORHOODS.find((n) => n.id === slug);
   const name = neighborhood?.name ?? slug;
   return {
-    title: `Logements à ${name} | BienLoger`,
+    title: `Logements à ${name} | GuImmo`,
     description: `Découvrez toutes les annonces immobilières disponibles à ${name}, Conakry. Appartements, villas, studios à louer ou à vendre.`,
   };
 }

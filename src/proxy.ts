@@ -5,9 +5,9 @@ const PROTECTED_ROUTES = ["/compte", "/publier", "/messages", "/favoris"];
 const ADMIN_ROUTES     = ["/admin"];
 const AUTH_ROUTES      = ["/connexion", "/inscription"];
 
-export default function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const authCookie   = request.cookies.get("BienLoger-auth");
+  const authCookie   = request.cookies.get("GuImmo-auth");
   const isAuthenticated = !!authCookie?.value;
 
   const isProtected = PROTECTED_ROUTES.some(

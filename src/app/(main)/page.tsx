@@ -68,7 +68,7 @@ const POPULAR_NEIGHBORHOODS = [
   { id: "sonfonia",   name: "Sonfonia",   avgPrice: "1.200.000 GNF/mois" },
 ];
 
-const WHY_BienLoger = [
+const WHY_GuImmo = [
   { icon: "🏠", title: "Annonces vérifiées",       desc: "Chaque bien est contrôlé avant publication pour garantir des informations fiables." },
   { icon: "💬", title: "Contact direct WhatsApp",  desc: "Contactez le propriétaire directement, sans intermédiaire ni commission cachée." },
   { icon: "🔍", title: "Recherche intelligente",   desc: "Filtrez par quartier, budget et type de bien pour trouver votre logement idéal." },
@@ -470,7 +470,7 @@ export default async function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════
-          POURQUOI BienLoger — cream background
+          POURQUOI GuImmo — cream background
       ══════════════════════════════════════════════════════════ */}
       <section style={{ background: "#2c2f36" }} className="py-16">
         <div className="max-w-7xl mx-auto px-4">
@@ -479,7 +479,7 @@ export default async function HomePage() {
               className="text-2xl md:text-3xl font-black"
               style={{ color: "#ffffff", fontFamily: "var(--font-display), sans-serif" }}
             >
-              Pourquoi choisir BienLoger ?
+              Pourquoi choisir GuImmo ?
             </h2>
             <p
               className="mt-2 text-sm max-w-md mx-auto"
@@ -489,7 +489,7 @@ export default async function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {WHY_BienLoger.map((item) => (
+            {WHY_GuImmo.map((item) => (
               <div
                 key={item.title}
                 className="rounded-2xl p-6"

@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+﻿import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     };
 
     await resend.emails.send({
-      from: "BienLoger <onboarding@resend.dev>",
+      from: "GuImmo <onboarding@resend.dev>",
       to: adminEmail,
       subject: `🚨 Nouveau signalement — ${propertyTitle ?? "Annonce inconnue"}`,
       html: `

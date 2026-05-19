@@ -149,7 +149,7 @@ export default function AdminDashboardPage() {
           Tableau de bord
         </h1>
         <p style={{ color: TEXT_SEC, fontSize: 13, marginTop: 4 }}>
-          Vue d&apos;ensemble de la plateforme BienLoger
+          Vue d&apos;ensemble de la plateforme GuImmo
         </p>
       </div>
 
@@ -211,7 +211,7 @@ export default function AdminDashboardPage() {
           icon={UserCheck}
           iconColor="#a78bfa"
           title="Gérer les agents"
-          desc="Agents certifiés BienLoger"
+          desc="Agents certifiés GuImmo"
         />
         <ActionCard
           href="/admin/import"

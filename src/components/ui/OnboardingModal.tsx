@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 
 const STEPS = [
   {
-    title: "Bienvenue sur BienLoger 🏠",
+    title: "Bienvenue sur GuImmo 🏠",
     subtitle: "Trouvez votre logement idéal en Guinée",
   },
   {
@@ -32,7 +32,7 @@ export function OnboardingModal() {
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
-      const seen = localStorage.getItem("BienLoger-onboarded");
+      const seen = localStorage.getItem("GuImmo-onboarded");
       if (!seen) {
         setShow(true);
       }
@@ -41,7 +41,7 @@ export function OnboardingModal() {
 
   function finish() {
     if (typeof window !== "undefined") {
-      localStorage.setItem("BienLoger-onboarded", "1");
+      localStorage.setItem("GuImmo-onboarded", "1");
     }
     setShow(false);
   }

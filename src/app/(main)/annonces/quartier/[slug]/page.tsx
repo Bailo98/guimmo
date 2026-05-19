@@ -24,7 +24,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const hood = NEIGHBORHOODS.find((n) => n.id === slug);
-  if (!hood) return { title: "Quartier introuvable — BienLoger" };
+  if (!hood) return { title: "Quartier introuvable — GuImmo" };
   const name = hood.name;
   return {
     title: `Appartements et maisons à louer à ${name}`,
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: `/annonces/quartier/${slug}`,
     },
     openGraph: {
-      title: `Logements à ${name} — BienLoger`,
+      title: `Logements à ${name} — GuImmo`,
       description: `Appartements et maisons disponibles à ${name}, Conakry (Guinée). Louer ou acheter.`,
     },
   };

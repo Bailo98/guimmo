@@ -191,7 +191,7 @@ export default function PublierRapidePage() {
   // ── Success screen ──────────────────────────────────────────────
   if (published) {
     return (
-      <div className="max-w-lg mx-auto px-4 pt-12 pb-32 text-center" style={{ background: "var(--BienLoger-bg)" }}>
+      <div className="max-w-lg mx-auto px-4 pt-12 pb-32 text-center" style={{ background: "var(--GuImmo-bg)" }}>
         <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl" style={{ background: "rgba(233,233,0,0.12)", border: "2px solid rgba(233,233,0,0.30)" }}>
           ✅
         </div>
@@ -218,11 +218,11 @@ export default function PublierRapidePage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto px-4 pt-6 pb-32 min-h-screen" style={{ background: "var(--BienLoger-bg)" }}>
+    <div className="max-w-lg mx-auto px-4 pt-6 pb-32 min-h-screen" style={{ background: "var(--GuImmo-bg)" }}>
       {/* Header */}
       <div className="mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-3"
-          style={{ background: "rgba(233,233,0,0.15)", color: "var(--BienLoger-amber-light)", border: "1px solid rgba(233,233,0,0.25)" }}>
+          style={{ background: "rgba(233,233,0,0.15)", color: "var(--GuImmo-amber-light)", border: "1px solid rgba(233,233,0,0.25)" }}>
           ⚡ Publication rapide
         </div>
         <h1 className="text-2xl font-black text-white mb-1">Publie ton bien</h1>

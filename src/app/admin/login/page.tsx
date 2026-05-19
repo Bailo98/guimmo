@@ -14,8 +14,8 @@ export default function AdminLoginPage() {
 
     // Small delay for UX feel
     setTimeout(() => {
-      if (password === "BienLoger@2025") {
-        localStorage.setItem("BienLoger-admin-session", "authenticated");
+      if (password === "GuImmo@2025") {
+        localStorage.setItem("GuImmo-admin-session", "authenticated");
         window.location.href = "/admin";
       } else {
         setError("Mot de passe incorrect");
@@ -163,7 +163,7 @@ export default function AdminLoginPage() {
             marginBottom: 0,
           }}
         >
-          Accès réservé aux administrateurs BienLoger
+          Accès réservé aux administrateurs GuImmo
         </p>
       </div>
     </div>

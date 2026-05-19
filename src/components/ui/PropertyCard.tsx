@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -56,7 +56,7 @@ export function PropertyCard({ property, variant = "default", className, index =
   const sharePrice = property.price_period === "month"
     ? `${formatPrice(property.price)}/mois`
     : formatPrice(property.price);
-  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://bienloger.gn";
+  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://GuImmo.gn";
   const shareUrl = `${siteUrl}/annonces/${property.id}`;
   const createdAt = new Date(property.created_at ?? Date.now());
   const isNew = Date.now() - createdAt.getTime() < 7 * 24 * 60 * 60 * 1000;

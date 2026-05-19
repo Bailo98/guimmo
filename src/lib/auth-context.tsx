@@ -59,9 +59,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
       // Mock session for dev without Supabase
-      const cookie = document.cookie.includes("BienLoger-auth=mock-session");
+      const cookie = document.cookie.includes("GuImmo-auth=mock-session");
       if (cookie) {
-        setUser({ id: "mock-user", email: "demo@BienLoger.gn" } as User);
+        setUser({ id: "mock-user", email: "demo@GuImmo.gn" } as User);
       }
       loadingRef.current = false;
       setLoading(false);
@@ -115,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(async () => {
     if (supabase) await supabase.auth.signOut();
-    document.cookie = "BienLoger-auth=; path=/; max-age=0";
+    document.cookie = "GuImmo-auth=; path=/; max-age=0";
     setUser(null);
     setProfile(null);
   }, []);

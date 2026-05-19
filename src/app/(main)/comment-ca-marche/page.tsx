@@ -3,9 +3,9 @@ import { Search, MessageCircle, Home, Shield, CheckCircle, ArrowRight } from "lu
 
 const STEPS_SEARCH = [
   { n: 1, icon: Search, title: "Cherchez un logement", desc: "Filtrez par quartier, prix, nombre de chambres. Résultats instantanés sans inscription." },
-  { n: 2, icon: Shield, title: "Vérifiez la fiabilité", desc: "Regardez les badges BienLoger Safe : annonce vérifiée, propriétaire vérifié, photos réelles." },
+  { n: 2, icon: Shield, title: "Vérifiez la fiabilité", desc: "Regardez les badges GuImmo Safe : annonce vérifiée, propriétaire vérifié, photos réelles." },
   { n: 3, icon: MessageCircle, title: "Contactez sur WhatsApp", desc: "Un clic et vous êtes directement sur WhatsApp avec le propriétaire. Simple et rapide." },
-  { n: 4, icon: Home, title: "Visitez et signez", desc: "Visitez le logement, négociez le prix, signez le contrat. BienLoger vous a mis en relation." },
+  { n: 4, icon: Home, title: "Visitez et signez", desc: "Visitez le logement, négociez le prix, signez le contrat. GuImmo vous a mis en relation." },
 ];
 
 const STEPS_PUBLISH = [
@@ -21,7 +21,7 @@ export default function CommentCaMarchePage() {
       <div className="text-center">
         <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">Comment ça marche ?</h1>
         <p className="text-slate-500 dark:text-slate-400 mt-3 max-w-xl mx-auto">
-          BienLoger connecte directement locataires et propriétaires en Guinée. Simple, rapide, sans intermédiaire.
+          GuImmo connecte directement locataires et propriétaires en Guinée. Simple, rapide, sans intermédiaire.
         </p>
       </div>
 
@@ -96,7 +96,7 @@ export default function CommentCaMarchePage() {
       {/* Trust section */}
       <div className="bg-[#111418] dark:bg-[#1e2430] rounded-3xl p-8 text-center">
         <Shield className="w-12 h-12 text-[#E9E900] mx-auto mb-4" />
-        <h2 className="text-2xl font-black text-white mb-3">BienLoger Safe</h2>
+        <h2 className="text-2xl font-black text-white mb-3">GuImmo Safe</h2>
         <p className="text-slate-400 max-w-lg mx-auto mb-6">Notre équipe vérifie chaque annonce avant publication. Badges de confiance, signalement d&apos;arnaques, modération active.</p>
         <div className="flex flex-wrap gap-3 justify-center">
           {["Annonces vérifiées", "Propriétaires vérifiés", "Photos réelles", "Anti-arnaque", "Signalement 24h"].map((f) => (

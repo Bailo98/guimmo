@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
-  description: "Mentions légales de BienLoger — informations légales sur l'éditeur et l'hébergeur.",
+  description: "Mentions légales de GuImmo — informations légales sur l'éditeur et l'hébergeur.",
 };
 
 export default function MentionsLegalesPage() {
@@ -22,10 +22,10 @@ export default function MentionsLegalesPage() {
         <section>
           <h2 className="text-lg font-black text-slate-900 dark:text-white mb-3">Éditeur de la plateforme</h2>
           <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30] text-sm space-y-1">
-            <p><span className="font-semibold text-slate-900 dark:text-white">Dénomination sociale :</span> BienLoger SARL</p>
+            <p><span className="font-semibold text-slate-900 dark:text-white">Dénomination sociale :</span> GuImmo SARL</p>
             <p><span className="font-semibold text-slate-900 dark:text-white">Siège social :</span> Kipé, Conakry, République de Guinée</p>
             <p><span className="font-semibold text-slate-900 dark:text-white">Directeur de la publication :</span> Aliou Barry</p>
-            <p><span className="font-semibold text-slate-900 dark:text-white">Email :</span> <a href="mailto:contact@BienLoger.gn" className="text-[#009460] hover:underline">contact@BienLoger.gn</a></p>
+            <p><span className="font-semibold text-slate-900 dark:text-white">Email :</span> <a href="mailto:contact@GuImmo.gn" className="text-[#009460] hover:underline">contact@GuImmo.gn</a></p>
             <p><span className="font-semibold text-slate-900 dark:text-white">Téléphone :</span> <a href="tel:+224628222510" className="text-[#009460] hover:underline">+224 628 222 510</a></p>
           </div>
         </section>
@@ -41,12 +41,12 @@ export default function MentionsLegalesPage() {
 
         <section>
           <h2 className="text-lg font-black text-slate-900 dark:text-white mb-3">Propriété intellectuelle</h2>
-          <p className="text-sm">L'ensemble des éléments constituant la plateforme BienLoger (textes, logos, images, structure) est protégé par le droit de la propriété intellectuelle. Toute reproduction, totale ou partielle, sans autorisation préalable écrite est interdite.</p>
+          <p className="text-sm">L'ensemble des éléments constituant la plateforme GuImmo (textes, logos, images, structure) est protégé par le droit de la propriété intellectuelle. Toute reproduction, totale ou partielle, sans autorisation préalable écrite est interdite.</p>
         </section>
 
         <section>
           <h2 className="text-lg font-black text-slate-900 dark:text-white mb-3">Responsabilité</h2>
-          <p className="text-sm">BienLoger est une plateforme de mise en relation entre propriétaires et locataires. Les annonces publiées relèvent de la seule responsabilité de leurs auteurs. BienLoger met en œuvre tous les moyens raisonnables pour vérifier la conformité des annonces, sans pouvoir garantir l'exhaustivité de cette vérification.</p>
+          <p className="text-sm">GuImmo est une plateforme de mise en relation entre propriétaires et locataires. Les annonces publiées relèvent de la seule responsabilité de leurs auteurs. GuImmo met en œuvre tous les moyens raisonnables pour vérifier la conformité des annonces, sans pouvoir garantir l'exhaustivité de cette vérification.</p>
         </section>
 
         <section>

@@ -29,7 +29,7 @@ export function getWhatsAppUrl(phone: string, message: string): string {
 }
 
 export function getWhatsAppMessage(propertyTitle: string, propertyId: string): string {
-  return `Bonjour, je viens de BienLoger. Je suis intéressé(e) par le logement "${propertyTitle}" (Ref: #${propertyId}). Est-il toujours disponible ?`;
+  return `Bonjour, je viens de GuImmo. Je suis intéressé(e) par le logement "${propertyTitle}" (Ref: #${propertyId}). Est-il toujours disponible ?`;
 }
 
 export function slugify(text: string): string {

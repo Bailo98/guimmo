@@ -68,13 +68,13 @@ function ConnexionForm() {
           return;
         }
 
-        document.cookie = `BienLoger-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+        document.cookie = `GuImmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
         // Hard refresh forces AuthProvider to re-init from fresh session cookies,
         // avoiding the SPA race condition where user is still null on /compte.
         window.location.href = redirect;
       } else {
         await new Promise((r) => setTimeout(r, 1000));
-        document.cookie = `BienLoger-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+        document.cookie = `GuImmo-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
         window.location.href = redirect;
       }
     } catch (err) {
@@ -108,7 +108,7 @@ function ConnexionForm() {
                 <Lock className="w-8 h-8 text-white/70" />
               </div>
               <h1 className="text-2xl font-black text-white">Connexion</h1>
-              <p className="text-[#666666] text-sm mt-1">Accédez à votre compte BienLoger</p>
+              <p className="text-[#666666] text-sm mt-1">Accédez à votre compte GuImmo</p>
             </div>
 
             {/* Mode toggle — outside <form> so it can never accidentally submit */}
