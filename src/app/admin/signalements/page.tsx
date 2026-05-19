@@ -44,6 +44,7 @@ export default function AdminSignalementsPage() {
     const { data, error } = await supabase
       .from("reports")
       .select("*, properties(title)")
+      .eq("is_handled", false)
       .order("created_at", { ascending: false });
     if (error) {
       toast("Erreur de chargement", "error");
@@ -75,11 +76,11 @@ export default function AdminSignalementsPage() {
   async function handleIgnorer(r: Report) {
     if (!supabase) return;
     setBusy(r.id + "-ignorer");
-    const { error } = await supabase.from("reports").delete().eq("id", r.id);
+    const { error } = await supabase.from("reports").update({ is_handled: true }).eq("id", r.id);
     if (error) { toast("Erreur", "error"); }
     else {
       setReports((prev) => prev.filter((x) => x.id !== r.id));
-      toast("Signalement ignoré", "success");
+      toast("Signalement marqué comme traité", "success");
     }
     setBusy(null);
   }
@@ -87,9 +88,9 @@ export default function AdminSignalementsPage() {
   async function handleIgnoreAll() {
     if (!supabase || reports.length === 0) return;
     setBusy("all");
-    await supabase.from("reports").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+    await supabase.from("reports").update({ is_handled: true }).eq("is_handled", false);
     setReports([]);
-    toast(`${reports.length} signalement(s) ignoré(s)`, "success");
+    toast(`${reports.length} signalement(s) marqué(s) comme traités`, "success");
     setBusy(null);
   }
 

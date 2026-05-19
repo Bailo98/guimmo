@@ -210,7 +210,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     async function loadCount() {
       if (!supabase) return;
       const [{ count: rc }, { count: mc }] = await Promise.all([
-        supabase.from("reports").select("*", { count: "exact", head: true }),
+        supabase.from("reports").select("*", { count: "exact", head: true }).eq("is_handled", false),
         supabase.from("properties").select("*", { count: "exact", head: true }).eq("status", "pending"),
       ]);
       setPendingReports(rc ?? 0);
