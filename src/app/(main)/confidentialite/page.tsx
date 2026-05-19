@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
-  description: "Politique de confidentialité de GuImmo — comment nous protégeons vos données.",
+  description: "Politique de confidentialité de LogerBien — comment nous protégeons vos données.",
 };
 
 export default function ConfidentialitePage() {
@@ -21,7 +21,7 @@ export default function ConfidentialitePage() {
       <div className="space-y-8 text-slate-600 dark:text-slate-300 leading-relaxed">
         <section>
           <h2 className="text-lg font-black text-slate-900 dark:text-white mb-3">1. Données collectées</h2>
-          <p>GuImmo collecte uniquement les données nécessaires au bon fonctionnement de la plateforme :</p>
+          <p>LogerBien collecte uniquement les données nécessaires au bon fonctionnement de la plateforme :</p>
           <ul className="list-disc pl-5 mt-2 space-y-1 text-sm">
             <li>Nom, prénom et numéro de téléphone lors de l'inscription</li>
             <li>Adresse e-mail pour la communication</li>
@@ -43,7 +43,7 @@ export default function ConfidentialitePage() {
 
         <section>
           <h2 className="text-lg font-black text-slate-900 dark:text-white mb-3">3. Partage des données</h2>
-          <p className="text-sm">GuImmo ne vend jamais vos données personnelles à des tiers. Vos informations de contact (numéro WhatsApp) ne sont partagées qu'avec les utilisateurs que vous choisissez de contacter directement via la plateforme.</p>
+          <p className="text-sm">LogerBien ne vend jamais vos données personnelles à des tiers. Vos informations de contact (numéro WhatsApp) ne sont partagées qu'avec les utilisateurs que vous choisissez de contacter directement via la plateforme.</p>
         </section>
 
         <section>
@@ -53,7 +53,7 @@ export default function ConfidentialitePage() {
 
         <section>
           <h2 className="text-lg font-black text-slate-900 dark:text-white mb-3">5. Vos droits</h2>
-          <p className="text-sm">Conformément aux lois en vigueur, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Pour exercer ces droits, contactez-nous à <a href="mailto:contact@GuImmo.gn" className="text-[#009460] hover:underline">contact@GuImmo.gn</a>.</p>
+          <p className="text-sm">Conformément aux lois en vigueur, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Pour exercer ces droits, contactez-nous à <a href="mailto:contact@LogerBien.gn" className="text-[#009460] hover:underline">contact@LogerBien.gn</a>.</p>
         </section>
 
         <section>
@@ -63,7 +63,7 @@ export default function ConfidentialitePage() {
 
         <section>
           <h2 className="text-lg font-black text-slate-900 dark:text-white mb-3">7. Contact</h2>
-          <p className="text-sm">Pour toute question relative à cette politique, écrivez-nous à <a href="mailto:contact@GuImmo.gn" className="text-[#009460] hover:underline">contact@GuImmo.gn</a> ou via notre <Link href="/contact" className="text-[#009460] hover:underline">page de contact</Link>.</p>
+          <p className="text-sm">Pour toute question relative à cette politique, écrivez-nous à <a href="mailto:contact@LogerBien.gn" className="text-[#009460] hover:underline">contact@LogerBien.gn</a> ou via notre <Link href="/contact" className="text-[#009460] hover:underline">page de contact</Link>.</p>
         </section>
       </div>
     </div>

@@ -93,18 +93,18 @@
   --bl-border:      #1e2a30;
   --bl-border-md:   #1e2a30;
 
-  --GuImmo-bg:          #0A1216;
-  --GuImmo-bg-alt:      #060d10;
-  --GuImmo-surface:     #111a1f;
-  --GuImmo-amber:       #E9E900;
-  --GuImmo-amber-light: #E9E900;
-  --GuImmo-cream:       #ffffff;
-  --GuImmo-cream-dim:   rgba(255,255,255,0.65);
-  --GuImmo-cream-faint: rgba(255,255,255,0.45);
-  --GuImmo-border:      rgba(30,42,48,0.8);
-  --GuImmo-border-md:   #1e2a30;
-  --GuImmo-green:       #E9E900;
-  --GuImmo-sidebar:     #060d10;
+  --LogerBien-bg:          #0A1216;
+  --LogerBien-bg-alt:      #060d10;
+  --LogerBien-surface:     #111a1f;
+  --LogerBien-amber:       #E9E900;
+  --LogerBien-amber-light: #E9E900;
+  --LogerBien-cream:       #ffffff;
+  --LogerBien-cream-dim:   rgba(255,255,255,0.65);
+  --LogerBien-cream-faint: rgba(255,255,255,0.45);
+  --LogerBien-border:      rgba(30,42,48,0.8);
+  --LogerBien-border-md:   #1e2a30;
+  --LogerBien-green:       #E9E900;
+  --LogerBien-sidebar:     #060d10;
 
   color-scheme: dark;
 }

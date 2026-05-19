@@ -35,8 +35,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const owner = MOCK_OWNERS.find((o) => o.id === id);
   if (!owner) return { title: "Propriétaire introuvable" };
   return {
-    title: `${owner.name} — GuImmo`,
-    description: `Profil de ${owner.name} sur GuImmo. Découvrez ses annonces immobilières en Guinée.`,
+    title: `${owner.name} — LogerBien`,
+    description: `Profil de ${owner.name} sur LogerBien. Découvrez ses annonces immobilières en Guinée.`,
   };
 }
 

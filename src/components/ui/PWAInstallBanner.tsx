@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { X, Download } from "lucide-react";
 
-const VISIT_KEY = "GuImmo_visit_count";
-const DISMISSED_KEY = "GuImmo_pwa_dismissed";
+const VISIT_KEY = "LogerBien_visit_count";
+const DISMISSED_KEY = "LogerBien_pwa_dismissed";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -77,7 +77,7 @@ export function PWAInstallBanner() {
 
       {/* Text */}
       <div className="flex-1 min-w-0">
-        <p className="text-white font-bold text-xs leading-tight">📱 Installer GuImmo sur votre téléphone</p>
+        <p className="text-white font-bold text-xs leading-tight">📱 Installer LogerBien sur votre téléphone</p>
         <p className="text-white/50 text-[10px] mt-0.5">Accès rapide depuis l&apos;écran d&apos;accueil</p>
       </div>
 

@@ -25,7 +25,7 @@ export function PropertyQRCode({ url, title }: Props) {
     img.onload = () => {
       ctx?.drawImage(img, 0, 0);
       const a = document.createElement("a");
-      a.download = `qr-GuImmo-${title.slice(0, 20).replace(/\s/g, "-")}.png`;
+      a.download = `qr-LogerBien-${title.slice(0, 20).replace(/\s/g, "-")}.png`;
       a.href = canvas.toDataURL("image/png");
       a.click();
     };

@@ -51,8 +51,8 @@ const FAQ_SECTIONS = [
         a: "Cliquez sur 'Signaler' en bas de chaque fiche annonce. Notre équipe examine tous les signalements sous 24h.",
       },
       {
-        q: "GuImmo demande-t-il un paiement ?",
-        a: "Non. GuImmo ne perçoit jamais d'argent entre locataires et propriétaires. Méfiez-vous de toute demande de paiement avant visite.",
+        q: "LogerBien demande-t-il un paiement ?",
+        a: "Non. LogerBien ne perçoit jamais d'argent entre locataires et propriétaires. Méfiez-vous de toute demande de paiement avant visite.",
       },
     ],
   },
@@ -145,7 +145,7 @@ export default function FAQPage() {
             Questions fréquentes
           </h1>
           <p className="text-white/80 text-lg mb-8">
-            Trouvez rapidement la réponse à vos questions sur GuImmo.
+            Trouvez rapidement la réponse à vos questions sur LogerBien.
           </p>
 
           {/* Search */}

@@ -6,7 +6,7 @@ import { NEIGHBORHOODS } from "@/data/neighborhoods";
 import { AgentApplicationForm } from "./AgentApplicationForm";
 
 export const metadata: Metadata = {
-  title: "Agents immobiliers — GuImmo",
+  title: "Agents immobiliers — LogerBien",
   description: "Trouvez un agent immobilier de confiance à Conakry par quartier.",
 };
 
@@ -24,28 +24,21 @@ interface Agent {
 }
 
 async function fetchAgents(): Promise<Agent[]> {
-  if (!isSupabaseConfigured || !supabase) return DEMO_AGENTS;
+  if (!isSupabaseConfigured || !supabase) return [];
   const { data } = await supabase
     .from("agents")
     .select("id, name, neighborhood, whatsapp, phone, photo_url, description, listings_count")
     .eq("is_active", true)
     .order("neighborhood");
-  return (data as Agent[]) ?? DEMO_AGENTS;
+  return (data as Agent[]) ?? [];
 }
-
-const DEMO_AGENTS: Agent[] = [
-  { id: "1", name: "Mamadou Diallo",  neighborhood: "kipe",       whatsapp: "+224628000001", photo_url: null, description: "Spécialiste location Kipé & Ratoma depuis 5 ans.", listings_count: 12 },
-  { id: "2", name: "Fatoumata Bah",   neighborhood: "hamdallaye", whatsapp: "+224628000002", photo_url: null, description: "Expert vente villa haut standing.", listings_count: 8 },
-  { id: "3", name: "Ibrahima Sow",    neighborhood: "matam",      whatsapp: "+224628000003", photo_url: null, description: "Annonces vérifiées, réponse rapide.", listings_count: 15 },
-  { id: "4", name: "Aissatou Barry",  neighborhood: "dixinn",     whatsapp: "+224628000004", photo_url: null, description: "Locations meublées et non meublées Dixinn.", listings_count: 6 },
-];
 
 function nbLabel(id: string) {
   return NEIGHBORHOODS.find((n) => n.id === id)?.name ?? id;
 }
 
 function whatsappLink(phone: string, name: string) {
-  const text = encodeURIComponent(`Bonjour ${name}, je vous contacte via GuImmo. Pouvez-vous m'aider à trouver un bien ?`);
+  const text = encodeURIComponent(`Bonjour ${name}, je vous contacte via LogerBien. Pouvez-vous m'aider à trouver un bien ?`);
   return `https://wa.me/${phone.replace(/\D/g, "")}?text=${text}`;
 }
 
@@ -68,11 +61,11 @@ export default async function AgentsPage() {
       <div className="mb-8">
         <div
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-3"
-          style={{ background: "rgba(233,233,0,0.15)", color: "var(--GuImmo-amber-light)", border: "1px solid rgba(233,233,0,0.25)" }}
+          style={{ background: "rgba(233,233,0,0.15)", color: "var(--LogerBien-amber-light)", border: "1px solid rgba(233,233,0,0.25)" }}
         >
           <UserCheck className="w-3.5 h-3.5" /> Agents certifiés
         </div>
-        <h1 className="text-2xl font-black text-white mb-1">Agents GuImmo</h1>
+        <h1 className="text-2xl font-black text-white mb-1">Agents LogerBien</h1>
         <p className="text-white/50 text-sm">Votre quartier, votre expert — contactez un agent local de confiance</p>
       </div>
 
@@ -153,7 +146,7 @@ export default async function AgentsPage() {
         className="mt-12 rounded-2xl p-6"
         style={{ background: "rgba(200,144,30,0.08)", border: "1px solid rgba(200,144,30,0.20)" }}
       >
-        <h2 className="text-white font-black text-lg mb-1">Devenir agent GuImmo</h2>
+        <h2 className="text-white font-black text-lg mb-1">Devenir agent LogerBien</h2>
         <p className="text-white/50 text-sm mb-5">Rejoignez notre réseau et touchez des milliers de clients à Conakry</p>
         <AgentApplicationForm />
       </div>

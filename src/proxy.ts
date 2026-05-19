@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const PROTECTED_ROUTES = ["/compte", "/publier", "/messages", "/favoris"];
@@ -7,7 +7,7 @@ const AUTH_ROUTES      = ["/connexion", "/inscription"];
 
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const authCookie   = request.cookies.get("GuImmo-auth");
+  const authCookie   = request.cookies.get("LogerBien-auth");
   const isAuthenticated = !!authCookie?.value;
 
   const isProtected = PROTECTED_ROUTES.some(

@@ -32,7 +32,7 @@ export default function MotDePasseOubliePage() {
   }
 
   const waText = encodeURIComponent(
-    `Bonjour, je veux réinitialiser mon mot de passe GuImmo. Mon numéro : ${phone}`
+    `Bonjour, je veux réinitialiser mon mot de passe LogerBien. Mon numéro : ${phone}`
   );
   const waUrl = `https://wa.me/${SUPPORT_WA.replace(/\D/g, "")}?text=${waText}`;
 

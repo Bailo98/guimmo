@@ -45,7 +45,7 @@ function AdminLogo() {
       </div>
       <div>
         <p style={{ color: TEXT_PRI, fontWeight: 700, fontSize: 16, fontFamily: "var(--font-display), sans-serif", lineHeight: 1.2, letterSpacing: "-0.3px" }}>
-          GuImmo
+          LogerBien
         </p>
         <p style={{ color: TEXT_SEC, fontSize: 11, lineHeight: 1 }}>Administration</p>
       </div>
@@ -321,7 +321,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </button>
         <Link href="/admin" style={{ textDecoration: "none" }}>
           <span style={{ color: TEXT_PRI, fontWeight: 800, fontSize: 16, fontFamily: "var(--font-display), sans-serif" }}>
-            GuImmo
+            LogerBien
           </span>
         </Link>
         <Link href="/" style={{ color: TEXT_SEC, fontSize: 12, textDecoration: "none" }}>

@@ -47,35 +47,35 @@ const barlowCondensed = Barlow_Condensed({
   variable: "--font-display",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://GuImmo.gn";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://LogerBien.gn";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "GuImmo — Trouvez votre logement en Guinée",
-    template: "%s | GuImmo",
+    default: "LogerBien — Trouvez votre logement en Guinée",
+    template: "%s | LogerBien",
   },
   description:
-    "GuImmo est la plateforme immobilière de confiance en Guinée. Trouvez rapidement un appartement, une maison ou un studio à Conakry.",
-  keywords: ["immobilier Guinée", "appartement Conakry", "location Conakry", "maison Guinée", "GuImmo"],
+    "LogerBien est la plateforme immobilière de confiance en Guinée. Trouvez rapidement un appartement, une maison ou un studio à Conakry.",
+  keywords: ["immobilier Guinée", "appartement Conakry", "location Conakry", "maison Guinée", "LogerBien"],
   openGraph: {
-    title: "GuImmo — Immobilier Guinée",
+    title: "LogerBien — Immobilier Guinée",
     description: "La plateforme immobilière de confiance en Guinée",
     type: "website",
     locale: "fr_GN",
     url: SITE_URL,
-    siteName: "GuImmo",
+    siteName: "LogerBien",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GuImmo — Immobilier Guinée",
+    title: "LogerBien — Immobilier Guinée",
     description: "La plateforme immobilière de confiance en Guinée",
   },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "GuImmo",
+    title: "LogerBien",
   },
 };
 
@@ -92,7 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=JSON.parse(localStorage.getItem('GuImmo-store')||localStorage.getItem('logerbien-store')||'{}');var t=s&&s.state&&s.state.theme?s.state.theme:'dark';if(t!=='light')document.documentElement.classList.add('dark');}catch(e){document.documentElement.classList.add('dark');}})();`,
+            __html: `(function(){try{var s=JSON.parse(localStorage.getItem('LogerBien-store')||localStorage.getItem('logerbien-store')||'{}');var t=s&&s.state&&s.state.theme?s.state.theme:'dark';if(t!=='light')document.documentElement.classList.add('dark');}catch(e){document.documentElement.classList.add('dark');}})();`,
           }}
         />
         <link rel="icon" href="/logo.png" type="image/png" />

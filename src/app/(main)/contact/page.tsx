@@ -68,8 +68,8 @@ export default function ContactPage() {
             <div>
               <p className="font-bold text-slate-900 dark:text-white text-sm mb-0.5">Email</p>
               <p className="text-slate-500 dark:text-slate-400 text-xs mb-2">Réponse sous 24h</p>
-              <a href="mailto:contact@GuImmo.gn" className="text-sm font-semibold text-[#009460] hover:underline">
-                contact@GuImmo.gn
+              <a href="mailto:contact@LogerBien.gn" className="text-sm font-semibold text-[#009460] hover:underline">
+                contact@LogerBien.gn
               </a>
             </div>
           </div>

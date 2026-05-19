@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     };
 
     await resend.emails.send({
-      from: "GuImmo <onboarding@resend.dev>",
+      from: "LogerBien <onboarding@resend.dev>",
       to: adminEmail,
       subject: `🚨 Nouveau signalement — ${propertyTitle ?? "Annonce inconnue"}`,
       html: `

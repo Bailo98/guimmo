@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin/", "/compte/", "/api/"],
     },
-    sitemap: "https://GuImmo.gn/sitemap.xml",
+    sitemap: "https://LogerBien.gn/sitemap.xml",
   };
 }

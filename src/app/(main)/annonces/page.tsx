@@ -146,7 +146,7 @@ function AnnoncesContent() {
         if (nearest && nearest.dist <= 5) {
           setParam("neighborhood", nearest.id);
         } else {
-          setGpsMessage("Aucun quartier GuImmo à moins de 5 km de vous.");
+          setGpsMessage("Aucun quartier LogerBien à moins de 5 km de vous.");
           setTimeout(() => setGpsMessage(null), 4000);
         }
       },

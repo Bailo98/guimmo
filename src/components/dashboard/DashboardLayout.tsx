@@ -57,7 +57,7 @@ function SidebarLogo() {
         </svg>
       </div>
       <span style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-cream)", fontSize: 18, fontWeight: 700, letterSpacing: "-0.3px" }}>
-        GuImmo
+        LogerBien
       </span>
     </div>
   );
@@ -131,7 +131,7 @@ export function DashboardLayout({ tabs, active, onChange, signOut, userName, use
         </button>
 
         <span style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-amber)", fontSize: 17, fontWeight: 700 }}>
-          GuImmo
+          LogerBien
         </span>
 
         <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0"
@@ -169,7 +169,7 @@ export function DashboardLayout({ tabs, active, onChange, signOut, userName, use
                     <polyline points="9 22 9 12 15 12 15 22" />
                   </svg>
                 </div>
-                <span style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-cream)", fontSize: 17, fontWeight: 700, letterSpacing: "-0.3px" }}>GuImmo</span>
+                <span style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-cream)", fontSize: 17, fontWeight: 700, letterSpacing: "-0.3px" }}>LogerBien</span>
               </div>
               <button
                 onClick={() => setDrawerOpen(false)}

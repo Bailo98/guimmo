@@ -4,8 +4,8 @@ import { CheckCircle, ArrowRight, MessageCircle } from "lucide-react";
 import { PageHero } from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
-  title: "Tarifs GuImmo — 100% gratuit pendant le lancement",
-  description: "GuImmo est entièrement gratuit pendant la phase de lancement. Publiez vos annonces, contactez des propriétaires, trouvez votre logement — sans frais.",
+  title: "Tarifs LogerBien — 100% gratuit pendant le lancement",
+  description: "LogerBien est entièrement gratuit pendant la phase de lancement. Publiez vos annonces, contactez des propriétaires, trouvez votre logement — sans frais.",
 };
 
 const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "224628000000";
@@ -49,10 +49,10 @@ const FAQ = [
 
 export default function TarifsPage() {
   return (
-    <div style={{ background: "var(--GuImmo-bg)" }}>
+    <div style={{ background: "var(--LogerBien-bg)" }}>
       <PageHero
         title="100 % gratuit pendant le lancement"
-        subtitle="GuImmo est en phase de lancement. Toutes les fonctionnalités sont offertes — propriétaires, locataires, agences."
+        subtitle="LogerBien est en phase de lancement. Toutes les fonctionnalités sont offertes — propriétaires, locataires, agences."
         badge="✦ Tarifs"
         align="center"
       />
@@ -65,7 +65,7 @@ export default function TarifsPage() {
           style={{ background: "linear-gradient(135deg, rgba(200,144,30,0.18) 0%, rgba(233,233,0,0.12) 100%)", border: "1px solid rgba(200,144,30,0.30)" }}
         >
           <div className="text-6xl mb-4">🎉</div>
-          <div className="inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4" style={{ background: "rgba(200,144,30,0.20)", border: "1px solid rgba(200,144,30,0.35)", color: "var(--GuImmo-amber-light)" }}>
+          <div className="inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4" style={{ background: "rgba(200,144,30,0.20)", border: "1px solid rgba(200,144,30,0.35)", color: "var(--LogerBien-amber-light)" }}>
             Offre de lancement
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-white mb-3">0 GNF</h2>
@@ -74,7 +74,7 @@ export default function TarifsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left mb-8 max-w-xl mx-auto">
             {FREE_FEATURES.map((f) => (
               <div key={f} className="flex items-start gap-2.5">
-                <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "var(--GuImmo-green, #E9E900)" }} />
+                <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "var(--LogerBien-green, #E9E900)" }} />
                 <span className="text-white/75 text-sm">{f}</span>
               </div>
             ))}
@@ -84,14 +84,14 @@ export default function TarifsPage() {
             <Link
               href="/publier"
               className="inline-flex items-center justify-center gap-2 font-black px-8 py-3.5 rounded-2xl text-sm transition-all hover:opacity-90"
-              style={{ background: "var(--GuImmo-amber)", color: "#fff", boxShadow: "0 4px 20px rgba(200,144,30,0.35)" }}
+              style={{ background: "var(--LogerBien-amber)", color: "#fff", boxShadow: "0 4px 20px rgba(200,144,30,0.35)" }}
             >
               Publier une annonce gratuite <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/annonces"
               className="inline-flex items-center justify-center gap-2 font-semibold px-8 py-3.5 rounded-2xl text-sm transition-all hover:bg-white/10"
-              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "var(--GuImmo-cream)" }}
+              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "var(--LogerBien-cream)" }}
             >
               Parcourir les annonces
             </Link>
@@ -120,7 +120,7 @@ export default function TarifsPage() {
           <h3 className="text-lg font-black text-white mb-2">Une question ?</h3>
           <p className="text-white/55 text-sm mb-5">Notre équipe répond en moins d'une heure.</p>
           <a
-            href={`https://wa.me/${WHATSAPP}?text=Bonjour%20GuImmo%2C%20j%27ai%20une%20question%20sur%20les%20tarifs.`}
+            href={`https://wa.me/${WHATSAPP}?text=Bonjour%20LogerBien%2C%20j%27ai%20une%20question%20sur%20les%20tarifs.`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 font-bold px-6 py-3 rounded-xl text-sm transition-colors"

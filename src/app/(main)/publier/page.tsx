@@ -128,8 +128,17 @@ export default function PublierPage() {
     if (profile?.phone) setForm((f) => ({ ...f, phone: profile.phone! }));
   }, [profile]);
 
+  const [roomsError, setRoomsError] = useState<string | null>(null);
+
   function update<K extends keyof FormState>(key: K, val: FormState[K]) {
-    setForm((f) => ({ ...f, [key]: val }));
+    setForm((f) => {
+      const next = { ...f, [key]: val };
+      // Si le type devient Studio, forcer max 1 chambre
+      if (key === "type" && val === "studio" && f.rooms > 1) {
+        next.rooms = 1;
+      }
+      return next;
+    });
   }
 
   function addPhotos(files: FileList | null) {
@@ -268,6 +277,11 @@ export default function PublierPage() {
 
     if (form.photos.length === 0) {
       toast("Veuillez ajouter au moins une photo", "error");
+      return;
+    }
+    if (form.type === "studio" && form.rooms > 1) {
+      setRoomsError("Un Studio ne peut pas avoir plus d'une chambre.");
+      toast("Studio : maximum 1 chambre autorisée", "error");
       return;
     }
     const priceNum = parseInt(form.price.replace(/\D/g, ""), 10);
@@ -866,15 +880,28 @@ export default function PublierPage() {
             <div className="flex gap-2 flex-wrap">
               {ROOM_OPTIONS.map((r) => {
                 const val = r === "5+" ? 5 : (r as number);
+                const isStudio = form.type === "studio";
+                const disabled = isStudio && val > 1;
                 return (
                   <button
                     key={String(r)}
-                    onClick={() => update("rooms", val)}
+                    onClick={() => {
+                      if (disabled) {
+                        setRoomsError("Un Studio ne peut pas avoir plus d’une chambre.");
+                        return;
+                      }
+                      setRoomsError(null);
+                      update("rooms", val);
+                    }}
+                    disabled={disabled}
+                    title={disabled ? "Studio : max 1 chambre" : undefined}
                     className={cn(
                       "w-12 h-12 rounded-xl border-2 font-bold text-sm transition-all",
-                      form.rooms === val
-                        ? "border-white/40 text-white"
-                        : "text-white/70 hover:border-white/30"
+                      disabled
+                        ? "opacity-30 cursor-not-allowed border-white/10 text-white/30"
+                        : form.rooms === val
+                          ? "border-white/40 text-white"
+                          : "text-white/70 hover:border-white/30"
                     )}
                   >
                     {r}
@@ -882,6 +909,16 @@ export default function PublierPage() {
                 );
               })}
             </div>
+            {roomsError && (
+              <p className="mt-2 text-xs font-semibold" style={{ color: "#ef4444" }}>
+                ⚠ {roomsError}
+              </p>
+            )}
+            {form.type === "studio" && (
+              <p className="mt-1.5 text-xs text-white/40">
+                Studio : maximum 1 chambre
+              </p>
+            )}
           </div>
 
           {/* Furnished */}
@@ -1273,7 +1310,7 @@ export default function PublierPage() {
           </button>
 
           <p className="text-slate-400 text-xs text-center leading-relaxed">
-            En publiant, vous acceptez que votre annonce soit visible par tous les visiteurs de GuImmo.
+            En publiant, vous acceptez que votre annonce soit visible par tous les visiteurs de LogerBien.
           </p>
         </div>
       )}

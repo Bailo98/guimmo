@@ -29,7 +29,7 @@ export function HeroNavbar() {
           fontFamily: "var(--font-display), sans-serif",
           fontWeight: 700, fontSize: "1.0625rem", color: "#ffffff", letterSpacing: "-0.3px",
         }}>
-          GuImmo
+          LogerBien
         </span>
       </Link>
 

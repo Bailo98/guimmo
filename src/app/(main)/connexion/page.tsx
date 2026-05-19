@@ -68,13 +68,13 @@ function ConnexionForm() {
           return;
         }
 
-        document.cookie = `GuImmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+        document.cookie = `LogerBien-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
         // Hard refresh forces AuthProvider to re-init from fresh session cookies,
         // avoiding the SPA race condition where user is still null on /compte.
         window.location.href = redirect;
       } else {
         await new Promise((r) => setTimeout(r, 1000));
-        document.cookie = `GuImmo-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+        document.cookie = `LogerBien-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
         window.location.href = redirect;
       }
     } catch (err) {
@@ -108,7 +108,7 @@ function ConnexionForm() {
                 <Lock className="w-8 h-8 text-white/70" />
               </div>
               <h1 className="text-2xl font-black text-white">Connexion</h1>
-              <p className="text-[#666666] text-sm mt-1">Accédez à votre compte GuImmo</p>
+              <p className="text-[#666666] text-sm mt-1">Accédez à votre compte LogerBien</p>
             </div>
 
             {/* Mode toggle — outside <form> so it can never accidentally submit */}
@@ -143,7 +143,7 @@ function ConnexionForm() {
                       id="phone"
                       name="phone"
                       type="tel"
-                      placeholder="+224 628 222 510 ou +1 438 000 0000"
+                      placeholder="Ex : 628 000 000"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}

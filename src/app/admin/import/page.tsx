@@ -129,7 +129,7 @@ export default function AdminImportPage() {
     const blob = new Blob([TEMPLATE_CSV], { type: "text/csv;charset=utf-8;" });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement("a");
-    a.href = url; a.download = "modele-import-GuImmo.csv"; a.click();
+    a.href = url; a.download = "modele-import-LogerBien.csv"; a.click();
     URL.revokeObjectURL(url);
   }
 

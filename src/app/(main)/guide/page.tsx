@@ -7,7 +7,7 @@ import {
 import { POPULAR_NEIGHBORHOODS } from "@/data/neighborhoods";
 
 export const metadata: Metadata = {
-  title: "Guide location Conakry | GuImmo",
+  title: "Guide location Conakry | LogerBien",
   description:
     "Guide complet pour bien louer en Guinée : documents à demander, red flags à éviter, droits du locataire, conseils de négociation et quartiers populaires de Conakry.",
 };
@@ -46,7 +46,7 @@ const SECTIONS = [
     bg: "bg-orange-50 dark:bg-orange-900/20",
     title: "Négocier son loyer en Guinée",
     items: [
-      { label: "Renseignez-vous sur le marché local", desc: "Comparez les prix du même quartier sur GuImmo avant de négocier." },
+      { label: "Renseignez-vous sur le marché local", desc: "Comparez les prix du même quartier sur LogerBien avant de négocier." },
       { label: "Proposez de payer plusieurs mois d'avance", desc: "Offrir 3 à 6 mois d'avance peut vous permettre d'obtenir une réduction de 10-15%." },
       { label: "Signalez les défauts du logement", desc: "Humidité, peinture abimée, équipements défectueux — utilisez-les comme levier de négociation." },
       { label: "Négociez les charges incluses", desc: "Demandez si l'eau, le gardien ou le groupe électrogène peuvent être inclus dans le loyer." },
@@ -165,7 +165,7 @@ export default function GuidePage() {
           href="/annonces"
           className="inline-flex items-center gap-2 bg-[#E9E900] text-white font-bold px-8 py-3.5 rounded-2xl hover:bg-[#c4c400] transition-colors"
         >
-          Trouver mon logement sur GuImmo <ArrowRight className="w-4 h-4" />
+          Trouver mon logement sur LogerBien <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
     </div>

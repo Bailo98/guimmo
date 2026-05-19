@@ -28,11 +28,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const db = getDB();
   const { data } = await db.from("profiles").select("agency_name, full_name, bio").eq("id", slug).single();
-  if (!data) return { title: "Agence | GuImmo" };
+  if (!data) return { title: "Agence | LogerBien" };
   const name = data.agency_name ?? data.full_name ?? "Agence";
   return {
-    title: `${name} — Agence immobilière | GuImmo`,
-    description: data.bio ?? `${name} sur GuImmo Guinée`,
+    title: `${name} — Agence immobilière | LogerBien`,
+    description: data.bio ?? `${name} sur LogerBien Guinée`,
   };
 }
 
@@ -63,7 +63,7 @@ export default async function AgenceProfilePage({ params }: Props) {
   const initials = agencyName.slice(0, 2).toUpperCase();
   const logoUrl = profile.agency_logo_url ?? profile.avatar_url;
   const waNumber = profile.phone?.replace(/\D/g, "") ?? "";
-  const waMsg = `Bonjour ${agencyName}, j'aimerais vous contacter via GuImmo.`;
+  const waMsg = `Bonjour ${agencyName}, j'aimerais vous contacter via LogerBien.`;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 pb-24">

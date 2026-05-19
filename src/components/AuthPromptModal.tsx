@@ -54,7 +54,7 @@ export function AuthPromptModal({ onClose, redirectUrl, action }: Props) {
         <p className="text-sm mb-6 leading-relaxed" style={{ color: "#666666" }}>
           Pour{" "}
           <span style={{ color: "#E9E900" }}>{action ?? "contacter ce propriétaire"}</span>
-          , créez votre compte GuImmo. C&apos;est gratuit et rapide.
+          , créez votre compte LogerBien. C&apos;est gratuit et rapide.
         </p>
 
         {/* Buttons */}

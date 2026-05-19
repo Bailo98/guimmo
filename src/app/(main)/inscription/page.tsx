@@ -110,10 +110,10 @@ function InscriptionForm() {
         return;
       }
 
-      document.cookie = `GuImmo-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+      document.cookie = `LogerBien-auth=supabase-session; path=/; max-age=${60 * 60 * 24 * 30}`;
     } else {
       await new Promise((r) => setTimeout(r, 800));
-      document.cookie = `GuImmo-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
+      document.cookie = `LogerBien-auth=mock-session; path=/; max-age=${60 * 60 * 24 * 30}`;
     }
 
     setLoading(false);
@@ -305,7 +305,7 @@ function InscriptionForm() {
                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
                         <input
                           type="tel"
-                          placeholder="+224 628 222 510"
+                          placeholder="Ex : 628 000 000"
                           value={form.phone}
                           onChange={(e) => setForm({ ...form, phone: e.target.value })}
                           className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm"

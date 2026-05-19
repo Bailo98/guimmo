@@ -16,7 +16,7 @@ interface Props {
 export function PropertyShareButton({ title, neighborhood, price, rooms, bathrooms, surface, shortRef, propertyId }: Props) {
   const [copied, setCopied] = useState(false);
 
-  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://GuImmo.gn";
+  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://LogerBien.gn";
   const shortUrl = shortRef ? `${siteUrl}/a/${shortRef}` : `${siteUrl}/annonces/${propertyId}`;
 
   const specs = [

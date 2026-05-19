@@ -5,7 +5,7 @@ import { MOCK_PROPERTIES } from "@/data/mock-properties";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 
 export const metadata: Metadata = {
-  title: "Notre sélection | GuImmo",
+  title: "Notre sélection | LogerBien",
   description:
     "Les meilleures annonces immobilières choisies par notre équipe éditoriale. Propriétés vérifiées, coups de cœur et logements d'exception à Conakry.",
 };
@@ -184,7 +184,7 @@ export default function SelectionPage() {
         {sorted.length > 0 && (
           <div className="mt-12 bg-[#2c2f36] border border-[#1e2a30] rounded-2xl p-6 text-center">
             <p className="text-slate-400 dark:text-slate-500 text-sm max-w-lg mx-auto">
-              Notre sélection est mise à jour chaque semaine par l&apos;équipe GuImmo. Seuls les biens
+              Notre sélection est mise à jour chaque semaine par l&apos;équipe LogerBien. Seuls les biens
               ayant passé notre processus de vérification sont inclus.
             </p>
           </div>

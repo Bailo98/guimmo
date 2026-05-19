@@ -2,7 +2,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { POPULAR_NEIGHBORHOODS } from "@/data/neighborhoods";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://GuImmo.gn";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://LogerBien.gn";
 
 const STATIC_PAGES = [
   "/", "/annonces", "/tarifs", "/comment-ca-marche",

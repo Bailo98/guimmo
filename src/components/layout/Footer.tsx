@@ -35,7 +35,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
                 { label: "Maisons", href: "/annonces?type=house" },
                 { label: "Villas", href: "/annonces?type=villa" },
                 { label: "Publication rapide", href: "/publier/rapide" },
-                { label: "Agents GuImmo", href: "/agents" },
+                { label: "Agents LogerBien", href: "/agents" },
               ].map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-sm transition-colors hover:text-[#E9E900]" style={{ color: "#666666" }}>
@@ -89,7 +89,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
 
         <div className="pt-6 text-center" style={{ borderTop: "1px solid #1e2a30" }}>
           <p className="text-xs" style={{ color: "#666666" }}>
-            🏠 GuImmo — Conakry, Guinée &nbsp;|&nbsp; © 2025 Tous droits réservés
+            🏠 LogerBien — Conakry, Guinée &nbsp;|&nbsp; © 2025 Tous droits réservés
           </p>
         </div>
       </div>
