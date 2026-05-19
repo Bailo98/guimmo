@@ -1422,13 +1422,17 @@ export default function ComptePage() {
     if (!authLoading && profile?.role === "admin") router.replace("/admin");
   }, [authLoading, profile, router]);
 
-  if (authLoading || !user) {
+  // Auth still resolving — show spinner
+  if (authLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "var(--bl-amber)", borderTopColor: "transparent" }} />
       </div>
     );
   }
+
+  // Auth resolved, no user — useEffect above fires the redirect; render nothing to avoid infinite spinner
+  if (!user) return null;
 
   const role = profile?.role ?? "buyer";
   const accountType = profile?.account_type ?? (

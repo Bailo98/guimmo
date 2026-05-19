@@ -68,41 +68,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // Safety timeout: if loading is still true after 3s (getSession hung or
-    // onAuthStateChange never fired), force it false so the page can redirect.
+    // Safety timeout: if getSession never resolves (network hung), unblock after 2s.
     const safetyTimer = setTimeout(() => {
       if (loadingRef.current) {
         loadingRef.current = false;
         setLoading(false);
       }
-    }, 3000);
+    }, 2000);
 
+    // getSession() is the authoritative source for initial auth state.
+    // It reads from cookies synchronously (no network call unless token is expired).
     supabase.auth.getSession()
       .then(({ data: { session } }) => {
         setUser(session?.user ?? null);
         if (session?.user) fetchProfile(session.user.id);
       })
       .catch(() => {
-        // getSession rejected (network error, bad token, etc.) — treat as no session
+        // getSession rejected (network error, bad token) — treat as no session
         setUser(null);
       })
       .finally(() => {
+        clearTimeout(safetyTimer);
         loadingRef.current = false;
         setLoading(false);
       });
 
+    // onAuthStateChange handles events AFTER initial load (SIGNED_IN, SIGNED_OUT, TOKEN_REFRESHED).
+    // We skip INITIAL_SESSION to avoid a race where it fires null before getSession() resolves,
+    // which would incorrectly set loading=false with user=null and trigger a redirect loop.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
+        if (event === "INITIAL_SESSION") return;
         setUser(session?.user ?? null);
         if (session?.user) {
           fetchProfile(session.user.id);
         } else {
           setProfile(null);
-        }
-        // Mark loading done on first event (covers INITIAL_SESSION with null session)
-        if (loadingRef.current) {
-          loadingRef.current = false;
-          setLoading(false);
         }
       }
     );
