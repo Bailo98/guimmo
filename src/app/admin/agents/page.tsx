@@ -147,9 +147,9 @@ export default function AdminAgentsPage() {
     <div style={{ padding: "28px 24px 40px", maxWidth: 1200 }} className="px-4 md:px-6">
 
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 24 }}>
-        <div>
-          <h1 style={{ color: TEXT_PRI, fontWeight: 900, fontSize: "clamp(20px,4vw,26px)" }}>Agents BienLoger</h1>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "nowrap", width: "100%", gap: 16, marginBottom: 16 }}>
+        <div style={{ minWidth: 0 }}>
+          <h1 style={{ color: TEXT_PRI, fontWeight: 900, fontSize: "clamp(20px,4vw,26px)", margin: 0 }}>Agents BienLoger</h1>
           <p style={{ color: TEXT_SEC, fontSize: 13, marginTop: 2 }}>
             {loading ? "Chargement…" : `${agents.length} agent(s)`}
           </p>
@@ -171,6 +171,7 @@ export default function AdminAgentsPage() {
             fontWeight: 700,
             cursor: "pointer",
             flexShrink: 0,
+            whiteSpace: "nowrap",
             userSelect: "none",
             WebkitTextFillColor: "#0A1216",
           }}
