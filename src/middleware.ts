@@ -1,11 +1,11 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const PROTECTED_ROUTES = ["/compte", "/publier", "/messages", "/favoris"];
 const ADMIN_ROUTES     = ["/admin"];
 const AUTH_ROUTES      = ["/connexion", "/inscription"];
 
-export function proxy(request: NextRequest) {
+export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const authCookie   = request.cookies.get("BienLoger-auth");
   const isAuthenticated = !!authCookie?.value;
