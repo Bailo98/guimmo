@@ -157,10 +157,20 @@ export default function AdminAgentsPage() {
         <button
           onClick={openNew}
           style={{
-            display: "flex", alignItems: "center", gap: 8,
-            padding: "10px 20px", borderRadius: 10,
-            border: "none", background: ACCENT, color: "#0A1216",
-            fontSize: 13, fontWeight: 700, cursor: "pointer", flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "10px 20px",
+            borderRadius: 10,
+            border: "none",
+            background: "#E9E900",
+            color: "#0A1216",
+            fontSize: 13,
+            fontWeight: 700,
+            cursor: "pointer",
+            flexShrink: 0,
+            visibility: "visible",
+            opacity: 1,
           }}
         >
           <Plus size={15} /> Ajouter un agent
