@@ -106,19 +106,19 @@ export default function AdminAgentsPage() {
     };
     if (editing) {
       const { error } = await supabase.from("agents").update(payload).eq("id", editing.id);
-      if (error) { toast("Erreur", "error"); }
+      if (error) { toast("Erreur lors de la mise à jour", "error"); }
       else {
-        setAgents((prev) => prev.map((a) => a.id === editing.id ? { ...a, ...payload } : a));
-        toast("Agent mis à jour", "success");
+        toast("Agent mis à jour avec succès", "success");
         setShowForm(false);
+        await load();
       }
     } else {
-      const { data, error } = await supabase.from("agents").insert(payload).select().single();
-      if (error) { toast("Erreur", "error"); }
+      const { error } = await supabase.from("agents").insert(payload);
+      if (error) { toast("Erreur lors de l'ajout", "error"); }
       else {
-        setAgents((prev) => [...prev, data as Agent]);
-        toast("Agent ajouté", "success");
+        toast("Agent ajouté avec succès", "success");
         setShowForm(false);
+        await load();
       }
     }
     setSaving(false);
@@ -158,12 +158,12 @@ export default function AdminAgentsPage() {
           onClick={openNew}
           style={{
             display: "flex", alignItems: "center", gap: 8,
-            padding: "10px 18px", borderRadius: 10,
-            border: "none", background: ACCENT, color: "white",
-            fontSize: 13, fontWeight: 700, cursor: "pointer",
+            padding: "10px 20px", borderRadius: 10,
+            border: "none", background: ACCENT, color: "#0A1216",
+            fontSize: 13, fontWeight: 700, cursor: "pointer", flexShrink: 0,
           }}
         >
-          <Plus size={15} /> Ajouter
+          <Plus size={15} /> Ajouter un agent
         </button>
       </div>
 
