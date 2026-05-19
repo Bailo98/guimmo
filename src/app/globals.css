@@ -336,6 +336,10 @@ input::placeholder, textarea::placeholder { color: #666666 !important; }
   background: #E9E900 !important;
   border: none !important;
 }
+.admin-btn-dark {
+  color: #0A1216 !important;
+  -webkit-text-fill-color: #0A1216 !important;
+}
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }

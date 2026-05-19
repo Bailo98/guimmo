@@ -159,21 +159,19 @@ export default function AdminAgentsPage() {
           role="button"
           tabIndex={0}
           onKeyDown={(e) => e.key === "Enter" && openNew()}
+          className="admin-add-btn admin-btn-dark"
           style={{
             display: "inline-flex",
             alignItems: "center",
             gap: 8,
             padding: "10px 20px",
             borderRadius: 10,
-            background: "#E9E900",
-            color: "#0A1216",
             fontSize: 13,
             fontWeight: 700,
             cursor: "pointer",
             flexShrink: 0,
             whiteSpace: "nowrap",
             userSelect: "none",
-            WebkitTextFillColor: "#0A1216",
           }}
         >
           <Plus size={15} color="#0A1216" /> Ajouter un agent
