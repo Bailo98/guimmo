@@ -327,6 +327,16 @@ input:focus, select:focus, textarea:focus {
 }
 input::placeholder, textarea::placeholder { color: #666666 !important; }
 
+/* Admin buttons */
+.admin-add-btn,
+.admin-add-btn * {
+  color: #0A1216 !important;
+}
+.admin-add-btn {
+  background: #E9E900 !important;
+  border: none !important;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: #0A1216; }
