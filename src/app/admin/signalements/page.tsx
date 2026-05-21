@@ -62,22 +62,28 @@ export default function AdminSignalementsPage() {
   }, [load]);
 
   async function handleMasquer(r: Report) {
-    if (!supabase) return;
     setBusy(r.id + "-masquer");
-    await supabase.from("reports").delete().eq("id", r.id);
-    if (r.property_id) {
-      await supabase.from("properties").update({ status: "paused" }).eq("id", r.property_id);
+    const res = await fetch("/api/admin/reports", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "masquer", id: r.id, propertyId: r.property_id }),
+    });
+    if (!res.ok) { toast("Erreur lors de la suppression", "error"); }
+    else {
+      setReports((prev) => prev.filter((x) => x.id !== r.id));
+      toast("Annonce masquée et signalement supprimé", "success");
     }
-    setReports((prev) => prev.filter((x) => x.id !== r.id));
-    toast("Annonce masquée et signalement supprimé", "success");
     setBusy(null);
   }
 
   async function handleIgnorer(r: Report) {
-    if (!supabase) return;
     setBusy(r.id + "-ignorer");
-    const { error } = await supabase.from("reports").update({ is_handled: true }).eq("id", r.id);
-    if (error) { toast("Erreur", "error"); }
+    const res = await fetch("/api/admin/reports", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "ignorer", id: r.id }),
+    });
+    if (!res.ok) { toast("Erreur", "error"); }
     else {
       setReports((prev) => prev.filter((x) => x.id !== r.id));
       toast("Signalement marqué comme traité", "success");
@@ -86,11 +92,19 @@ export default function AdminSignalementsPage() {
   }
 
   async function handleIgnoreAll() {
-    if (!supabase || reports.length === 0) return;
+    if (reports.length === 0) return;
     setBusy("all");
-    await supabase.from("reports").update({ is_handled: true }).eq("is_handled", false);
-    setReports([]);
-    toast(`${reports.length} signalement(s) marqué(s) comme traités`, "success");
+    const count = reports.length;
+    const res = await fetch("/api/admin/reports", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "ignore-all" }),
+    });
+    if (!res.ok) { toast("Erreur", "error"); }
+    else {
+      setReports([]);
+      toast(`${count} signalement(s) marqué(s) comme traités`, "success");
+    }
     setBusy(null);
   }
 

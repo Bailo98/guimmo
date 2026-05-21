@@ -216,7 +216,7 @@ export default function FAQPage() {
             href="https://wa.me/224628222510"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#c4c400] text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm"
+            className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm"
           >
             Contacter le support
           </a>

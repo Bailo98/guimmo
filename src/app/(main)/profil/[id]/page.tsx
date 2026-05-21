@@ -107,7 +107,7 @@ export default async function ProfilPage({ params }: Props) {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-[#25D366] hover:bg-[#c4c400] text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors flex-shrink-0"
+            className="flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors flex-shrink-0"
           >
             <Phone className="w-4 h-4" />
             WhatsApp

@@ -8,6 +8,7 @@ import { formatPrice } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "@/lib/toast";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { WhatsAppShare } from "@/components/ui/WhatsAppShare";
 import { AuthPromptModal } from "@/components/AuthPromptModal";
 import { ListingScore } from "@/components/ListingScore";
@@ -267,12 +268,32 @@ export function PropertyCard({ property, variant = "default", className, index =
 
         {/* Favorite button — top right */}
         <button
-          onClick={(e) => {
+          onClick={async (e) => {
             e.preventDefault();
             e.stopPropagation();
             if (!user) { setShowAuthModal(true); return; }
-            toggleFavorite(property.id);
-            toast(fav ? "Retiré des favoris" : "Ajouté aux favoris", fav ? "info" : "success");
+            const willBeFav = !fav;
+            toggleFavorite(property.id); // mise à jour optimiste (Zustand / localStorage)
+            toast(willBeFav ? "Ajouté aux favoris" : "Retiré des favoris", willBeFav ? "success" : "info");
+            // Synchronisation avec Supabase
+            if (isSupabaseConfigured && supabase) {
+              try {
+                if (willBeFav) {
+                  await supabase.from("favorites")
+                    .upsert(
+                      { user_id: user.id, property_id: property.id },
+                      { onConflict: "user_id,property_id" }
+                    );
+                } else {
+                  await supabase.from("favorites")
+                    .delete()
+                    .eq("user_id", user.id)
+                    .eq("property_id", property.id);
+                }
+              } catch {
+                // Echec silencieux — l'état Zustand reste l'UI de référence
+              }
+            }
           }}
           aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
           style={{

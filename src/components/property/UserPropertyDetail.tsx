@@ -225,7 +225,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#c4c400] text-white font-bold py-3.5 px-4 rounded-xl transition-all text-sm"
+              className="flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold py-3.5 px-4 rounded-xl transition-all text-sm"
             >
               WhatsApp
             </a>

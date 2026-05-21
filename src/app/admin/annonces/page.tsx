@@ -97,25 +97,34 @@ export default function AdminAnnoncesPage() {
   useEffect(() => { fetchProperties(); }, [fetchProperties]);
 
   async function handleApprove(id: string) {
-    if (!supabase) return;
-    const { error } = await supabase.from("properties").update({ status: "active" }).eq("id", id);
-    if (error) { toast("Erreur lors de l'approbation.", "error"); return; }
+    const res = await fetch("/api/admin/properties", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "approve", id }),
+    });
+    if (!res.ok) { toast("Erreur lors de l'approbation.", "error"); return; }
     setProperties((prev) => prev.map((p) => p.id === id ? { ...p, status: "active" as DbStatus } : p));
     toast("Annonce approuvée.", "success");
   }
 
   async function handleSuspend(id: string) {
-    if (!supabase) return;
-    const { error } = await supabase.from("properties").update({ status: "paused" }).eq("id", id);
-    if (error) { toast("Erreur lors de la suspension.", "error"); return; }
+    const res = await fetch("/api/admin/properties", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "suspend", id }),
+    });
+    if (!res.ok) { toast("Erreur lors de la suspension.", "error"); return; }
     setProperties((prev) => prev.map((p) => p.id === id ? { ...p, status: "paused" as DbStatus } : p));
     toast("Annonce suspendue.", "success");
   }
 
   async function handleDelete(id: string) {
-    if (!supabase) return;
-    const { error } = await supabase.from("properties").delete().eq("id", id);
-    if (error) { toast("Erreur lors de la suppression.", "error"); }
+    const res = await fetch("/api/admin/properties", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "delete", id }),
+    });
+    if (!res.ok) { toast("Erreur lors de la suppression.", "error"); }
     else {
       setProperties((prev) => prev.filter((p) => p.id !== id));
       toast("Annonce supprimée.", "success");
