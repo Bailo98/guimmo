@@ -1,20 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
-import { supabaseAdmin } from "@/lib/supabase-admin";
 
 /**
- * Vérifie que l'appelant est un admin Supabase.
- * Retourne le client DB à utiliser (service_role si disponible, sinon session admin).
+ * Même logique que /api/admin/properties :
+ * utilise la session admin SSR + RLS is_admin(), sans service_role key.
  */
 async function requireAdmin() {
   try {
     const supabase = await createSupabaseServerClient();
+
     const {
       data: { user },
+      error: authError,
     } = await supabase.auth.getUser();
 
+    if (authError) {
+      console.error("[admin/reports] auth.getUser error:", authError.message);
+      return null;
+    }
     if (!user) {
-      console.error("[admin/reports] Pas d'utilisateur authentifié");
+      console.error("[admin/reports] Aucune session admin");
       return null;
     }
 
@@ -28,36 +33,33 @@ async function requireAdmin() {
       console.error("[admin/reports] Erreur lecture profil:", profileError.message);
       return null;
     }
-
     if (profile?.role !== "admin") {
       console.error("[admin/reports] Rôle insuffisant:", profile?.role);
       return null;
     }
 
-    const db = supabaseAdmin ?? supabase;
-    return { user, db };
+    console.log("[admin/reports] Admin vérifié:", user.email);
+    return supabase;
   } catch (err) {
-    console.error("[admin/reports] Erreur requireAdmin:", err);
+    console.error("[admin/reports] Exception dans requireAdmin:", err);
     return null;
   }
 }
 
 export async function POST(req: NextRequest) {
-  const auth = await requireAdmin();
-  if (!auth) {
+  const supabase = await requireAdmin();
+  if (!supabase) {
     return NextResponse.json(
-      { error: "Non autorisé — connectez-vous en tant qu'admin Supabase." },
+      { error: "Non autorisé — connectez-vous à /connexion avec un compte Supabase ayant role='admin' dans la table profiles." },
       { status: 401 }
     );
   }
-
-  const { db } = auth;
 
   let body: { action: string; id?: string; propertyId?: string | null };
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Corps de la requête invalide (JSON attendu)" }, { status: 400 });
+    return NextResponse.json({ error: "Corps JSON invalide" }, { status: 400 });
   }
 
   const { action, id, propertyId } = body;
@@ -66,37 +68,37 @@ export async function POST(req: NextRequest) {
   if (action === "masquer") {
     if (!id) return NextResponse.json({ error: "Paramètre id manquant" }, { status: 400 });
 
-    const { error: reportErr } = await db.from("reports").delete().eq("id", id);
+    const { error: reportErr } = await supabase.from("reports").delete().eq("id", id);
     if (reportErr) {
-      console.error("[admin/reports] masquer (delete report) error:", reportErr);
+      console.error("[admin/reports] masquer (delete) error:", reportErr.code, reportErr.message);
       return NextResponse.json({ error: reportErr.message }, { status: 500 });
     }
 
     if (propertyId) {
-      const { error: propErr } = await db
+      const { error: propErr } = await supabase
         .from("properties")
         .update({ status: "paused" })
         .eq("id", propertyId);
       if (propErr) {
-        console.error("[admin/reports] masquer (pause property) error:", propErr);
-        // On ne bloque pas sur cette erreur — le signalement a déjà été supprimé.
+        console.error("[admin/reports] masquer (pause property) error:", propErr.code, propErr.message);
+        // Le signalement est déjà supprimé — on ne bloque pas.
       }
     }
 
     return NextResponse.json({ ok: true });
   }
 
-  // ── Ignorer : marque le signalement comme traité ──────────────────────────
+  // ── Ignorer ───────────────────────────────────────────────────────────────
   if (action === "ignorer") {
     if (!id) return NextResponse.json({ error: "Paramètre id manquant" }, { status: 400 });
 
-    const { error } = await db
+    const { error } = await supabase
       .from("reports")
       .update({ is_handled: true })
       .eq("id", id);
 
     if (error) {
-      console.error("[admin/reports] ignorer error:", error);
+      console.error("[admin/reports] ignorer error:", error.code, error.message);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json({ ok: true });
@@ -104,13 +106,13 @@ export async function POST(req: NextRequest) {
 
   // ── Ignorer tout ──────────────────────────────────────────────────────────
   if (action === "ignore-all") {
-    const { error } = await db
+    const { error } = await supabase
       .from("reports")
       .update({ is_handled: true })
       .eq("is_handled", false);
 
     if (error) {
-      console.error("[admin/reports] ignore-all error:", error);
+      console.error("[admin/reports] ignore-all error:", error.code, error.message);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json({ ok: true });
