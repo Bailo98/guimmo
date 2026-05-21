@@ -116,13 +116,6 @@ export default function PublierPage() {
   });
   const [geoState, setGeoState] = useState<"idle" | "loading" | "done" | "error">("idle");
 
-  // Auth guard
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.replace("/connexion?redirect=/publier");
-    }
-  }, [authLoading, user, router]);
-
   // Pre-fill phone from profile
   useEffect(() => {
     if (profile?.phone) setForm((f) => ({ ...f, phone: profile.phone! }));
@@ -498,7 +491,37 @@ export default function PublierPage() {
       </div>
     );
   }
-  if (!user) return null;
+
+  if (!user) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center px-4">
+        <div className="w-full max-w-sm text-center">
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ background: "rgba(233,233,0,0.10)", border: "1px solid rgba(233,233,0,0.20)" }}>
+            <span className="text-3xl">🔒</span>
+          </div>
+          <h1 className="text-2xl font-black text-white mb-2">Connexion requise</h1>
+          <p className="text-white/50 text-sm mb-8 leading-relaxed">
+            Connectez-vous pour publier une annonce sur LogerBien.
+          </p>
+          <div className="flex flex-col gap-3">
+            <a
+              href="/connexion?redirect=/publier"
+              className="w-full flex items-center justify-center gap-2 bg-[#E9E900] hover:bg-[#c4c400] text-[#0A1216] font-black py-3.5 px-6 rounded-2xl transition-colors text-sm"
+            >
+              Se connecter
+            </a>
+            <a
+              href="/inscription?redirect=/publier"
+              className="w-full flex items-center justify-center gap-2 font-semibold py-3.5 px-6 rounded-2xl transition-colors text-sm text-white/70 hover:text-white"
+              style={{ border: "1px solid rgba(255,255,255,0.12)" }}
+            >
+              Créer un compte
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const typeLabel        = TYPE_OPTIONS.find((t) => t.id === form.type)?.label ?? "";
   const typeEmoji        = TYPE_OPTIONS.find((t) => t.id === form.type)?.emoji ?? "";

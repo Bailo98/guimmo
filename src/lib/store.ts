@@ -216,29 +216,7 @@ export const useAppStore = create<AppState>()(
         set((s) => ({ compareList: s.compareList.filter((c) => c !== id) })),
       clearCompare: () => set({ compareList: [] }),
 
-      notifications: [
-        {
-          id: "n1",
-          message: "Nouvelle annonce dans votre quartier favori : Kipé",
-          type: "info",
-          read: false,
-          createdAt: new Date(Date.now() - 3600000).toISOString(),
-        },
-        {
-          id: "n2",
-          message: "Votre annonce sauvegardée a baissé de prix !",
-          type: "success",
-          read: false,
-          createdAt: new Date(Date.now() - 86400000).toISOString(),
-        },
-        {
-          id: "n3",
-          message: "Rappel : Visite programmée demain à 10h00",
-          type: "warning",
-          read: true,
-          createdAt: new Date(Date.now() - 172800000).toISOString(),
-        },
-      ],
+      notifications: [],
       addNotification: (message, type) =>
         set((s) => ({
           notifications: [

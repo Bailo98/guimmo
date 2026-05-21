@@ -35,7 +35,7 @@ export async function POST(req: Request) {
           <p><strong>Raison :</strong> ${reasonLabels[reason ?? ""] ?? reason ?? "—"}</p>
           <p><strong>Détails :</strong> ${details ?? "Aucun"}</p>
           <p><strong>Signalé par :</strong> ${reporterPhone ?? "Anonyme"}</p>
-          <a href="https://guimmo-orcin.vercel.app/admin/signalements"
+          <a href="${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://logerbien.gn'}/admin/signalements"
              style="display:inline-block;margin-top:16px;padding:12px 24px;
                     background:#E9E900;color:#0A1216;border-radius:8px;
                     font-weight:700;text-decoration:none;">

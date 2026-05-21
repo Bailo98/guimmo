@@ -1,6 +1,6 @@
-# BienLoger — Automatisations Edge Functions
+# LogerBien — Automatisations Edge Functions
 
-BienLoger utilise 5 Supabase Edge Functions pour tourner sans intervention humaine.
+LogerBien utilise 5 Supabase Edge Functions pour tourner sans intervention humaine.
 
 ---
 
@@ -28,7 +28,7 @@ npx supabase login
 
 ```bash
 npx supabase secrets set CALLMEBOT_API_KEY=<votre_clé> --project-ref kqshknfrtlbjaufkdeeg
-npx supabase secrets set APP_URL=https://guimmo-orcin.vercel.app --project-ref kqshknfrtlbjaufkdeeg
+npx supabase secrets set APP_URL=https://logerbien.gn --project-ref kqshknfrtlbjaufkdeeg
 ```
 
 `SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` sont injectés automatiquement par Supabase.

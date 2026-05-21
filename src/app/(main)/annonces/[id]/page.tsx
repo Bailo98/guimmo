@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .select("title, description, neighborhood, price, property_images(url)")
     .eq("id", id)
     .single();
-  if (!data) return { title: "Annonce introuvable — LogerBien" };
+  if (!data) return { title: "Annonce introuvable" };
   const neighborhoodLabel = getNeighborhoodName((data as { neighborhood?: string }).neighborhood ?? "");
   const priceFormatted = formatPrice((data as { price?: number }).price ?? 0);
   const ogDescription = (data.description ?? `${neighborhoodLabel} — ${priceFormatted}`).slice(0, 160);
