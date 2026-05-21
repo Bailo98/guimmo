@@ -109,6 +109,45 @@
   color-scheme: dark;
 }
 
+/* ── Light mode token overrides ── */
+html:not(.dark) {
+  --bg-primary:    #f4f4ef;
+  --bg-secondary:  #eaeae5;
+  --bg-card-dark:  #e2e2dd;
+  --bg-card-light: #d8d8d3;
+  --color-text-white: #0A1216;
+  --color-text-muted: #555555;
+  --color-border:  #c8c8c3;
+
+  --guimmo-bg:          #f4f4ef;
+  --guimmo-bg-alt:      #eaeae5;
+  --guimmo-surface:     #eaeae5;
+  --guimmo-cream:       #0A1216;
+  --guimmo-cream-dim:   rgba(10,18,22,0.65);
+  --guimmo-border:      #c8c8c3;
+
+  --bl-sidebar:     #e0e0db;
+  --bl-bg:          #f4f4ef;
+  --bl-surface:     #eaeae5;
+  --bl-surface-2:   #e2e2dd;
+  --bl-cream:       #0A1216;
+  --bl-cream-dim:   rgba(10,18,22,0.65);
+  --bl-cream-faint: rgba(10,18,22,0.45);
+  --bl-border:      #c8c8c3;
+  --bl-border-md:   #c8c8c3;
+
+  --LogerBien-bg:          #f4f4ef;
+  --LogerBien-bg-alt:      #eaeae5;
+  --LogerBien-surface:     #eaeae5;
+  --LogerBien-cream:       #0A1216;
+  --LogerBien-cream-dim:   rgba(10,18,22,0.65);
+  --LogerBien-cream-faint: rgba(10,18,22,0.45);
+  --LogerBien-border:      rgba(180,180,175,0.8);
+  --LogerBien-border-md:   #c8c8c3;
+
+  color-scheme: light;
+}
+
 /* ── Reusable UI classes ── */
 .bl-stat-card {
   background: var(--bl-surface);

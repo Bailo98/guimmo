@@ -33,7 +33,7 @@ export default function FavorisPage() {
     setLoading(true);
     const { data } = await supabase
       .from("favorites")
-      .select("property_id, properties(*, property_images(*), profiles(*))")
+      .select("property_id, properties(*, property_images(*))")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 

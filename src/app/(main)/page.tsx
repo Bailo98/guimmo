@@ -10,38 +10,6 @@ import type { Property } from "@/types";
 
 // ─── data ─────────────────────────────────────────────────────────────────────
 
-type Stats = { listings: number; owners: number; users: number; thisWeek: number };
-
-async function fetchStats(): Promise<Stats> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return { listings: 0, owners: 0, users: 0, thisWeek: 0 };
-  try {
-    const db = createClient(url, key);
-    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-    const [listingsRes, ownersRes, usersRes, weekRes] = await Promise.all([
-      db.from("properties").select("id", { count: "exact", head: true }).eq("status", "active"),
-      db.from("profiles").select("id", { count: "exact", head: true }).in("role", ["owner", "agent", "agency"]),
-      db.from("profiles").select("id", { count: "exact", head: true }),
-      db.from("properties").select("id", { count: "exact", head: true }).eq("status", "active").gte("created_at", weekAgo),
-    ]);
-    return {
-      listings:  listingsRes.count ?? 0,
-      owners:    ownersRes.count   ?? 0,
-      users:     usersRes.count    ?? 0,
-      thisWeek:  weekRes.count     ?? 0,
-    };
-  } catch {
-    return { listings: 0, owners: 0, users: 0, thisWeek: 0 };
-  }
-}
-
-function statFmt(n: number, suffix = "+"): string {
-  if (n < 5) return "Nouveau";
-  if (n >= 1000) return `${(n / 1000).toFixed(1)}k${suffix}`;
-  return `${n}${suffix}`;
-}
-
 const TYPE_GRADIENTS: Record<string, [string, string]> = {
   apartment: ["#1a252b", "#2a3d4a"],
   villa:     ["#1a252b", "#0A1216"],
@@ -178,7 +146,7 @@ function PreviewCard({ property, index }: PreviewCardProps) {
 // ─── page ──────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  const [properties, stats] = await Promise.all([fetchHomeProperties(), fetchStats()]);
+  const properties = await fetchHomeProperties();
   const heroPreview = properties.slice(0, 3);
   const featured = properties.filter((p) => p.is_boosted).slice(0, 6).length > 0
     ? properties.filter((p) => p.is_boosted).slice(0, 6)
@@ -303,37 +271,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ══════════════════════════════════════════════════════════
-          STATS BAR
-      ══════════════════════════════════════════════════════════ */}
-      <div style={{ background: "#0A1216" }}>
-        <div className="max-w-7xl mx-auto px-4 py-10 md:py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
-            {[
-              { value: statFmt(stats.listings), label: "Annonces actives" },
-              { value: statFmt(stats.owners),   label: "Propriétaires" },
-              { value: statFmt(stats.users),    label: "Utilisateurs" },
-              { value: statFmt(stats.thisWeek), label: "Nouvelles / semaine" },
-            ].map((s) => (
-              <div key={s.label} className="text-center">
-                <p
-                  className="text-3xl md:text-4xl font-black"
-                  style={{ color: "#E9E900", fontFamily: "var(--font-display), sans-serif" }}
-                >
-                  {s.value}
-                </p>
-                <p
-                  className="text-sm mt-1.5"
-                  style={{ color: "#666666", fontFamily: "var(--font-dm-sans), sans-serif" }}
-                >
-                  {s.label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* ══════════════════════════════════════════════════════════
           ANNONCES VEDETTES — dark forest bg

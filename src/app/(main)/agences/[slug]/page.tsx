@@ -55,7 +55,7 @@ export default async function AgenceProfilePage({ params }: Props) {
     .from("properties")
     .select("id, title, neighborhood, price, price_period, available_now, property_images(url, is_primary, sort_order)")
     .eq("owner_id", slug)
-    .eq("available_now", true)
+    .eq("status", "active")
     .order("created_at", { ascending: false })
     .limit(20);
 

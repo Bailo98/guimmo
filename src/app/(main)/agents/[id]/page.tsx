@@ -46,14 +46,24 @@ export default async function AgentProfilePage({ params }: Props) {
 
   if (!profile) notFound();
 
-  const isAgent = profile.account_type === "agent" || profile.role === "agent";
-  if (!isAgent) notFound();
+  const ROLE_LABELS: Record<string, string> = {
+    agent:   "Agent immobilier",
+    owner:   "Propriétaire",
+    agency:  "Agence immobilière",
+    pro:     "Professionnel immobilier",
+  };
+
+  const accountType = profile.account_type ?? profile.role ?? "";
+  const isPro = ["agent", "owner", "agency", "pro"].includes(accountType);
+  if (!isPro) notFound();
+
+  const roleLabel = ROLE_LABELS[accountType] ?? "Professionnel immobilier";
 
   const { data: listings } = await db
     .from("properties")
     .select("id, title, neighborhood, price, price_period, available_now, property_images(url, is_primary, sort_order)")
     .eq("owner_id", id)
-    .eq("available_now", true)
+    .eq("status", "active")
     .order("created_at", { ascending: false })
     .limit(12);
 
@@ -91,7 +101,7 @@ export default async function AgentProfilePage({ params }: Props) {
                 </span>
               )}
             </div>
-            <p className="text-sm mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>👔 Agent immobilier</p>
+            <p className="text-sm mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>👔 {roleLabel}</p>
             {profile.website && (
               <a href={profile.website} target="_blank" rel="noopener noreferrer"
                 className="text-xs hover:underline mt-1 inline-block" style={{ color: "var(--bl-amber)" }}>
