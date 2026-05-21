@@ -96,38 +96,50 @@ export default function AdminAnnoncesPage() {
 
   useEffect(() => { fetchProperties(); }, [fetchProperties]);
 
+  async function adminAction(action: string, id: string): Promise<boolean> {
+    try {
+      const res = await fetch("/api/admin/properties", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, id }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        const msg = (body as { error?: string }).error ?? `Erreur ${res.status}`;
+        console.error(`[admin] ${action} failed:`, msg);
+        toast(`Erreur : ${msg}`, "error");
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error(`[admin] ${action} fetch error:`, err);
+      toast("Erreur réseau — vérifiez votre connexion.", "error");
+      return false;
+    }
+  }
+
   async function handleApprove(id: string) {
-    const res = await fetch("/api/admin/properties", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "approve", id }),
-    });
-    if (!res.ok) { toast("Erreur lors de l'approbation.", "error"); return; }
+    const ok = await adminAction("approve", id);
+    if (!ok) return;
     setProperties((prev) => prev.map((p) => p.id === id ? { ...p, status: "active" as DbStatus } : p));
-    toast("Annonce approuvée.", "success");
+    toast("Annonce approuvée ✓", "success");
+    // Recharge pour confirmer la mise à jour depuis Supabase
+    setTimeout(() => fetchProperties(), 800);
   }
 
   async function handleSuspend(id: string) {
-    const res = await fetch("/api/admin/properties", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "suspend", id }),
-    });
-    if (!res.ok) { toast("Erreur lors de la suspension.", "error"); return; }
+    const ok = await adminAction("suspend", id);
+    if (!ok) return;
     setProperties((prev) => prev.map((p) => p.id === id ? { ...p, status: "paused" as DbStatus } : p));
-    toast("Annonce suspendue.", "success");
+    toast("Annonce suspendue ✓", "success");
+    setTimeout(() => fetchProperties(), 800);
   }
 
   async function handleDelete(id: string) {
-    const res = await fetch("/api/admin/properties", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "delete", id }),
-    });
-    if (!res.ok) { toast("Erreur lors de la suppression.", "error"); }
-    else {
+    const ok = await adminAction("delete", id);
+    if (ok) {
       setProperties((prev) => prev.filter((p) => p.id !== id));
-      toast("Annonce supprimée.", "success");
+      toast("Annonce supprimée ✓", "success");
     }
     setConfirmDelete(null);
   }

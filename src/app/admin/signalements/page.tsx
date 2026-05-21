@@ -61,32 +61,44 @@ export default function AdminSignalementsPage() {
     return () => clearInterval(interval);
   }, [load]);
 
+  async function reportAction(action: string, payload: Record<string, unknown>): Promise<boolean> {
+    try {
+      const res = await fetch("/api/admin/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, ...payload }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        const msg = (body as { error?: string }).error ?? `Erreur ${res.status}`;
+        console.error(`[admin] reports/${action} failed:`, msg);
+        toast(`Erreur : ${msg}`, "error");
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error(`[admin] reports/${action} fetch error:`, err);
+      toast("Erreur réseau — vérifiez votre connexion.", "error");
+      return false;
+    }
+  }
+
   async function handleMasquer(r: Report) {
     setBusy(r.id + "-masquer");
-    const res = await fetch("/api/admin/reports", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "masquer", id: r.id, propertyId: r.property_id }),
-    });
-    if (!res.ok) { toast("Erreur lors de la suppression", "error"); }
-    else {
+    const ok = await reportAction("masquer", { id: r.id, propertyId: r.property_id });
+    if (ok) {
       setReports((prev) => prev.filter((x) => x.id !== r.id));
-      toast("Annonce masquée et signalement supprimé", "success");
+      toast("Annonce masquée et signalement supprimé ✓", "success");
     }
     setBusy(null);
   }
 
   async function handleIgnorer(r: Report) {
     setBusy(r.id + "-ignorer");
-    const res = await fetch("/api/admin/reports", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "ignorer", id: r.id }),
-    });
-    if (!res.ok) { toast("Erreur", "error"); }
-    else {
+    const ok = await reportAction("ignorer", { id: r.id });
+    if (ok) {
       setReports((prev) => prev.filter((x) => x.id !== r.id));
-      toast("Signalement marqué comme traité", "success");
+      toast("Signalement marqué comme traité ✓", "success");
     }
     setBusy(null);
   }
@@ -95,15 +107,10 @@ export default function AdminSignalementsPage() {
     if (reports.length === 0) return;
     setBusy("all");
     const count = reports.length;
-    const res = await fetch("/api/admin/reports", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "ignore-all" }),
-    });
-    if (!res.ok) { toast("Erreur", "error"); }
-    else {
+    const ok = await reportAction("ignore-all", {});
+    if (ok) {
       setReports([]);
-      toast(`${count} signalement(s) marqué(s) comme traités`, "success");
+      toast(`${count} signalement(s) traité(s) ✓`, "success");
     }
     setBusy(null);
   }
