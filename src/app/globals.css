@@ -106,6 +106,14 @@
   --LogerBien-green:       #E9E900;
   --LogerBien-sidebar:     #060d10;
 
+  /* Navigation */
+  --nav-bg:           rgba(10,18,22,0.97);
+  --nav-bg-solid:     #0a1216;
+  --nav-border:       #1e2a30;
+  --nav-text:         rgba(255,255,255,0.70);
+  --nav-text-active:  #ffffff;
+  --nav-dropdown-bg:  rgba(15,15,22,0.95);
+
   color-scheme: dark;
 }
 
@@ -144,6 +152,14 @@ html:not(.dark) {
   --LogerBien-cream-faint: rgba(10,18,22,0.45);
   --LogerBien-border:      rgba(180,180,175,0.8);
   --LogerBien-border-md:   #c8c8c3;
+
+  /* Navigation */
+  --nav-bg:           rgba(244,244,239,0.97);
+  --nav-bg-solid:     #f4f4ef;
+  --nav-border:       #c8c8c3;
+  --nav-text:         rgba(10,18,22,0.70);
+  --nav-text-active:  #0A1216;
+  --nav-dropdown-bg:  rgba(238,238,233,0.97);
 
   color-scheme: light;
 }

@@ -50,7 +50,7 @@ export function Header() {
   return (
     <header
       className="fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300"
-      style={{ background: "rgba(10,18,22,0.97)", backdropFilter: "blur(16px) saturate(180%)", WebkitBackdropFilter: "blur(16px) saturate(180%)", borderBottom: "1px solid #1e2a30" }}
+      style={{ background: "var(--nav-bg)", backdropFilter: "blur(16px) saturate(180%)", WebkitBackdropFilter: "blur(16px) saturate(180%)", borderBottom: "1px solid var(--nav-border)" }}
     >
       <div className="max-w-7xl mx-auto px-4 h-[72px] flex items-center justify-between gap-4">
         <Logo />
@@ -58,15 +58,15 @@ export function Header() {
         <nav className="hidden md:flex items-center gap-1">
           <Link
             href="/annonces"
-            className={cn("px-3 py-2 rounded-xl transition-colors hover:text-white hover:bg-white/10", pathname.startsWith("/annonces") ? "text-white" : "text-white/70")}
-            style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.12em", textTransform: "uppercase" }}
+            className="px-3 py-2 rounded-xl transition-colors hover:bg-black/5"
+            style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.12em", textTransform: "uppercase", color: pathname.startsWith("/annonces") ? "var(--nav-text-active)" : "var(--nav-text)" }}
           >
             Annonces
           </Link>
           <Link
             href="/agents"
-            className={cn("px-3 py-2 rounded-xl transition-colors hover:text-white hover:bg-white/10", pathname === "/agents" ? "text-white" : "text-white/70")}
-            style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.12em", textTransform: "uppercase" }}
+            className="px-3 py-2 rounded-xl transition-colors hover:bg-black/5"
+            style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.12em", textTransform: "uppercase", color: pathname === "/agents" ? "var(--nav-text-active)" : "var(--nav-text)" }}
           >
             Agents
           </Link>
@@ -75,7 +75,8 @@ export function Header() {
         <div className="flex items-center gap-2">
           <button
             onClick={toggleTheme}
-            className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors text-white/70 hover:bg-white/10"
+            className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors hover:bg-black/5"
+            style={{ color: "var(--nav-text)" }}
             aria-label="Changer le thème"
           >
             {(!mounted || theme === "dark") ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -95,43 +96,48 @@ export function Header() {
             <div ref={userMenuRef} className="relative hidden md:block">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 px-2 py-1.5 rounded-xl transition-colors hover:bg-white/10"
+                className="flex items-center gap-2 px-2 py-1.5 rounded-xl transition-colors hover:bg-black/5"
+                style={{ color: "var(--nav-text)" }}
               >
                 <Avatar url={profile?.avatar_url} name={displayName} size="sm" />
-                <span className="text-sm font-medium max-w-[100px] truncate text-white/90">
+                <span className="text-sm font-medium max-w-[100px] truncate" style={{ color: "var(--nav-text-active)" }}>
                   {displayName.split(" ")[0]}
                 </span>
-                <ChevronDown className={cn("w-3.5 h-3.5 transition-transform text-white/60", userMenuOpen && "rotate-180")} />
+                <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", userMenuOpen && "rotate-180")} style={{ color: "var(--nav-text)" }} />
               </button>
 
               {userMenuOpen && (
                 <div
-                  className="absolute right-0 top-full mt-2 w-48 rounded-2xl overflow-hidden z-50 border border-white/10"
-                  style={{ background: "rgba(15,15,22,0.95)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }}
+                  className="absolute right-0 top-full mt-2 w-48 rounded-2xl overflow-hidden z-50 border"
+                  style={{ background: "var(--nav-dropdown-bg)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderColor: "var(--nav-border)" }}
                 >
-                  <div className="px-4 py-3 border-b border-white/8">
-                    <p className="text-sm font-semibold text-white truncate">{displayName}</p>
-                    <p className="text-xs text-white/50 truncate">{user.email}</p>
+                  <div className="px-4 py-3 border-b" style={{ borderColor: "var(--nav-border)" }}>
+                    <p className="text-sm font-semibold truncate" style={{ color: "var(--nav-text-active)" }}>{displayName}</p>
+                    <p className="text-xs truncate" style={{ color: "var(--nav-text)" }}>{user.email}</p>
                   </div>
                   {isAdmin ? (
                     <Link href="/admin" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-sm text-white/80 font-semibold hover:bg-white/5 transition-colors">
+                      className="flex items-center gap-2 px-4 py-3 text-sm font-semibold hover:bg-black/5 transition-colors"
+                      style={{ color: "var(--nav-text)" }}>
                       <Shield className="w-4 h-4" /> Administration
                     </Link>
                   ) : (
                     <Link href="/compte" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-sm text-white/80 hover:bg-white/5 transition-colors">
+                      className="flex items-center gap-2 px-4 py-3 text-sm hover:bg-black/5 transition-colors"
+                      style={{ color: "var(--nav-text)" }}>
                       <User className="w-4 h-4" /> Mon compte
                     </Link>
                   )}
                   {isProprietaire && !isAdmin && (
                     <Link href="/publier" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-sm text-white/80 hover:bg-white/5 transition-colors">
+                      className="flex items-center gap-2 px-4 py-3 text-sm hover:bg-black/5 transition-colors"
+                      style={{ color: "var(--nav-text)" }}>
                       <Plus className="w-4 h-4" /> Publier une annonce
                     </Link>
                   )}
                   <button onClick={handleSignOut}
-                    className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-colors border-t border-white/8">
+                    className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-colors border-t"
+                    style={{ borderColor: "var(--nav-border)" }}>
                     <LogOut className="w-4 h-4" /> Se déconnecter
                   </button>
                 </div>
@@ -140,7 +146,8 @@ export function Header() {
           ) : (
             <div className="hidden md:flex items-center gap-2">
               <Link href="/connexion"
-                className="text-sm font-medium transition-colors px-3 py-2 rounded-xl hover:text-white text-white/70 hover:bg-white/10">
+                className="text-sm font-medium transition-colors px-3 py-2 rounded-xl hover:bg-black/5"
+                style={{ color: "var(--nav-text)" }}>
                 Connexion
               </Link>
               <Link href="/inscription"
@@ -152,7 +159,8 @@ export function Header() {
 
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center transition-colors text-white/70 hover:bg-white/10"
+            className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center transition-colors hover:bg-black/5"
+            style={{ color: "var(--nav-text)" }}
             aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
           >
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -162,43 +170,49 @@ export function Header() {
 
       {menuOpen && (
         <div
-          className="md:hidden border-t border-white/8 px-4 pb-4 space-y-1 animate-[slideDown_0.2s_ease-out]"
-          style={{ background: "rgba(15,15,15,0.97)" }}
+          className="md:hidden border-t px-4 pb-4 space-y-1 animate-[slideDown_0.2s_ease-out]"
+          style={{ background: "var(--nav-dropdown-bg)", borderColor: "var(--nav-border)" }}
         >
           <Link href="/annonces" onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 hover:bg-white/8">
+            className="flex items-center gap-2 px-3 py-3 rounded-xl hover:bg-black/5"
+            style={{ color: "var(--nav-text)" }}>
             Annonces
           </Link>
           <Link href="/agents" onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 hover:bg-white/8">
+            className="flex items-center gap-2 px-3 py-3 rounded-xl hover:bg-black/5"
+            style={{ color: "var(--nav-text)" }}>
             Agents
           </Link>
           {user ? (
             <>
               {isAdmin ? (
                 <Link href="/admin" onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 font-semibold hover:bg-white/8">
+                  className="flex items-center gap-2 px-3 py-3 rounded-xl font-semibold hover:bg-black/5"
+                  style={{ color: "var(--nav-text)" }}>
                   <Shield className="w-4 h-4" /> Administration
                 </Link>
               ) : (
                 <Link href="/compte" onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 hover:bg-white/8">
+                  className="flex items-center gap-2 px-3 py-3 rounded-xl hover:bg-black/5"
+                  style={{ color: "var(--nav-text)" }}>
                   <User className="w-4 h-4" /> Mon compte
                 </Link>
               )}
               <button onClick={() => { handleSignOut(); setMenuOpen(false); }}
-                className="w-full flex items-center gap-2 px-3 py-3 rounded-xl text-red-400 hover:bg-red-500/10">
+                className="w-full flex items-center gap-2 px-3 py-3 rounded-xl text-red-500 hover:bg-red-500/10">
                 <LogOut className="w-4 h-4" /> Se déconnecter
               </button>
             </>
           ) : (
             <>
               <Link href="/connexion" onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 hover:bg-white/8">
+                className="flex items-center gap-2 px-3 py-3 rounded-xl hover:bg-black/5"
+                style={{ color: "var(--nav-text)" }}>
                 Connexion
               </Link>
               <Link href="/inscription" onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 px-3 py-3 rounded-xl text-white/80 hover:bg-white/8">
+                className="flex items-center gap-2 px-3 py-3 rounded-xl hover:bg-black/5"
+                style={{ color: "var(--nav-text)" }}>
                 S&apos;inscrire
               </Link>
             </>
