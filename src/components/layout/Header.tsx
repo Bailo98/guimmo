@@ -41,8 +41,14 @@ export function Header() {
 
   const displayName = profile?.full_name ?? user?.email?.split("@")[0] ?? "Mon compte";
   const role = profile?.role ?? "buyer";
+  const accountType = profile?.account_type ?? null;
   const isAdmin = role === "admin";
-  const isProprietaire = ["proprietaire", "owner", "agent", "agence", "admin"].includes(role);
+  // Chercheur accounts never see Publier, even if role is misconfigured
+  const isChercheur = accountType === "chercheur" || role === "chercheur";
+  const isProprietaire = !isChercheur && (
+    ["proprietaire", "owner", "agent", "agence", "admin"].includes(role)
+    || ["proprietaire", "agent", "agence"].includes(accountType ?? "")
+  );
 
   const NO_HEADER = ["/inscription", "/connexion", "/mot-de-passe-oublie"];
   if (NO_HEADER.includes(pathname)) return null;

@@ -299,9 +299,16 @@ export default async function PropertyDetailPage({ params }: Props) {
                     />
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 text-[#6B7280] text-sm mt-1">
-                  <MapPin className="w-4 h-4 flex-shrink-0 text-white/40" />
-                  <span className="text-white/60">{neighborhoodLabel}, {property.city}</span>
+                <div className="flex items-center gap-3 mt-1 flex-wrap">
+                  <div className="flex items-center gap-1.5 text-sm">
+                    <MapPin className="w-4 h-4 flex-shrink-0 text-white/40" />
+                    <span className="text-white/60">{neighborhoodLabel}, {property.city}</span>
+                  </div>
+                  {(row.views ?? 0) > 0 && (
+                    <span className="text-xs text-white/40">
+                      👁 {row.views} vue{(row.views ?? 0) > 1 ? "s" : ""}
+                    </span>
+                  )}
                 </div>
                 <p className="text-2xl md:text-3xl font-black mt-3" style={{ color: "#E9E900" }}>
                   {formatPrice(property.price, "GNF", property.price_period)}

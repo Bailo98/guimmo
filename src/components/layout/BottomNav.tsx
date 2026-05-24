@@ -1,7 +1,7 @@
 ﻿"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Plus, MessageSquare, Heart } from "lucide-react";
+import { Home, Search, Plus, MessageSquare, Heart, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
@@ -94,23 +94,38 @@ export function BottomNav() {
       className="md:hidden fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom,0px)]"
       style={{ background: "var(--nav-bg)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderTop: "1px solid var(--nav-border)" }}
     >
-      <div className="flex items-center justify-around h-16 px-2">
-        {LEFT_NAV.map((item) => (
-          <NavItem key={item.href} {...item} />
-        ))}
+      {/* ── Non-connecté : Accueil + Explorer + Connexion ── */}
+      {!user && (
+        <div className="flex items-center justify-around h-16 px-4">
+          <NavItem href="/" icon={Home} label="Accueil" />
+          <NavItem href="/annonces" icon={Search} label="Explorer" />
+          <Link href="/connexion" className="flex flex-col items-center justify-center gap-0.5 w-14 h-14">
+            <User className="w-[22px] h-[22px]" style={{ color: "var(--nav-text)" }} />
+            <span className="text-[10px] font-semibold" style={{ color: "var(--nav-text)" }}>Connexion</span>
+          </Link>
+        </div>
+      )}
 
-        {/* FAB — Publication rapide */}
-        <Link href="/publier/rapide" className="flex flex-col items-center justify-center -mt-6">
-          <span className="w-14 h-14 rounded-full flex items-center justify-center active:scale-95 transition-transform" style={{ background: "#E9E900", border: "1px solid rgba(233,233,0,0.50)", boxShadow: "0 4px 20px rgba(233,233,0,0.40)" }}>
-            <Plus className="w-7 h-7" style={{ color: "#0A1216" }} strokeWidth={2.5} />
-          </span>
-          <span className="text-[9px] font-bold mt-1" style={{ color: "#E9E900" }}>Publier</span>
-        </Link>
+      {/* ── Connecté : nav complète ── */}
+      {user && (
+        <div className="flex items-center justify-around h-16 px-2">
+          {LEFT_NAV.map((item) => (
+            <NavItem key={item.href} {...item} />
+          ))}
 
-        {RIGHT_NAV.map((item) => (
-          <NavItem key={item.href} {...item} />
-        ))}
-      </div>
+          {/* FAB — Publication rapide */}
+          <Link href="/publier/rapide" className="flex flex-col items-center justify-center -mt-6">
+            <span className="w-14 h-14 rounded-full flex items-center justify-center active:scale-95 transition-transform" style={{ background: "#E9E900", border: "1px solid rgba(233,233,0,0.50)", boxShadow: "0 4px 20px rgba(233,233,0,0.40)" }}>
+              <Plus className="w-7 h-7" style={{ color: "#0A1216" }} strokeWidth={2.5} />
+            </span>
+            <span className="text-[9px] font-bold mt-1" style={{ color: "#E9E900" }}>Publier</span>
+          </Link>
+
+          {RIGHT_NAV.map((item) => (
+            <NavItem key={item.href} {...item} />
+          ))}
+        </div>
+      )}
     </nav>
   );
 }

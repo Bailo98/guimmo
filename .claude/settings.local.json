@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(npm install *)",
+      "Bash(npm ls *)",
+      "Bash(node -e \"const r = require\\('./node_modules/resend/dist/index.js'\\); console.log\\(Object.keys\\(r\\)\\)\")",
+      "Bash(Remove-Item *)",
+      "Bash(git -C \"C:\\\\Users\\\\aliou\\\\logerbien\" status)",
+      "Bash(git -C \"C:\\\\Users\\\\aliou\\\\logerbien\" diff)",
+      "Bash(git -C \"C:\\\\Users\\\\aliou\\\\logerbien\" add src/middleware.ts src/proxy.ts src/components/ui/Button.tsx)",
+      "Bash(git -C 'C:\\\\Users\\\\aliou\\\\logerbien' commit -m ' *)",
+      "Bash(git *)",
+      "Bash(npx next *)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('@supabase/supabase-js:', p.dependencies['@supabase/supabase-js']\\); console.log\\('@supabase/ssr:', p.dependencies['@supabase/ssr']\\);\")",
+      "Bash(node -e \"const p=JSON.parse\\(require\\('fs'\\).readFileSync\\('/dev/stdin','utf8'\\)\\); console.log\\('next-themes:', p.dependencies['next-themes'] || p.devDependencies?.['next-themes'] || 'NOT INSTALLED'\\)\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('next-themes:', p.dependencies['next-themes'] || \\(p.devDependencies&&p.devDependencies['next-themes']\\) || 'NOT INSTALLED'\\)\")",
+      "Bash(npx tsc *)"
+    ]
+  }
+}

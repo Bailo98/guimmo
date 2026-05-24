@@ -394,11 +394,13 @@ export function PropertyCard({ property, variant = "default", className, index =
               window.open(`https://wa.me/${cleaned}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
             }}
             style={{
-              width: "100%", background: "#0A1216", color: "white", border: "none",
+              width: "100%", background: "#25D366", color: "white", border: "none",
               borderRadius: 10, padding: "10px", fontSize: 13, fontWeight: 700,
               display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
               cursor: "pointer", marginTop: 4,
             }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#1ebe5d"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#25D366"; }}
           >
             {WA_ICON}
             Contacter

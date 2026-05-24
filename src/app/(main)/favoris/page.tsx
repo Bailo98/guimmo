@@ -2,31 +2,29 @@
 import { useState, useEffect, useCallback } from "react";
 import { Heart, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
-import { useAppStore } from "@/lib/store";
-import { MOCK_PROPERTIES } from "@/data/mock-properties";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import type { Property } from "@/types";
 
 
 export default function FavorisPage() {
   const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Zustand fallback for unauthenticated / no-Supabase state
-  const storeFavorites = useAppStore((s) => s.favorites);
-  const _hasHydrated = useAppStore((s) => s._hasHydrated);
+  // Redirect non-logged users
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace("/connexion?redirect=/favoris");
+    }
+  }, [authLoading, user, router]);
 
   const fetchFavorites = useCallback(async () => {
     if (!isSupabaseConfigured || !supabase || !user) {
-      // Fall back to store-based favorites
-      if (_hasHydrated) {
-        const all = MOCK_PROPERTIES;
-        setProperties(all.filter((p) => storeFavorites.includes(p.id)));
-        setLoading(false);
-      }
+      setLoading(false);
       return;
     }
 
@@ -43,7 +41,7 @@ export default function FavorisPage() {
       setProperties(props);
     }
     setLoading(false);
-  }, [user, storeFavorites, _hasHydrated]);
+  }, [user]);
 
   useEffect(() => {
     if (!authLoading) fetchFavorites();
