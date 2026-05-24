@@ -26,6 +26,8 @@ export function BottomNav() {
   const pathname = usePathname();
   const { user } = useAuth();
 
+  // Hide on /decouvrir (full-screen swipe mode — buttons are inside SwipeFeed)
+  if (pathname === "/decouvrir") return null;
   if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
 
   function isActive(href: string) {

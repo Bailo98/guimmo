@@ -1,6 +1,7 @@
-﻿"use client";
+"use client";
 import { useEffect, useState } from "react";
-import { X, Download } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Download } from "lucide-react";
 
 const VISIT_KEY = "LogerBien_visit_count";
 const DISMISSED_KEY = "LogerBien_pwa_dismissed";
@@ -11,6 +12,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export function PWAInstallBanner() {
+  const pathname = usePathname();
   const [show, setShow] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
@@ -56,7 +58,9 @@ export function PWAInstallBanner() {
     setShow(false);
   }
 
-  if (!show) return null;
+  // All hooks above — early returns allowed from here on
+  // Hidden on /decouvrir (full-screen swipe mode) to preserve immersion
+  if (!show || pathname === "/decouvrir") return null;
 
   return (
     <div
