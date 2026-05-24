@@ -2,6 +2,7 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 import { ArrowLeft, MapPin, Bed, Bath, Square, Phone, CheckCircle, XCircle } from "lucide-react";
 import { ListingScore } from "@/components/ListingScore";
 import { Avatar } from "@/components/ui/Avatar";
@@ -94,19 +95,54 @@ export default async function PropertyDetailPage({ params }: Props) {
     .eq("id", id)
     .single();
 
-  if (error || !row) notFound();
+  // ── Current user + admin check ─────────────────────────────────────────────
+  let currentUserId: string | null = null;
+  let isAdmin = false;
+  try {
+    const supabaseSsr = await createSupabaseServerClient();
+    const { data: { user: currentUser } } = await supabaseSsr.auth.getUser();
+    currentUserId = currentUser?.id ?? null;
+    if (currentUserId) {
+      const { data: adminProfile } = await supabaseSsr
+        .from("profiles")
+        .select("role")
+        .eq("id", currentUserId)
+        .maybeSingle();
+      isAdmin = (adminProfile as { role?: string } | null)?.role === "admin";
+    }
+  } catch {
+    // cookies unavailable (e.g. static rendering fallback) — treat as anonymous
+  }
+
+  // ── Admin fallback: si la RLS anon cache la row, retry avec service role ──
+  let finalRow = row;
+  if ((error || !row) && isAdmin && supabaseAdmin) {
+    const { data: adminRow } = await supabaseAdmin
+      .from("properties")
+      .select("*, property_images(*)")
+      .eq("id", id)
+      .single();
+    finalRow = adminRow;
+  }
+
+  if (!finalRow) notFound();
+
+  // ── Les non-admins ne peuvent pas voir les annonces suspendues/inactives ───
+  const rowStatus = (finalRow as { status?: string }).status ?? "active";
+  const isSuspended = rowStatus === "suspended" || rowStatus === "inactive";
+  if (isSuspended && !isAdmin) notFound();
 
   let profileData: Record<string, unknown> | null = null;
-  if (row.owner_id) {
+  if (finalRow.owner_id) {
     const { data } = await db
       .from("profiles")
       .select("id, full_name, role, is_verified, created_at, avatar_url")
-      .eq("id", row.owner_id)
+      .eq("id", finalRow.owner_id)
       .maybeSingle();
     profileData = data;
   }
 
-  const property = row as Property;
+  const property = finalRow as Property;
   const videoUrl = property.video_url ?? null;
   const shortRef = property.ref ?? null;
 
@@ -115,25 +151,16 @@ export default async function PropertyDetailPage({ params }: Props) {
   const { data: similarRows } = await db
     .from("properties")
     .select("*, property_images(*)")
-    .eq("neighborhood", row.neighborhood)
-    .eq("type", row.type)
+    .eq("neighborhood", finalRow.neighborhood)
+    .eq("type", finalRow.type)
     .eq("status", "active")
     .neq("id", id)
-    .gte("price", Math.round(row.price * 0.5))
-    .lte("price", Math.round(row.price * 1.5))
+    .gte("price", Math.round(finalRow.price * 0.5))
+    .lte("price", Math.round(finalRow.price * 1.5))
     .not("title", "is", null)
     .limit(3);
   const similar = (similarRows ?? []) as Property[];
 
-  // ── Current user (for self-contact blocking + auth wall) ──────────────────
-  let currentUserId: string | null = null;
-  try {
-    const supabaseSsr = await createSupabaseServerClient();
-    const { data: { user: currentUser } } = await supabaseSsr.auth.getUser();
-    currentUserId = currentUser?.id ?? null;
-  } catch {
-    // cookies unavailable (e.g. static rendering fallback) — treat as anonymous
-  }
   const isOwner   = !!currentUserId && currentUserId === property.owner_id;
   const isLoggedIn = !!currentUserId;
 
@@ -255,6 +282,24 @@ export default async function PropertyDetailPage({ params }: Props) {
             </div>
           )}
 
+          {/* ── Admin uniquement : bandeau annonce suspendue / inactive ── */}
+          {isSuspended && isAdmin && (
+            <div className="mb-4 rounded-2xl px-4 py-3 flex items-center gap-3" style={{ background: "rgba(239,68,68,0.12)", border: "2px solid rgba(239,68,68,0.50)" }}>
+              <span className="text-2xl flex-shrink-0">⚠️</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-red-400 font-black text-sm">
+                  Cette annonce est {rowStatus === "suspended" ? "suspendue" : "inactive"} — visible uniquement par les admins
+                </p>
+                <p className="text-red-400/60 text-xs mt-0.5">
+                  Statut actuel : <span className="font-bold uppercase tracking-wide">{rowStatus}</span>
+                </p>
+              </div>
+              <a href="/admin/annonces" className="flex-shrink-0 text-red-400 hover:text-red-300 font-bold text-xs underline whitespace-nowrap">
+                Panel admin →
+              </a>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             {/* ── Main column ── */}
@@ -304,9 +349,9 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <MapPin className="w-4 h-4 flex-shrink-0 text-white/40" />
                     <span className="text-white/60">{neighborhoodLabel}, {property.city}</span>
                   </div>
-                  {(row.views ?? 0) > 0 && (
+                  {(property.views ?? 0) > 0 && (
                     <span className="text-xs text-white/40">
-                      👁 {row.views} vue{(row.views ?? 0) > 1 ? "s" : ""}
+                      👁 {property.views} vue{(property.views ?? 0) > 1 ? "s" : ""}
                     </span>
                   )}
                 </div>
