@@ -112,13 +112,13 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     const deltaX = e.touches[0].clientX - touchStartX.current;
     const abs    = Math.abs(deltaX);
-    // Opacity starts at 20px, saturates at 80px
-    const opacity = abs < 20 ? 0 : Math.min(1, (abs - 20) / 60);
+    // Opacity starts at 15px, saturates at 65px — more reactive
+    const opacity = abs < 15 ? 0 : Math.min(1, (abs - 15) / 50);
 
-    if (deltaX > 20) {
+    if (deltaX > 15) {
       if (overlayRightRef.current) overlayRightRef.current.style.opacity = String(opacity);
       if (overlayLeftRef.current)  overlayLeftRef.current.style.opacity  = "0";
-    } else if (deltaX < -20) {
+    } else if (deltaX < -15) {
       if (overlayLeftRef.current)  overlayLeftRef.current.style.opacity  = String(opacity);
       if (overlayRightRef.current) overlayRightRef.current.style.opacity = "0";
     } else {
@@ -250,6 +250,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         overflow: "hidden",
         zIndex: 10,
         background: "#000",
+        // touch-action:none tells the browser not to handle pan/zoom on this
+        // container — all touch events go straight to our handlers and to
+        // react-tinder-card's listeners without the browser claiming the gesture.
+        touchAction: "none",
         // Push content out of notch / status bar on iOS
         paddingTop: "env(safe-area-inset-top, 0px)",
       }}
@@ -300,7 +304,8 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         onSwipe={(dir) => onSwipe(dir, topCard)}
         onCardLeftScreen={() => onCardLeft(topCard)}
         preventSwipe={["up", "down"]}
-        swipeRequirementType="velocity"
+        swipeRequirementType="position"
+        swipeThreshold={40}
         className="tc-swipe"
       >
         {/*
@@ -321,6 +326,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             cursor: "grab",
             userSelect: "none",
             WebkitUserSelect: "none",
+            touchAction: "none",
           }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}

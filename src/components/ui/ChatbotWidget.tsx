@@ -1,5 +1,6 @@
 ﻿"use client";
 import { useState, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X } from "lucide-react";
 
@@ -41,6 +42,7 @@ const INITIAL_MESSAGE: Message = {
 };
 
 export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>("start");
@@ -136,7 +138,8 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
 
   const lastBotMsg = [...messages].reverse().find((m) => m.from === "bot");
 
-  if (!mounted) return null;
+  // Hidden on /decouvrir — floating widgets break the swipe immersion
+  if (!mounted || pathname === "/decouvrir") return null;
 
   return (
     <>

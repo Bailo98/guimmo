@@ -1,10 +1,14 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export function WhatsAppWidget({ whatsappNumber }: { whatsappNumber: string }) {
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
-  if (!mounted) return null;
+
+  // Hidden on /decouvrir — the swipe feed has its own 💬 contact button
+  if (!mounted || pathname === "/decouvrir") return null;
 
   return (
     <div className="fixed bottom-24 right-4 z-50 md:bottom-8 group">

@@ -522,9 +522,12 @@ html:not(.dark) .text-secondary {
 
 /* ── react-tinder-card layout ── */
 /* TinderCard renders an animated.div; we stretch it to fill the fixed
-   swipe container so the card area matches the inner pressable div exactly. */
+   swipe container so the card area matches the inner pressable div exactly.
+   touch-action:none ensures the browser never claims the gesture for scroll
+   or zoom — every touch event reaches react-tinder-card's handlers. */
 .tc-swipe {
   position: absolute !important;
   inset: 0;
   z-index: 10;
+  touch-action: none;
 }
