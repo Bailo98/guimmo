@@ -182,8 +182,9 @@ function AnnoncesContent() {
     router.replace(`?${params.toString()}`, { scroll: true });
   }
 
+  const diaspora = searchParams.get("diaspora") === "1";
   const hasPriceFilter = priceMin > 0 || priceMax < Infinity;
-  const hasFilters = !!neighborhood || !!type || !!tx || hasPriceFilter;
+  const hasFilters = !!neighborhood || !!type || !!tx || hasPriceFilter || diaspora;
 
   function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
     const R = 6371;
@@ -201,6 +202,7 @@ function AnnoncesContent() {
       if (tx && p.transaction_type !== tx) return false;
       if (priceMin > 0 && p.price < priceMin) return false;
       if (priceMax < Infinity && p.price > priceMax) return false;
+      if (diaspora && !p.is_diaspora) return false;
       return true;
     });
     if (nearbyCoords) {
@@ -224,7 +226,7 @@ function AnnoncesContent() {
     (n) => n === 1 || n === totalPages || Math.abs(n - safePage) <= 1
   );
 
-  const activeFilterCount = [neighborhood, type, tx, hasPriceFilter ? "price" : ""].filter(Boolean).length;
+  const activeFilterCount = [neighborhood, type, tx, hasPriceFilter ? "price" : "", diaspora ? "diaspora" : ""].filter(Boolean).length;
 
   return (
     <div className="bg-[#0A1216] min-h-screen">
@@ -336,6 +338,23 @@ function AnnoncesContent() {
                 })}
               </div>
             </div>
+            {/* Diaspora toggle */}
+            <div>
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Diaspora</p>
+              <button
+                onClick={() => setParam("diaspora", diaspora ? "" : "1")}
+                className="flex items-center gap-2 px-4 rounded-full text-sm font-bold transition-all"
+                style={{
+                  minHeight: 36,
+                  ...(diaspora
+                    ? { background: "rgba(74,158,255,0.18)", border: "1px solid rgba(74,158,255,0.45)", color: "#4A9EFF" }
+                    : { background: "#1a252b", border: "1px solid #1e2a30", color: "#666" }),
+                }}
+              >
+                ✈️ Mode Diaspora
+                {diaspora && <span className="text-xs font-normal opacity-70">— prix en GNF + USD</span>}
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -402,7 +421,7 @@ function AnnoncesContent() {
             {!hasFilters && <NearbySection properties={allProperties} />}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {pageItems.map((p, i) => (
-                <PropertyCard key={p.id} property={p} index={i} />
+                <PropertyCard key={p.id} property={p} index={i} showDiasporaPrice={diaspora} />
               ))}
             </div>
 

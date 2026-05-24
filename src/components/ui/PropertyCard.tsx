@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +12,10 @@ import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { WhatsAppShare } from "@/components/ui/WhatsAppShare";
 import { AuthPromptModal } from "@/components/AuthPromptModal";
 import { ListingScore } from "@/components/ListingScore";
+import { PropertyBadge } from "@/components/PropertyBadge";
+import { formatUsd } from "@/lib/config";
+import { haversineKm, formatDistance } from "@/lib/haversine";
+import { NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
 import type { Property } from "@/types";
 
 interface PropertyCardProps {
@@ -19,6 +23,8 @@ interface PropertyCardProps {
   variant?: "default" | "compact" | "horizontal";
   className?: string;
   index?: number;
+  userLocation?: { lat: number; lng: number } | null;
+  showDiasporaPrice?: boolean;
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -38,7 +44,14 @@ const WA_ICON = (
   </svg>
 );
 
-export function PropertyCard({ property, variant = "default", className, index = 0 }: PropertyCardProps) {
+export function PropertyCard({
+  property,
+  variant = "default",
+  className,
+  index = 0,
+  userLocation = null,
+  showDiasporaPrice = false,
+}: PropertyCardProps) {
   const { toggleFavorite, isFavorite, _hasHydrated } = useAppStore();
   const { user } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -60,17 +73,31 @@ export function PropertyCard({ property, variant = "default", className, index =
   const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://LogerBien.gn";
   const shareUrl = `${siteUrl}/annonces/${property.id}`;
   const createdAt = new Date(property.created_at ?? Date.now());
-  const isNew = Date.now() - createdAt.getTime() < 7 * 24 * 60 * 60 * 1000;
+  const isNew = Date.now() - createdAt.getTime() < 48 * 60 * 60 * 1000; // 48h
+
+  // ── Distance calculation ───────────────────────────────────────────────────
+  let distanceStr: string | null = null;
+  const pLat = property.lat ?? property.latitude ?? null;
+  const pLng = property.lng ?? property.longitude ?? null;
+  if (userLocation && pLat && pLng) {
+    const km = haversineKm(userLocation.lat, userLocation.lng, pLat, pLng);
+    distanceStr = formatDistance(km);
+  } else if (userLocation) {
+    // Fallback: use neighborhood centroid
+    const coords = NEIGHBORHOOD_COORDINATES[property.neighborhood];
+    if (coords) {
+      const km = haversineKm(userLocation.lat, userLocation.lng, coords[0], coords[1]);
+      distanceStr = `~${formatDistance(km)}`;
+    }
+  }
 
   function prev(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     setCurrentImg((i) => (i - 1 + imgCount) % imgCount);
   }
 
   function next(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     setCurrentImg((i) => (i + 1) % imgCount);
   }
 
@@ -97,7 +124,7 @@ export function PropertyCard({ property, variant = "default", className, index =
         <Link href={`/annonces/${property.id}`} className="relative w-28 flex-shrink-0">
           <div className="relative w-full h-full min-h-[100px]">
             {primaryImage ? (
-              <Image src={primaryImage.url} alt={property.title} fill className="object-cover" sizes="112px" />
+              <Image src={primaryImage.url} alt={property.title} fill className="object-cover" sizes="112px" loading="lazy" />
             ) : (
               <div className="w-full h-full bg-white/5" />
             )}
@@ -124,42 +151,44 @@ export function PropertyCard({ property, variant = "default", className, index =
     );
   }
 
-  // ── Default variant — Dark card with image slider ──────────────────────────────
+  // ── Default variant ────────────────────────────────────────────────────────
   return (
     <div
       className={cn("group flex flex-col", className)}
       style={{
-        background: "#2c2f36",
+        background: "var(--bg-card, #161B26)",
         borderRadius: 20,
         overflow: "hidden",
-        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+        boxShadow: "var(--shadow-card, 0 8px 32px rgba(0,0,0,0.4))",
+        border: "1px solid var(--border-subtle, rgba(255,255,255,0.06))",
+        transition: "transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.3s cubic-bezier(0.25,0.46,0.45,0.94)",
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLDivElement).style.transform = "translateY(-4px)";
-        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 12px 40px rgba(0,0,0,0.35)";
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 20px 48px rgba(0,0,0,0.50)";
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLDivElement).style.transform = "";
-        (e.currentTarget as HTMLDivElement).style.boxShadow = "";
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "var(--shadow-card, 0 8px 32px rgba(0,0,0,0.4))";
       }}
     >
-      {/* ── Slider section ── */}
+      {/* ── Photo section ── */}
       <Link
         href={`/annonces/${property.id}`}
         className="relative block flex-shrink-0 group/img"
-        style={{ height: 210, overflow: "hidden" }}
+        style={{ height: 220, overflow: "hidden", borderRadius: "20px 20px 0 0" }}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        {/* Current image or placeholder */}
+        {/* Image */}
         {imgCount > 0 ? (
           <Image
             src={images[currentImg].url}
             alt={property.title}
             fill
-            className="object-cover"
+            className="object-cover group-hover/img:scale-[1.04] transition-transform duration-500"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            quality={65}
+            quality={70}
             priority={index < 4}
             loading={index < 4 ? undefined : "lazy"}
           />
@@ -171,147 +200,141 @@ export function PropertyCard({ property, variant = "default", className, index =
           </div>
         )}
 
-        {/* Left arrow */}
+        {/* Gradient overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: "linear-gradient(transparent 45%, rgba(0,0,0,0.75) 100%)",
+          }}
+        />
+
+        {/* Left / Right arrows */}
         {imgCount > 1 && (
-          <button
-            onClick={prev}
-            aria-label="Image précédente"
+          <button onClick={prev} aria-label="Image précédente"
             className="absolute left-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover/img:opacity-100 transition-opacity"
-            style={{
-              width: 32, height: 32,
-              background: "rgba(0,0,0,0.55)",
-              border: "none", borderRadius: "50%",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              cursor: "pointer", color: "#fff",
-              backdropFilter: "blur(4px)",
-            }}
-          >
+            style={{ width: 32, height: 32, background: "rgba(0,0,0,0.55)", border: "none", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#fff", backdropFilter: "blur(4px)" }}>
             <ChevronLeft style={{ width: 16, height: 16 }} />
           </button>
         )}
-
-        {/* Right arrow */}
         {imgCount > 1 && (
-          <button
-            onClick={next}
-            aria-label="Image suivante"
+          <button onClick={next} aria-label="Image suivante"
             className="absolute right-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover/img:opacity-100 transition-opacity"
-            style={{
-              width: 32, height: 32,
-              background: "rgba(0,0,0,0.55)",
-              border: "none", borderRadius: "50%",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              cursor: "pointer", color: "#fff",
-              backdropFilter: "blur(4px)",
-            }}
-          >
+            style={{ width: 32, height: 32, background: "rgba(0,0,0,0.55)", border: "none", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#fff", backdropFilter: "blur(4px)" }}>
             <ChevronRight style={{ width: 16, height: 16 }} />
           </button>
         )}
 
         {/* Dot indicators */}
         {imgCount > 1 && (
-          <div
-            className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 z-10"
-            style={{ bottom: 10 }}
-          >
+          <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 z-10" style={{ bottom: 44 }}>
             {images.map((_, i) => (
-              <button
-                key={i}
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCurrentImg(i); }}
+              <button key={i} onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCurrentImg(i); }}
                 aria-label={`Image ${i + 1}`}
-                style={{
-                  width: i === currentImg ? 16 : 6,
-                  height: 6,
-                  borderRadius: 3,
-                  background: i === currentImg ? "#fff" : "rgba(255,255,255,0.45)",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: 0,
-                  transition: "width 0.2s ease, background 0.2s ease",
-                }}
-              />
+                style={{ width: i === currentImg ? 16 : 6, height: 6, borderRadius: 3, background: i === currentImg ? "#fff" : "rgba(255,255,255,0.45)", border: "none", cursor: "pointer", padding: 0, transition: "width 0.2s ease, background 0.2s ease" }} />
             ))}
           </div>
         )}
 
-        {/* Top-left badges */}
-        <div className="absolute flex items-center gap-1.5 flex-wrap" style={{ top: 10, left: 10, maxWidth: "calc(100% - 56px)", zIndex: 10 }}>
-          <span style={{ background: "rgba(10,18,22,0.75)", color: "#fff", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 600, whiteSpace: "nowrap", backdropFilter: "blur(4px)" }}>
-            {TYPE_LABELS[property.type] ?? property.type}
-          </span>
-          {property.transaction_type === "rent" ? (
-            <span style={{ background: "rgba(233,233,0,0.90)", color: "#0A1216", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap" }}>
-              Location
-            </span>
-          ) : (
-            <span style={{ background: "rgba(10,18,22,0.75)", color: "#fff", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 600, whiteSpace: "nowrap", backdropFilter: "blur(4px)" }}>
-              Vente
-            </span>
+        {/* ── Top-left badges ── */}
+        <div className="absolute flex items-center gap-1.5 flex-wrap" style={{ top: 10, left: 10, maxWidth: "calc(100% - 50px)", zIndex: 10 }}>
+          {property.is_featured && <PropertyBadge type="premium" />}
+          {property.is_diaspora && <PropertyBadge type="diaspora" />}
+          {property.is_verified && !property.is_featured && <PropertyBadge type="verified" />}
+          {isNew && !property.is_featured && !property.is_diaspora && <PropertyBadge type="new" />}
+          {/* Fallback legacy badges */}
+          {!property.is_featured && !property.is_diaspora && !property.is_verified && !isNew && (
+            <>
+              <span style={{ background: "rgba(10,18,22,0.75)", color: "#fff", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 600, whiteSpace: "nowrap", backdropFilter: "blur(4px)" }}>
+                {TYPE_LABELS[property.type] ?? property.type}
+              </span>
+              {property.transaction_type === "rent" ? (
+                <span style={{ background: "rgba(233,233,0,0.90)", color: "#0A1216", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap" }}>
+                  Location
+                </span>
+              ) : (
+                <span style={{ background: "rgba(10,18,22,0.75)", color: "#fff", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 600, whiteSpace: "nowrap", backdropFilter: "blur(4px)" }}>
+                  Vente
+                </span>
+              )}
+            </>
           )}
-          {property.is_verified && (
-            <span style={{ background: "#E9E900", color: "#0A1216", fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap" }}>
-              ✓ Vérifié
-            </span>
-          )}
+          {property.is_featured || property.is_diaspora ? (
+            <>
+              <span style={{ background: "rgba(10,18,22,0.75)", color: "#fff", fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 600, whiteSpace: "nowrap", backdropFilter: "blur(4px)" }}>
+                {TYPE_LABELS[property.type] ?? property.type}
+              </span>
+            </>
+          ) : null}
           {property.is_boosted && (
             <span style={{ background: "#E9E900", color: "#0A1216", fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap" }}>
               ★ Pro
             </span>
           )}
-          {isNew && !property.is_boosted && (
-            <span style={{ background: "rgba(10,18,22,0.65)", color: "#fff", fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 500, whiteSpace: "nowrap", backdropFilter: "blur(4px)" }}>
-              Nouveau
-            </span>
-          )}
         </div>
 
-        {/* Favorite button — top right */}
+        {/* Favorite button */}
         <button
           onClick={async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
+            e.preventDefault(); e.stopPropagation();
             if (!user) { setShowAuthModal(true); return; }
             const willBeFav = !fav;
-            toggleFavorite(property.id); // mise à jour optimiste (Zustand / localStorage)
+            toggleFavorite(property.id);
             toast(willBeFav ? "Ajouté aux favoris" : "Retiré des favoris", willBeFav ? "success" : "info");
-            // Synchronisation avec Supabase
             if (isSupabaseConfigured && supabase) {
               try {
                 if (willBeFav) {
-                  await supabase.from("favorites")
-                    .upsert(
-                      { user_id: user.id, property_id: property.id },
-                      { onConflict: "user_id,property_id" }
-                    );
+                  await supabase.from("favorites").upsert({ user_id: user.id, property_id: property.id }, { onConflict: "user_id,property_id" });
                 } else {
-                  await supabase.from("favorites")
-                    .delete()
-                    .eq("user_id", user.id)
-                    .eq("property_id", property.id);
+                  await supabase.from("favorites").delete().eq("user_id", user.id).eq("property_id", property.id);
                 }
-              } catch {
-                // Echec silencieux — l'état Zustand reste l'UI de référence
-              }
+              } catch { /* silent */ }
             }
           }}
           aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
-          style={{
-            position: "absolute", top: 10, right: 10, zIndex: 10,
-            width: 34, height: 34,
-            background: "rgba(10,18,22,0.65)", border: "none", borderRadius: "50%",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer",
-            color: fav ? "#ef4444" : "rgba(255,255,255,0.8)",
-            backdropFilter: "blur(4px)",
-          }}
+          style={{ position: "absolute", top: 10, right: 10, zIndex: 10, width: 34, height: 34, background: "rgba(10,18,22,0.65)", border: "none", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: fav ? "#ef4444" : "rgba(255,255,255,0.8)", backdropFilter: "blur(4px)" }}
         >
           <Heart style={{ width: 15, height: 15, fill: fav ? "#ef4444" : "none", stroke: "currentColor" }} />
         </button>
 
+        {/* ── Price + neighborhood overlay (bottom of photo) ── */}
+        <div className="absolute bottom-0 left-0 right-0 px-3 pb-3 z-10">
+          <div className="flex items-end justify-between">
+            {/* Price — gold, Playfair */}
+            <div>
+              <p style={{
+                fontFamily: "var(--font-playfair), serif",
+                fontSize: 18,
+                fontWeight: 700,
+                color: "#C8A97E",
+                lineHeight: 1.2,
+                textShadow: "0 1px 6px rgba(0,0,0,0.6)",
+              }}>
+                {formatPrice(property.price)}
+                {property.price_period === "month" && (
+                  <span style={{ fontSize: 12, fontWeight: 400, color: "rgba(200,169,126,0.8)" }}>/mois</span>
+                )}
+              </p>
+              {showDiasporaPrice && property.is_diaspora && (
+                <p style={{ fontSize: 11, color: "#4A9EFF", fontWeight: 500 }}>
+                  ≈ {formatUsd(property.price)} USD
+                </p>
+              )}
+            </div>
+            {/* Neighborhood + type */}
+            <div style={{ textAlign: "right" }}>
+              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.85)", fontWeight: 600, textShadow: "0 1px 4px rgba(0,0,0,0.7)" }}>
+                {neighborhoodLabel}
+              </p>
+              <p style={{ fontSize: 10, color: "rgba(255,255,255,0.60)" }}>
+                {TYPE_LABELS[property.type] ?? property.type}
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Video badge */}
         {property.video_url && (
-          <div style={{ position: "absolute", bottom: 10, left: 10, zIndex: 10 }}>
+          <div style={{ position: "absolute", bottom: 50, left: 10, zIndex: 10 }}>
             <span style={{ background: "#E9E900", color: "#0A1216", fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700 }}>
               ▶ Vidéo
             </span>
@@ -322,27 +345,23 @@ export function PropertyCard({ property, variant = "default", className, index =
       {/* ── Card body ── */}
       <div style={{ padding: "12px 14px", flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
         {/* Title */}
-        <p style={{ fontSize: 15, fontWeight: 700, color: "#ffffff", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <p style={{ fontSize: 15, fontWeight: 700, color: "#F5F5F5", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {property.title}
         </p>
 
-        {/* Neighborhood */}
-        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", display: "flex", alignItems: "center", gap: 3 }}>
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}>
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
-          {neighborhoodLabel}, Conakry
-        </div>
-
-        {/* Price */}
-        <div style={{ fontSize: 15, fontWeight: 700, color: "#E9E900", display: "flex", alignItems: "baseline", gap: 4 }}>
-          {formatPrice(property.price)}
-          {property.price_period === "month" && (
-            <span style={{ fontSize: 11, fontWeight: 400, color: "rgba(255,255,255,0.4)" }}>/mois</span>
-          )}
-          {property.transaction_type === "sale" && property.price_period !== "month" && (
-            <span style={{ fontSize: 11, fontWeight: 400, color: "rgba(255,255,255,0.4)" }}>/vente</span>
+        {/* Location + distance */}
+        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}>
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            {neighborhoodLabel}, Conakry
+          </span>
+          {distanceStr && (
+            <span style={{ fontSize: 11, color: "#4A9EFF", fontWeight: 500 }}>
+              📍 {distanceStr}
+            </span>
           )}
         </div>
 
@@ -396,7 +415,7 @@ export function PropertyCard({ property, variant = "default", className, index =
             }}
             style={{
               width: "100%", background: "#25D366", color: "white", border: "none",
-              borderRadius: 10, padding: "10px", fontSize: 13, fontWeight: 700,
+              borderRadius: 12, padding: "10px", fontSize: 13, fontWeight: 700,
               display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
               cursor: "pointer", marginTop: 4,
             }}

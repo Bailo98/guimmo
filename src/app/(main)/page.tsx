@@ -4,6 +4,7 @@ import { MapPin, ChevronRight, Bed, Square, CheckCircle2 } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { RecentlyViewedSection } from "@/components/ui/RecentlyViewedSection";
 import { HeroSearch } from "@/components/home/HeroSearch";
+import { MaisonDuJour } from "@/components/MaisonDuJour";
 import { formatPrice } from "@/lib/utils";
 import { createClient } from "@supabase/supabase-js";
 import type { Property } from "@/types";
@@ -271,6 +272,13 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          MAISON DU JOUR
+      ══════════════════════════════════════════════════════════ */}
+      <div style={{ background: "#0A1216" }}>
+        <MaisonDuJour />
+      </div>
 
       {/* ══════════════════════════════════════════════════════════
           ANNONCES VEDETTES — dark forest bg

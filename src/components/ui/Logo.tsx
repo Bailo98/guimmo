@@ -34,9 +34,9 @@ export function Logo({ size = "md", className, href = "/" }: LogoProps) {
         <HouseIcon size={icon} />
       </div>
       <span style={{
-        fontFamily: "var(--font-display), sans-serif",
-        fontSize: text, fontWeight: 800, color: "#ffffff",
-        letterSpacing: "0.05em", textTransform: "uppercase",
+        fontFamily: "var(--font-playfair), serif",
+        fontSize: text, fontWeight: 700, color: "var(--accent-gold, #C8A97E)",
+        letterSpacing: "0.02em",
       }}>
         LogerBien
       </span>

@@ -91,13 +91,17 @@ export function Header() {
           {isProprietaire && (
             <Link
               href="/publier"
-              className="hidden md:flex items-center gap-1.5 bg-[#E9E900] hover:bg-[#c4c400] text-[#0A1216] text-sm font-bold px-4 py-2 rounded-xl transition-colors"
+              className="hidden md:flex items-center gap-1.5 text-sm font-bold px-4 py-2 rounded-xl"
+              style={{ background: "var(--accent-gold, #C8A97E)", color: "#0B0F19", transition: "opacity 0.2s ease" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "0.85"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "1"; }}
             >
               <Plus className="w-4 h-4" />
               Publier
             </Link>
           )}
 
+          {/* ── Boutons Auth desktop ── */}
           {user ? (
             <div ref={userMenuRef} className="relative hidden md:block">
               <button
@@ -151,13 +155,38 @@ export function Header() {
             </div>
           ) : (
             <div className="hidden md:flex items-center gap-2">
-              <Link href="/connexion"
-                className="text-sm font-medium transition-colors px-3 py-2 rounded-xl hover:bg-black/5"
-                style={{ color: "var(--nav-text)" }}>
+              <Link
+                href="/connexion"
+                className="text-sm font-medium px-4 py-2 rounded-xl"
+                style={{
+                  color: "var(--accent-gold, #C8A97E)",
+                  border: "1px solid var(--accent-gold, #C8A97E)",
+                  transition: "all 0.25s ease",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.background = "rgba(200,169,126,0.10)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.background = "transparent";
+                }}
+              >
                 Connexion
               </Link>
-              <Link href="/inscription"
-                className="text-sm font-bold text-white bg-[#E9E900] hover:bg-[#c4c400] transition-colors px-4 py-2 rounded-xl">
+              <Link
+                href="/inscription"
+                className="text-sm font-bold px-4 py-2 rounded-xl"
+                style={{
+                  background: "var(--accent-gold, #C8A97E)",
+                  color: "#0B0F19",
+                  transition: "all 0.25s ease",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.opacity = "0.88";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.opacity = "1";
+                }}
+              >
                 S&apos;inscrire
               </Link>
             </div>
