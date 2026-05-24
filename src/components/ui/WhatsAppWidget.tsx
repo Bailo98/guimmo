@@ -7,8 +7,8 @@ export function WhatsAppWidget({ whatsappNumber }: { whatsappNumber: string }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
 
-  // Hidden on /decouvrir — the swipe feed has its own 💬 contact button
-  if (!mounted || pathname === "/decouvrir") return null;
+  // Hidden on /decouvrir (swipe feed) and /annonces (no global chat needed there)
+  if (!mounted || pathname === "/decouvrir" || pathname === "/annonces") return null;
 
   return (
     <div className="fixed bottom-24 right-4 z-50 md:bottom-8 group">

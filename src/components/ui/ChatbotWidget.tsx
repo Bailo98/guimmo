@@ -138,8 +138,8 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
 
   const lastBotMsg = [...messages].reverse().find((m) => m.from === "bot");
 
-  // Hidden on /decouvrir — floating widgets break the swipe immersion
-  if (!mounted || pathname === "/decouvrir") return null;
+  // Hidden on /decouvrir (swipe immersion) and /annonces (no global chat needed there)
+  if (!mounted || pathname === "/decouvrir" || pathname === "/annonces") return null;
 
   return (
     <>
