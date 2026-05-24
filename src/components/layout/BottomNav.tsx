@@ -39,12 +39,15 @@ export function BottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom,0px)]"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-50"
       style={{
         background: "var(--bg-card, rgba(22,27,38,0.97))",
         backdropFilter: "blur(20px) saturate(180%)",
         WebkitBackdropFilter: "blur(20px) saturate(180%)",
         borderTop: "1px solid var(--border-subtle, rgba(255,255,255,0.06))",
+        // Inline style bypasses Tailwind's arbitrary-value parser so env() is
+        // passed verbatim to the browser — critical for iOS safe-area support.
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
     >
       <div className="flex items-center justify-around h-16 px-2">

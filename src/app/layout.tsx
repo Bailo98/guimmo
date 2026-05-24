@@ -83,6 +83,10 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: "#0A1216",
+  // Required for env(safe-area-inset-bottom) to return real values on iOS.
+  // Without this the browser clips the viewport to the safe area and the
+  // env() functions always return 0, making the bottom-nav padding useless.
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
