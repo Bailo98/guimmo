@@ -555,12 +555,12 @@ export default async function PropertyDetailPage({ params }: Props) {
                       💬 Contacter sur WhatsApp
                     </a>
 
-                    {/* Visit */}
-                    <a href={visitUrl} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full font-semibold py-3 px-4 rounded-xl transition-colors text-sm"
-                      style={{ background: "#1e2a30", border: "1px solid #1e2a30", color: "#ffffff", minHeight: 48 }}>
-                      📅 Visiter
-                    </a>
+                    {/* Visit — opens VisitRequestModal (form → DB insert) */}
+                    <VisitButton
+                      propertyId={property.id}
+                      ownerId={property.owner_id}
+                      propertyTitle={property.title}
+                    />
 
                     {/* Phone */}
                     <a href={phoneUrl}
