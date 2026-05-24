@@ -1,5 +1,5 @@
 ﻿"use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -57,8 +57,9 @@ interface Lead {
 interface VisitRequest {
   id: string; property_id: string; visitor_id: string;
   visitor_name: string; visitor_phone: string; visitor_email: string | null;
-  preferred_date: string; preferred_time: string;
-  message: string | null; status: string; created_at: string;
+  scheduled_date: string; scheduled_time: string;
+  visitor_message: string | null; owner_note: string | null;
+  status: string; created_at: string;
   properties?: { title: string; neighborhood: string } | null;
 }
 
@@ -621,35 +622,74 @@ const TIME_LABEL: Record<string, string> = {
   evening: "Soir (17h–20h)",
 };
 
-function VisitRequestsManager({ userId }: { userId: string }) {
-  const [visits, setVisits]   = useState<VisitRequest[]>([]);
-  const [loading, setLoading] = useState(true);
+function VisitRequestsManager({ userId, onPendingCount }: {
+  userId: string;
+  onPendingCount?: (n: number) => void;
+}) {
+  const [visits, setVisits]     = useState<VisitRequest[]>([]);
+  const [loading, setLoading]   = useState(true);
+  const [noteId, setNoteId]     = useState<string | null>(null);
+  const [noteText, setNoteText] = useState("");
+  const channelRef = useRef<ReturnType<NonNullable<typeof supabase>["channel"]> | null>(null);
 
   const load = useCallback(async () => {
     if (!supabase) return;
     setLoading(true);
     const { data } = await supabase
-      .from("visit_requests")
+      .from("visits")
       .select("*, properties(title, neighborhood)")
       .eq("owner_id", userId)
       .order("created_at", { ascending: false });
-    setVisits((data ?? []) as VisitRequest[]);
+    const rows = (data ?? []) as VisitRequest[];
+    setVisits(rows);
+    onPendingCount?.(rows.filter((v) => v.status === "pending").length);
     setLoading(false);
-  }, [userId]);
+  }, [userId, onPendingCount]);
 
   useEffect(() => { load(); }, [load]);
 
-  async function updateStatus(id: string, status: "confirmed" | "rejected") {
+  // Realtime — nouvelle visite apparaît instantanément dans le dashboard
+  useEffect(() => {
     if (!supabase) return;
-    await supabase.from("visit_requests").update({ status }).eq("id", id);
-    setVisits((prev) => prev.map((v) => v.id === id ? { ...v, status } : v));
-    toast(status === "confirmed" ? "✅ Visite confirmée" : "Demande refusée", status === "confirmed" ? "success" : "error");
+    if (channelRef.current) supabase.removeChannel(channelRef.current);
+    channelRef.current = supabase
+      .channel(`visits_owner_${userId}`)
+      .on("postgres_changes", {
+        event: "*", schema: "public", table: "visits",
+        filter: `owner_id=eq.${userId}`,
+      }, () => load())
+      .subscribe();
+    return () => {
+      if (channelRef.current && supabase) supabase.removeChannel(channelRef.current);
+    };
+  }, [userId, load]);
+
+  async function updateStatus(id: string, status: "confirmed" | "cancelled" | "completed") {
+    if (!supabase) return;
+    await supabase.from("visits").update({ status }).eq("id", id);
+    setVisits((prev) => {
+      const next = prev.map((v) => v.id === id ? { ...v, status } : v);
+      onPendingCount?.(next.filter((v) => v.status === "pending").length);
+      return next;
+    });
+    const msgs = { confirmed: "✅ Visite confirmée", cancelled: "Demande annulée", completed: "✅ Visite marquée terminée" };
+    const types = { confirmed: "success" as const, cancelled: "error" as const, completed: "success" as const };
+    toast(msgs[status], types[status]);
+  }
+
+  async function saveNote(id: string) {
+    if (!supabase) return;
+    await supabase.from("visits").update({ owner_note: noteText.trim() || null }).eq("id", id);
+    setVisits((prev) => prev.map((v) => v.id === id ? { ...v, owner_note: noteText.trim() || null } : v));
+    setNoteId(null);
+    toast("✅ Note sauvegardée", "success");
   }
 
   const statusBadge = (s: string) => {
-    if (s === "confirmed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e" }}>Confirmée</span>;
-    if (s === "rejected")  return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)",  color: "#ef4444" }}>Refusée</span>;
-    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(233,233,0,0.15)", color: "#E9E900" }}>En attente</span>;
+    if (s === "confirmed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e" }}>✅ Confirmée</span>;
+    if (s === "cancelled") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "#ef4444" }}>❌ Annulée</span>;
+    if (s === "completed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(160,160,160,0.15)", color: "#aaa" }}>✓ Terminée</span>;
+    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(233,233,0,0.15)", color: "#E9E900" }}>⏳ En attente</span>;
   };
 
   if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: "#1a252b" }} />)}</div>;
@@ -658,7 +698,7 @@ function VisitRequestsManager({ userId }: { userId: string }) {
     <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
       <Calendar className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
       <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucune demande de visite</p>
-      <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Les demandes apparaîtront ici.</p>
+      <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Les demandes apparaîtront ici en temps réel.</p>
     </div>
   );
 
@@ -667,7 +707,7 @@ function VisitRequestsManager({ userId }: { userId: string }) {
       {visits.map((v) => {
         const ini = v.visitor_name.split(" ").map((w:string) => w[0]).join("").slice(0,2).toUpperCase();
         const wa  = v.visitor_phone.replace(/\D/g, "");
-        const dateLabel = new Date(v.preferred_date + "T00:00:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
+        const dateLabel = new Date(v.scheduled_date + "T00:00:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
         return (
           <div key={v.id} className="rounded-2xl p-4 space-y-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
             <div className="flex items-start justify-between gap-2">
@@ -682,18 +722,46 @@ function VisitRequestsManager({ userId }: { userId: string }) {
               {statusBadge(v.status)}
             </div>
             <div className="flex items-center gap-4 text-xs" style={{ color: "var(--bl-cream-dim)" }}>
-              <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{dateLabel} · {TIME_LABEL[v.preferred_time] ?? v.preferred_time}</span>
+              <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{dateLabel} · {TIME_LABEL[v.scheduled_time] ?? v.scheduled_time}</span>
             </div>
-            {v.message && <p className="text-xs px-3 py-2 rounded-lg" style={{ background: "rgba(255,255,255,0.04)", color: "var(--bl-cream-dim)" }}>{v.message}</p>}
-            <div className="flex items-center gap-2">
+            {v.visitor_message && <p className="text-xs px-3 py-2 rounded-lg" style={{ background: "rgba(255,255,255,0.04)", color: "var(--bl-cream-dim)" }}>{v.visitor_message}</p>}
+            {/* Owner note display */}
+            {v.owner_note && noteId !== v.id && (
+              <p className="text-xs px-3 py-2 rounded-lg flex items-start gap-1.5"
+                style={{ background: "rgba(233,233,0,0.06)", border: "1px solid rgba(233,233,0,0.15)", color: "var(--bl-cream-dim)" }}>
+                <Pencil className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: "var(--bl-amber)" }} />
+                {v.owner_note}
+              </p>
+            )}
+            {/* Inline note editor */}
+            {noteId === v.id && (
+              <div className="flex gap-2">
+                <input
+                  type="text" value={noteText}
+                  onChange={(e) => setNoteText(e.target.value)}
+                  placeholder="Note privée…"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "6px 10px", color: "#fff", fontSize: 13, flex: 1, outline: "none" }}
+                />
+                <button onClick={() => saveNote(v.id)} className="px-3 py-1.5 rounded-lg text-xs font-bold" style={{ background: "var(--bl-amber)", color: "#0A1216" }}>OK</button>
+                <button onClick={() => setNoteId(null)} className="px-3 py-1.5 rounded-lg text-xs" style={{ background: "rgba(255,255,255,0.08)", color: "var(--bl-cream-faint)" }}>✕</button>
+              </div>
+            )}
+            <div className="flex items-center gap-2 flex-wrap">
               <a href={`tel:${v.visitor_phone}`}
-                className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold py-2 rounded-lg"
+                className="flex items-center justify-center gap-1.5 text-xs font-bold py-2 px-3 rounded-lg"
                 style={{ background: "rgba(255,255,255,0.06)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}>
                 <Phone className="w-3.5 h-3.5" /> {v.visitor_phone}
               </a>
               <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center px-3 py-2 rounded-lg text-xs font-bold"
                 style={{ background: "#25D366", color: "#fff" }}>WA</a>
+              {noteId !== v.id && (
+                <button onClick={() => { setNoteId(v.id); setNoteText(v.owner_note ?? ""); }}
+                  className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-bold"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-faint)" }}>
+                  <Pencil className="w-3 h-3" /> Note
+                </button>
+              )}
               {v.status === "pending" && (
                 <>
                   <button onClick={() => updateStatus(v.id, "confirmed")}
@@ -701,12 +769,19 @@ function VisitRequestsManager({ userId }: { userId: string }) {
                     style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.30)" }}>
                     <CheckCircle className="w-3.5 h-3.5" />
                   </button>
-                  <button onClick={() => updateStatus(v.id, "rejected")}
+                  <button onClick={() => updateStatus(v.id, "cancelled")}
                     className="flex items-center justify-center px-3 py-2 rounded-lg text-xs font-bold"
                     style={{ background: "rgba(239,68,68,0.10)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.25)" }}>
                     <XCircle className="w-3.5 h-3.5" />
                   </button>
                 </>
+              )}
+              {v.status === "confirmed" && (
+                <button onClick={() => updateStatus(v.id, "completed")}
+                  className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-bold"
+                  style={{ background: "rgba(160,160,160,0.10)", color: "#aaa", border: "1px solid rgba(160,160,160,0.20)" }}>
+                  ✓ Terminé
+                </button>
               )}
             </div>
           </div>
@@ -731,6 +806,7 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
   const [totalWA, setTotalWA]     = useState(0);
   const [activeCount, setActiveCount] = useState(0);
   const [msgCount, setMsgCount]   = useState(0);
+  const [pendingVisits, setPendingVisits] = useState(0);
 
   const displayName = profile?.full_name?.split(" ")[0] ?? "vous";
 
@@ -747,7 +823,7 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
   const tabs: DashTab[] = [
     { key: "dashboard", label: "Tableau de bord", icon: <BarChart2 className="w-4 h-4" /> },
     { key: "annonces",  label: "Mes annonces",    icon: <Home className="w-4 h-4" /> },
-    { key: "visites",   label: "Visites",         icon: <Calendar className="w-4 h-4" /> },
+    { key: "visites",   label: "Visites",         icon: <Calendar className="w-4 h-4" />, badge: pendingVisits },
     { key: "messages",  label: "Messages",        icon: <MessageCircle className="w-4 h-4" /> },
     { key: "profil",    label: "Profil",          icon: <User className="w-4 h-4" /> },
   ];
@@ -811,7 +887,7 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
       {tab === "visites" && (
         <>
           <SectionHeader title="Demandes de visite" subtitle="Reçues sur vos annonces" />
-          <VisitRequestsManager userId={user.id} />
+          <VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />
         </>
       )}
       {tab === "messages" && (
@@ -822,6 +898,98 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
       )}
       {tab === "profil" && <><SectionHeader title="Mon profil" /><ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} /></>}
     </DashboardLayout>
+  );
+}
+
+// ─── VISITOR VISITS (for ChercheurDashboard) ─────────────────────────────────
+
+function VisitorVisitsSection({ userId }: { userId: string }) {
+  const [visits, setVisits]   = useState<VisitRequest[]>([]);
+  const [loading, setLoading] = useState(true);
+  const channelRef = useRef<ReturnType<NonNullable<typeof supabase>["channel"]> | null>(null);
+
+  const load = useCallback(async () => {
+    if (!supabase) return;
+    setLoading(true);
+    const { data } = await supabase
+      .from("visits")
+      .select("*, properties(title, neighborhood)")
+      .eq("visitor_id", userId)
+      .order("created_at", { ascending: false });
+    setVisits((data ?? []) as VisitRequest[]);
+    setLoading(false);
+  }, [userId]);
+
+  useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    if (!supabase) return;
+    if (channelRef.current) supabase.removeChannel(channelRef.current);
+    channelRef.current = supabase
+      .channel(`visits_visitor_${userId}`)
+      .on("postgres_changes", {
+        event: "*", schema: "public", table: "visits",
+        filter: `visitor_id=eq.${userId}`,
+      }, () => load())
+      .subscribe();
+    return () => {
+      if (channelRef.current && supabase) supabase.removeChannel(channelRef.current);
+    };
+  }, [userId, load]);
+
+  const statusBadge = (s: string) => {
+    if (s === "confirmed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e" }}>✅ Confirmée</span>;
+    if (s === "cancelled") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "#ef4444" }}>❌ Annulée</span>;
+    if (s === "completed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(160,160,160,0.15)", color: "#aaa" }}>✓ Terminée</span>;
+    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(233,233,0,0.15)", color: "#E9E900" }}>⏳ En attente</span>;
+  };
+
+  if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "#1a252b" }} />)}</div>;
+
+  if (visits.length === 0) return (
+    <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
+      <Calendar className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
+      <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucune visite planifiée</p>
+      <p className="text-sm mb-4" style={{ color: "var(--bl-cream-faint)" }}>Vos demandes de visite apparaîtront ici.</p>
+      <Link href="/annonces" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm"
+        style={{ background: "rgba(233,233,0,0.15)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.30)" }}>
+        Explorer les annonces
+      </Link>
+    </div>
+  );
+
+  return (
+    <div className="space-y-3">
+      {visits.map((v) => {
+        const dateLabel = new Date(v.scheduled_date + "T00:00:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "long" });
+        return (
+          <div key={v.id} className="rounded-2xl p-4 space-y-2" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <p className="text-sm font-bold" style={{ color: "var(--bl-cream)" }}>{v.properties?.title ?? "Annonce"}</p>
+                {v.properties?.neighborhood && (
+                  <p className="text-xs flex items-center gap-1 mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>
+                    <MapPin className="w-3 h-3" />{v.properties.neighborhood}
+                  </p>
+                )}
+              </div>
+              {statusBadge(v.status)}
+            </div>
+            <div className="flex items-center gap-2 text-xs" style={{ color: "var(--bl-cream-dim)" }}>
+              <Calendar className="w-3 h-3" />
+              <span>{dateLabel} · {TIME_LABEL[v.scheduled_time] ?? v.scheduled_time}</span>
+            </div>
+            {v.owner_note && (
+              <p className="text-xs px-3 py-2 rounded-lg flex items-start gap-1.5"
+                style={{ background: "rgba(233,233,0,0.06)", border: "1px solid rgba(233,233,0,0.15)", color: "var(--bl-cream-dim)" }}>
+                <Pencil className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: "var(--bl-amber)" }} />
+                {v.owner_note}
+              </p>
+            )}
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -888,6 +1056,7 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
   const tabs: DashTab[] = [
     { key: "recherches", label: "Recherches",  icon: <Search className="w-4 h-4" /> },
     { key: "favoris",    label: "Favoris",     icon: <Heart className="w-4 h-4" /> },
+    { key: "visites",    label: "Mes visites", icon: <Calendar className="w-4 h-4" /> },
     { key: "messages",   label: "Messages",    icon: <MessageCircle className="w-4 h-4" /> },
     { key: "profil",     label: "Profil",      icon: <User className="w-4 h-4" /> },
   ];
@@ -984,6 +1153,13 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
         </div>
       )}
 
+      {tab === "visites" && (
+        <>
+          <SectionHeader title="Mes demandes de visite" subtitle="Suivi en temps réel du statut" />
+          <VisitorVisitsSection userId={user.id} />
+        </>
+      )}
+
       {tab === "messages" && (
         <div>
           <SectionHeader title="Messages" />
@@ -1016,6 +1192,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
   const [msgCount, setMsgCount]   = useState(0);
   const [leads, setLeads]         = useState<Lead[]>([]);
   const [leadsLoading, setLeadsLoading] = useState(true);
+  const [pendingVisits, setPendingVisits] = useState(0);
 
   useEffect(() => {
     Promise.all([
@@ -1031,7 +1208,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
   const tabs: DashTab[] = [
     { key: "dashboard",    label: "Dashboard",    icon: <BarChart2 className="w-4 h-4" /> },
     { key: "annonces",     label: "Annonces",     icon: <Home className="w-4 h-4" /> },
-    { key: "visites",      label: "Visites",      icon: <Calendar className="w-4 h-4" /> },
+    { key: "visites",      label: "Visites",      icon: <Calendar className="w-4 h-4" />, badge: pendingVisits },
     { key: "leads",        label: "Leads",        icon: <Phone className="w-4 h-4" /> },
     { key: "statistiques", label: "Statistiques", icon: <TrendingUp className="w-4 h-4" /> },
     { key: "profil",       label: "Profil",       icon: <User className="w-4 h-4" /> },
@@ -1123,7 +1300,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
       {tab === "visites" && (
         <>
           <SectionHeader title="Demandes de visite" subtitle="Reçues sur vos annonces" />
-          <VisitRequestsManager userId={user.id} />
+          <VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />
         </>
       )}
       {tab === "leads" && (
@@ -1218,6 +1395,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
   const [totalCount, setTotalCount] = useState(0);
   const [msgCount, setMsgCount]   = useState(0);
   const [leads, setLeads]         = useState<Lead[]>([]);
+  const [pendingVisits, setPendingVisits] = useState(0);
 
   useEffect(() => {
     Promise.all([
@@ -1233,7 +1411,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
   const tabs: DashTab[] = [
     { key: "dashboard", label: "Dashboard",     icon: <BarChart2 className="w-4 h-4" /> },
     { key: "annonces",  label: "Annonces",      icon: <Home className="w-4 h-4" /> },
-    { key: "visites",   label: "Visites",       icon: <Calendar className="w-4 h-4" /> },
+    { key: "visites",   label: "Visites",       icon: <Calendar className="w-4 h-4" />, badge: pendingVisits },
     { key: "equipe",    label: "Équipe",        icon: <Building2 className="w-4 h-4" /> },
     { key: "leads",     label: "Leads",         icon: <Phone className="w-4 h-4" /> },
     { key: "stats",     label: "Statistiques",  icon: <TrendingUp className="w-4 h-4" /> },
@@ -1314,7 +1492,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
       {tab === "visites" && (
         <>
           <SectionHeader title="Demandes de visite" subtitle="Reçues sur vos annonces" />
-          <VisitRequestsManager userId={user.id} />
+          <VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />
         </>
       )}
       {tab === "equipe" && (

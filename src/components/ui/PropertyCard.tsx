@@ -322,7 +322,7 @@ export function PropertyCard({ property, variant = "default", className, index =
       {/* ── Card body ── */}
       <div style={{ padding: "12px 14px", flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
         {/* Title */}
-        <p style={{ fontSize: 14, fontWeight: 700, color: "#ffffff", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <p style={{ fontSize: 15, fontWeight: 700, color: "#ffffff", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {property.title}
         </p>
 

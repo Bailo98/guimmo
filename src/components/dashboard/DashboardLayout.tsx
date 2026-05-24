@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Menu, X, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type DashTab = { key: string; label: string; icon: React.ReactNode };
+export type DashTab = { key: string; label: string; icon: React.ReactNode; badge?: number };
 
 function NavLinks({ tabs, active, onChange, onSelect }: {
   tabs: DashTab[]; active: string;
@@ -21,6 +21,12 @@ function NavLinks({ tabs, active, onChange, onSelect }: {
         >
           {t.icon}
           {t.label}
+          {(t.badge ?? 0) > 0 && (
+            <span className="ml-auto text-[10px] font-black min-w-[18px] h-[18px] flex items-center justify-center rounded-full"
+              style={{ background: "#E9E900", color: "#0A1216" }}>
+              {(t.badge ?? 0) > 9 ? "9+" : t.badge}
+            </span>
+          )}
         </button>
       ))}
     </nav>

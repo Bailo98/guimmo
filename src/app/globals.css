@@ -288,7 +288,8 @@ h1, h2, h3, h4 {
 /* Labels uniformes uppercase */
 label {
   font-family: var(--font-space-grotesk), sans-serif;
-  font-size: 11px;
+  font-size: 12px;       /* min 12px pour lisibilité */
+  line-height: 1.5;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 500;
@@ -310,6 +311,7 @@ html {
 body {
   font-family: var(--font-space-grotesk), var(--font-inter), -apple-system, sans-serif;
   font-weight: 400;
+  font-size: 14px;       /* minimum mobile */
   letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -317,6 +319,8 @@ body {
   background-color: #0A1216;
   color: #ffffff;
 }
+@media (min-width: 640px)  { body { font-size: 15px; } }
+@media (min-width: 1024px) { body { font-size: 16px; } }
 
 h1 {
   font-family: var(--font-display), sans-serif;
@@ -380,7 +384,9 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 0 2px rgba(233,233,0,0.15) !important;
   outline: none;
 }
-input::placeholder, textarea::placeholder { color: #666666 !important; }
+input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.45) !important; opacity: 1; }
+html:not(.dark) input::placeholder,
+html:not(.dark) textarea::placeholder { color: rgba(10,18,22,0.45) !important; }
 
 /* Admin buttons */
 .admin-add-btn,
@@ -441,3 +447,62 @@ input::placeholder, textarea::placeholder { color: #666666 !important; }
   scrollbar-width: none;
 }
 .scrollbar-none::-webkit-scrollbar { display: none; }
+
+/* ── Responsive typography — content pages ── */
+
+/* Page title (content, not hero) */
+.page-title {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Section headings */
+.section-title {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* Property detail title */
+.detail-title {
+  font-size: clamp(1.25rem, 3.5vw, 1.875rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+/* Card title — minimum 15px mobile, 17px desktop */
+.card-title {
+  font-size: clamp(0.9375rem, 1.5vw, 1.0625rem);
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Card price — minimum 16px, bold */
+.card-price {
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Card meta (quartier, surface, chambres) — minimum 12px */
+.card-meta {
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.55);
+}
+
+/* Text on brand yellow — always black for contrast */
+.on-brand { color: #000000 !important; }
+
+/* Secondary text — ensure readable contrast in both modes */
+.text-secondary {
+  color: rgba(255,255,255,0.65);
+}
+html:not(.dark) .text-secondary {
+  color: rgba(10,18,22,0.65);
+}

@@ -18,7 +18,13 @@
       "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('@supabase/supabase-js:', p.dependencies['@supabase/supabase-js']\\); console.log\\('@supabase/ssr:', p.dependencies['@supabase/ssr']\\);\")",
       "Bash(node -e \"const p=JSON.parse\\(require\\('fs'\\).readFileSync\\('/dev/stdin','utf8'\\)\\); console.log\\('next-themes:', p.dependencies['next-themes'] || p.devDependencies?.['next-themes'] || 'NOT INSTALLED'\\)\")",
       "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('next-themes:', p.dependencies['next-themes'] || \\(p.devDependencies&&p.devDependencies['next-themes']\\) || 'NOT INSTALLED'\\)\")",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(node -e ' *)",
+      "Bash(sed -i '890s|<VisitRequestsManager userId={user.id} />|<VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />|' \"C:/Users/aliou/logerbien/src/app/\\(main\\)/compte/page.tsx\")",
+      "Bash(sed -i '1302s|<VisitRequestsManager userId={user.id} />|<VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />|' \"C:/Users/aliou/logerbien/src/app/\\(main\\)/compte/page.tsx\")",
+      "Bash(sed -i '1493s|<VisitRequestsManager userId={user.id} />|<VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />|' \"C:/Users/aliou/logerbien/src/app/\\(main\\)/compte/page.tsx\")",
+      "Bash(sed -i '1211s|{ key: \"visites\",      label: \"Visites\",      icon: <Calendar className=\"w-4 h-4\" /> }|{ key: \"visites\",      label: \"Visites\",      icon: <Calendar className=\"w-4 h-4\" />, badge: pendingVisits }|' \"C:/Users/aliou/logerbien/src/app/\\(main\\)/compte/page.tsx\")",
+      "Bash(sed -i '1413s|{ key: \"visites\",   label: \"Visites\",       icon: <Calendar className=\"w-4 h-4\" /> }|{ key: \"visites\",   label: \"Visites\",       icon: <Calendar className=\"w-4 h-4\" />, badge: pendingVisits }|' \"C:/Users/aliou/logerbien/src/app/\\(main\\)/compte/page.tsx\")"
     ]
   }
 }

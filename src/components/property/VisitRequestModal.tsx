@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { Calendar, X, Loader2, CheckCircle2 } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
+import { toast } from "@/lib/toast";
 import Link from "next/link";
 
 const TIME_SLOTS = [
@@ -43,18 +44,21 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
     if (!user || !isSupabaseConfigured || !supabase) return;
     setLoading(true);
     try {
-      await supabase.from("visit_requests").insert({
-        property_id:    propertyId,
-        visitor_id:     user.id,
-        owner_id:       ownerId,
-        visitor_name:   visitorName.trim(),
-        visitor_phone:  visitorPhone.trim(),
-        visitor_email:  visitorEmail.trim() || null,
-        preferred_date: preferredDate,
-        preferred_time: preferredTime,
-        message:        message.trim() || null,
-        status:         "pending",
+      const { error } = await supabase.from("visits").insert({
+        property_id:      propertyId,
+        visitor_id:       user.id,
+        owner_id:         ownerId,
+        visitor_name:     visitorName.trim(),
+        visitor_phone:    visitorPhone.trim(),
+        visitor_email:    visitorEmail.trim() || null,
+        scheduled_date:   preferredDate,
+        scheduled_time:   preferredTime,
+        visitor_message:  message.trim() || null,
+        status:           "pending",
       });
+      if (!error) {
+        toast("📅 Demande de visite envoyée ! L'agent vous contactera pour confirmer.", "success");
+      }
       setDone(true);
     } catch {
       setDone(true);
@@ -129,7 +133,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
           <div className="text-center py-6 space-y-3">
             <p className="text-white/70 text-sm">Connectez-vous pour envoyer une demande de visite.</p>
             <Link
-              href="/auth/login"
+              href={`/connexion?redirect=/annonces/${propertyId}`}
               className="inline-block px-6 py-2.5 rounded-xl font-bold text-sm"
               style={{ background: "#E9E900", color: "#0A1216" }}
               onClick={() => { document.body.style.overflow = ""; }}

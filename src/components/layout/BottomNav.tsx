@@ -82,7 +82,7 @@ export function BottomNav() {
             </span>
           )}
         </div>
-        <span className="text-[10px] font-semibold" style={{ color: active ? "#E9E900" : "var(--nav-text)" }}>
+        <span className="text-[11px] font-semibold" style={{ color: active ? "#E9E900" : "var(--nav-text)" }}>
           {label}
         </span>
       </Link>
@@ -101,7 +101,7 @@ export function BottomNav() {
           <NavItem href="/annonces" icon={Search} label="Explorer" />
           <Link href="/connexion" className="flex flex-col items-center justify-center gap-0.5 w-14 h-14">
             <User className="w-[22px] h-[22px]" style={{ color: "var(--nav-text)" }} />
-            <span className="text-[10px] font-semibold" style={{ color: "var(--nav-text)" }}>Connexion</span>
+            <span className="text-[11px] font-semibold" style={{ color: "var(--nav-text)" }}>Connexion</span>
           </Link>
         </div>
       )}
@@ -118,7 +118,7 @@ export function BottomNav() {
             <span className="w-14 h-14 rounded-full flex items-center justify-center active:scale-95 transition-transform" style={{ background: "#E9E900", border: "1px solid rgba(233,233,0,0.50)", boxShadow: "0 4px 20px rgba(233,233,0,0.40)" }}>
               <Plus className="w-7 h-7" style={{ color: "#0A1216" }} strokeWidth={2.5} />
             </span>
-            <span className="text-[9px] font-bold mt-1" style={{ color: "#E9E900" }}>Publier</span>
+            <span className="text-[10px] font-bold mt-1" style={{ color: "#E9E900" }}>Publier</span>
           </Link>
 
           {RIGHT_NAV.filter((item) => {
