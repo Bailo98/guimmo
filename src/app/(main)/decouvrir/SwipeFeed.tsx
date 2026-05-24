@@ -145,17 +145,30 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     if (overlayLeftRef.current)  overlayLeftRef.current.style.opacity  = "0";
 
     if (dir === "right") {
+      // Gate: redirect to login if no session — we can't save to DB without auth
+      if (!user) {
+        router.push("/connexion?redirect=/decouvrir");
+        return;
+      }
+      // Optimistic local update first (instant UX)
       toggleFavorite(property.id);
       toast("❤️ Ajouté aux favoris", "success");
-      if (user && isSupabaseConfigured && supabase) {
+      // Persist to DB. Use ignoreDuplicates:true so PostgREST generates
+      // "ON CONFLICT DO NOTHING" instead of "ON CONFLICT DO UPDATE SET …"
+      // The latter requires an UPDATE RLS policy which doesn't exist on favorites;
+      // DO NOTHING only triggers the INSERT policy which does exist.
+      if (isSupabaseConfigured && supabase) {
         try {
-          await supabase
+          const { error } = await supabase
             .from("favorites")
             .upsert(
               { user_id: user.id, property_id: property.id },
-              { onConflict: "user_id,property_id" }
+              { onConflict: "user_id,property_id", ignoreDuplicates: true }
             );
-        } catch { /* silent */ }
+          if (error) console.error("[SwipeFeed] favorites upsert:", error.message, error.code);
+        } catch (e) {
+          console.error("[SwipeFeed] favorites upsert exception:", e);
+        }
       }
     }
   }, [user, toggleFavorite]);
