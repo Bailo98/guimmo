@@ -15,15 +15,26 @@ async function fetchSwipeProperties(): Promise<Property[]> {
   if (!url || !key) return [];
   try {
     const db = createClient(url, key);
-    // Sort: featured first, then newest, then rest
-    const { data } = await db
+    // NOTE: n'utilise pas is_featured/is_diaspora dans l'ORDER BY car
+    // la migration 015 peut ne pas encore être appliquée en Supabase.
+    // Le tri avancé est fait côté client dans SwipeFeed.
+    const { data, error } = await db
       .from("properties")
       .select("*, property_images(*)")
       .eq("status", "active")
-      .order("is_featured", { ascending: false })
       .order("is_boosted", { ascending: false })
       .order("created_at", { ascending: false })
-      .limit(50);
+      .limit(60);
+    if (error) {
+      // Fallback sans is_boosted si la colonne pose problème
+      const { data: fallback } = await db
+        .from("properties")
+        .select("*, property_images(*)")
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .limit(60);
+      return (fallback ?? []) as Property[];
+    }
     return (data ?? []) as Property[];
   } catch {
     return [];

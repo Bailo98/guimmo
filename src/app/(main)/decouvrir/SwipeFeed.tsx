@@ -289,9 +289,19 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   // Filter out seen cards + sort by location/featured/new/popular
   useEffect(() => {
     setMounted(true);
+    if (properties.length === 0) return; // attendre les données server
+
     const seen = getSeenIds();
     let list = properties.filter((p) => !seen.includes(p.id));
 
+    // Auto-reset : si plus de 80% des annonces ont été vues (ou toutes),
+    // on vide le seen pour éviter un feed vide
+    if (list.length === 0 || list.length < Math.max(1, properties.length * 0.2)) {
+      try { localStorage.removeItem(SEEN_KEY); } catch { /* silent */ }
+      list = [...properties];
+    }
+
+    // ── Tri ──────────────────────────────────────────────────────────────────
     if (userLocation) {
       list = list.sort((a, b) => {
         const aLat = a.lat ?? a.latitude ?? NEIGHBORHOOD_COORDINATES[a.neighborhood]?.[0];
@@ -305,7 +315,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         );
       });
     } else {
-      // Sort: featured > new (48h) > popular (boosted) > recent
+      // featured > nouveau (48h) > boosted > récent
       list = list.sort((a, b) => {
         const aScore =
           (a.is_featured ? 1000 : 0) +
