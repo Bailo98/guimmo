@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
+import TinderCard from "react-tinder-card";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
@@ -28,18 +29,12 @@ function addSeenId(id: string) {
   } catch { /* silent */ }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SwipeFeed — full-screen fixed overlay, zero scroll-parent interference
-//
-// ROOT CAUSE of previous failures:
-//   The card was inside a <section> embedded in a scrollable page.
-//   On iOS/Android the browser commits to a scroll gesture on touchstart
-//   (before the first touchmove fires), so even { passive:false } + preventDefault
-//   on touchmove is ignored once the scroll has been decided.
-//
-// FIX: position:fixed + inset:0 + overflow:hidden takes the container OUT of
-//   the scroll flow entirely. No scroll parent → no interference.
-// ─────────────────────────────────────────────────────────────────────────────
+// react-tinder-card exposes this API via forwardRef
+type TinderAPI = {
+  swipe: (dir: "left" | "right" | "up" | "down") => Promise<void>;
+  restoreCard: () => Promise<void>;
+};
+
 export function SwipeFeed({ properties }: { properties: Property[] }) {
   const router         = useRouter();
   const { user }       = useAuth();
@@ -48,15 +43,17 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   const [mounted,      setMounted]      = useState(false);
   const [cards,        setCards]        = useState<Property[]>([]);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  // Direction highlight for INTÉRESSÉ / PASSÉ overlay
+  const [overlayDir,   setOverlayDir]   = useState<"left" | "right" | null>(null);
 
-  // DOM refs — manipulated directly to avoid re-renders during drag
-  const cardRef = useRef<HTMLDivElement>(null);  // top card element
-  const likeRef = useRef<HTMLDivElement>(null);  // "INTÉRESSÉ" overlay
-  const nopeRef = useRef<HTMLDivElement>(null);  // "PASSÉ" overlay
+  // Ref to top card's TinderCard API (for programmatic button swipe)
+  // Cast via `any` because the lib ships as React.FC (not forwardRef) in its typedefs
+  // but the runtime implementation does use forwardRef correctly.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const topCardRef = useRef<TinderAPI>(null as any);
 
-  // Always-fresh reference to cards — lets event-listener closures read current
-  // state without being stale (avoids re-running the heavy useEffect on every render)
-  const cardsRef = useRef<Property[]>([]);
+  // Always-fresh cards list so stable callbacks can read current state
+  const cardsRef = useRef(cards);
   cardsRef.current = cards;
 
   // ── Mount ──────────────────────────────────────────────────────────────────
@@ -72,13 +69,12 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     );
   }, []);
 
-  // ── Filter seen cards + sort ───────────────────────────────────────────────
+  // ── Filter seen + sort ─────────────────────────────────────────────────────
   useEffect(() => {
     if (properties.length === 0) return;
     const seen = getSeenIds();
     let list = properties.filter((p) => !seen.includes(p.id));
 
-    // Auto-reset when > 80 % seen
     if (list.length === 0 || list.length < Math.max(1, properties.length * 0.2)) {
       try { localStorage.removeItem(SEEN_KEY); } catch { /* silent */ }
       list = [...properties];
@@ -108,437 +104,360 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     setCards(list);
   }, [properties, userLocation]);
 
-  // ── Swipe completion (called after fly-out animation) ─────────────────────
-  const handleSwipe = useCallback(
-    async (direction: "left" | "right", property: Property) => {
-      addSeenId(property.id);
-      setCards((prev) => prev.filter((p) => p.id !== property.id));
-      if (direction === "right") {
-        toggleFavorite(property.id);
-        toast("❤️ Ajouté aux favoris", "success");
-        if (user && isSupabaseConfigured && supabase) {
-          try {
-            await supabase
-              .from("favorites")
-              .upsert({ user_id: user.id, property_id: property.id }, { onConflict: "user_id,property_id" });
-          } catch { /* silent */ }
-        }
-      }
-    },
-    [user, toggleFavorite]
-  );
-
-  // Stable ref so the drag useEffect can call the latest handleSwipe
-  // without listing it as a dependency (which would cause listener re-attachment on every render)
-  const handleSwipeRef = useRef(handleSwipe);
-  handleSwipeRef.current = handleSwipe;
-
-  // ── Touch / Mouse event listeners ─────────────────────────────────────────
-  // Re-runs only when the top card ID changes, NOT on every render.
-  // Uses cardsRef / handleSwipeRef so closures are always fresh.
-  const topCardId = cards[0]?.id;
-
-  useEffect(() => {
-    if (!mounted) return;
-    const elOrNull = cardRef.current;
-    if (!elOrNull) return;
-    // Rebind to a definitively-typed alias so TypeScript doesn't re-widen
-    // the type to `null | HTMLDivElement` inside nested function bodies
-    // (TypeScript doesn't propagate control-flow narrowing through closures).
-    const el: HTMLDivElement = elOrNull;
-
-    let startX = 0, startY = 0, currentX = 0, currentY = 0;
-    let isDragging = false;
-
-    // ── helpers ──────────────────────────────────────────────────────────────
-    function onStart(x: number, y: number) {
-      console.log("[SwipeFeed] touchstart", x, y); // DEBUG — check this in browser console on mobile
-      startX = x; startY = y; currentX = x; currentY = y;
-      isDragging = true;
-      el.style.transition = "none";
-    }
-
-    function onMove(x: number, y: number) {
-      if (!isDragging) return;
-      currentX = x; currentY = y;
-      const dx = x - startX;
-      el.style.transform = `translateX(${dx}px) rotate(${dx / 20}deg)`;
-      if (likeRef.current)
-        likeRef.current.style.opacity = String(Math.max(0, Math.min(1, dx / 100)));
-      if (nopeRef.current)
-        nopeRef.current.style.opacity = String(Math.max(0, Math.min(1, -dx / 100)));
-    }
-
-    function onEnd() {
-      if (!isDragging) return;
-      isDragging = false;
-      const dx = currentX - startX;
-      const dy = currentY - startY;
-      const card = cardsRef.current[0];
-
-      if (dx > 80) {
-        // Fly out right → like
-        el.style.transition = "transform 0.35s ease-out, opacity 0.35s ease-out";
-        el.style.transform  = "translateX(160%) rotate(20deg)";
-        el.style.opacity    = "0";
-        if (card) setTimeout(() => handleSwipeRef.current("right", card), 350);
-
-      } else if (dx < -80) {
-        // Fly out left → pass
-        el.style.transition = "transform 0.35s ease-out, opacity 0.35s ease-out";
-        el.style.transform  = "translateX(-160%) rotate(-20deg)";
-        el.style.opacity    = "0";
-        if (card) setTimeout(() => handleSwipeRef.current("left", card), 350);
-
-      } else if (Math.abs(dx) < 12 && Math.abs(dy) < 12 && card) {
-        // Tap (very little movement) → navigate to detail
-        router.push(`/annonces/${card.id}`);
-
-      } else if (dy < -80 && Math.abs(dy) > Math.abs(dx) && card) {
-        // Swipe up → navigate to detail
-        router.push(`/annonces/${card.id}`);
-
-      } else {
-        // Snap back to center
-        el.style.transition = "transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94)";
-        el.style.transform  = "translateX(0) rotate(0deg)";
-        el.style.opacity    = "1";
-        if (likeRef.current) likeRef.current.style.opacity = "0";
-        if (nopeRef.current) nopeRef.current.style.opacity = "0";
+  // ── Callbacks (stable — passed to TinderCard props) ───────────────────────
+  // onSwipe: immediate side-effects (called when the swipe gesture is recognised,
+  //          BEFORE the fly-off animation finishes)
+  const onSwipe = useCallback(async (dir: string, property: Property) => {
+    addSeenId(property.id);
+    setOverlayDir(null);
+    if (dir === "right") {
+      toggleFavorite(property.id);
+      toast("❤️ Ajouté aux favoris", "success");
+      if (user && isSupabaseConfigured && supabase) {
+        try {
+          await supabase
+            .from("favorites")
+            .upsert({ user_id: user.id, property_id: property.id }, { onConflict: "user_id,property_id" });
+        } catch { /* silent */ }
       }
     }
+  }, [user, toggleFavorite]);
 
-    // ── Touch bindings ────────────────────────────────────────────────────────
-    // BOTH touchstart and touchmove are passive:false.
-    // touchstart:passive:false lets us call preventDefault() immediately,
-    // telling the browser "this touch belongs to the app, don't even consider scrolling".
-    const onTouchStart = (e: TouchEvent) => {
-      e.preventDefault(); // critical: block scroll decision before touchmove even fires
-      onStart(e.touches[0].clientX, e.touches[0].clientY);
-    };
-    const onTouchMove = (e: TouchEvent) => {
-      e.preventDefault(); // belt-and-suspenders
-      onMove(e.touches[0].clientX, e.touches[0].clientY);
-    };
-    const onTouchEnd  = () => onEnd();
-    const onTouchCancel = () => {
-      isDragging = false;
-      el.style.transition = "transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94)";
-      el.style.transform  = "translateX(0) rotate(0deg)";
-      el.style.opacity    = "1";
-      if (likeRef.current) likeRef.current.style.opacity = "0";
-      if (nopeRef.current) nopeRef.current.style.opacity = "0";
-    };
+  // onCardLeftScreen: remove from state (called AFTER the fly-off animation)
+  const onCardLeft = useCallback((property: Property) => {
+    setCards((prev) => prev.filter((p) => p.id !== property.id));
+  }, []);
 
-    // ── Mouse bindings (desktop) ──────────────────────────────────────────────
-    const onMouseDown  = (e: MouseEvent) => { e.preventDefault(); onStart(e.clientX, e.clientY); };
-    const onMouseMove  = (e: MouseEvent) => onMove(e.clientX, e.clientY);
-    const onMouseUp    = () => onEnd();
+  // Overlay: show INTÉRESSÉ / PASSÉ when threshold is met
+  const onFulfilled = useCallback((dir: string) => {
+    setOverlayDir(dir === "left" || dir === "right" ? dir : null);
+  }, []);
+  const onUnfulfilled = useCallback(() => setOverlayDir(null), []);
 
-    el.addEventListener("touchstart",   onTouchStart,  { passive: false });
-    el.addEventListener("touchmove",    onTouchMove,   { passive: false });
-    el.addEventListener("touchend",     onTouchEnd,    { passive: true  });
-    el.addEventListener("touchcancel",  onTouchCancel, { passive: true  });
-    el.addEventListener("mousedown",    onMouseDown);
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup",   onMouseUp);
+  // Programmatic swipe via action buttons
+  const triggerSwipe = useCallback(async (dir: "left" | "right") => {
+    await topCardRef.current?.swipe(dir);
+  }, []);
 
-    return () => {
-      el.removeEventListener("touchstart",   onTouchStart);
-      el.removeEventListener("touchmove",    onTouchMove);
-      el.removeEventListener("touchend",     onTouchEnd);
-      el.removeEventListener("touchcancel",  onTouchCancel);
-      el.removeEventListener("mousedown",    onMouseDown);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup",   onMouseUp);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topCardId, mounted]); // router intentionally omitted — stable across renders
-
-  // ── Button-triggered swipe (animates card then updates state) ─────────────
-  const triggerSwipe = useCallback((direction: "left" | "right") => {
+  const openWhatsApp = useCallback(() => {
     const top = cardsRef.current[0];
-    const el  = cardRef.current;
-    if (!top || !el) return;
-    el.style.transition = "transform 0.35s ease-out, opacity 0.35s ease-out";
-    el.style.transform  = direction === "right" ? "translateX(160%) rotate(20deg)" : "translateX(-160%) rotate(-20deg)";
-    el.style.opacity    = "0";
-    setTimeout(() => handleSwipeRef.current(direction, top), 350);
+    if (!top?.contact_phone) return;
+    const msg = encodeURIComponent(`Bonjour, je suis intéressé par "${top.title}" sur LogerBien`);
+    window.open(`https://wa.me/${top.contact_phone.replace(/\D/g, "")}?text=${msg}`, "_blank", "noopener");
   }, []);
 
   // ── Render ─────────────────────────────────────────────────────────────────
-  if (!mounted) return null; // skip SSR — avoids hydration mismatch with localStorage
+  if (!mounted) return null; // skip SSR
 
-  // ── Empty state ────────────────────────────────────────────────────────────
-  if (cards.length === 0) {
+  const topCard   = cards[0];
+  const backCards = cards.slice(1, 3); // at most 2 back cards shown
+
+  if (!topCard) {
     return (
       <div style={{
-        position: "fixed", inset: 0, zIndex: 10,
-        background: "#0A1216",
-        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-        padding: "0 32px",
+        position: "fixed", inset: 0, zIndex: 10, background: "#0A1216",
+        display: "flex", flexDirection: "column", alignItems: "center",
+        justifyContent: "center", padding: "0 32px",
       }}>
         <p style={{ fontSize: 56, marginBottom: 16 }}>🏠</p>
         <h2 style={{ color: "#fff", fontWeight: 700, fontSize: 22, marginBottom: 8, textAlign: "center" }}>
           Vous avez tout vu !
         </h2>
         <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, marginBottom: 32, textAlign: "center", lineHeight: 1.6 }}>
-          Revenez plus tard pour de nouvelles annonces, ou explorez toutes les annonces disponibles.
+          Revenez plus tard pour de nouvelles annonces.
         </p>
         <button
           onClick={() => { localStorage.removeItem(SEEN_KEY); window.location.reload(); }}
           style={{
             background: "#C8A97E", color: "#0A1216", fontWeight: 700,
             padding: "14px 0", borderRadius: 14, width: "100%", maxWidth: 320,
-            fontSize: 15, cursor: "pointer", marginBottom: 12,
+            fontSize: 15, cursor: "pointer", marginBottom: 12, border: "none",
           }}
         >
           🔄 Recommencer depuis le début
         </button>
-        <a
-          href="/annonces"
-          style={{
-            display: "block", textAlign: "center", width: "100%", maxWidth: 320,
-            padding: "14px 0", borderRadius: 14,
-            background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)",
-            color: "#fff", fontWeight: 600, fontSize: 15, textDecoration: "none",
-          }}
-        >
+        <a href="/annonces" style={{
+          display: "block", textAlign: "center", width: "100%", maxWidth: 320,
+          padding: "14px 0", borderRadius: 14,
+          background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)",
+          color: "#fff", fontWeight: 600, fontSize: 15, textDecoration: "none",
+        }}>
           Voir toutes les annonces
         </a>
       </div>
     );
   }
 
-  const visibleCards = cards.slice(0, 3);
-  const topCard      = cards[0];
+  const topImg = topCard.property_images?.find((i) => i.is_primary) ?? topCard.property_images?.[0];
+
+  // Distance for top card
+  let topDistStr: string | null = null;
+  if (userLocation) {
+    const pLat = topCard.lat ?? topCard.latitude;
+    const pLng = topCard.lng ?? topCard.longitude;
+    if (pLat && pLng) {
+      topDistStr = formatDistance(haversineKm(userLocation.lat, userLocation.lng, pLat, pLng));
+    } else {
+      const coords = NEIGHBORHOOD_COORDINATES[topCard.neighborhood];
+      if (coords) topDistStr = `~${formatDistance(haversineKm(userLocation.lat, userLocation.lng, coords[0], coords[1]))}`;
+    }
+  }
+
+  // ── Card area bounds (shared between TinderCard child + back cards) ──────
+  // top:80px = below fixed header (72px) + 8px gap
+  // bottom = above action buttons (160px) + safe-area
+  const CARD_TOP    = 80;
+  const CARD_LEFT   = 12;
+  const CARD_RIGHT  = 12;
+  const CARD_BOTTOM = "calc(env(safe-area-inset-bottom, 0px) + 160px)";
 
   return (
     /*
-     * FIXED FULL-SCREEN CONTAINER
-     * ─────────────────────────────
-     * position:fixed + inset:0 → no scroll parent.
-     * overflow:hidden            → no internal scrolling possible.
-     * z-index:10                 → below header (z-40+) and BottomNav (z-50).
-     *
-     * The header and BottomNav are fixed at higher z-index,
-     * so they naturally overlay this container at top and bottom.
+     * FIXED FULL-SCREEN CONTAINER (z-10)
+     * ────────────────────────────────────
+     * - Header (z-40+) and BottomNav (z-50) are fixed at higher z-index and
+     *   naturally appear on top.
+     * - overflow:hidden prevents any internal scroll.
+     * - No scroll parent → react-tinder-card's ev.preventDefault() on touchstart
+     *   actually works, blocking any gesture conflict.
      */
     <div
-      id="swipe-container"
       style={{
         position: "fixed",
         inset: 0,
         overflow: "hidden",
         zIndex: 10,
         background: "#080D12",
-        touchAction: "none", // belt-and-suspenders on the container too
       }}
     >
-      {/* ── Card stack ──────────────────────────────────────────────────────── */}
-      {/* Rendered in reverse so the top card is last in DOM (painted on top) */}
-      {[...visibleCards].reverse().map((property, reversedIdx) => {
-        const stackIdx = visibleCards.length - 1 - reversedIdx;
-        const isTop    = stackIdx === 0;
-
-        const primaryImg      = property.property_images?.find((i) => i.is_primary) ?? property.property_images?.[0];
-        const neighborhoodLabel = getNeighborhoodName(property.neighborhood);
-        const priceStr        = formatPrice(property.price, "GNF", property.price_period);
-
-        let distStr: string | null = null;
-        if (userLocation) {
-          const pLat = property.lat ?? property.latitude;
-          const pLng = property.lng ?? property.longitude;
-          if (pLat && pLng) {
-            distStr = formatDistance(haversineKm(userLocation.lat, userLocation.lng, pLat, pLng));
-          } else {
-            const coords = NEIGHBORHOOD_COORDINATES[property.neighborhood];
-            if (coords) distStr = `~${formatDistance(haversineKm(userLocation.lat, userLocation.lng, coords[0], coords[1]))}`;
-          }
-        }
-
-        // Back cards are slightly scaled down to give depth
-        const depthOffset = visibleCards.length - 1 - stackIdx; // 0=top, 1=second, 2=third
-        const scale       = 1 - depthOffset * 0.04;
-        const translateY  = depthOffset * 12;
-
+      {/* ── Visual stack: back cards (plain divs, no gesture handling) ─────── */}
+      {backCards.map((property, i) => {
+        const depth = i + 1; // 1 or 2
+        const img = property.property_images?.find((x) => x.is_primary) ?? property.property_images?.[0];
         return (
           <div
             key={property.id}
-            ref={isTop ? cardRef : undefined}
             style={{
-              // ─ Layout: full screen ─
-              position: "absolute",
-              inset: 0,
-              zIndex: stackIdx + 1,
-
-              // ─ Touch: CRITICAL — must be on the element itself ─
-              touchAction: "none",  // CSS property (not just React prop)
-              userSelect: "none",
-              WebkitUserSelect: "none",
-
-              // ─ Visual ─
-              cursor: isTop ? "grab" : "default",
-              transform: isTop ? "scale(1)" : `scale(${scale}) translateY(${translateY}px)`,
-              transition: isTop ? "none" : "transform 0.3s ease",
-              willChange: isTop ? "transform, opacity" : "auto",
-
-              // ─ Rounded corners (applied on the div, clip handled by overflow:hidden) ─
+              position:     "absolute",
+              top:          CARD_TOP + depth * 6,
+              left:         CARD_LEFT + depth * 10,
+              right:        CARD_RIGHT + depth * 10,
+              bottom:       `calc(env(safe-area-inset-bottom, 0px) + 160px + ${depth * 6}px)`,
               borderRadius: 20,
-              overflow: "hidden",
-              background: "#161B26",
-              boxShadow: "0 16px 48px rgba(0,0,0,0.7)",
-
-              // Extra margin to keep cards off the header and nav
-              // (the fixed container already fills inset:0, but cards peek out nicely)
-              top: 80,    // below header (~72px) + 8px breathing room
-              bottom: "calc(env(safe-area-inset-bottom, 0px) + 160px)", // above nav + action buttons
-              left: 12,
-              right: 12,
+              overflow:     "hidden",
+              background:   "#161B26",
+              boxShadow:    "0 8px 24px rgba(0,0,0,0.4)",
+              pointerEvents: "none",
+              zIndex:       10 - depth,
             }}
           >
-            {/* Full-screen photo */}
-            {primaryImg ? (
+            {img && (
               <Image
-                src={primaryImg.url}
+                src={img.url}
                 alt={property.title}
                 fill
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "cover", opacity: 0.5 }}
                 sizes="100vw"
-                quality={isTop ? 85 : 40}
-                priority={isTop}
-                draggable={false}
               />
-            ) : (
-              <div style={{
-                position: "absolute", inset: 0,
-                background: "#1a252b",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <span style={{ fontSize: 80, opacity: 0.12 }}>🏠</span>
-              </div>
             )}
-
-            {/* Gradient overlay — darkens bottom for text readability */}
-            <div style={{
-              position: "absolute", inset: 0, pointerEvents: "none",
-              background: "linear-gradient(transparent 38%, rgba(0,0,0,0.45) 62%, rgba(0,0,0,0.90) 100%)",
-            }} />
-
-            {/* Badges — top left */}
-            <div style={{
-              position: "absolute", top: 12, left: 12,
-              display: "flex", flexDirection: "column", gap: 6,
-              pointerEvents: "none",
-            }}>
-              {property.is_featured && (
-                <span style={{ background: "rgba(200,169,126,0.25)", color: "#C8A97E", border: "1px solid rgba(200,169,126,0.5)", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 600, backdropFilter: "blur(8px)" }}>
-                  ⭐ Premium
-                </span>
-              )}
-              {property.is_diaspora && (
-                <span style={{ background: "rgba(74,158,255,0.25)", color: "#4A9EFF", border: "1px solid rgba(74,158,255,0.5)", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 600, backdropFilter: "blur(8px)" }}>
-                  ✈️ Diaspora
-                </span>
-              )}
-            </div>
-
-            {/* Distance badge — top right */}
-            {distStr && (
-              <div style={{ position: "absolute", top: 12, right: 12, pointerEvents: "none" }}>
-                <span style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(8px)", color: "rgba(255,255,255,0.85)", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 600 }}>
-                  📍 {distStr}
-                </span>
-              </div>
-            )}
-
-            {/* ❤️ INTÉRESSÉ overlay — only rendered on top card */}
-            {isTop && (
-              <div
-                ref={likeRef}
-                style={{
-                  position: "absolute", inset: 0, pointerEvents: "none",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  opacity: 0,
-                }}
-              >
-                <div style={{
-                  fontSize: 32, fontWeight: 900, letterSpacing: 2,
-                  color: "#C8A97E", border: "4px solid #C8A97E", borderRadius: 14,
-                  padding: "8px 22px", transform: "rotate(-15deg)",
-                  textShadow: "0 2px 8px rgba(0,0,0,0.6)",
-                  background: "rgba(0,0,0,0.25)", backdropFilter: "blur(4px)",
-                }}>
-                  ❤️ INTÉRESSÉ
-                </div>
-              </div>
-            )}
-
-            {/* ✕ PASSÉ overlay — only rendered on top card */}
-            {isTop && (
-              <div
-                ref={nopeRef}
-                style={{
-                  position: "absolute", inset: 0, pointerEvents: "none",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  opacity: 0,
-                }}
-              >
-                <div style={{
-                  fontSize: 32, fontWeight: 900, letterSpacing: 2,
-                  color: "#FF4D4D", border: "4px solid #FF4D4D", borderRadius: 14,
-                  padding: "8px 22px", transform: "rotate(15deg)",
-                  textShadow: "0 2px 8px rgba(0,0,0,0.6)",
-                  background: "rgba(0,0,0,0.25)", backdropFilter: "blur(4px)",
-                }}>
-                  ✕ PASSÉ
-                </div>
-              </div>
-            )}
-
-            {/* Property info — bottom of card */}
-            <div style={{
-              position: "absolute", bottom: 0, left: 0, right: 0,
-              padding: "16px 16px 20px",
-              pointerEvents: "none",
-            }}>
-              <p style={{
-                fontFamily: "var(--font-playfair), serif",
-                fontSize: 24, fontWeight: 700, color: "#C8A97E",
-                lineHeight: 1.2, marginBottom: 4,
-                textShadow: "0 2px 8px rgba(0,0,0,0.6)",
-              }}>
-                {priceStr}
-              </p>
-              <p style={{ color: "#fff", fontWeight: 700, fontSize: 16, lineHeight: 1.3, marginBottom: 4, textShadow: "0 1px 4px rgba(0,0,0,0.5)" }}>
-                {property.title}
-              </p>
-              <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-                <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 13 }}>
-                  📍 {neighborhoodLabel}
-                </span>
-                <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>·</span>
-                <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 13 }}>
-                  {property.transaction_type === "rent" ? "Location" : "Vente"}
-                </span>
-                {(property.rooms ?? 0) > 0 && (
-                  <>
-                    <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>·</span>
-                    <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 13 }}>🛏 {property.rooms}</span>
-                  </>
-                )}
-              </div>
-            </div>
+            {/* Darken back cards */}
+            <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.35)" }} />
           </div>
         );
       })}
 
-      {/* ── Counter (top-left, above cards but below header) ────────────────── */}
+      {/* ── Top card: react-tinder-card ──────────────────────────────────── */}
+      {/*
+       * - className="tc-swipe" → sets position:absolute; inset:0; z-index:10
+       *   (defined in globals.css — makes TinderCard fill the fixed container)
+       * - Only ONE TinderCard is rendered at a time (the top card).
+       *   When it leaves the screen, onCardLeftScreen removes it from state,
+       *   the next card in `cards` becomes the new top, and a fresh TinderCard
+       *   mounts with the new key.
+       * - preventSwipe:["up","down"] keeps swipes horizontal.
+       * - swipeRequirementType:"position" + swipeThreshold:80 match our UX.
+       */}
+      <TinderCard
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+        ref={topCardRef as any}
+        key={topCard.id}
+        onSwipe={(dir) => onSwipe(dir, topCard)}
+        onCardLeftScreen={() => onCardLeft(topCard)}
+        preventSwipe={["up", "down"]}
+        swipeRequirementType="position"
+        swipeThreshold={80}
+        onSwipeRequirementFulfilled={onFulfilled}
+        onSwipeRequirementUnfulfilled={onUnfulfilled}
+        className="tc-swipe"
+      >
+        {/*
+         * className="pressable" tells react-tinder-card to NOT call
+         * ev.preventDefault() on touchstart for touches that originate here.
+         * This allows the browser to fire synthetic `click` events (needed for
+         * the tap-to-navigate behaviour). Since our container is position:fixed
+         * with overflow:hidden, there is no page scroll to accidentally trigger,
+         * so skipping preventDefault is safe.
+         */}
+        <div
+          className="pressable"
+          style={{
+            position:     "absolute",
+            top:          CARD_TOP,
+            left:         CARD_LEFT,
+            right:        CARD_RIGHT,
+            bottom:       CARD_BOTTOM,
+            borderRadius: 20,
+            overflow:     "hidden",
+            background:   "#161B26",
+            boxShadow:    "0 16px 48px rgba(0,0,0,0.7)",
+            cursor:       "grab",
+          }}
+          onClick={() => router.push(`/annonces/${topCard.id}`)}
+        >
+          {/* Full-screen photo */}
+          {topImg ? (
+            <Image
+              src={topImg.url}
+              alt={topCard.title}
+              fill
+              style={{ objectFit: "cover" }}
+              sizes="100vw"
+              quality={85}
+              priority
+              draggable={false}
+            />
+          ) : (
+            <div style={{
+              position: "absolute", inset: 0, background: "#1a252b",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <span style={{ fontSize: 80, opacity: 0.12 }}>🏠</span>
+            </div>
+          )}
+
+          {/* Gradient */}
+          <div style={{
+            position: "absolute", inset: 0, pointerEvents: "none",
+            background: "linear-gradient(transparent 38%, rgba(0,0,0,0.45) 62%, rgba(0,0,0,0.90) 100%)",
+          }} />
+
+          {/* ❤️ INTÉRESSÉ overlay */}
+          <div style={{
+            position: "absolute", inset: 0, pointerEvents: "none",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            opacity: overlayDir === "right" ? 1 : 0,
+            transition: "opacity 0.12s ease",
+          }}>
+            <div style={{
+              fontSize: 30, fontWeight: 900, letterSpacing: 2,
+              color: "#C8A97E", border: "4px solid #C8A97E", borderRadius: 14,
+              padding: "8px 22px", transform: "rotate(-15deg)",
+              background: "rgba(0,0,0,0.3)", backdropFilter: "blur(4px)",
+            }}>
+              ❤️ INTÉRESSÉ
+            </div>
+          </div>
+
+          {/* ✕ PASSÉ overlay */}
+          <div style={{
+            position: "absolute", inset: 0, pointerEvents: "none",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            opacity: overlayDir === "left" ? 1 : 0,
+            transition: "opacity 0.12s ease",
+          }}>
+            <div style={{
+              fontSize: 30, fontWeight: 900, letterSpacing: 2,
+              color: "#FF4D4D", border: "4px solid #FF4D4D", borderRadius: 14,
+              padding: "8px 22px", transform: "rotate(15deg)",
+              background: "rgba(0,0,0,0.3)", backdropFilter: "blur(4px)",
+            }}>
+              ✕ PASSÉ
+            </div>
+          </div>
+
+          {/* Badges — top left */}
+          <div style={{
+            position: "absolute", top: 12, left: 12,
+            display: "flex", flexDirection: "column", gap: 6,
+            pointerEvents: "none",
+          }}>
+            {topCard.is_featured && (
+              <span style={{
+                background: "rgba(200,169,126,0.25)", color: "#C8A97E",
+                border: "1px solid rgba(200,169,126,0.5)", borderRadius: 20,
+                padding: "3px 10px", fontSize: 11, fontWeight: 600,
+                backdropFilter: "blur(8px)",
+              }}>
+                ⭐ Premium
+              </span>
+            )}
+            {topCard.is_diaspora && (
+              <span style={{
+                background: "rgba(74,158,255,0.25)", color: "#4A9EFF",
+                border: "1px solid rgba(74,158,255,0.5)", borderRadius: 20,
+                padding: "3px 10px", fontSize: 11, fontWeight: 600,
+                backdropFilter: "blur(8px)",
+              }}>
+                ✈️ Diaspora
+              </span>
+            )}
+          </div>
+
+          {/* Distance badge — top right */}
+          {topDistStr && (
+            <div style={{ position: "absolute", top: 12, right: 12, pointerEvents: "none" }}>
+              <span style={{
+                background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)",
+                color: "rgba(255,255,255,0.85)", borderRadius: 20,
+                padding: "3px 10px", fontSize: 11, fontWeight: 600,
+              }}>
+                📍 {topDistStr}
+              </span>
+            </div>
+          )}
+
+          {/* Property info — bottom */}
+          <div style={{
+            position: "absolute", bottom: 0, left: 0, right: 0,
+            padding: "16px 16px 20px",
+            pointerEvents: "none",
+          }}>
+            <p style={{
+              fontFamily: "var(--font-playfair), serif",
+              fontSize: 24, fontWeight: 700, color: "#C8A97E",
+              lineHeight: 1.2, marginBottom: 4,
+              textShadow: "0 2px 8px rgba(0,0,0,0.6)",
+            }}>
+              {formatPrice(topCard.price, "GNF", topCard.price_period)}
+            </p>
+            <p style={{ color: "#fff", fontWeight: 700, fontSize: 16, lineHeight: 1.3, marginBottom: 4 }}>
+              {topCard.title}
+            </p>
+            <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+              <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 13 }}>
+                📍 {getNeighborhoodName(topCard.neighborhood)}
+              </span>
+              <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>·</span>
+              <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 13 }}>
+                {topCard.transaction_type === "rent" ? "Location" : "Vente"}
+              </span>
+              {(topCard.rooms ?? 0) > 0 && (
+                <>
+                  <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>·</span>
+                  <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 13 }}>🛏 {topCard.rooms}</span>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </TinderCard>
+
+      {/* ── Counter + hint (above cards, z-20) ────────────────────────────── */}
       <div style={{
         position: "absolute", top: 84, left: 20, zIndex: 20, pointerEvents: "none",
       }}>
         <span style={{
-          background: "rgba(0,0,0,0.55)", backdropFilter: "blur(10px)",
+          background: "rgba(0,0,0,0.6)", backdropFilter: "blur(10px)",
           color: "rgba(255,255,255,0.65)", fontSize: 12, fontWeight: 600,
           borderRadius: 20, padding: "4px 12px",
           border: "1px solid rgba(255,255,255,0.1)",
@@ -546,14 +465,12 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           {cards.length} annonce{cards.length > 1 ? "s" : ""}
         </span>
       </div>
-
-      {/* ── Swipe hint ───────────────────────────────────────────────────────── */}
       <div style={{
         position: "absolute", top: 84, right: 20, zIndex: 20, pointerEvents: "none",
       }}>
         <span style={{
-          background: "rgba(0,0,0,0.55)", backdropFilter: "blur(10px)",
-          color: "rgba(255,255,255,0.4)", fontSize: 11,
+          background: "rgba(0,0,0,0.6)", backdropFilter: "blur(10px)",
+          color: "rgba(255,255,255,0.38)", fontSize: 11,
           borderRadius: 20, padding: "4px 12px",
           border: "1px solid rgba(255,255,255,0.08)",
         }}>
@@ -561,16 +478,14 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         </span>
       </div>
 
-      {/* ── Action buttons ───────────────────────────────────────────────────── */}
-      {/* Positioned above the bottom nav area. Since this container is z-10   */}
-      {/* and BottomNav is z-50, the nav sits on top — so we position buttons  */}
-      {/* high enough to not be covered by the nav (64px + safe-area).         */}
+      {/* ── Action buttons (z-20, above cards, below header/nav at z-50) ──── */}
+      {/* bottom = safe-area + 76px keeps buttons above the BottomNav (64px) */}
       <div style={{
         position: "absolute",
         bottom: "calc(env(safe-area-inset-bottom, 0px) + 76px)",
         left: 0, right: 0, zIndex: 20,
         display: "flex", alignItems: "center", justifyContent: "center",
-        gap: 20,
+        gap: 18,
       }}>
         {/* ✕ Pass */}
         <button
@@ -579,12 +494,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           style={{
             width: 52, height: 52, borderRadius: "50%",
             background: "rgba(255,77,77,0.15)",
-            border: "2px solid rgba(255,77,77,0.75)",
-            color: "#FF4D4D",
+            border: "2px solid rgba(255,77,77,0.8)",
+            color: "#FF4D4D", cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer",
             WebkitTapHighlightColor: "transparent",
-            flexShrink: 0,
           }}
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -592,19 +505,18 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           </svg>
         </button>
 
-        {/* 📋 Voir la fiche */}
+        {/* 📋 Voir fiche */}
         <button
-          onClick={() => { if (topCard) router.push(`/annonces/${topCard.id}`); }}
+          onClick={() => router.push(`/annonces/${topCard.id}`)}
           aria-label="Voir la fiche"
           style={{
-            height: 44, borderRadius: 22, padding: "0 18px",
-            background: "rgba(0,0,0,0.55)", backdropFilter: "blur(10px)",
+            height: 44, padding: "0 16px", borderRadius: 22,
+            background: "rgba(0,0,0,0.6)", backdropFilter: "blur(10px)",
             border: "1px solid rgba(255,255,255,0.18)",
-            color: "rgba(255,255,255,0.75)",
+            color: "rgba(255,255,255,0.8)", cursor: "pointer",
+            fontSize: 13, fontWeight: 600,
             display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", fontSize: 13, fontWeight: 600,
             WebkitTapHighlightColor: "transparent",
-            flexShrink: 0,
           }}
         >
           Voir fiche
@@ -617,12 +529,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           style={{
             width: 60, height: 60, borderRadius: "50%",
             background: "rgba(200,169,126,0.20)",
-            border: "2px solid rgba(200,169,126,0.85)",
-            color: "#C8A97E",
+            border: "2px solid rgba(200,169,126,0.9)",
+            color: "#C8A97E", cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer",
             WebkitTapHighlightColor: "transparent",
-            flexShrink: 0,
           }}
         >
           <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
@@ -632,22 +542,15 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
         {/* 💬 WhatsApp */}
         <button
-          onClick={() => {
-            const top = cardsRef.current[0];
-            if (!top?.contact_phone) return;
-            const msg = encodeURIComponent(`Bonjour, je suis intéressé par "${top.title}" sur LogerBien`);
-            window.open(`https://wa.me/${top.contact_phone.replace(/\D/g, "")}?text=${msg}`, "_blank", "noopener");
-          }}
+          onClick={openWhatsApp}
           aria-label="Contacter sur WhatsApp"
           style={{
             width: 52, height: 52, borderRadius: "50%",
             background: "rgba(37,211,102,0.15)",
-            border: "2px solid rgba(37,211,102,0.75)",
-            color: "#25D366",
+            border: "2px solid rgba(37,211,102,0.8)",
+            color: "#25D366", cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer",
             WebkitTapHighlightColor: "transparent",
-            flexShrink: 0,
           }}
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
