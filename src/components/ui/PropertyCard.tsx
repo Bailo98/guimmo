@@ -387,6 +387,7 @@ export function PropertyCard({ property, variant = "default", className, index =
             type="button"
             onClick={(e) => {
               e.stopPropagation();
+              if (!user) { setShowAuthModal(true); return; }
               const cleaned = phone.replace(/\D/g, "");
               const ref = property.ref ? ` (${property.ref})` : "";
               const msg = `Bonjour, je suis intéressé par votre annonce : ${property.title}${ref}`;

@@ -19,7 +19,7 @@ const RIGHT_NAV = [
 
 export function BottomNav() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [unreadCount, setUnreadCount] = useState(0);
   const channelRef = useRef<ReturnType<NonNullable<typeof supabase>["channel"]> | null>(null);
 
@@ -121,7 +121,13 @@ export function BottomNav() {
             <span className="text-[9px] font-bold mt-1" style={{ color: "#E9E900" }}>Publier</span>
           </Link>
 
-          {RIGHT_NAV.map((item) => (
+          {RIGHT_NAV.filter((item) => {
+            if (item.href === "/messages") {
+              const at = profile?.account_type;
+              return at !== "agent" && at !== "agence";
+            }
+            return true;
+          }).map((item) => (
             <NavItem key={item.href} {...item} />
           ))}
         </div>

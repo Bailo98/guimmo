@@ -184,6 +184,7 @@ export default function ConversationPage() {
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
     if (!input.trim() || !meId || !otherId || !supabase || sending) return;
+    if (meId === otherId) return; // never allow self-messaging
 
     setSending(true);
     const content = input.trim();

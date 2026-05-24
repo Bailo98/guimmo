@@ -29,7 +29,9 @@ export function MessageButton({
   const [sending,  setSending]  = useState(false);
   const [checking, setChecking] = useState(false);
 
+  // Never render for the property owner or when user would message themselves
   if (isOwner) return null;
+  if (user && user.id === ownerId) return null;
 
   async function handleClick() {
     if (!user) {
