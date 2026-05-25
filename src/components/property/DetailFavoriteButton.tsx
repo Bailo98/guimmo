@@ -18,9 +18,12 @@ interface Props {
  * On mount we re-check the DB so the button reflects reality even if the
  * server-rendered `initialIsFav` was stale (different device / another tab).
  */
-export function DetailFavoriteButton({ propertyId, initialIsFav }: Props) {
+export function DetailFavoriteButton({ propertyId, initialIsFav: _ }: Props) {
   const { user } = useAuth();
-  const [isFav,         setIsFav]         = useState(initialIsFav);
+  // Always start as false — Supabase re-check on mount sets the real value.
+  // Never initialise from the server-rendered prop or the Zustand store, both
+  // can be stale (e.g. user deleted the fav on /favoris then came back here).
+  const [isFav,         setIsFav]         = useState(false);
   const [checked,       setChecked]       = useState(false); // true once Supabase replied
   const [showAuthModal, setShowAuthModal] = useState(false);
 

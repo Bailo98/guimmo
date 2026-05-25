@@ -390,12 +390,21 @@ export function PropertyCard({
           }}>
             {property.transaction_type === "rent" ? "Location" : "Vente"}
           </span>
-          {showDiasporaPrice && property.is_diaspora && (
-            <span style={{ fontSize: 10, color: "#4A9EFF", fontWeight: 500, whiteSpace: "nowrap" }}>
-              ≈ {formatUsd(property.price)} USD
-            </span>
-          )}
         </div>
+
+        {/* Prix USD diaspora — toutes annonces quand mode actif */}
+        {showDiasporaPrice && (
+          <p style={{
+            fontSize: 11,
+            color: "#8A8FA8",
+            margin: "0 0 5px",
+            lineHeight: 1,
+            fontWeight: 500,
+          }}>
+            ~{Math.round(property.price / 8600).toLocaleString("en-US")} USD
+            {property.price_period === "month" ? "/mois" : ""}
+          </p>
+        )}
 
         {/* Ligne 2 : Titre */}
         <p style={{
