@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import Groq from "groq-sdk";
 
 const SYSTEM_PROMPT = `Tu es l'assistant immobilier de LogerBien, la première plateforme de location et vente de logements en Guinée (Conakry).
 
@@ -27,38 +28,29 @@ export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json();
 
-    if (!process.env.ANTHROPIC_API_KEY) {
+    if (!process.env.GROQ_API_KEY) {
       return NextResponse.json(
         { message: "Service temporairement indisponible. Contactez-nous sur WhatsApp 📱" },
         { status: 503 },
       );
     }
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-haiku-4-5",
-        max_tokens: 400,
-        system: SYSTEM_PROMPT,
-        messages: (messages as { role: string; content: string }[]).map((m) => ({
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+    const completion = await groq.chat.completions.create({
+      model: "llama3-8b-8192",
+      max_tokens: 400,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        ...(messages as { role: "user" | "assistant"; content: string }[]).map((m) => ({
           role: m.role,
           content: m.content,
         })),
-      }),
+      ],
     });
 
-    if (!response.ok) {
-      throw new Error(`Anthropic API error: ${response.status}`);
-    }
-
-    const data = await response.json();
     const text =
-      data.content?.[0]?.text ??
+      completion.choices[0]?.message?.content ??
       "Désolé, je rencontre un problème technique. Contactez-nous sur WhatsApp 📱";
 
     return NextResponse.json({ message: text });
