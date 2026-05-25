@@ -39,9 +39,11 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   const { user }           = useAuth();
   const { toggleFavorite } = useAppStore();
 
-  const [mounted,      setMounted]      = useState(false);
-  const [cards,        setCards]        = useState<Property[]>([]);
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [mounted,         setMounted]         = useState(false);
+  const [cards,           setCards]           = useState<Property[]>([]);
+  const [userLocation,    setUserLocation]    = useState<{ lat: number; lng: number } | null>(null);
+  const [reloading,       setReloading]       = useState(false);   // true during 1.5s "on recommence" transition
+  const [everHadCards,    setEverHadCards]    = useState(false);   // guards against false-empty on initial mount
 
   // ── Overlay refs — pure DOM manipulation, ZERO React re-renders during drag ──
   // This is the fix for the double-swipe bug: onSwipeRequirementFulfilled was
@@ -102,7 +104,22 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
       });
     }
     setCards(list);
+    if (list.length > 0) setEverHadCards(true);
   }, [properties, userLocation]);
+
+  // ── Auto-reload when all cards have been swiped ────────────────────────────
+  // Only triggers after cards have been populated at least once (everHadCards).
+  // Shows a 1.5s transition message then resets the feed from the full list.
+  useEffect(() => {
+    if (!mounted || !everHadCards || cards.length > 0 || reloading) return;
+    setReloading(true);
+    const t = setTimeout(() => {
+      try { localStorage.removeItem(SEEN_KEY); } catch { /* silent */ }
+      setCards([...properties]);
+      setReloading(false);
+    }, 1500);
+    return () => clearTimeout(t);
+  }, [mounted, everHadCards, cards.length, reloading, properties]);
 
   // ── Progressive overlay: pure DOM — no setState, no re-render ─────────────
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -192,34 +209,41 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   // ── Render ─────────────────────────────────────────────────────────────────
   if (!mounted) return null;
 
-  // ── Empty state ────────────────────────────────────────────────────────────
-  if (cards.length === 0) {
+  // ── Transition "on recommence" (1.5s) ─────────────────────────────────────
+  if (reloading) {
     return (
       <div style={{
         position: "fixed", inset: 0, zIndex: 10, background: "#0A1216",
         display: "flex", flexDirection: "column", alignItems: "center",
         justifyContent: "center", padding: "0 32px",
       }}>
-        <p style={{ fontSize: 56, marginBottom: 16 }}>🏠</p>
-        <h2 style={{ color: "#fff", fontWeight: 700, fontSize: 22, marginBottom: 8, textAlign: "center" }}>
-          Vous avez tout vu !
-        </h2>
-        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, marginBottom: 32, textAlign: "center", lineHeight: 1.6 }}>
-          Revenez plus tard pour de nouvelles annonces.
+        <p style={{ fontSize: 52, marginBottom: 16, animation: "spin 1s linear infinite" }}>🔄</p>
+        <p style={{ color: "#C8A97E", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
+          On recommence depuis le début…
         </p>
-        <button
-          onClick={() => { localStorage.removeItem(SEEN_KEY); window.location.reload(); }}
-          style={{
-            background: "#C8A97E", color: "#0A1216", fontWeight: 700,
-            padding: "14px 0", borderRadius: 14, width: "100%", maxWidth: 320,
-            fontSize: 15, cursor: "pointer", marginBottom: 12, border: "none",
-          }}
-        >
-          🔄 Recommencer depuis le début
-        </button>
+        <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, textAlign: "center" }}>
+          Toutes les annonces vont réapparaître
+        </p>
+        <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  // ── Empty but not yet reloading (briefly) ─────────────────────────────────
+  if (cards.length === 0 && everHadCards) {
+    return (
+      <div style={{
+        position: "fixed", inset: 0, zIndex: 10, background: "#0A1216",
+        display: "flex", flexDirection: "column", alignItems: "center",
+        justifyContent: "center", padding: "0 32px",
+      }}>
+        <p style={{ fontSize: 52, marginBottom: 16 }}>⏳</p>
+        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, textAlign: "center" }}>
+          Chargement…
+        </p>
         <a href="/annonces" style={{
           display: "block", textAlign: "center", width: "100%", maxWidth: 320,
-          padding: "14px 0", borderRadius: 14,
+          marginTop: 24, padding: "14px 0", borderRadius: 14,
           background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)",
           color: "#fff", fontWeight: 600, fontSize: 15, textDecoration: "none",
         }}>
@@ -228,6 +252,9 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
       </div>
     );
   }
+
+  // ── Initial load guard (cards not yet populated) ──────────────────────────
+  if (cards.length === 0) return null;
 
   const topCard = cards[0];
   const topImg  = topCard.property_images?.find((i) => i.is_primary) ?? topCard.property_images?.[0];
@@ -249,13 +276,41 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   const dotsTotal = Math.min(cards.length, 15);
 
   return (
-    /*
+    <>
+    {/* ── Back button — fixed above everything (z-200 > header z-50) ────────── */}
+    <button
+      onClick={() => router.back()}
+      aria-label="Retour"
+      style={{
+        position: "fixed",
+        top: "calc(16px + env(safe-area-inset-top, 0px))",
+        left: 16,
+        zIndex: 200,
+        width: 40, height: 40,
+        background: "rgba(0,0,0,0.55)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+        border: "1px solid rgba(255,255,255,0.15)",
+        borderRadius: "50%",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        cursor: "pointer",
+        color: "#fff",
+        flexShrink: 0,
+      }}
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+    </button>
+
+    {/*
      * FIXED FULL-SCREEN CONTAINER (z-10)
      * ─────────────────────────────────────
      * The card fills the entire viewport. Header (z-50) and any overlays we
      * render here at z-20 sit on top naturally — no clipping, no padding.
      * overflow:hidden blocks any scroll parent interference with react-tinder-card.
-     */
+     */}
     <div
       style={{
         position: "fixed",
@@ -597,5 +652,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         </button>
       </div>
     </div>
+    </>
   );
 }

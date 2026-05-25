@@ -50,8 +50,6 @@ export function SkeletonCard() {
         <div className="skeleton" style={{ height: 16, width: "78%", borderRadius: 5, background: "rgba(255,255,255,0.10)" }} />
         {/* Quartier */}
         <div className="skeleton" style={{ height: 13, width: "55%", borderRadius: 5, background: "rgba(255,255,255,0.07)" }} />
-        {/* Score bar */}
-        <div className="skeleton" style={{ height: 3, width: "100%", borderRadius: 4, background: "rgba(200,169,126,0.20)" }} />
       </div>
 
       {/* Simulated contact button bottom-right */}

@@ -426,15 +426,6 @@ export function PropertyCard({
           {distanceStr && <span style={{ color: "#4A9EFF", marginLeft: 4 }}>· {distanceStr}</span>}
         </p>
 
-        {/* Barre de score 3px dorée */}
-        <ListingScore
-          images={(property.property_images ?? []).length}
-          description={property.description}
-          phone={property.contact_phone}
-          surface={property.surface}
-          rooms={property.rooms}
-          compact
-        />
       </div>
 
       {/* ── Contact button — bottom right ── */}

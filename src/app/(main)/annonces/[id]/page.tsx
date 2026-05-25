@@ -10,6 +10,7 @@ import { PhotoGallery } from "./PhotoGallery";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { MessageButton } from "@/components/property/MessageButton";
 import { ReportButton } from "@/components/property/ReportButton";
+import { DetailFavoriteButton } from "@/components/property/DetailFavoriteButton";
 import { PropertyShareButton } from "@/components/property/PropertyShareButton";
 import { VisitButton } from "@/components/property/VisitButton";
 import type { VTRoom } from "@/components/VirtualTour";
@@ -98,17 +99,19 @@ export default async function PropertyDetailPage({ params }: Props) {
   // ── Current user + admin check ─────────────────────────────────────────────
   let currentUserId: string | null = null;
   let isAdmin = false;
+  let initialIsFav = false;
   try {
     const supabaseSsr = await createSupabaseServerClient();
     const { data: { user: currentUser } } = await supabaseSsr.auth.getUser();
     currentUserId = currentUser?.id ?? null;
     if (currentUserId) {
-      const { data: adminProfile } = await supabaseSsr
-        .from("profiles")
-        .select("role")
-        .eq("id", currentUserId)
-        .maybeSingle();
-      isAdmin = (adminProfile as { role?: string } | null)?.role === "admin";
+      const [profileRes, favRes] = await Promise.all([
+        supabaseSsr.from("profiles").select("role").eq("id", currentUserId).maybeSingle(),
+        supabaseSsr.from("favorites").select("id")
+          .eq("user_id", currentUserId).eq("property_id", id).maybeSingle(),
+      ]);
+      isAdmin = (profileRes.data as { role?: string } | null)?.role === "admin";
+      initialIsFav = !!favRes.data;
     }
   } catch {
     // cookies unavailable (e.g. static rendering fallback) — treat as anonymous
@@ -330,8 +333,9 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <h1 className="text-xl md:text-2xl font-black text-white leading-tight flex-1">
                     {property.title}
                   </h1>
-                  {/* Share bar — visible near title */}
-                  <div className="flex-shrink-0">
+                  {/* Favorite + Share — visible near title */}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <DetailFavoriteButton propertyId={id} initialIsFav={initialIsFav} />
                     <PropertyShareButton
                       title={property.title}
                       neighborhood={neighborhoodLabel}

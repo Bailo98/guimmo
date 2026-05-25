@@ -359,7 +359,7 @@ function AnnoncesContent() {
         )}
       </div>
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6" style={{ paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))" }}>
         {/* GPS message */}
         {gpsMessage && (
           <div className="mb-4 rounded-xl px-4 py-3 text-sm font-semibold text-white/70" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}>
