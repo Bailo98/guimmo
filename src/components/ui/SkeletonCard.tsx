@@ -2,43 +2,64 @@ export function SkeletonCard() {
   return (
     <div
       style={{
-        background: "var(--bg-card, #161B26)",
-        borderRadius: 16,
+        position: "relative",
+        height: "min(72vw, 420px)",
+        borderRadius: 20,
         overflow: "hidden",
-        border: "1px solid var(--border-subtle, rgba(255,255,255,0.06))",
-        boxShadow: "0 4px 24px rgba(0,0,0,0.35)",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+        background: "#161B26",
+        flexShrink: 0,
       }}
     >
-      {/* Photo zone */}
-      <div className="skeleton" style={{ height: 220 }} />
+      {/* Photo zone — full card */}
+      <div className="skeleton" style={{ position: "absolute", inset: 0 }} />
 
-      {/* Card body */}
-      <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
-        {/* Ligne 1 : prix + badge */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div className="skeleton" style={{ height: 22, width: "45%", borderRadius: 6 }} />
-          <div className="skeleton" style={{ height: 20, width: 68, borderRadius: 20 }} />
+      {/* Simulated bottom gradient */}
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "linear-gradient(transparent 40%, rgba(10,18,22,0.85) 70%, rgba(10,18,22,0.95) 100%)",
+        pointerEvents: "none",
+      }} />
+
+      {/* Simulated favourite button top-right */}
+      <div className="skeleton" style={{
+        position: "absolute", top: 12, right: 12,
+        width: 38, height: 38, borderRadius: "50%",
+        background: "rgba(255,255,255,0.08)",
+      }} />
+
+      {/* Simulated badge top-left */}
+      <div className="skeleton" style={{
+        position: "absolute", top: 12, left: 12,
+        width: 72, height: 22, borderRadius: 20,
+        background: "rgba(255,255,255,0.08)",
+      }} />
+
+      {/* Info overlay bottom */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0,
+        padding: "16px 76px 16px 16px",
+        display: "flex", flexDirection: "column", gap: 8,
+      }}>
+        {/* Prix + badge */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div className="skeleton" style={{ height: 22, width: "42%", borderRadius: 6, background: "rgba(255,255,255,0.10)" }} />
+          <div className="skeleton" style={{ height: 20, width: 64, borderRadius: 20, background: "rgba(255,255,255,0.08)" }} />
         </div>
-
-        {/* Ligne 2 : titre */}
-        <div className="skeleton" style={{ height: 18, width: "80%", borderRadius: 6 }} />
-
-        {/* Ligne 3 : localisation */}
-        <div className="skeleton" style={{ height: 14, width: "55%", borderRadius: 6 }} />
-
-        {/* Ligne 4 : specs */}
-        <div style={{ display: "flex", gap: 10 }}>
-          <div className="skeleton" style={{ height: 12, width: 52, borderRadius: 6 }} />
-          <div className="skeleton" style={{ height: 12, width: 52, borderRadius: 6 }} />
-          <div className="skeleton" style={{ height: 12, width: 40, borderRadius: 6 }} />
-        </div>
-
-        {/* Ligne 5 : barre score */}
-        <div className="skeleton" style={{ height: 4, width: "100%", borderRadius: 4 }} />
-
-        {/* Bouton WhatsApp */}
-        <div className="skeleton" style={{ height: 44, width: "100%", borderRadius: 12, marginTop: 4 }} />
+        {/* Titre */}
+        <div className="skeleton" style={{ height: 16, width: "78%", borderRadius: 5, background: "rgba(255,255,255,0.10)" }} />
+        {/* Quartier */}
+        <div className="skeleton" style={{ height: 13, width: "55%", borderRadius: 5, background: "rgba(255,255,255,0.07)" }} />
+        {/* Score bar */}
+        <div className="skeleton" style={{ height: 3, width: "100%", borderRadius: 4, background: "rgba(200,169,126,0.20)" }} />
       </div>
+
+      {/* Simulated contact button bottom-right */}
+      <div className="skeleton" style={{
+        position: "absolute", bottom: 16, right: 16,
+        height: 38, width: 110, borderRadius: 50,
+        background: "rgba(37,211,102,0.15)",
+      }} />
     </div>
   );
 }
