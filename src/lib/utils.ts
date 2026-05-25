@@ -1,4 +1,4 @@
-﻿import { clsx, type ClassValue } from "clsx";
+import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -6,7 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(amount: number, currency = "GNF", period?: string | null): string {
-  const formatted = amount.toLocaleString("fr-FR").replace(/ /g, ".").replace(/\s/g, ".");
+  // Intl.NumberFormat("fr-FR") on Node 18+ uses U+202F (narrow no-break space) as the
+  // thousands separator. Normalise to a plain ASCII space → "6 000 000 GNF".
+  const raw = new Intl.NumberFormat("fr-FR").format(Math.round(amount));
+  const formatted = raw.replace(/ /g, " ").replace(/ /g, " ");
   const base = `${formatted} ${currency}`;
   if (period === "month") return `${base}/mois`;
   if (period === "year") return `${base}/an`;

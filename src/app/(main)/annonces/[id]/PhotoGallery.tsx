@@ -78,13 +78,13 @@ export function PhotoGallery({ images, title }: Props) {
           <>
             <button
               onClick={prev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 hidden md:flex w-9 h-9 bg-black/40 hover:bg-black/60 text-white rounded-full items-center justify-center transition-colors"
+              className="absolute left-3 top-1/2 -translate-y-1/2 flex w-9 h-9 bg-black/40 hover:bg-black/60 text-white rounded-full items-center justify-center transition-colors"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={next}
-              className="absolute right-3 top-1/2 -translate-y-1/2 hidden md:flex w-9 h-9 bg-black/40 hover:bg-black/60 text-white rounded-full items-center justify-center transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex w-9 h-9 bg-black/40 hover:bg-black/60 text-white rounded-full items-center justify-center transition-colors"
             >
               <ChevronRight className="w-5 h-5" />
             </button>

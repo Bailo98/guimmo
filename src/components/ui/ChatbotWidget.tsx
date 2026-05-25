@@ -1,305 +1,368 @@
-﻿"use client";
-import { useState, useRef, useEffect } from "react";
+"use client";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, X } from "lucide-react";
-
-type MessageFrom = "bot" | "user";
+import { MessageSquare, X, Send } from "lucide-react";
 
 interface Message {
-  from: MessageFrom;
-  text: string;
-  options?: string[];
-  link?: { label: string; href: string };
+  role: "user" | "assistant";
+  content: string;
 }
 
-type Step =
-  | "start"
-  | "rent-budget"
-  | "rent-neighborhood"
-  | "rent-done"
-  | "buy-done"
-  | "publish-done"
-  | "other-done";
+const HIDDEN_ROUTES = ["/decouvrir", "/admin"];
 
-const NEIGHBORHOOD_SLUGS: Record<string, string> = {
-  Kipé: "kipe",
-  Ratoma: "ratoma",
-  Hamdallaye: "hamdallaye",
-  Taouyah: "taouyah",
-  Autre: "autre",
-};
+const QUICK_SUGGESTIONS = [
+  "Appartement à louer à Kipé",
+  "Prix des villas à Ratoma",
+  "Comment publier une annonce ?",
+  "Maisons à vendre à Conakry",
+];
 
-const INITIAL_MESSAGE: Message = {
-  from: "bot",
-  text: "Bonjour ! 👋 Je suis l'assistant LogerBien. Que cherchez-vous ?",
-  options: [
-    "Louer un appartement",
-    "Acheter une maison",
-    "Publier une annonce",
-    "Autre chose",
-  ],
-};
+/** Converts markdown [text](url) links to <a> elements */
+function parseLinks(text: string): React.ReactNode[] {
+  const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g);
+  return parts.map((part, i) => {
+    const m = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (!m) return part;
+    const isExternal = m[2].startsWith("http");
+    return (
+      <a
+        key={i}
+        href={m[2]}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+        style={{ color: "#E9E900", textDecoration: "underline", textUnderlineOffset: 2 }}
+      >
+        {m[1]}
+      </a>
+    );
+  });
+}
 
-export function ChatbotWidget({ whatsappNumber }: { whatsappNumber: string }) {
-  const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [step, setStep] = useState<Step>("start");
-  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
-  const [rentBudget, setRentBudget] = useState("");
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
+  const pathname  = usePathname();
+  const [mounted, setMounted]   = useState(false);
+  const [open,    setOpen]      = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input,   setInput]     = useState("");
+  const [loading, setLoading]   = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef  = useRef<HTMLInputElement>(null);
 
   useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
+    if (open) setTimeout(() => inputRef.current?.focus(), 120);
+  }, [open]);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, loading]);
 
-  function addUserMessage(text: string) {
-    setMessages((prev) => [...prev, { from: "user", text }]);
-  }
-
-  function addBotMessage(msg: Message) {
-    setTimeout(() => {
-      setMessages((prev) => [...prev, msg]);
-    }, 600);
-  }
-
-  function handleOption(option: string) {
-    addUserMessage(option);
-
-    if (step === "start") {
-      if (option === "Louer un appartement") {
-        setStep("rent-budget");
-        addBotMessage({
-          from: "bot",
-          text: "Super ! Quel est votre budget mensuel ?",
-          options: [
-            "< 500 000 GNF",
-            "500k - 1M GNF",
-            "1M - 3M GNF",
-            "> 3M GNF",
-          ],
+  const sendMessage = useCallback(
+    async (text: string) => {
+      if (!text.trim() || loading) return;
+      const userMsg: Message = { role: "user", content: text.trim() };
+      const updated = [...messages, userMsg];
+      setMessages(updated);
+      setInput("");
+      setLoading(true);
+      try {
+        const res = await fetch("/api/assistant", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: updated }),
         });
-      } else if (option === "Acheter une maison") {
-        setStep("buy-done");
-        addBotMessage({
-          from: "bot",
-          text: "Je vous montre toutes nos annonces à vendre.",
-          link: { label: "Voir les ventes", href: "/annonces?transactionType=sale" },
-        });
-      } else if (option === "Publier une annonce") {
-        setStep("publish-done");
-        addBotMessage({
-          from: "bot",
-          text: "Publiez gratuitement votre annonce sur LogerBien !",
-          link: { label: "Publier maintenant", href: "/publier" },
-        });
-      } else if (option === "Autre chose") {
-        setStep("other-done");
-        addBotMessage({
-          from: "bot",
-          text: "Contactez notre équipe sur WhatsApp pour toute autre question !",
-          link: {
-            label: "Ouvrir WhatsApp",
-            href: `https://wa.me/${whatsappNumber}?text=Bonjour%20LogerBien%2C%20j%27ai%20besoin%20d%27aide`,
-          },
-        });
+        const data = await res.json();
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: data.message ?? "Je n'ai pas pu répondre. Réessayez 🙏" },
+        ]);
+      } catch {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: "Désolé, je rencontre un problème. Contactez-nous sur WhatsApp 📱" },
+        ]);
+      } finally {
+        setLoading(false);
       }
-    } else if (step === "rent-budget") {
-      setRentBudget(option);
-      setStep("rent-neighborhood");
-      addBotMessage({
-        from: "bot",
-        text: "Dans quel quartier ?",
-        options: ["Kipé", "Ratoma", "Hamdallaye", "Taouyah", "Autre"],
-      });
-    } else if (step === "rent-neighborhood") {
-      const slug = NEIGHBORHOOD_SLUGS[option] ?? "autre";
-      const href =
-        slug === "autre"
-          ? "/annonces?transactionType=rent"
-          : `/annonces?transactionType=rent&neighborhood=${slug}`;
-      setStep("rent-done");
-      addBotMessage({
-        from: "bot",
-        text: "Parfait ! Je vous montre les annonces correspondantes 🏠",
-        link: { label: "Voir les annonces", href },
-      });
-    }
-  }
+    },
+    [messages, loading],
+  );
 
-  function handleReset() {
-    setStep("start");
-    setRentBudget("");
-    setMessages([INITIAL_MESSAGE]);
-  }
-
-  const lastBotMsg = [...messages].reverse().find((m) => m.from === "bot");
-
-  // Hidden on /decouvrir (swipe immersion) and /annonces (no global chat needed there)
-  if (!mounted || pathname === "/decouvrir" || pathname === "/annonces") return null;
+  const isHidden = HIDDEN_ROUTES.some((r) => pathname.startsWith(r));
+  if (!mounted || isHidden) return null;
 
   return (
     <>
-      {/* Chat panel */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 16 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.92, y: 16 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="fixed bottom-40 left-4 z-50 w-80 md:bottom-24"
+      {/* ── Chat panel ───────────────────────────────────────────────── */}
+      {open && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 96, left: 16,
+            zIndex: 51,
+            width: "min(320px, calc(100vw - 32px))",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              height: 440,
+              borderRadius: 20,
+              overflow: "hidden",
+              background: "#1e2830",
+              boxShadow: "0 12px 48px rgba(0,0,0,0.55)",
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
           >
-            <div className="flex h-96 flex-col overflow-hidden rounded-2xl bg-[#2c2f36] shadow-2xl border border-[#1e2a30]">
-              {/* Header */}
-              <div className="flex items-center justify-between bg-[#E9E900] px-4 py-3">
-                <div className="flex items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 text-xs font-bold text-white">
-                    GI
-                  </span>
-                  <div>
-                    <p className="text-sm font-semibold text-white leading-none">
-                      Assistant LogerBien
-                    </p>
-                    <div className="flex items-center gap-1 mt-0.5">
-                      <span className="h-1.5 w-1.5 rounded-full bg-green-300 animate-pulse" />
-                      <span className="text-[10px] text-orange-100">En ligne</span>
-                    </div>
+            {/* Header */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                background: "#E9E900",
+                padding: "12px 16px",
+                flexShrink: 0,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span
+                  style={{
+                    width: 30, height: 30, borderRadius: "50%",
+                    background: "rgba(0,0,0,0.15)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 14, fontWeight: 800, color: "#0A1216",
+                  }}
+                >
+                  LB
+                </span>
+                <div>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: "#0A1216", lineHeight: 1.2 }}>
+                    Assistant LogerBien
+                  </p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 2 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", flexShrink: 0 }} />
+                    <span style={{ fontSize: 10, color: "#333" }}>En ligne · propulsé par IA</span>
                   </div>
                 </div>
-                <button
-                  onClick={() => setOpen(false)}
-                  className="rounded-full p-1 text-white/80 transition hover:bg-white/20 hover:text-white"
-                  aria-label="Fermer le chat"
-                >
-                  <X className="h-4 w-4" />
-                </button>
               </div>
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Fermer"
+                style={{
+                  background: "rgba(0,0,0,0.12)", border: "none", borderRadius: "50%",
+                  width: 28, height: 28, cursor: "pointer", color: "#0A1216",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  minHeight: "auto",
+                }}
+              >
+                <X style={{ width: 14, height: 14 }} />
+              </button>
+            </div>
 
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-3 space-y-2">
-                {messages.map((msg, i) => (
+            {/* Messages */}
+            <div
+              style={{
+                flex: 1, overflowY: "auto",
+                padding: 12,
+                display: "flex", flexDirection: "column", gap: 8,
+              }}
+            >
+              {/* Welcome + quick suggestions when no messages yet */}
+              {messages.length === 0 && (
+                <>
                   <div
-                    key={i}
-                    className={`flex items-end gap-2 ${
-                      msg.from === "user" ? "flex-row-reverse" : "flex-row"
-                    }`}
+                    style={{
+                      alignSelf: "flex-start",
+                      background: "#2c3a44",
+                      borderRadius: "16px 16px 16px 4px",
+                      padding: "10px 14px",
+                      fontSize: 13, lineHeight: 1.5, color: "#f0f0f0",
+                      maxWidth: "88%",
+                    }}
                   >
-                    {msg.from === "bot" && (
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#E9E900] text-[9px] font-bold text-white">
-                        GI
-                      </span>
-                    )}
-                    <div
-                      className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-snug ${
-                        msg.from === "user"
-                          ? "rounded-br-sm bg-[#E9E900] text-white"
-                          : "rounded-bl-sm bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100"
-                      }`}
-                    >
-                      {msg.text}
-                    </div>
+                    Bonjour ! 👋 Je suis l&apos;assistant LogerBien. Comment puis-je vous aider à trouver votre logement à Conakry ?
                   </div>
-                ))}
-                <div ref={bottomRef} />
-              </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
+                    {QUICK_SUGGESTIONS.map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => sendMessage(s)}
+                        style={{
+                          background: "transparent",
+                          border: "1px solid rgba(233,233,0,0.35)",
+                          color: "#E9E900",
+                          borderRadius: 999, padding: "5px 11px",
+                          fontSize: 11, fontWeight: 500, cursor: "pointer",
+                          transition: "background 0.15s",
+                          minHeight: "auto",
+                        }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(233,233,0,0.08)"; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
 
-              {/* Quick replies / action buttons */}
-              {lastBotMsg && (lastBotMsg.options || lastBotMsg.link) && (
-                <div className="border-t border-slate-100 dark:border-slate-700 p-3 space-y-2">
-                  {lastBotMsg.options && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {lastBotMsg.options.map((opt) => (
-                        <button
-                          key={opt}
-                          onClick={() => handleOption(opt)}
-                          className="rounded-full border border-[#E9E900] px-3 py-1 text-xs font-medium text-[#E9E900] transition hover:bg-[#c4c400] hover:text-white dark:border-orange-400 dark:text-orange-400 dark:hover:bg-orange-500 dark:hover:text-white"
-                        >
-                          {opt}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  {lastBotMsg.link && (
-                    <a
-                      href={lastBotMsg.link.href}
-                      target={
-                        lastBotMsg.link.href.startsWith("http")
-                          ? "_blank"
-                          : undefined
-                      }
-                      rel={
-                        lastBotMsg.link.href.startsWith("http")
-                          ? "noopener noreferrer"
-                          : undefined
-                      }
-                      className="block w-full rounded-xl bg-[#E9E900] py-2 text-center text-sm font-semibold text-white transition hover:bg-orange-600"
-                    >
-                      {lastBotMsg.link.label}
-                    </a>
-                  )}
-                  {(step === "rent-done" ||
-                    step === "buy-done" ||
-                    step === "publish-done" ||
-                    step === "other-done") && (
-                    <button
-                      onClick={handleReset}
-                      className="w-full text-center text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition"
-                    >
-                      Recommencer ↩
-                    </button>
-                  )}
+              {/* Conversation */}
+              {messages.map((msg, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: "flex",
+                    justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
+                  }}
+                >
+                  <div
+                    style={{
+                      maxWidth: "88%",
+                      borderRadius:
+                        msg.role === "user"
+                          ? "16px 16px 4px 16px"
+                          : "16px 16px 16px 4px",
+                      padding: "10px 14px",
+                      fontSize: 13, lineHeight: 1.5,
+                      background: msg.role === "user" ? "#E9E900" : "#2c3a44",
+                      color: msg.role === "user" ? "#0A1216" : "#f0f0f0",
+                    }}
+                  >
+                    {msg.role === "assistant"
+                      ? parseLinks(msg.content)
+                      : msg.content}
+                  </div>
+                </div>
+              ))}
+
+              {/* Typing indicator */}
+              {loading && (
+                <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                  <div
+                    style={{
+                      background: "#2c3a44",
+                      borderRadius: "16px 16px 16px 4px",
+                      padding: "12px 16px",
+                      display: "flex", gap: 5, alignItems: "center",
+                    }}
+                  >
+                    {[0, 1, 2].map((j) => (
+                      <span
+                        key={j}
+                        style={{
+                          width: 7, height: 7,
+                          borderRadius: "50%",
+                          background: "#E9E900",
+                          display: "inline-block",
+                          animation: `lb-bounce 1.2s ease-in-out ${j * 0.2}s infinite`,
+                        }}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
-      {/* Toggle button */}
-      <div className="fixed bottom-24 left-4 z-50 md:bottom-8 group">
-        {/* Tooltip */}
-        <div className="absolute bottom-full left-0 mb-2 hidden group-hover:block">
-          <div className="bg-slate-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap shadow-lg dark:bg-slate-700">
-            Assistant virtuel
-            <div className="absolute top-full left-4 border-4 border-transparent border-t-slate-900 dark:border-t-slate-700" />
+              <div ref={bottomRef} />
+            </div>
+
+            {/* Input bar */}
+            <div
+              style={{
+                borderTop: "1px solid rgba(255,255,255,0.06)",
+                padding: "10px 12px",
+                display: "flex", gap: 8, alignItems: "center",
+                flexShrink: 0,
+              }}
+            >
+              <input
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage(input);
+                  }
+                }}
+                placeholder="Posez votre question…"
+                style={{
+                  flex: 1,
+                  background: "#111a1f",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 999,
+                  color: "#fff",
+                  fontSize: 13,
+                  padding: "9px 14px",
+                  outline: "none",
+                  fontFamily: "inherit",
+                  minHeight: "auto",
+                }}
+              />
+              <button
+                onClick={() => sendMessage(input)}
+                disabled={!input.trim() || loading}
+                aria-label="Envoyer"
+                style={{
+                  width: 36, height: 36, borderRadius: "50%",
+                  background: input.trim() && !loading ? "#E9E900" : "rgba(255,255,255,0.07)",
+                  border: "none",
+                  cursor: input.trim() && !loading ? "pointer" : "not-allowed",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  transition: "background 0.2s",
+                  flexShrink: 0,
+                  minHeight: "auto",
+                }}
+              >
+                <Send
+                  style={{
+                    width: 14, height: 14,
+                    color: input.trim() && !loading ? "#0A1216" : "rgba(255,255,255,0.25)",
+                  }}
+                />
+              </button>
+            </div>
           </div>
         </div>
-        <motion.button
-          onClick={() => setOpen((v) => !v)}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#E9E900] shadow-[0_4px_24px_rgba(249,115,22,0.5)]"
-          aria-label="Ouvrir l'assistant virtuel"
-        >
-          <AnimatePresence mode="wait">
-            {open ? (
-              <motion.span
-                key="close"
-                initial={{ rotate: -90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.15 }}
-              >
-                <X className="h-6 w-6 text-white" />
-              </motion.span>
-            ) : (
-              <motion.span
-                key="open"
-                initial={{ rotate: 90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: -90, opacity: 0 }}
-                transition={{ duration: 0.15 }}
-              >
-                <MessageSquare className="h-6 w-6 text-white" />
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </motion.button>
-      </div>
+      )}
+
+      {/* ── FAB toggle ───────────────────────────────────────────────── */}
+      <button
+        onClick={() => setOpen((v) => !v)}
+        aria-label="Ouvrir l'assistant LogerBien"
+        style={{
+          position: "fixed",
+          bottom: 24, left: 16,
+          zIndex: 50,
+          width: 52, height: 52,
+          borderRadius: "50%",
+          background: "#E9E900",
+          border: "none",
+          cursor: "pointer",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 4px 20px rgba(233,233,0,0.4)",
+          transition: "transform 0.2s, background 0.2s",
+          minHeight: "auto",
+        }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.1)"; }}
+        onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = ""; }}
+      >
+        {open
+          ? <X style={{ width: 22, height: 22, color: "#0A1216" }} />
+          : <MessageSquare style={{ width: 22, height: 22, color: "#0A1216" }} />
+        }
+      </button>
+
+      {/* Bounce keyframes for typing indicator */}
+      <style>{`
+        @keyframes lb-bounce {
+          0%, 80%, 100% { transform: translateY(0); opacity: 0.6; }
+          40% { transform: translateY(-5px); opacity: 1; }
+        }
+      `}</style>
     </>
   );
 }

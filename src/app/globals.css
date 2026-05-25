@@ -64,7 +64,7 @@
   --color-accent-dark: #c4c400;
   --accent-gold:   #C8A97E;
   --text-primary:  #F5F5F5;
-  --text-secondary-new: #8A8FA8;
+  --text-secondary-new: #C8C8D0;
   --success:       #4CAF50;
   --danger:        #FF4D4D;
   --border-subtle: rgba(255,255,255,0.06);
@@ -321,7 +321,7 @@ body {
   font-family: var(--font-dm-sans), var(--font-space-grotesk), var(--font-inter), -apple-system, sans-serif;
   font-weight: 400;
   font-size: 16px;       /* minimum mobile */
-  line-height: 1.6;
+  line-height: 1.7;
   letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -373,6 +373,7 @@ button, .btn {
   font-family: var(--font-space-grotesk), sans-serif;
   font-weight: 600;
   letter-spacing: 0.05em;
+  min-height: 48px;
 }
 
 .label-uppercase {

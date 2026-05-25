@@ -73,22 +73,22 @@ export function BottomNav() {
             >
               <Icon
                 style={{
-                  width: 22,
-                  height: 22,
+                  width: 24,
+                  height: 24,
                   color: active ? GOLD : MUTED,
                   transition: "color 0.2s ease",
                   strokeWidth: active ? 2.2 : 1.8,
                 }}
               />
-              {active ? (
-                <span style={{ fontSize: 10, fontWeight: 700, color: GOLD, lineHeight: 1 }}>
-                  {label}
-                </span>
-              ) : (
-                <span style={{ fontSize: 10, fontWeight: 400, color: "transparent", lineHeight: 1 }}>
-                  {label}
-                </span>
-              )}
+              <span style={{
+                fontSize: 11,
+                fontWeight: active ? 700 : 400,
+                color: active ? GOLD : MUTED,
+                lineHeight: 1,
+                transition: "color 0.2s ease",
+              }}>
+                {label}
+              </span>
             </Link>
           );
         })}

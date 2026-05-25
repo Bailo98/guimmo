@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { Heart } from "lucide-react";
-import { useAppStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "@/lib/toast";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
@@ -15,22 +14,25 @@ interface Props {
 /**
  * Favorite button for the property detail page.
  *
- * Unlike PropertyCard (which reads only from the Zustand store), this component
- * re-checks the real Supabase state on mount so it reflects any change made on
- * other pages (/favoris, other devices) since the store was last synced.
+ * Fully decoupled from Zustand — Supabase is the single source of truth.
+ * On mount we re-check the DB so the button reflects reality even if the
+ * server-rendered `initialIsFav` was stale (different device / another tab).
  */
 export function DetailFavoriteButton({ propertyId, initialIsFav }: Props) {
-  const { user }                          = useAuth();
-  const { toggleFavorite, isFavorite,
-          _hasHydrated }                  = useAppStore();
+  const { user } = useAuth();
   const [isFav,         setIsFav]         = useState(initialIsFav);
+  const [checked,       setChecked]       = useState(false); // true once Supabase replied
   const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // ── Re-check Supabase on mount to correct any stale server/store state ────
+  // ── Re-check Supabase on mount (corrects stale server render or cache) ────
   useEffect(() => {
-    if (!user || !isSupabaseConfigured || !supabase) {
-      // Not logged-in: rely on initialIsFav (always false from server for anon)
+    if (!user) {
       setIsFav(false);
+      setChecked(true);
+      return;
+    }
+    if (!isSupabaseConfigured || !supabase) {
+      setChecked(true);
       return;
     }
     let cancelled = false;
@@ -42,13 +44,8 @@ export function DetailFavoriteButton({ propertyId, initialIsFav }: Props) {
       .maybeSingle()
       .then(({ data }) => {
         if (cancelled) return;
-        const actual = !!data;
-        setIsFav(actual);
-        // Sync the Zustand store if it disagrees with Supabase truth
-        const storeHas = _hasHydrated && isFavorite(propertyId);
-        if (actual !== storeHas) {
-          toggleFavorite(propertyId); // flip store to match DB
-        }
+        setIsFav(!!data);
+        setChecked(true);
       });
     return () => { cancelled = true; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,36 +53,39 @@ export function DetailFavoriteButton({ propertyId, initialIsFav }: Props) {
 
   const handleClick = useCallback(async () => {
     if (!user) { setShowAuthModal(true); return; }
+    if (!checked) return; // wait until we know the real state
     const next = !isFav;
-    setIsFav(next);
-    toggleFavorite(propertyId); // optimistic local update
+    setIsFav(next); // optimistic
     toast(next ? "❤️ Ajouté aux favoris" : "Retiré des favoris", next ? "success" : "info");
 
     if (!isSupabaseConfigured || !supabase) return;
     try {
       if (next) {
-        await supabase
+        const { error } = await supabase
           .from("favorites")
-          .upsert({ user_id: user.id, property_id: propertyId },
-                  { onConflict: "user_id,property_id", ignoreDuplicates: true });
+          .upsert(
+            { user_id: user.id, property_id: propertyId },
+            { onConflict: "user_id,property_id", ignoreDuplicates: true },
+          );
+        if (error) throw error;
       } else {
-        await supabase
+        const { error } = await supabase
           .from("favorites")
           .delete()
           .eq("user_id", user.id)
           .eq("property_id", propertyId);
+        if (error) throw error;
       }
     } catch {
-      // Rollback optimistic update on failure
-      setIsFav(!next);
-      toggleFavorite(propertyId);
+      setIsFav(!next); // rollback
     }
-  }, [user, isFav, propertyId, toggleFavorite]);
+  }, [user, isFav, checked, propertyId]);
 
   return (
     <>
       <button
         onClick={handleClick}
+        disabled={!checked}
         aria-label={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
         style={{
           width: 44, height: 44,
@@ -93,14 +93,19 @@ export function DetailFavoriteButton({ propertyId, initialIsFav }: Props) {
           border: isFav ? "1.5px solid rgba(239,68,68,0.50)" : "1.5px solid rgba(255,255,255,0.15)",
           borderRadius: "50%",
           display: "flex", alignItems: "center", justifyContent: "center",
-          cursor: "pointer",
+          cursor: checked ? "pointer" : "default",
           color: isFav ? "#ef4444" : "rgba(255,255,255,0.70)",
           backdropFilter: "blur(6px)",
           transition: "background 0.2s, border-color 0.2s, transform 0.15s",
           flexShrink: 0,
+          opacity: checked ? 1 : 0.5,
         }}
-        onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.1)"; }}
-        onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = ""; }}
+        onMouseEnter={(e) => {
+          if (checked) (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.1)";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.transform = "";
+        }}
       >
         <Heart
           style={{

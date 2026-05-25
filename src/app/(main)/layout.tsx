@@ -6,8 +6,8 @@ import { ToastProvider } from "@/components/ui/Toast";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { OnboardingModal } from "@/components/ui/OnboardingModal";
 import { PageTransition } from "@/components/ui/PageTransition";
-import { WhatsAppWidget } from "@/components/ui/WhatsAppWidget";
 import { ChatbotWidget } from "@/components/ui/ChatbotWidget";
+import BudgetEstimator from "@/components/BudgetEstimator";
 import { getContactWhatsApp } from "@/lib/site-config";
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
@@ -24,8 +24,8 @@ export default async function MainLayout({ children }: { children: React.ReactNo
       <CompareBar />
       <OnboardingModal />
       <ScrollToTop />
-      <WhatsAppWidget whatsappNumber={whatsappNumber} />
       <ChatbotWidget whatsappNumber={whatsappNumber} />
+      <BudgetEstimator />
     </ToastProvider>
   );
 }

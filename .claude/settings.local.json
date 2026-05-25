@@ -24,7 +24,22 @@
       "Bash(sed -i '1302s|<VisitRequestsManager userId={user.id} />|<VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />|' \"C:/Users/aliou/logerbien/src/app/\\(main\\)/compte/page.tsx\")",
       "Bash(sed -i '1493s|<VisitRequestsManager userId={user.id} />|<VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />|' \"C:/Users/aliou/logerbien/src/app/\\(main\\)/compte/page.tsx\")",
       "Bash(sed -i '1211s|{ key: \"visites\",      label: \"Visites\",      icon: <Calendar className=\"w-4 h-4\" /> }|{ key: \"visites\",      label: \"Visites\",      icon: <Calendar className=\"w-4 h-4\" />, badge: pendingVisits }|' \"C:/Users/aliou/logerbien/src/app/\\(main\\)/compte/page.tsx\")",
-      "Bash(sed -i '1413s|{ key: \"visites\",   label: \"Visites\",       icon: <Calendar className=\"w-4 h-4\" /> }|{ key: \"visites\",   label: \"Visites\",       icon: <Calendar className=\"w-4 h-4\" />, badge: pendingVisits }|' \"C:/Users/aliou/logerbien/src/app/\\(main\\)/compte/page.tsx\")"
+      "Bash(sed -i '1413s|{ key: \"visites\",   label: \"Visites\",       icon: <Calendar className=\"w-4 h-4\" /> }|{ key: \"visites\",   label: \"Visites\",       icon: <Calendar className=\"w-4 h-4\" />, badge: pendingVisits }|' \"C:/Users/aliou/logerbien/src/app/\\(main\\)/compte/page.tsx\")",
+      "Bash(ipconfig)",
+      "Bash(findstr /i \"IPv4\")",
+      "Bash(Select-String \"IPv4\")",
+      "Bash(Select-Object -First 5)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/decouvrir)",
+      "Bash(node -e \"require\\('react-tinder-card'\\); console.log\\('ok'\\)\")",
+      "Bash(node -e \"const pkg=require\\('./node_modules/react-tinder-card/package.json'\\); console.log\\('type:', pkg.type, '\\\\nmain:', pkg.main, '\\\\nmodule:', pkg.module, '\\\\nexports:', JSON.stringify\\(pkg.exports,null,2\\)\\)\")",
+      "Bash(node -e \"const pkg=require\\('./node_modules/@react-spring/web/package.json'\\); console.log\\('version:', pkg.version, '\\\\ntype:', pkg.type, '\\\\nmain:', pkg.main, '\\\\nmodule:', pkg.module\\)\")",
+      "Bash(python3 -c \"import sys,json; p=json.load\\(sys.stdin\\); print\\('engines:', p.get\\('engines',{}\\)\\); print\\('packageManager:', p.get\\('packageManager',''\\)\\)\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('engines:', JSON.stringify\\(p.engines\\)\\); console.log\\('packageManager:', p.packageManager\\); console.log\\('react-tinder-card:', p.dependencies['react-tinder-card']\\); console.log\\('@react-spring/web:', p.dependencies['@react-spring/web']\\)\")",
+      "Bash(cat vercel.json)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('npm version that generated lockfile:'\\); \")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const lock=JSON.parse\\(fs.readFileSync\\('package-lock.json'\\)\\); console.log\\('lockfileVersion:', lock.lockfileVersion, '\\\\nnpmVersion used:', lock.packages?.['']?.requires ? 'v1-style' : 'flat'\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const lock=JSON.parse\\(fs.readFileSync\\('package-lock.json'\\)\\); const web=lock.packages['node_modules/@react-spring/web']; console.log\\('locked @react-spring/web:', web?.version\\); const rtc=lock.packages['node_modules/react-tinder-card']; console.log\\('react-tinder-card peerDeps in lockfile:', JSON.stringify\\(rtc?.peerDependencies\\)\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const lock=JSON.parse\\(fs.readFileSync\\('package-lock.json'\\)\\); console.log\\('locked @react-spring/web:', lock.packages['node_modules/@react-spring/web']?.version\\)\")"
     ]
   }
 }
