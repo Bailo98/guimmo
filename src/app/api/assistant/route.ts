@@ -24,8 +24,6 @@ Règles :
 - Formate les prix en GNF avec des espaces comme séparateurs de milliers (ex : 2 500 000 GNF/mois)
 - Ne jamais inventer des annonces ou des disponibilités concrètes`;
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
 export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json();
@@ -36,6 +34,10 @@ export async function POST(req: NextRequest) {
         { status: 503 },
       );
     }
+
+    // Instancié ici (après la garde) pour éviter un throw au chargement du module
+    // si GROQ_API_KEY n'est pas encore défini dans l'environnement Vercel.
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
     const completion = await groq.chat.completions.create({
       model: "llama-3.1-8b-instant",
