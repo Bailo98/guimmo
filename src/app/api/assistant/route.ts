@@ -24,6 +24,8 @@ Règles :
 - Formate les prix en GNF avec des espaces comme séparateurs de milliers (ex : 2 500 000 GNF/mois)
 - Ne jamais inventer des annonces ou des disponibilités concrètes`;
 
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
 export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json();
@@ -35,23 +37,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
     const completion = await groq.chat.completions.create({
-      model: "llama3-8b-8192",
-      max_tokens: 400,
+      model: "llama-3.1-8b-instant",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        ...(messages as { role: "user" | "assistant"; content: string }[]).map((m) => ({
-          role: m.role,
-          content: m.content,
-        })),
+        ...(messages as { role: "user" | "assistant"; content: string }[]),
       ],
+      max_tokens: 300,
+      temperature: 0.7,
     });
 
     const text =
       completion.choices[0]?.message?.content ??
-      "Désolé, je rencontre un problème technique. Contactez-nous sur WhatsApp 📱";
+      "Désolé, contactez-nous sur WhatsApp 📱";
 
     return NextResponse.json({ message: text });
   } catch {
