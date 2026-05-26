@@ -53,6 +53,9 @@ function ConnexionForm() {
       if (isSupabaseConfigured && supabase) {
         const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
         const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
+        // ⚠️  DO NOT rename @bienloger.gn → @logerbien.gn without a Supabase SQL migration.
+        // This fake domain is the email stored permanently in auth.users for phone-based accounts.
+        // Changing it here without updating the DB will lock out all existing phone users.
         const internalEmail =
           mode === "phone"
             ? `${normalized}@bienloger.gn`

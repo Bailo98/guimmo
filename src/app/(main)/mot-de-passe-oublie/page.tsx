@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { supabase } from "@/lib/supabase";
 import { erreurFrancais } from "@/lib/errors";
 
-const SUPPORT_WA = process.env.NEXT_PUBLIC_WHATSAPP_SUPPORT ?? "224620000000";
+const SUPPORT_WA = process.env.NEXT_PUBLIC_WHATSAPP_SUPPORT ?? "224628222510";
 
 export default function MotDePasseOubliePage() {
   const [tab, setTab]         = useState<"phone" | "email">("phone");

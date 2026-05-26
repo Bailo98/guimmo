@@ -60,6 +60,9 @@ function InscriptionForm() {
     if (isSupabaseConfigured && supabase) {
       const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
       const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
+      // ⚠️  DO NOT rename @bienloger.gn → @logerbien.gn without a Supabase SQL migration.
+      // This fake domain is stored permanently in auth.users. Changing it without migrating the DB
+      // will lock out every existing phone-registered user (their email won't match anymore).
       const email = mode === "phone" ? `${normalized}@bienloger.gn` : form.email;
 
       // Vérification doublon téléphone

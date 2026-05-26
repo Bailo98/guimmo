@@ -101,6 +101,7 @@ export default function PublierRapidePage() {
         // Create a temporary account
         const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
         const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
+        // ⚠️  DO NOT rename @bienloger.gn without migrating auth.users in Supabase first.
         const tempEmail = `temp_${normalized}_${Date.now()}@bienloger.gn`;
         const tempPassword = Math.random().toString(36).slice(2, 12) + "Aa1!";
 
