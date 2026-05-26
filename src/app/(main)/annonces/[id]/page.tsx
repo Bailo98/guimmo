@@ -373,6 +373,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                       surface={property.surface}
                       shortRef={shortRef ?? undefined}
                       propertyId={property.id}
+                      isLoggedIn={isLoggedIn}
                     />
                   </div>
                 </div>

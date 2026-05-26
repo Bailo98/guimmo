@@ -14,9 +14,11 @@ interface NavItemDef {
 }
 
 const NAV_ITEMS: NavItemDef[] = [
-  { href: "/decouvrir", icon: Compass, label: "Découvrir", authRequired: false },
+  // authRequired:true → item hidden entirely when user is not logged in
+  { href: "/decouvrir", icon: Compass, label: "Découvrir", authRequired: true  },
   { href: "/favoris",   icon: Heart,   label: "Favoris",   authRequired: true  },
   { href: "/annonces",  icon: Home,    label: "Annonces",  authRequired: false },
+  // Profil always visible; unauthHref sends guests to /connexion
   { href: "/compte",    icon: User,    label: "Profil",    authRequired: false, unauthHref: "/connexion" },
 ];
 
@@ -67,7 +69,7 @@ export function BottomNav() {
         gap: 4,
       }}
     >
-      {NAV_ITEMS.map(({ href, icon: Icon, label, authRequired, unauthHref }) => {
+      {NAV_ITEMS.filter((item) => !item.authRequired || !!user).map(({ href, icon: Icon, label, authRequired, unauthHref }) => {
         const dest =
           !user && authRequired
             ? `/connexion?redirect=${href}`

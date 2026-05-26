@@ -1,6 +1,6 @@
 ﻿"use client";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Moon, Sun, Menu, X, Plus, LogOut, User, ChevronDown, Shield } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
@@ -21,7 +21,6 @@ export function Header() {
 
   const userMenuRef = useRef<HTMLDivElement>(null);
   const { user, profile, signOut } = useAuth();
-  const router = useRouter();
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -36,7 +35,9 @@ export function Header() {
   async function handleSignOut() {
     await signOut();
     setUserMenuOpen(false);
-    router.push("/");
+    // Hard reload ensures all React state + RSC cache is cleared after Supabase signOut.
+    // router.push("/") leaves stale client cache → blank/broken page (same bug fixed in DashboardLayout).
+    window.location.href = "/";
   }
 
   const displayName = profile?.full_name ?? user?.email?.split("@")[0] ?? "Mon compte";
