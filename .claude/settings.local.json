@@ -39,7 +39,8 @@
       "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('npm version that generated lockfile:'\\); \")",
       "Bash(node -e \"const fs=require\\('fs'\\); const lock=JSON.parse\\(fs.readFileSync\\('package-lock.json'\\)\\); console.log\\('lockfileVersion:', lock.lockfileVersion, '\\\\nnpmVersion used:', lock.packages?.['']?.requires ? 'v1-style' : 'flat'\\)\")",
       "Bash(node -e \"const fs=require\\('fs'\\); const lock=JSON.parse\\(fs.readFileSync\\('package-lock.json'\\)\\); const web=lock.packages['node_modules/@react-spring/web']; console.log\\('locked @react-spring/web:', web?.version\\); const rtc=lock.packages['node_modules/react-tinder-card']; console.log\\('react-tinder-card peerDeps in lockfile:', JSON.stringify\\(rtc?.peerDependencies\\)\\)\")",
-      "Bash(node -e \"const fs=require\\('fs'\\); const lock=JSON.parse\\(fs.readFileSync\\('package-lock.json'\\)\\); console.log\\('locked @react-spring/web:', lock.packages['node_modules/@react-spring/web']?.version\\)\")"
+      "Bash(node -e \"const fs=require\\('fs'\\); const lock=JSON.parse\\(fs.readFileSync\\('package-lock.json'\\)\\); console.log\\('locked @react-spring/web:', lock.packages['node_modules/@react-spring/web']?.version\\)\")",
+      "Bash(xargs grep -l \"GuImmo\\\\|BienLoger\\\\|guimmo\\\\|GUIMMO\")"
     ]
   }
 }

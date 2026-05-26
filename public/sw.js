@@ -1,4 +1,4 @@
-const CACHE_NAME = "guimmo-v1";
+const CACHE_NAME = "logerbien-v2";
 const STATIC_ASSETS = ["/", "/annonces", "/offline.html", "/logo.png", "/manifest.json"];
 
 self.addEventListener("install", (event) => {

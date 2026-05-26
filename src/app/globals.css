@@ -77,17 +77,7 @@
   --radius-btn:    12px;
   --radius-chip:   20px;
 
-  /* Legacy aliases — components still reference these */
-  --guimmo-bg:          #0A1216;
-  --guimmo-bg-alt:      #0A1216;
-  --guimmo-surface:     #111a1f;
-  --guimmo-amber:       #E9E900;
-  --guimmo-amber-light: #E9E900;
-  --guimmo-cream:       #ffffff;
-  --guimmo-cream-dim:   rgba(255,255,255,0.65);
-  --guimmo-border:      #1e2a30;
-  --guimmo-green:       #E9E900;
-
+  /* Legacy aliases — still used by pages, keep in sync with design tokens above */
   --bl-sidebar:     #060d10;
   --bl-bg:          #0A1216;
   --bl-surface:     #111a1f;
@@ -134,13 +124,6 @@ html:not(.dark) {
   --color-text-white: #0A1216;
   --color-text-muted: #555555;
   --color-border:  #c8c8c3;
-
-  --guimmo-bg:          #f4f4ef;
-  --guimmo-bg-alt:      #eaeae5;
-  --guimmo-surface:     #eaeae5;
-  --guimmo-cream:       #0A1216;
-  --guimmo-cream-dim:   rgba(10,18,22,0.65);
-  --guimmo-border:      #c8c8c3;
 
   --bl-sidebar:     #e0e0db;
   --bl-bg:          #f4f4ef;
