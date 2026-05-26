@@ -5,8 +5,9 @@ import type { Property } from "@/types";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Découvrir — LogerBien",
-  description: "Explorez les annonces immobilières à Conakry en mode swipe.",
+  title: "Découvrir des biens | LogerBien",
+  description:
+    "Explorez les biens immobiliers à Conakry en mode swipe. Simple, rapide, addictif.",
 };
 
 async function fetchSwipeProperties(): Promise<Property[]> {

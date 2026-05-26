@@ -19,6 +19,7 @@ import { getNeighborhoodName } from "@/data/neighborhoods";
 import type { Metadata } from "next";
 import { formatPrice } from "@/lib/utils";
 import type { Property } from "@/types";
+import PropertyMapWrapper from "@/components/property/PropertyMapWrapper";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -61,26 +62,53 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const db = await getDB();
   const { data } = await db
     .from("properties")
-    .select("title, description, neighborhood, price, property_images(url)")
+    .select("title, description, neighborhood, price, price_period, type, rooms, property_images(url)")
     .eq("id", id)
     .single();
-  if (!data) return { title: "Annonce introuvable" };
-  const neighborhoodLabel = getNeighborhoodName((data as { neighborhood?: string }).neighborhood ?? "");
-  const priceFormatted = formatPrice((data as { price?: number }).price ?? 0);
-  const ogDescription = (data.description ?? `${neighborhoodLabel} — ${priceFormatted}`).slice(0, 160);
-  const image = ((data as { property_images?: { url: string }[] }).property_images ?? [])[0]?.url;
+  if (!data) return { title: "Annonce introuvable | LogerBien" };
+
+  type Row = {
+    title: string;
+    description?: string | null;
+    neighborhood?: string;
+    price?: number;
+    price_period?: string | null;
+    type?: string;
+    rooms?: number | null;
+    property_images?: { url: string }[];
+  };
+  const row = data as Row;
+
+  const neighborhoodLabel = getNeighborhoodName(row.neighborhood ?? "");
+  const priceFormatted = formatPrice(row.price ?? 0, "GNF", row.price_period);
+  const typeLabel =
+    ({ apartment: "Appartement", house: "Maison", studio: "Studio", villa: "Villa",
+       room: "Chambre", office: "Bureau", shop: "Boutique", land: "Terrain" } as Record<string, string>)[
+      row.type ?? ""
+    ] ?? row.type ?? "Bien";
+
+  const metaTitle = `${row.title} — ${priceFormatted} | LogerBien`;
+  const metaDescription =
+    row.description
+      ? row.description.slice(0, 155) + (row.description.length > 155 ? "…" : "")
+      : `${typeLabel}${row.rooms ? ` ${row.rooms} chambre${(row.rooms ?? 0) > 1 ? "s" : ""}` : ""} à ${neighborhoodLabel} — ${priceFormatted} sur LogerBien.`;
+  const ogDescription = `${typeLabel} à ${neighborhoodLabel}, Conakry`;
+  const image = (row.property_images ?? [])[0]?.url;
+
   return {
-    title: data.title,
-    description: ogDescription,
+    title: metaTitle,
+    description: metaDescription,
     openGraph: {
-      title: `${data.title} — LogerBien`,
+      title: row.title,
       description: ogDescription,
       images: image ? [{ url: image, width: 1200, height: 630 }] : [],
+      url: `https://logerbien.gn/annonces/${id}`,
+      siteName: "LogerBien",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${data.title} — LogerBien`,
-      description: ogDescription,
+      title: metaTitle,
+      description: metaDescription,
       images: image ? [image] : [],
     },
   };
@@ -484,6 +512,20 @@ export default async function PropertyDetailPage({ params }: Props) {
                   )}
                 </div>
               )}
+
+              {/* ── Carte de localisation ── */}
+              <div>
+                <h2 className="font-bold text-white text-sm mb-3">📍 Localisation</h2>
+                <PropertyMapWrapper
+                  neighborhood={property.neighborhood}
+                  lat={property.lat ?? property.latitude}
+                  lng={property.lng ?? property.longitude}
+                  title={property.title}
+                />
+                <p className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.35)" }}>
+                  Localisation approximative au quartier — l&apos;adresse exacte est communiquée après contact.
+                </p>
+              </div>
 
               {/* Virtual tour */}
               {vtRooms.length > 0 && <VirtualTourWrapper rooms={vtRooms} />}

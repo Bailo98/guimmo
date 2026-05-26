@@ -6,8 +6,9 @@ import { NEIGHBORHOODS } from "@/data/neighborhoods";
 import { AgentApplicationForm } from "./AgentApplicationForm";
 
 export const metadata: Metadata = {
-  title: "Agents immobiliers — LogerBien",
-  description: "Trouvez un agent immobilier de confiance à Conakry par quartier.",
+  title: "Agents immobiliers à Conakry | LogerBien",
+  description:
+    "Agents immobiliers certifiés à Conakry. Trouvez un expert local par quartier sur LogerBien.",
 };
 
 export const revalidate = 300;

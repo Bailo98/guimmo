@@ -7,7 +7,20 @@ import { HeroSearch } from "@/components/home/HeroSearch";
 import { MaisonDuJour } from "@/components/MaisonDuJour";
 import { formatPrice } from "@/lib/utils";
 import { createClient } from "@supabase/supabase-js";
+import type { Metadata } from "next";
 import type { Property } from "@/types";
+
+export const metadata: Metadata = {
+  title: "LogerBien — Trouvez votre logement en Guinée",
+  description:
+    "Trouvez votre logement à Conakry sans arnaque. Appartements, maisons et villas vérifiés sur LogerBien.",
+  openGraph: {
+    title: "LogerBien — Trouvez votre logement en Guinée",
+    description: "Trouvez votre logement à Conakry sans arnaque.",
+    url: "https://logerbien.gn",
+    siteName: "LogerBien",
+  },
+};
 
 // ─── data ─────────────────────────────────────────────────────────────────────
 
