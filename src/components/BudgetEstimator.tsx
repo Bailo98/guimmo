@@ -29,10 +29,11 @@ function formatGNF(n: number): string {
   return raw.replace(/ /g, " ").replace(/ /g, " ") + " GNF";
 }
 
-// FAB is positioned above the BottomNav (64 px) + safe-area + 16 px breathing room
-const FAB_BOTTOM = "calc(80px + env(safe-area-inset-bottom, 0px) + 16px)";
-// Panel sits directly above the FAB (52 px tall + 8 px gap)
-const PANEL_BOTTOM = "calc(80px + env(safe-area-inset-bottom, 0px) + 16px + 60px)";
+// Pill nav: bottom = 16px + safe-area, height = 60px → top of nav = 76px + safe-area
+// FAB sits 16px above the nav top
+const FAB_BOTTOM   = "calc(76px + env(safe-area-inset-bottom, 0px) + 16px)";
+// Panel sits directly above the FAB (52 px FAB height + 8 px gap)
+const PANEL_BOTTOM = "calc(76px + env(safe-area-inset-bottom, 0px) + 16px + 60px)";
 
 export default function BudgetEstimator() {
   const pathname = usePathname();

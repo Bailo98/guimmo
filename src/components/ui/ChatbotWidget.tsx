@@ -100,8 +100,8 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
         <div
           style={{
             position: "fixed",
-            // Panel sits above the FAB (52 px) + gap (8 px), itself above the BottomNav
-            bottom: "calc(80px + env(safe-area-inset-bottom, 0px) + 16px + 60px)",
+            // Panel sits above the FAB (52 px) + gap (8 px), itself above the pill nav
+            bottom: "calc(76px + env(safe-area-inset-bottom, 0px) + 16px + 60px)",
             left: 16,
             zIndex: 51,
             width: "min(320px, calc(100vw - 32px))",
@@ -337,7 +337,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
         aria-label="Ouvrir l'assistant LogerBien"
         style={{
           position: "fixed",
-          bottom: "calc(80px + env(safe-area-inset-bottom, 0px) + 16px)",
+          bottom: "calc(76px + env(safe-area-inset-bottom, 0px) + 16px)",
           left: 16,
           zIndex: 50,
           width: 52, height: 52,

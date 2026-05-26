@@ -5,8 +5,6 @@ import { Compass, Heart, Home, User } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
 // 4 items fixes : Découvrir | Favoris | Annonces | Profil
-// Messages accessibles uniquement depuis /compte (dashboard)
-
 interface NavItemDef {
   href: string;
   icon: React.ElementType;
@@ -22,11 +20,14 @@ const NAV_ITEMS: NavItemDef[] = [
   { href: "/compte",    icon: User,    label: "Profil",    authRequired: false, unauthHref: "/connexion" },
 ];
 
+const GOLD  = "#C8A97E";
+const MUTED = "#8A8FA8";
+
 export function BottomNav() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user }  = useAuth();
 
-  // Hide on /decouvrir (full-screen swipe mode — buttons are inside SwipeFeed)
+  // Hidden on /decouvrir (full-screen swipe), /admin and /auth routes
   if (pathname === "/decouvrir") return null;
   if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
 
@@ -36,63 +37,88 @@ export function BottomNav() {
     return pathname.startsWith(href);
   }
 
-  const GOLD  = "var(--accent-gold, #C8A97E)";
-  const MUTED = "var(--text-secondary-new, rgba(138,143,168,0.90))";
-
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-50"
+      className="md:hidden"
       style={{
-        background: "var(--bg-card, rgba(22,27,38,0.97))",
+        position: "fixed",
+        bottom: "calc(16px + env(safe-area-inset-bottom, 0px))",
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 50,
+
+        /* Pill geometry */
+        height: 60,
+        maxWidth: 320,
+        width: "auto",
+        padding: "0 8px",
+        borderRadius: 40,
+
+        /* Glass surface */
+        background: "rgba(22,27,38,0.96)",
         backdropFilter: "blur(20px) saturate(180%)",
         WebkitBackdropFilter: "blur(20px) saturate(180%)",
-        borderTop: "1px solid var(--border-subtle, rgba(255,255,255,0.06))",
-        // Inline style bypasses Tailwind's arbitrary-value parser so env() is
-        // passed verbatim to the browser — critical for iOS safe-area support.
-        paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.20)",
+
+        /* Layout */
+        display: "flex",
+        alignItems: "center",
+        gap: 4,
       }}
     >
-      <div className="flex items-center justify-around h-16 px-2">
-        {NAV_ITEMS.map(({ href, icon: Icon, label, authRequired, unauthHref }) => {
-          // Résolution de la destination selon l'état auth
-          const dest =
-            !user && authRequired
-              ? `/connexion?redirect=${href}`
-              : !user && unauthHref
-              ? unauthHref
-              : href;
+      {NAV_ITEMS.map(({ href, icon: Icon, label, authRequired, unauthHref }) => {
+        const dest =
+          !user && authRequired
+            ? `/connexion?redirect=${href}`
+            : !user && unauthHref
+            ? unauthHref
+            : href;
 
-          const active = isActive(href);
+        const active = isActive(href);
 
-          return (
-            <Link
-              key={href}
-              href={dest}
-              className="flex flex-col items-center justify-center"
-              style={{ gap: 2, minWidth: 52, height: 56, textDecoration: "none" }}
-            >
-              <Icon
-                style={{
-                  width: 24,
-                  height: 24,
-                  color: active ? GOLD : MUTED,
-                  transition: "color 0.2s ease",
-                  strokeWidth: active ? 2.2 : 1.8,
-                }}
-              />
-              <span style={{
-                fontSize: 11,
-                fontWeight: active ? 700 : 400,
+        return (
+          <Link
+            key={href}
+            href={dest}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 2,
+              padding: "6px 14px",
+              borderRadius: 30,
+              textDecoration: "none",
+              background: active ? "rgba(200,169,126,0.18)" : "transparent",
+              transition: "all 0.2s ease",
+              minHeight: "auto",
+            }}
+          >
+            <Icon
+              style={{
+                width: 22,
+                height: 22,
+                color: active ? GOLD : MUTED,
+                strokeWidth: active ? 2.2 : 1.8,
+                transition: "color 0.2s ease",
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 600,
                 color: active ? GOLD : MUTED,
                 lineHeight: 1,
+                whiteSpace: "nowrap",
                 transition: "color 0.2s ease",
-              }}>
-                {label}
-              </span>
-            </Link>
-          );
-        })}
-      </div>
+              }}
+            >
+              {label}
+            </span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }
