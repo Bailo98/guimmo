@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Heart, Plus, MessageSquare, User } from "lucide-react";
+import { Compass, Heart, Plus, Home, User } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
 const GOLD    = "var(--accent-gold)";
@@ -80,12 +80,13 @@ export function BottomNav() {
   const pathname = usePathname();
   const { user } = useAuth();
 
-  // Hidden on /decouvrir, /admin and /auth routes
+  // Hidden on /decouvrir (full-screen swipe), /admin and /auth routes
   if (pathname === "/decouvrir") return null;
   if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
 
   function isActive(href: string) {
-    if (href === "/") return pathname === "/";
+    if (href === "/decouvrir") return pathname === "/decouvrir";
+    if (href === "/annonces")  return pathname.startsWith("/annonces");
     return pathname.startsWith(href);
   }
 
@@ -93,8 +94,8 @@ export function BottomNav() {
   if (!user) {
     return (
       <nav className="md:hidden" style={NAV_PILL_STYLE}>
-        <NavItem href="/"          icon={Home} label="Accueil" active={isActive("/")} />
-        <NavItem href="/connexion" icon={User} label="Profil"  active={false}         />
+        <NavItem href="/annonces"  icon={Home} label="Annonces" active={isActive("/annonces")} />
+        <NavItem href="/connexion" icon={User} label="Profil"   active={false}                 />
       </nav>
     );
   }
@@ -102,8 +103,8 @@ export function BottomNav() {
   // ── Connecté : 5 items avec bouton central surélevé ───────────────────────
   return (
     <nav className="md:hidden" style={NAV_PILL_STYLE}>
-      <NavItem href="/"        icon={Home}         label="Accueil"  active={isActive("/")}         />
-      <NavItem href="/favoris" icon={Heart}         label="Favoris"  active={isActive("/favoris")}  />
+      <NavItem href="/decouvrir" icon={Compass} label="Découvrir" active={isActive("/decouvrir")} />
+      <NavItem href="/favoris"   icon={Heart}   label="Favoris"   active={isActive("/favoris")}   />
 
       {/* Bouton central ➕ surélevé */}
       <Link
@@ -133,8 +134,8 @@ export function BottomNav() {
         <Plus style={{ width: 24, height: 24, color: "#fff", strokeWidth: 2.5 }} />
       </Link>
 
-      <NavItem href="/messages" icon={MessageSquare} label="Messages" active={isActive("/messages")} />
-      <NavItem href="/compte"   icon={User}           label="Profil"   active={isActive("/compte")}   />
+      <NavItem href="/annonces" icon={Home} label="Annonces" active={isActive("/annonces")} />
+      <NavItem href="/compte"   icon={User} label="Profil"   active={isActive("/compte")}   />
     </nav>
   );
 }
