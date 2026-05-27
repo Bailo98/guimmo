@@ -504,6 +504,16 @@ html:not(.dark) .text-secondary {
   color: rgba(10,18,22,0.65);
 }
 
+/* ── PropertyCard responsive height ── */
+.property-card-default {
+  height: clamp(280px, 75vw, 340px);
+}
+@media (min-width: 768px) {
+  .property-card-default {
+    height: 320px;
+  }
+}
+
 /* ── Low-connection mode — disables all animations ── */
 .reduce-motion * {
   animation: none !important;
