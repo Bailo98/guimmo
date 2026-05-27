@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { Flag, X, Loader2, CheckCircle2 } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
@@ -15,9 +16,12 @@ const REASONS = [
 interface Props {
   propertyId: string;
   propertyTitle?: string;
+  /** When false, clicking redirects to /connexion instead of opening the modal */
+  isLoggedIn?: boolean;
 }
 
-export function ReportButton({ propertyId, propertyTitle = "" }: Props) {
+export function ReportButton({ propertyId, propertyTitle = "", isLoggedIn = false }: Props) {
+  const router = useRouter();
   const [open, setOpen]                   = useState(false);
   const [reason, setReason]               = useState("");
   const [details, setDetails]             = useState("");
@@ -27,6 +31,10 @@ export function ReportButton({ propertyId, propertyTitle = "" }: Props) {
   const [hovered, setHovered]             = useState(false);
 
   function openModal() {
+    if (!isLoggedIn) {
+      router.push(`/connexion?redirect=/annonces/${propertyId}`);
+      return;
+    }
     setOpen(true);
     document.body.style.overflow = "hidden";
   }

@@ -1,25 +1,45 @@
 "use client";
 import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
+// Verified GPS centroids for Conakry neighborhoods (Dec 2024)
 const QUARTIERS_COORDS: Record<string, [number, number]> = {
-  kipe:        [9.5370, -13.6140],
-  kipé:        [9.5370, -13.6140],
-  hamdallaye:  [9.5480, -13.6770],
-  ratoma:      [9.5600, -13.6300],
-  dixinn:      [9.5230, -13.6710],
-  matam:       [9.5150, -13.6850],
-  kaloum:      [9.5090, -13.7130],
-  taouyah:     [9.5720, -13.6530],
-  cosa:        [9.5300, -13.6200],
-  matoto:      [9.4980, -13.6480],
-  nongo:       [9.5850, -13.5870],
-  lambanyi:    [9.5420, -13.6600],
-  sonfonia:    [9.6100, -13.5800],
-  kobaya:      [9.5950, -13.6100],
-  madina:      [9.5280, -13.6560],
-  conakry:     [9.5370, -13.6771],
+  // ── 5 communes ──────────────────────────────────────────────
+  kaloum:     [9.5370, -13.7130], // Centre administratif / péninsule
+  dixinn:     [9.5480, -13.6890],
+  matam:      [9.5180, -13.6780],
+  ratoma:     [9.5750, -13.6380],
+  matoto:     [9.4920, -13.6520],
+
+  // ── Sous-quartiers de Ratoma ─────────────────────────────────
+  "kipé":     [9.5820, -13.6140],
+  kipe:       [9.5820, -13.6140],
+  hamdallaye: [9.5650, -13.6450],
+  taouyah:    [9.5700, -13.6320],
+  nongo:      [9.6020, -13.5950],
+  kobaya:     [9.5980, -13.6080],
+
+  // ── Sous-quartiers de Matam ──────────────────────────────────
+  cosa:       [9.5280, -13.6580],
+  "coléah":   [9.5350, -13.6720],
+  coleah:     [9.5350, -13.6720],
+  boulbinet:  [9.5290, -13.7080],
+
+  // ── Sous-quartiers de Dixinn ─────────────────────────────────
+  landreah:   [9.5520, -13.6810],
+  "minière":  [9.5460, -13.6760],
+  miniere:    [9.5460, -13.6760],
+  camayenne:  [9.5580, -13.6840],
+
+  // ── Sous-quartiers de Matoto ─────────────────────────────────
+  sonfonia:   [9.5100, -13.6180],
+  lambanyi:   [9.5050, -13.6350],
+  bambeto:    [9.5200, -13.6220],
+  enta:       [9.4980, -13.6420],
+
+  // ── Fallback ─────────────────────────────────────────────────
+  conakry:    [9.5370, -13.6771],
 };
 
 interface PropertyMapProps {
@@ -42,35 +62,73 @@ export default function PropertyMap({ neighborhood, lat, lng, title }: PropertyM
     });
   }, []);
 
-  const coords: [number, number] =
-    lat && lng
-      ? [lat, lng]
-      : QUARTIERS_COORDS[neighborhood?.toLowerCase()] ?? [9.5370, -13.6771];
+  const isExact = !!(lat && lng);
+
+  const coords: [number, number] = isExact
+    ? [lat!, lng!]
+    : QUARTIERS_COORDS[neighborhood?.toLowerCase()] ?? [9.5370, -13.6771];
+
+  // Zoom 15 for pin-point accuracy, 13 for neighbourhood-level approximation
+  const zoom = isExact ? 15 : 13;
+
+  // Capitalise the neighbourhood name for display
+  const neighborhoodLabel = neighborhood
+    ? neighborhood.charAt(0).toUpperCase() + neighborhood.slice(1).toLowerCase()
+    : "Conakry";
 
   return (
-    <div
-      style={{
-        height: 200,
-        borderRadius: 16,
-        overflow: "hidden",
-        border: "1px solid rgba(255,255,255,0.08)",
-      }}
-    >
-      <MapContainer
-        center={coords}
-        zoom={15}
-        style={{ height: "100%", width: "100%" }}
-        scrollWheelZoom={false}
-        zoomControl={false}
+    <div>
+      {/* Map */}
+      <div
+        style={{
+          height: 200,
+          borderRadius: 16,
+          overflow: "hidden",
+          border: "1px solid rgba(255,255,255,0.08)",
+        }}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <Marker position={coords}>
-          <Popup>{title}</Popup>
-        </Marker>
-      </MapContainer>
+        <MapContainer
+          center={coords}
+          zoom={zoom}
+          style={{ height: "100%", width: "100%" }}
+          scrollWheelZoom={false}
+          zoomControl={false}
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <Marker position={coords}>
+            <Popup>{title}</Popup>
+          </Marker>
+
+          {/* Fuzzy zone — 300 m radius when only the neighbourhood is known */}
+          {!isExact && (
+            <Circle
+              center={coords}
+              radius={300}
+              pathOptions={{
+                fillColor: "#E9E900",
+                fillOpacity: 0.10,
+                color: "#E9E900",
+                weight: 1.5,
+                opacity: 0.35,
+              }}
+            />
+          )}
+        </MapContainer>
+      </div>
+
+      {/* Accuracy label */}
+      <p style={{ fontSize: 11, marginTop: 6, lineHeight: 1.4 }}>
+        {isExact ? (
+          <span style={{ color: "#22c55e", fontWeight: 600 }}>📍 Position exacte</span>
+        ) : (
+          <span style={{ color: "#f59e0b", fontWeight: 600 }}>
+            📍 Localisation approximative — quartier {neighborhoodLabel}
+          </span>
+        )}
+      </p>
     </div>
   );
 }

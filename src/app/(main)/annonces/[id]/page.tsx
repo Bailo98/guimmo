@@ -523,9 +523,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   lng={property.lng ?? property.longitude}
                   title={property.title}
                 />
-                <p className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.35)" }}>
-                  Localisation approximative au quartier — l&apos;adresse exacte est communiquée après contact.
-                </p>
+                {/* Accuracy label is rendered inside PropertyMapWrapper/PropertyMap */}
               </div>
 
               {/* Virtual tour */}
@@ -578,7 +576,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* Report — discreet at bottom */}
               <div className="flex justify-center pb-4">
-                <ReportButton propertyId={property.id} propertyTitle={property.title} />
+                <ReportButton propertyId={property.id} propertyTitle={property.title} isLoggedIn={isLoggedIn} />
               </div>
 
             </div>

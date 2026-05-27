@@ -8,7 +8,7 @@ interface Message {
   content: string;
 }
 
-const HIDDEN_ROUTES = ["/decouvrir", "/admin"];
+// Only rendered on the home page — avoids cluttering every detail / listing page
 
 const QUICK_SUGGESTIONS = [
   "Appartement à louer à Kipé",
@@ -90,8 +90,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
     [messages, loading],
   );
 
-  const isHidden = HIDDEN_ROUTES.some((r) => pathname.startsWith(r));
-  if (!mounted || isHidden) return null;
+  if (!mounted || pathname !== "/") return null;
 
   return (
     <>

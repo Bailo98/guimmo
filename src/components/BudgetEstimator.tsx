@@ -6,7 +6,7 @@ import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 const USD_RATE = 8600; // 1 USD ≈ 8 600 GNF
 
-const HIDDEN_ROUTES = ["/connexion", "/inscription", "/publier", "/decouvrir", "/admin"];
+// Only rendered on the home page — avoids cluttering every detail / listing page
 
 const BUDGET_PRESETS_GNF = [
   { label: "500k", value: 500_000 },
@@ -44,8 +44,6 @@ export default function BudgetEstimator() {
   const [budget,   setBudget]   = useState(2_000_000); // always stored in GNF
   const [count,    setCount]    = useState<number | null>(null);
   const [loading,  setLoading]  = useState(false);
-
-  const isHidden = HIDDEN_ROUTES.some((r) => pathname.startsWith(r));
 
   const displayValue = currency === "GNF" ? budget : Math.round(budget / USD_RATE);
 
@@ -90,7 +88,7 @@ export default function BudgetEstimator() {
     setOpen(false);
   };
 
-  if (isHidden) return null;
+  if (pathname !== "/") return null;
 
   return (
     <>
