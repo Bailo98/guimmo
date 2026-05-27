@@ -506,11 +506,16 @@ html:not(.dark) .text-secondary {
 
 /* ── PropertyCard responsive height ── */
 .property-card-default {
-  height: clamp(280px, 75vw, 340px);
+  height: clamp(340px, 85vw, 420px);
 }
 @media (min-width: 768px) {
   .property-card-default {
-    height: 320px;
+    height: 380px;
+  }
+}
+@media (min-width: 1024px) {
+  .property-card-default {
+    height: 400px;
   }
 }
 

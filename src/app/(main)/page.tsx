@@ -298,7 +298,7 @@ export default async function HomePage() {
       ══════════════════════════════════════════════════════════ */}
       {featured.length > 0 && (
         <section style={{ background: "#0A1216" }} className="py-14">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4">
+          <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2
@@ -319,7 +319,7 @@ export default async function HomePage() {
                 Voir tout <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {featured.map((p, i) => (
                 <PropertyCard key={p.id} property={p} index={i + 20} />
               ))}
@@ -333,7 +333,7 @@ export default async function HomePage() {
       ══════════════════════════════════════════════════════════ */}
       {recent.length > 0 && (
         <section style={{ background: "#0A1216" }} className="py-14">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4">
+          <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2
@@ -354,7 +354,7 @@ export default async function HomePage() {
                 Voir tout <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {recent.map((p, i) => (
                 <PropertyCard key={p.id} property={p} index={i + 20} />
               ))}

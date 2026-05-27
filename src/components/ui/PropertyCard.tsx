@@ -306,34 +306,34 @@ export function PropertyCard({
       {/* ── Bottom info overlay (100% photo, no external text zone) ── */}
       <div style={{
         position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 3,
-        padding: "10px 14px 14px",
+        padding: "12px 16px 16px",
         pointerEvents: "none",
       }}>
 
         {/* Reaction bar — always visible mobile, hover on desktop */}
         <div
           className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200"
-          style={{ marginBottom: 8, pointerEvents: "auto" }}
+          style={{ marginBottom: 10, pointerEvents: "auto" }}
         >
           <ReactionBar propertyId={property.id} compact />
         </div>
 
         {/* Prix badge doré + transaction chip */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
           <span style={{
             background: "var(--accent-gold, #C8A97E)",
-            borderRadius: 12,
-            padding: "6px 12px",
+            borderRadius: 14,
+            padding: "10px 16px",
             display: "inline-flex",
             alignItems: "baseline",
-            gap: 3,
+            gap: 4,
             flexShrink: 0,
           }}>
-            <span style={{ color: "#fff", fontWeight: 700, fontSize: 17, lineHeight: 1 }}>
+            <span style={{ color: "#fff", fontWeight: 700, fontSize: 22, lineHeight: 1 }}>
               {formatPrice(property.price)}
             </span>
             {property.price_period === "month" && (
-              <span style={{ color: "rgba(255,255,255,0.80)", fontSize: 11 }}>/mois</span>
+              <span style={{ color: "rgba(255,255,255,0.80)", fontSize: 13 }}>/mois</span>
             )}
           </span>
           <span style={{
@@ -357,8 +357,8 @@ export function PropertyCard({
 
         {/* Titre */}
         <p style={{
-          fontSize: 15, fontWeight: 600, color: "#FFFFFF",
-          margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+          fontSize: 16, fontWeight: 700, color: "#FFFFFF",
+          margin: "0 0 4px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
           lineHeight: 1.3, textShadow: "0 1px 6px rgba(0,0,0,0.6)",
         }}>
           {property.title}
@@ -366,7 +366,7 @@ export function PropertyCard({
 
         {/* Quartier + chambres + distance */}
         <p style={{
-          fontSize: 12, color: "rgba(255,255,255,0.75)",
+          fontSize: 13, color: "rgba(255,255,255,0.75)",
           margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
         }}>
           📍 {neighborhoodLabel}
