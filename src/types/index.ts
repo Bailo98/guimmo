@@ -88,6 +88,15 @@ export interface Property {
   floor_number?: number;
   has_ac?: boolean;
   kitchen_equipped?: boolean;
+  // Amenity boolean columns (migration 017)
+  has_edg?: boolean;
+  has_generator?: boolean;
+  has_solar?: boolean;
+  has_tap_water?: boolean;
+  has_borehole?: boolean;
+  has_running_water?: boolean;
+  is_furnished?: boolean;
+  has_pool?: boolean;
   video_url?: string;
   has_virtual_tour?: boolean;
   ref?: string;

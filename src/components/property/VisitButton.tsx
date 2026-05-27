@@ -23,7 +23,7 @@ export function VisitButton({ propertyId, ownerId, propertyTitle }: Props) {
         className="flex-1 flex items-center justify-center gap-1.5 text-white font-semibold rounded-xl text-sm"
         style={{ background: "#1e2a30", border: "1px solid rgba(255,255,255,0.20)", minHeight: "48px" }}
       >
-        📅 Visiter
+        🏠 Je veux visiter
       </button>
       {open && (
         <VisitRequestModal

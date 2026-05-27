@@ -12,7 +12,8 @@ import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { WhatsAppShare } from "@/components/ui/WhatsAppShare";
 import { AuthPromptModal } from "@/components/AuthPromptModal";
 import { ListingScore } from "@/components/ListingScore";
-import { PropertyBadge } from "@/components/PropertyBadge";
+import { PropertyBadge, TypeBadge } from "@/components/PropertyBadge";
+import { ReactionBar } from "@/components/property/ReactionBar";
 import { formatUsd } from "@/lib/config";
 import { haversineKm, formatDistance } from "@/lib/haversine";
 import { NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
@@ -303,19 +304,12 @@ export function PropertyCard({
         display: "flex", gap: 4, flexWrap: "wrap", maxWidth: "calc(100% - 60px)",
         pointerEvents: "none",
       }}>
+        {/* Type badge — always visible with colour */}
+        <TypeBadge propertyType={property.type} />
         {property.is_featured && <PropertyBadge type="premium" />}
         {property.is_diaspora && <PropertyBadge type="diaspora" />}
         {property.is_verified && !property.is_featured && <PropertyBadge type="verified" />}
         {isNew && !property.is_featured && !property.is_diaspora && <PropertyBadge type="new" />}
-        {!property.is_featured && !property.is_diaspora && !property.is_verified && !isNew && (
-          <span style={{
-            background: "rgba(10,18,22,0.70)", color: "rgba(255,255,255,0.85)",
-            fontSize: 10, padding: "3px 9px", borderRadius: 20, fontWeight: 600,
-            whiteSpace: "nowrap", backdropFilter: "blur(6px)",
-          }}>
-            {TYPE_LABELS[property.type] ?? property.type}
-          </span>
-        )}
         {property.is_boosted && (
           <span style={{
             background: "#E9E900", color: "#0A1216",
@@ -435,6 +429,24 @@ export function PropertyCard({
           {distanceStr && <span style={{ color: "#4A9EFF", marginLeft: 4 }}>· {distanceStr}</span>}
         </p>
 
+      </div>
+
+      {/* ── Reaction bar — bottom of card, mobile always visible / desktop on hover ── */}
+      <div
+        className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200"
+        style={{
+          position: "absolute",
+          bottom: 60,
+          left: 0,
+          right: 0,
+          zIndex: 4,
+          padding: "6px 12px",
+          display: "flex",
+          justifyContent: "flex-start",
+          pointerEvents: "auto",
+        }}
+      >
+        <ReactionBar propertyId={property.id} compact />
       </div>
 
       {/* ── Contact button — bottom right ── */}

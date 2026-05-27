@@ -103,7 +103,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Calendar className="w-5 h-5 text-yellow-400" />
-            <h2 className="text-white font-black text-base">Demander une visite</h2>
+            <h2 className="text-white font-black text-base">Je veux visiter ce logement</h2>
           </div>
           <button
             onClick={close}

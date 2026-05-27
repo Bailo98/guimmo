@@ -1,7 +1,8 @@
-﻿"use client";
+"use client";
 import { useState, useEffect, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight, LocateFixed } from "lucide-react";
+import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight, LocateFixed, Map, List } from "lucide-react";
+import dynamic from "next/dynamic";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { NearbySection } from "@/components/ui/NearbySection";
@@ -11,7 +12,24 @@ import { SaveSearchButton } from "@/components/SaveSearchButton";
 import { cn } from "@/lib/utils";
 import type { Property } from "@/types";
 
-const PAGE_SIZE = 12;
+// Dynamically load map (no SSR — Leaflet requires window)
+const AnnoncesMap = dynamic(
+  () => import("@/components/map/AnnoncesMap"),
+  {
+    ssr: false,
+    loading: () => (
+      <div style={{ height: "calc(100vh - 180px)", background: "#111820", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>Chargement de la carte…</span>
+      </div>
+    ),
+  }
+);
+
+// Adapt PAGE_SIZE for low-bandwidth mode
+function getPageSize() {
+  if (typeof localStorage !== "undefined" && localStorage.getItem("logerbien_low_bandwidth") === "1") return 6;
+  return 12;
+}
 
 const TYPE_CHIPS = [
   { id: "", label: "Tous" },
@@ -46,6 +64,41 @@ const BUDGET_CHIPS = [
   { label: "2M–5M", min: 2_000_000, max: 5_000_000 },
   { label: "> 5M", min: 5_000_000, max: Infinity },
 ];
+
+// ── Amenity filter groups ─────────────────────────────────────────────────────
+const AMENITY_GROUPS = [
+  {
+    label: "⚡ Électricité",
+    items: [
+      { key: "has_edg",       emoji: "⚡", label: "EDG" },
+      { key: "has_generator", emoji: "🔋", label: "Groupe électrogène" },
+      { key: "has_solar",     emoji: "☀️", label: "Panneau solaire" },
+    ],
+  },
+  {
+    label: "💧 Eau",
+    items: [
+      { key: "has_tap_water",     emoji: "🚰", label: "Robinet" },
+      { key: "has_borehole",      emoji: "💧", label: "Forage" },
+      { key: "has_running_water", emoji: "🌊", label: "Eau courante" },
+    ],
+  },
+  {
+    label: "🏠 Confort",
+    items: [
+      { key: "has_ac",       emoji: "❄️", label: "Climatisation" },
+      { key: "is_furnished", emoji: "🪑", label: "Meublé" },
+      { key: "has_parking",  emoji: "🚗", label: "Parking" },
+      { key: "has_pool",     emoji: "🏊", label: "Piscine" },
+      { key: "has_security", emoji: "🔒", label: "Gardiennage" },
+    ],
+  },
+] as const;
+
+type AmenityKey =
+  | "has_edg" | "has_generator" | "has_solar"
+  | "has_tap_water" | "has_borehole" | "has_running_water"
+  | "has_ac" | "is_furnished" | "has_parking" | "has_pool" | "has_security";
 
 function TypeChip({ active, onClick, children }: {
   active: boolean; onClick: () => void; children: React.ReactNode;
@@ -85,6 +138,37 @@ function SmallChip({ active, onClick, children }: {
   );
 }
 
+function AmenityChip({ active, onClick, emoji, label }: {
+  active: boolean; onClick: () => void; emoji: string; label: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "8px 14px",
+        borderRadius: 20,
+        border: active ? "1px solid rgba(200,169,126,0.50)" : "1px solid #1e2a30",
+        background: active ? "var(--accent-gold, #C8A97E)" : "#1a252b",
+        color: active ? "#0A1216" : "rgba(255,255,255,0.55)",
+        fontSize: 13,
+        fontWeight: 600,
+        cursor: "pointer",
+        whiteSpace: "nowrap",
+        minHeight: "auto",
+        letterSpacing: 0,
+        textTransform: "none",
+        transition: "all 0.15s ease",
+      }}
+    >
+      <span>{emoji}</span>
+      <span>{label}</span>
+    </button>
+  );
+}
+
 function AnnoncesContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -94,6 +178,9 @@ function AnnoncesContent() {
   const [nearbyCoords, setNearbyCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [gpsLoading, setGpsLoading] = useState(false);
   const [gpsMessage, setGpsMessage] = useState<string | null>(null);
+  const [amenities, setAmenities] = useState<Set<AmenityKey>>(new Set());
+  const [mapView, setMapView] = useState(false);
+  const [pageSize] = useState(getPageSize);
 
   const neighborhood = searchParams.get("neighborhood") ?? "";
   const type = searchParams.get("type") ?? "";
@@ -137,7 +224,6 @@ function AnnoncesContent() {
         setNearbyCoords({ lat: userLat, lng: userLng });
         setGpsLoading(false);
 
-        // Find nearest quartier within 5km
         let nearest: { id: string; dist: number } | null = null;
         for (const [id, coords] of Object.entries(QUARTIER_COORDS)) {
           const dist = haversineKm(userLat, userLng, coords.lat, coords.lng);
@@ -182,9 +268,18 @@ function AnnoncesContent() {
     router.replace(`?${params.toString()}`, { scroll: true });
   }
 
+  function toggleAmenity(key: AmenityKey) {
+    setAmenities((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }
+
   const diaspora = searchParams.get("diaspora") === "1";
   const hasPriceFilter = priceMin > 0 || priceMax < Infinity;
-  const hasFilters = !!neighborhood || !!type || !!tx || hasPriceFilter || diaspora;
+  const hasFilters = !!neighborhood || !!type || !!tx || hasPriceFilter || diaspora || amenities.size > 0;
 
   function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
     const R = 6371;
@@ -203,6 +298,10 @@ function AnnoncesContent() {
       if (priceMin > 0 && p.price < priceMin) return false;
       if (priceMax < Infinity && p.price > priceMax) return false;
       if (diaspora && !p.is_diaspora) return false;
+      // Amenity filters
+      for (const key of amenities) {
+        if (!p[key]) return false;
+      }
       return true;
     });
     if (nearbyCoords) {
@@ -214,25 +313,41 @@ function AnnoncesContent() {
         );
     }
     return list;
-  }, [allProperties, neighborhood, type, tx, priceMin, priceMax, nearbyCoords]);
+  }, [allProperties, neighborhood, type, tx, priceMin, priceMax, nearbyCoords, amenities]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const safePage = Math.min(Math.max(1, page), totalPages);
-  const pageItems = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const pageItems = filtered.slice((safePage - 1) * pageSize, safePage * pageSize);
 
-  function clearFilters() { router.replace("/annonces", { scroll: false }); }
+  function clearFilters() {
+    setAmenities(new Set());
+    router.replace("/annonces", { scroll: false });
+  }
 
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1).filter(
     (n) => n === 1 || n === totalPages || Math.abs(n - safePage) <= 1
   );
 
-  const activeFilterCount = [neighborhood, type, tx, hasPriceFilter ? "price" : "", diaspora ? "diaspora" : ""].filter(Boolean).length;
+  const activeFilterCount = [
+    neighborhood, type, tx,
+    hasPriceFilter ? "price" : "",
+    diaspora ? "diaspora" : "",
+    amenities.size > 0 ? "amenities" : "",
+  ].filter(Boolean).length;
 
   return (
     <div className="bg-[#0A1216] min-h-screen">
-      {/* ── Sticky filter bar ───────────────────────────────────── */}
-      <div className="sticky top-16 z-30 -mx-0 px-4 pt-4 pb-3 space-y-3" style={{ background: "rgba(10,18,22,0.97)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderBottom: "1px solid #1e2a30" }}>
-        {/* Search pill + filter button */}
+      {/* ── Sticky filter bar ── */}
+      <div
+        className="sticky top-16 z-30 -mx-0 px-4 pt-4 pb-3 space-y-3"
+        style={{
+          background: "rgba(10,18,22,0.97)",
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+          borderBottom: "1px solid #1e2a30",
+        }}
+      >
+        {/* Search pill + controls */}
         <div className="flex items-center gap-2">
           <div
             className="flex-1 flex items-center gap-3 rounded-full px-4"
@@ -245,6 +360,8 @@ function AnnoncesContent() {
               style={{ minHeight: 32, minWidth: 32, borderRadius: 8, background: "transparent", border: "none", color: "rgba(255,255,255,0.40)" }}
             />
           </div>
+
+          {/* GPS */}
           <button
             type="button"
             onClick={handleNearby}
@@ -262,12 +379,23 @@ function AnnoncesContent() {
               ? <span className="w-4 h-4 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />
               : <LocateFixed className="w-4 h-4" />}
           </button>
+
+          {/* Map / List toggle */}
+          <button
+            onClick={() => setMapView(!mapView)}
+            className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
+            style={mapView
+              ? { background: "rgba(233,233,0,0.15)", border: "1px solid rgba(233,233,0,0.40)", color: "#E9E900" }
+              : { background: "#1a252b", border: "1px solid #1e2a30", color: "rgba(255,255,255,0.55)" }}
+            title={mapView ? "Vue liste" : "Vue carte"}
+          >
+            {mapView ? <List className="w-4 h-4" /> : <Map className="w-4 h-4" />}
+          </button>
+
+          {/* Filters */}
           <button
             onClick={() => setFiltersOpen(!filtersOpen)}
-            className={cn(
-              "flex items-center gap-1.5 rounded-full px-4 text-sm font-semibold transition-all flex-shrink-0",
-              filtersOpen || activeFilterCount > 0 ? "" : ""
-            )}
+            className={cn("flex items-center gap-1.5 rounded-full px-4 text-sm font-semibold transition-all flex-shrink-0")}
             style={{
               minHeight: 48,
               ...(filtersOpen || activeFilterCount > 0
@@ -278,6 +406,8 @@ function AnnoncesContent() {
             <SlidersHorizontal className="w-4 h-4" />
             <span className="ml-1.5">{activeFilterCount > 0 ? `Filtres (${activeFilterCount})` : "Filtres"}</span>
           </button>
+
+          {/* Clear */}
           {hasFilters && (
             <button
               onClick={clearFilters}
@@ -299,9 +429,10 @@ function AnnoncesContent() {
           ))}
         </div>
 
-        {/* Neighborhood + budget — collapsible */}
+        {/* Collapsible filters */}
         {filtersOpen && (
-          <div className="space-y-2 pt-1 border-t border-white/8">
+          <div className="space-y-3 pt-1 border-t border-white/8">
+            {/* Transaction */}
             <div>
               <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Transaction</p>
               <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
@@ -312,6 +443,8 @@ function AnnoncesContent() {
                 ))}
               </div>
             </div>
+
+            {/* Quartier */}
             <div>
               <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Quartier</p>
               <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
@@ -322,14 +455,14 @@ function AnnoncesContent() {
                 ))}
               </div>
             </div>
+
+            {/* Budget */}
             <div>
               <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Budget</p>
               <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
                 {BUDGET_CHIPS.map((c) => {
                   const isAll = c.min === 0 && c.max === Infinity;
-                  const active = isAll
-                    ? !hasPriceFilter
-                    : priceMin === c.min && priceMax === c.max;
+                  const active = isAll ? !hasPriceFilter : priceMin === c.min && priceMax === c.max;
                   return (
                     <SmallChip key={c.label} active={active} onClick={() => setPriceRange(c.min, c.max)}>
                       {c.label}
@@ -338,6 +471,7 @@ function AnnoncesContent() {
                 })}
               </div>
             </div>
+
             {/* Diaspora toggle */}
             <div>
               <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Diaspora</p>
@@ -355,17 +489,44 @@ function AnnoncesContent() {
                 {diaspora && <span className="text-xs font-normal opacity-70">— prix en GNF + USD</span>}
               </button>
             </div>
+
+            {/* ── Amenity filters ── */}
+            {AMENITY_GROUPS.map((group) => (
+              <div key={group.label}>
+                <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-2">
+                  {group.label}
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {group.items.map((item) => (
+                    <AmenityChip
+                      key={item.key}
+                      active={amenities.has(item.key as AmenityKey)}
+                      onClick={() => toggleAmenity(item.key as AmenityKey)}
+                      emoji={item.emoji}
+                      label={item.label}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6" style={{ paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))" }}>
+      <div
+        className="max-w-7xl mx-auto px-3 sm:px-4 py-6"
+        style={{ paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))" }}
+      >
         {/* GPS message */}
         {gpsMessage && (
-          <div className="mb-4 rounded-xl px-4 py-3 text-sm font-semibold text-white/70" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}>
+          <div
+            className="mb-4 rounded-xl px-4 py-3 text-sm font-semibold text-white/70"
+            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}
+          >
             📍 {gpsMessage}
           </div>
         )}
+
         {/* Results count */}
         <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
           <p className="text-sm text-[#6B7280]">
@@ -393,16 +554,16 @@ function AnnoncesContent() {
                 priceMax={priceMax < Infinity ? priceMax : undefined}
               />
             )}
-            {!loading && totalPages > 1 && (
+            {!loading && totalPages > 1 && !mapView && (
               <p className="text-xs text-white/40">Page {safePage} / {totalPages}</p>
             )}
           </div>
         </div>
 
-        {/* Grid */}
+        {/* ── Map or Grid ── */}
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
-            {Array.from({ length: PAGE_SIZE }).map((_, i) => <SkeletonCard key={i} />)}
+            {Array.from({ length: pageSize }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-24">
@@ -416,7 +577,13 @@ function AnnoncesContent() {
               Voir toutes les annonces
             </button>
           </div>
+        ) : mapView ? (
+          /* MAP VIEW */
+          <div style={{ borderRadius: 16, overflow: "hidden", border: "1px solid #1e2a30" }}>
+            <AnnoncesMap properties={filtered} />
+          </div>
         ) : (
+          /* LIST VIEW */
           <>
             {!hasFilters && <NearbySection properties={allProperties} />}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">

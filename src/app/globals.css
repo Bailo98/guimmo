@@ -504,6 +504,12 @@ html:not(.dark) .text-secondary {
   color: rgba(10,18,22,0.65);
 }
 
+/* ── Low-connection mode — disables all animations ── */
+.reduce-motion * {
+  animation: none !important;
+  transition: none !important;
+}
+
 /* ── react-tinder-card layout ── */
 /* TinderCard renders an animated.div; we stretch it to fill the fixed
    swipe container so the card area matches the inner pressable div exactly.

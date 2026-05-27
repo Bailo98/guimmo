@@ -1,4 +1,5 @@
-﻿import Link from "next/link";
+﻿import React from "react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
@@ -7,6 +8,7 @@ import { ArrowLeft, MapPin, Bed, Bath, Square, Phone, CheckCircle, XCircle } fro
 import { ListingScore } from "@/components/ListingScore";
 import { Avatar } from "@/components/ui/Avatar";
 import { PhotoGallery } from "./PhotoGallery";
+import { ReactionBar } from "@/components/property/ReactionBar";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { MessageButton } from "@/components/property/MessageButton";
 import { ReportButton } from "@/components/property/ReportButton";
@@ -50,6 +52,20 @@ const INET_INFO: Record<string, { icon: string; label: string }> = {
 
 
 export const revalidate = 60;
+
+// Shared pill style for the amenity section
+const EQUIP_PILL: React.CSSProperties = {
+  background: "#1a252b",
+  border: "1px solid #1e2a30",
+  color: "rgba(255,255,255,0.75)",
+  borderRadius: 999,
+  padding: "6px 14px",
+  fontSize: 12,
+  fontWeight: 600,
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 4,
+};
 
 async function getDB() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -347,7 +363,17 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <XCircle className="w-4 h-4" /> Déjà loué
                   </span>
                 )}
-                <span className="text-xs font-semibold text-white/70 px-2.5 py-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <span className="text-xs font-semibold px-2.5 py-1.5 rounded-full" style={{
+                  background: ({
+                    house: "rgba(200,151,58,0.85)", villa: "rgba(200,151,58,0.85)",
+                    apartment: "rgba(74,158,255,0.85)", studio: "rgba(74,158,255,0.85)",
+                    land: "rgba(76,175,80,0.85)",
+                    office: "rgba(156,107,255,0.85)", shop: "rgba(156,107,255,0.85)",
+                    room: "rgba(255,107,53,0.85)",
+                  } as Record<string,string>)[property.type] ?? "rgba(255,255,255,0.12)",
+                  color: "#ffffff",
+                  fontWeight: 700,
+                }}>
                   {TYPE_LABELS[property.type] ?? property.type}
                 </span>
                 <span className="text-xs font-semibold bg-blue-500/20 text-blue-400 px-2.5 py-1.5 rounded-full">
@@ -487,6 +513,59 @@ export default async function PropertyDetailPage({ params }: Props) {
                   </div>
                 </div>
               )}
+
+              {/* ── Équipements détaillés (nouvelles colonnes migration 017) ── */}
+              {(property.has_edg || property.has_generator || property.has_solar ||
+                property.has_tap_water || property.has_borehole || property.has_running_water ||
+                property.is_furnished || property.has_pool) && (
+                <div>
+                  <h2 className="font-bold text-white text-sm mb-3">Équipements détaillés</h2>
+                  {/* Electricity */}
+                  {(property.has_edg || property.has_generator || property.has_solar) && (
+                    <div style={{ marginBottom: 14 }}>
+                      <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.40)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
+                        ⚡ Électricité
+                      </p>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                        {property.has_edg && <span style={EQUIP_PILL}>⚡ EDG</span>}
+                        {property.has_generator && <span style={EQUIP_PILL}>🔋 Groupe électrogène</span>}
+                        {property.has_solar && <span style={EQUIP_PILL}>☀️ Panneau solaire</span>}
+                      </div>
+                    </div>
+                  )}
+                  {/* Water */}
+                  {(property.has_tap_water || property.has_borehole || property.has_running_water) && (
+                    <div style={{ marginBottom: 14 }}>
+                      <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.40)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
+                        💧 Eau
+                      </p>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                        {property.has_tap_water && <span style={EQUIP_PILL}>🚰 Robinet</span>}
+                        {property.has_borehole && <span style={EQUIP_PILL}>💧 Forage</span>}
+                        {property.has_running_water && <span style={EQUIP_PILL}>🌊 Eau courante</span>}
+                      </div>
+                    </div>
+                  )}
+                  {/* Comfort */}
+                  {(property.is_furnished || property.has_pool) && (
+                    <div>
+                      <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.40)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
+                        🏠 Confort
+                      </p>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                        {property.is_furnished && <span style={EQUIP_PILL}>🪑 Meublé</span>}
+                        {property.has_pool && <span style={EQUIP_PILL}>🏊 Piscine</span>}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* ── Réactions rapides ── */}
+              <div>
+                <h2 className="font-bold text-white text-sm mb-3">Réactions</h2>
+                <ReactionBar propertyId={property.id} />
+              </div>
 
               {/* Description */}
               {(property.description || (property.features?.length ?? 0) > 0) && (

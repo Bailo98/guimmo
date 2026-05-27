@@ -60,3 +60,49 @@ export function PropertyBadge({ type }: PropertyBadgeProps) {
     </span>
   );
 }
+
+// ── Type-coloured badge (always visible, specific background per property type) ──
+const TYPE_BADGE_COLORS: Record<string, { bg: string; color: string }> = {
+  house:     { bg: "rgba(200,151,58,0.85)",  color: "#fff" },
+  villa:     { bg: "rgba(200,151,58,0.85)",  color: "#fff" },
+  apartment: { bg: "rgba(74,158,255,0.85)",  color: "#fff" },
+  studio:    { bg: "rgba(74,158,255,0.85)",  color: "#fff" },
+  land:      { bg: "rgba(76,175,80,0.85)",   color: "#fff" },
+  office:    { bg: "rgba(156,107,255,0.85)", color: "#fff" },
+  shop:      { bg: "rgba(156,107,255,0.85)", color: "#fff" },
+  room:      { bg: "rgba(255,107,53,0.85)",  color: "#fff" },
+};
+
+const TYPE_LABELS_BADGE: Record<string, string> = {
+  apartment: "Appartement", house: "Maison", studio: "Studio",
+  villa: "Villa", room: "Chambre", office: "Bureau", shop: "Boutique", land: "Terrain",
+};
+
+interface TypeBadgeProps {
+  propertyType: string;
+}
+
+export function TypeBadge({ propertyType }: TypeBadgeProps) {
+  const cfg = TYPE_BADGE_COLORS[propertyType] ?? { bg: "rgba(10,18,22,0.70)", color: "rgba(255,255,255,0.85)" };
+  const label = TYPE_LABELS_BADGE[propertyType] ?? propertyType;
+  return (
+    <span
+      style={{
+        background: cfg.bg,
+        color: cfg.color,
+        borderRadius: 20,
+        padding: "3px 10px",
+        fontSize: 10,
+        fontWeight: 700,
+        whiteSpace: "nowrap",
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)",
+        display: "inline-flex",
+        alignItems: "center",
+        lineHeight: 1.6,
+      }}
+    >
+      {label}
+    </span>
+  );
+}
