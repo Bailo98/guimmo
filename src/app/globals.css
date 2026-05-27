@@ -55,20 +55,22 @@
 
 /* ── Design System tokens ── */
 :root {
-  --bg-primary:    #0A1216;
-  --bg-secondary:  #111a1f;
-  --bg-card:       #161B26;
+  --bg-primary:    #0F0F0F;
+  --bg-secondary:  #242424;
+  --bg-card:       #1A1A1A;
   --bg-card-dark:  #1a252b;
   --bg-card-light: #2c2f36;
   --color-accent:  #E9E900;
   --color-accent-dark: #c4c400;
-  --accent-gold:   #C8A97E;
-  --text-primary:  #F5F5F5;
-  --text-secondary-new: #C8C8D0;
+  --accent-gold:        #C8973A;
+  --accent-gold-light:  #E8B04A;
+  --text-primary:  #FFFFFF;
+  --text-secondary-new: #B0A090;
+  --text-tertiary: #707070;
   --success:       #4CAF50;
   --danger:        #FF4D4D;
   --border-subtle: rgba(255,255,255,0.06);
-  --shadow-card:   0 8px 32px rgba(0,0,0,0.4);
+  --shadow-card:   0 4px 24px rgba(0,0,0,0.5);
   --color-text-white: #ffffff;
   --color-text-black: #0A1216;
   --color-text-muted: #666666;
@@ -117,10 +119,18 @@
 
 /* ── Light mode token overrides ── */
 html:not(.dark) {
-  --bg-primary:    #f4f4ef;
-  --bg-secondary:  #eaeae5;
+  --bg-primary:    #F5F0E8;
+  --bg-secondary:  #EDE8DF;
+  --bg-card:            #FFFFFF;
   --bg-card-dark:  #e2e2dd;
   --bg-card-light: #d8d8d3;
+  --accent-gold:        #B8852A;
+  --accent-gold-light:  #D4983A;
+  --text-primary:       #1A1208;
+  --text-secondary-new: #6B5B3E;
+  --text-tertiary:      #9A8870;
+  --border-subtle:      rgba(0,0,0,0.08);
+  --shadow-card:        0 4px 24px rgba(0,0,0,0.1);
   --color-text-white: #0A1216;
   --color-text-muted: #555555;
   --color-border:  #c8c8c3;
