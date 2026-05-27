@@ -2,16 +2,15 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Heart, ChevronLeft, ChevronRight, Home } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "@/lib/toast";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { AuthPromptModal } from "@/components/AuthPromptModal";
-import { PropertyBadge, TypeBadge } from "@/components/PropertyBadge";
-import { ReactionBar } from "@/components/property/ReactionBar";
+import { TypeBadge, PropertyBadge } from "@/components/PropertyBadge";
 import { haversineKm, formatDistance } from "@/lib/haversine";
 import { NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
 import type { Property } from "@/types";
@@ -39,25 +38,26 @@ export function PropertyCard({
   userLocation = null,
   showDiasporaPrice = false,
 }: PropertyCardProps) {
+  const router                               = useRouter();
   const { toggleFavorite, isFavorite, _hasHydrated } = useAppStore();
-  const { user } = useAuth();
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [currentImg, setCurrentImg] = useState(0);
+  const { user }                             = useAuth();
+  const [showAuthModal, setShowAuthModal]    = useState(false);
+  const [currentImg,    setCurrentImg]       = useState(0);
   const touchStartX = useRef<number | null>(null);
-  const didSwipe = useRef(false);
+  const didSwipe    = useRef(false);
 
-  const fav = _hasHydrated && isFavorite(property.id);
+  const fav    = _hasHydrated && isFavorite(property.id);
   const images = [...(property.property_images ?? [])].sort((a, b) =>
     a.is_primary === b.is_primary ? 0 : a.is_primary ? -1 : 1
   );
-  const imgCount = images.length;
+  const imgCount     = images.length;
   const primaryImage = images[0];
 
   const neighborhoodLabel = NEIGHBORHOOD_LABELS[property.neighborhood] ?? property.neighborhood;
-  const createdAt = new Date(property.created_at ?? Date.now());
-  const isNew = Date.now() - createdAt.getTime() < 48 * 60 * 60 * 1000;
+  const createdAt         = new Date(property.created_at ?? Date.now());
+  const isNew             = Date.now() - createdAt.getTime() < 48 * 60 * 60 * 1000;
 
-  // Distance from user
+  // Distance from user location
   let distanceStr: string | null = null;
   const pLat = property.lat ?? property.latitude ?? null;
   const pLng = property.lng ?? property.longitude ?? null;
@@ -68,6 +68,7 @@ export function PropertyCard({
     if (coords) distanceStr = `~${formatDistance(haversineKm(userLocation.lat, userLocation.lng, coords[0], coords[1]))}`;
   }
 
+  // ── Image nav ───────────────────────────────────────────────────────────────
   function prev(e: React.MouseEvent) {
     e.preventDefault(); e.stopPropagation();
     setCurrentImg((i) => (i - 1 + imgCount) % imgCount);
@@ -76,7 +77,6 @@ export function PropertyCard({
     e.preventDefault(); e.stopPropagation();
     setCurrentImg((i) => (i + 1) % imgCount);
   }
-
   function onTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX;
   }
@@ -87,9 +87,10 @@ export function PropertyCard({
     if (Math.abs(dx) < 40) { didSwipe.current = false; return; }
     didSwipe.current = true;
     if (dx < 0) setCurrentImg((i) => (i + 1) % imgCount);
-    else setCurrentImg((i) => (i - 1 + imgCount) % imgCount);
+    else        setCurrentImg((i) => (i - 1 + imgCount) % imgCount);
   }
 
+  // ── Favorite (full Supabase logic) ──────────────────────────────────────────
   async function handleFavorite(e: React.MouseEvent) {
     e.preventDefault(); e.stopPropagation();
     if (!user) { setShowAuthModal(true); return; }
@@ -104,13 +105,29 @@ export function PropertyCard({
             { onConflict: "user_id,property_id", ignoreDuplicates: true }
           );
         } else {
-          await supabase.from("favorites").delete().eq("user_id", user.id).eq("property_id", property.id);
+          await supabase.from("favorites").delete()
+            .eq("user_id", user.id).eq("property_id", property.id);
         }
       } catch { /* silent */ }
     }
   }
 
-  // ── Horizontal variant ────────────────────────────────────────────────────────
+  // ── WhatsApp contact ─────────────────────────────────────────────────────────
+  function handleWhatsApp(e: React.MouseEvent) {
+    e.preventDefault(); e.stopPropagation();
+    if (!user) {
+      router.push(`/connexion?redirect=/annonces/${property.id}`);
+      return;
+    }
+    const phone = (property as Property & { contact_phone?: string }).contact_phone?.replace(/\D/g, "");
+    if (!phone) return;
+    const msg = encodeURIComponent(`Bonjour, je suis intéressé par "${property.title}" sur LogerBien`);
+    window.open(`https://wa.me/${phone}?text=${msg}`, "_blank", "noopener");
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════
+  //  HORIZONTAL VARIANT — unchanged
+  // ════════════════════════════════════════════════════════════════════════════
   if (variant === "horizontal") {
     return (
       <div
@@ -135,7 +152,8 @@ export function PropertyCard({
           <Link href={`/annonces/${property.id}`}>
             <p className="font-bold text-sm text-white line-clamp-1">{property.title}</p>
             <div className="flex items-center gap-1 text-white/50 text-xs mt-0.5">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="flex-shrink-0 text-white/40">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="flex-shrink-0 text-white/40">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
               </svg>
               <span>{neighborhoodLabel}</span>
@@ -150,7 +168,9 @@ export function PropertyCard({
     );
   }
 
-  // ── Default : immersive full-bleed photo card ─────────────────────────────────
+  // ════════════════════════════════════════════════════════════════════════════
+  //  DEFAULT VARIANT — immersive full-bleed photo card
+  // ════════════════════════════════════════════════════════════════════════════
   return (
     <div
       className={cn("group property-card-default", className)}
@@ -158,23 +178,23 @@ export function PropertyCard({
         position: "relative",
         borderRadius: 20,
         overflow: "hidden",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
-        background: "#1a2026",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.30)",
+        background: "#111820",
         flexShrink: 0,
-        transition: "transform 0.25s ease, box-shadow 0.25s ease",
+        transition: "transform 0.22s ease, box-shadow 0.22s ease",
       }}
       onMouseEnter={(e) => {
-        (e.currentTarget as HTMLDivElement).style.transform = "translateY(-4px)";
-        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 20px 48px rgba(0,0,0,0.60)";
+        (e.currentTarget as HTMLDivElement).style.transform  = "translateY(-4px)";
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 20px 44px rgba(0,0,0,0.55)";
       }}
       onMouseLeave={(e) => {
-        (e.currentTarget as HTMLDivElement).style.transform = "";
-        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 32px rgba(0,0,0,0.4)";
+        (e.currentTarget as HTMLDivElement).style.transform  = "";
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 24px rgba(0,0,0,0.30)";
       }}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      {/* ── Background photo ── */}
+      {/* ── Full-bleed photo ─────────────────────────────────────────────────── */}
       {imgCount > 0 ? (
         <Image
           src={images[currentImg].url}
@@ -190,22 +210,22 @@ export function PropertyCard({
       ) : (
         <div style={{
           position: "absolute", inset: 0, zIndex: 0,
-          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8,
-          background: "#111820",
+          display: "flex", flexDirection: "column", alignItems: "center",
+          justifyContent: "center", gap: 8, background: "#111820",
         }}>
-          <Home style={{ width: 44, height: 44, color: "rgba(255,255,255,0.15)", strokeWidth: 1.2 }} />
+          <Home style={{ width: 40, height: 40, color: "rgba(255,255,255,0.15)", strokeWidth: 1.2 }} />
           <span style={{ color: "rgba(255,255,255,0.18)", fontSize: 11 }}>Aucune photo</span>
         </div>
       )}
 
-      {/* ── Gradient overlay ── */}
+      {/* ── Bottom-only gradient scrim ────────────────────────────────────────── */}
       <div style={{
         position: "absolute", inset: 0, zIndex: 1,
-        background: "linear-gradient(transparent 20%, rgba(0,0,0,0.75) 60%, rgba(0,0,0,0.97) 100%)",
+        background: "linear-gradient(transparent 45%, rgba(0,0,0,0.88) 100%)",
         pointerEvents: "none",
       }} />
 
-      {/* ── Full-card navigation link ── */}
+      {/* ── Full-card navigation link (z-2) ──────────────────────────────────── */}
       <Link
         href={`/annonces/${property.id}`}
         aria-label={property.title}
@@ -213,7 +233,7 @@ export function PropertyCard({
         style={{ position: "absolute", inset: 0, zIndex: 2 }}
       />
 
-      {/* ── Image dot indicators ── */}
+      {/* ── Image-count pill dots ─────────────────────────────────────────────── */}
       {imgCount > 1 && (
         <div style={{
           position: "absolute", top: 10, left: "50%", transform: "translateX(-50%)",
@@ -222,26 +242,26 @@ export function PropertyCard({
           {images.map((_, i) => (
             <div key={i} style={{
               height: 3,
-              width: i === currentImg ? 20 : 6,
+              width: i === currentImg ? 18 : 6,
               borderRadius: 2,
-              background: i === currentImg ? "#fff" : "rgba(255,255,255,0.40)",
+              background: i === currentImg ? "#fff" : "rgba(255,255,255,0.38)",
               transition: "width 0.2s ease",
             }} />
           ))}
         </div>
       )}
 
-      {/* ── Arrow nav (desktop hover) ── */}
+      {/* ── Arrow nav (desktop hover only) ───────────────────────────────────── */}
       {imgCount > 1 && (
         <button onClick={prev} aria-label="Image précédente"
           className="opacity-0 group-hover:opacity-100 transition-opacity"
           style={{
             position: "absolute", left: 10, top: "40%", transform: "translateY(-50%)", zIndex: 5,
-            width: 32, height: 32, background: "rgba(0,0,0,0.50)", border: "none",
+            width: 30, height: 30, background: "rgba(0,0,0,0.50)", border: "none",
             borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
             cursor: "pointer", color: "#fff", backdropFilter: "blur(4px)",
           }}>
-          <ChevronLeft style={{ width: 16, height: 16 }} />
+          <ChevronLeft style={{ width: 15, height: 15 }} />
         </button>
       )}
       {imgCount > 1 && (
@@ -249,18 +269,19 @@ export function PropertyCard({
           className="opacity-0 group-hover:opacity-100 transition-opacity"
           style={{
             position: "absolute", right: 10, top: "40%", transform: "translateY(-50%)", zIndex: 5,
-            width: 32, height: 32, background: "rgba(0,0,0,0.50)", border: "none",
+            width: 30, height: 30, background: "rgba(0,0,0,0.50)", border: "none",
             borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
             cursor: "pointer", color: "#fff", backdropFilter: "blur(4px)",
           }}>
-          <ChevronRight style={{ width: 16, height: 16 }} />
+          <ChevronRight style={{ width: 15, height: 15 }} />
         </button>
       )}
 
-      {/* ── Badges — top left ── */}
+      {/* ── Type + status badges — top left (z-5) ────────────────────────────── */}
       <div style={{
         position: "absolute", top: 12, left: 12, zIndex: 5,
-        display: "flex", gap: 4, flexWrap: "wrap", maxWidth: "calc(100% - 60px)",
+        display: "flex", gap: 4, flexWrap: "wrap",
+        maxWidth: "calc(100% - 56px)",
         pointerEvents: "none",
       }}>
         <TypeBadge propertyType={property.type} />
@@ -282,74 +303,66 @@ export function PropertyCard({
         )}
       </div>
 
-      {/* ── Favorite button — top right ── */}
+      {/* ── Favorite button — top right (z-6) ────────────────────────────────── */}
       <button
         onClick={handleFavorite}
         aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
         style={{
           position: "absolute", top: 12, right: 12, zIndex: 6,
-          width: 38, height: 38,
-          background: fav ? "rgba(239,68,68,0.25)" : "rgba(0,0,0,0.40)",
-          border: fav ? "1.5px solid rgba(239,68,68,0.60)" : "1.5px solid rgba(255,255,255,0.18)",
+          width: 36, height: 36,
+          background: "rgba(0,0,0,0.40)",
+          border: "none",
           borderRadius: "50%",
           display: "flex", alignItems: "center", justifyContent: "center",
           cursor: "pointer",
-          color: fav ? "#ef4444" : "rgba(255,255,255,0.85)",
-          backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
-          transition: "background 0.2s, border-color 0.2s",
+          backdropFilter: "blur(6px)",
+          WebkitBackdropFilter: "blur(6px)",
+          transition: "background 0.2s",
         }}
       >
-        <Heart style={{ width: 16, height: 16, fill: fav ? "#ef4444" : "none", stroke: "currentColor", strokeWidth: fav ? 0 : 1.8 }} />
+        <Heart style={{
+          width: 16, height: 16,
+          fill: fav ? "#ef4444" : "none",
+          stroke: fav ? "#ef4444" : "rgba(255,255,255,0.90)",
+          strokeWidth: fav ? 0 : 1.8,
+        }} />
       </button>
 
-      {/* ── Bottom info overlay (100% photo, no external text zone) ── */}
+      {/* ── Info overlay — bottom left (z-3) ─────────────────────────────────── */}
+      {/*  right: 70px leaves room for the 46px WA button + 16px margin           */}
       <div style={{
-        position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 3,
-        padding: "12px 16px 16px",
+        position: "absolute",
+        bottom: 16,
+        left: 16,
+        right: 70,
+        zIndex: 3,
         pointerEvents: "none",
       }}>
-
-        {/* Reaction bar — always visible mobile, hover on desktop */}
-        <div
-          className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200"
-          style={{ marginBottom: 10, pointerEvents: "auto" }}
-        >
-          <ReactionBar propertyId={property.id} compact />
+        {/* Prix sans badge */}
+        <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+          <span style={{
+            fontSize: 22,
+            fontWeight: 800,
+            color: "#FFFFFF",
+            lineHeight: 1.1,
+            textShadow: "0 2px 6px rgba(0,0,0,0.50)",
+          }}>
+            {formatPrice(property.price)}
+          </span>
+          {property.price_period === "month" && (
+            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.70)" }}>/mois</span>
+          )}
         </div>
 
-        {/* Prix badge doré + transaction chip */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-          <span style={{
-            background: "var(--accent-gold, #C8A97E)",
-            borderRadius: 14,
-            padding: "10px 16px",
-            display: "inline-flex",
-            alignItems: "baseline",
-            gap: 4,
-            flexShrink: 0,
-          }}>
-            <span style={{ color: "#fff", fontWeight: 700, fontSize: 22, lineHeight: 1 }}>
-              {formatPrice(property.price)}
-            </span>
-            {property.price_period === "month" && (
-              <span style={{ color: "rgba(255,255,255,0.80)", fontSize: 13 }}>/mois</span>
-            )}
-          </span>
-          <span style={{
-            flexShrink: 0, fontSize: 10, fontWeight: 700,
-            padding: "3px 9px", borderRadius: 20, whiteSpace: "nowrap",
-            ...(property.transaction_type === "rent"
-              ? { background: "rgba(37,211,102,0.20)", color: "#25D366", border: "1px solid rgba(37,211,102,0.40)" }
-              : { background: "rgba(74,158,255,0.20)", color: "#4A9EFF", border: "1px solid rgba(74,158,255,0.40)" }),
-          }}>
-            {property.transaction_type === "rent" ? "Location" : "Vente"}
-          </span>
-        </div>
-
-        {/* Prix USD (mode diaspora) */}
+        {/* Prix USD diaspora */}
         {showDiasporaPrice && (
-          <p style={{ fontSize: 11, color: "#8A8FA8", margin: "0 0 4px", lineHeight: 1, fontWeight: 500 }}>
+          <p style={{
+            margin: "2px 0 0",
+            fontSize: 11,
+            color: "rgba(255,255,255,0.50)",
+            lineHeight: 1,
+            fontWeight: 500,
+          }}>
             ~{Math.round(property.price / 8600).toLocaleString("en-US")} USD
             {property.price_period === "month" ? "/mois" : ""}
           </p>
@@ -357,23 +370,75 @@ export function PropertyCard({
 
         {/* Titre */}
         <p style={{
-          fontSize: 16, fontWeight: 700, color: "#FFFFFF",
-          margin: "0 0 4px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-          lineHeight: 1.3, textShadow: "0 1px 6px rgba(0,0,0,0.6)",
+          margin: "4px 0 0",
+          fontSize: 14,
+          fontWeight: 600,
+          color: "#FFFFFF",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          lineHeight: 1.3,
         }}>
           {property.title}
         </p>
 
-        {/* Quartier + chambres + distance */}
-        <p style={{
-          fontSize: 13, color: "rgba(255,255,255,0.75)",
-          margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+        {/* Quartier + distance */}
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 3,
+          marginTop: 2,
+          overflow: "hidden",
         }}>
-          📍 {neighborhoodLabel}
-          {(property.rooms ?? 0) > 0 && ` · 🛏️ ${property.rooms} ch.`}
-          {distanceStr && <span style={{ color: "#4A9EFF", marginLeft: 4 }}>· {distanceStr}</span>}
-        </p>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+            stroke="rgba(255,255,255,0.65)" strokeWidth="2"
+            strokeLinecap="round" strokeLinejoin="round"
+            style={{ flexShrink: 0 }}>
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          <span style={{
+            fontSize: 12,
+            color: "rgba(255,255,255,0.65)",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}>
+            {neighborhoodLabel}
+            {(property.rooms ?? 0) > 0 && ` · 🛏 ${property.rooms}`}
+            {distanceStr && ` · ${distanceStr}`}
+          </span>
+        </div>
       </div>
+
+      {/* ── WhatsApp button — bottom right (z-6) ─────────────────────────────── */}
+      <button
+        onClick={handleWhatsApp}
+        aria-label="Contacter sur WhatsApp"
+        style={{
+          position: "absolute",
+          bottom: 16,
+          right: 16,
+          zIndex: 6,
+          width: 46,
+          height: 46,
+          borderRadius: "50%",
+          background: "#25D366",
+          border: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          boxShadow: "0 4px 16px rgba(37,211,102,0.45), 0 2px 8px rgba(0,0,0,0.25)",
+          WebkitTapHighlightColor: "transparent",
+          flexShrink: 0,
+        }}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.555 4.118 1.528 5.845L0 24l6.338-1.505A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.892 0-3.667-.5-5.2-1.373l-.373-.22-3.863.917.976-3.77-.243-.387A9.938 9.938 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+        </svg>
+      </button>
 
       {showAuthModal && (
         <AuthPromptModal
