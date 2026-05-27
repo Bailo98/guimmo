@@ -580,6 +580,29 @@ export function PropertyCard({
         </div>
       )}
 
+      {/* ── Titre — entre specs et badge prix ── */}
+      <p
+        style={{
+          position: "absolute",
+          bottom: 52,
+          left: 16,
+          right: 16,
+          zIndex: 3,
+          fontSize: 15,
+          fontWeight: 600,
+          color: "#ffffff",
+          margin: 0,
+          lineHeight: 1.3,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          pointerEvents: "none",
+          textShadow: "0 1px 6px rgba(0,0,0,0.6)",
+        }}
+      >
+        {property.title}
+      </p>
+
       {/* ── Price badge — bottom left ── */}
       <div
         style={{
