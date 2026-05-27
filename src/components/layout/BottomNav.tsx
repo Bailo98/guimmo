@@ -1,84 +1,33 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass, Heart, Plus, Home, User } from "lucide-react";
+import { Compass, Heart, Home, User } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
-const GOLD    = "var(--accent-gold)";
-const MUTED   = "var(--text-tertiary)";
-const GOLD_BG = "rgba(200,151,58,0.15)";
-
-const NAV_PILL_STYLE: React.CSSProperties = {
-  position: "fixed",
-  bottom: "calc(16px + env(safe-area-inset-bottom, 0px))",
-  left: "50%",
-  transform: "translateX(-50%)",
-  zIndex: 50,
-  height: 64,
-  borderRadius: 35,
-  background: "var(--bg-card)",
-  backdropFilter: "blur(20px)",
-  WebkitBackdropFilter: "blur(20px)",
-  border: "1px solid var(--border-subtle)",
-  boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
-  padding: "8px 20px",
-  display: "flex",
-  alignItems: "center",
-  gap: 4,
-};
-
-interface NavItemProps {
+// 4 items fixes : Découvrir | Favoris | Annonces | Profil
+interface NavItemDef {
   href: string;
   icon: React.ElementType;
   label: string;
-  active: boolean;
+  authRequired: boolean;
+  unauthHref?: string;
 }
 
-function NavItem({ href, icon: Icon, label, active }: NavItemProps) {
-  return (
-    <Link
-      href={href}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 3,
-        padding: "6px 16px",
-        borderRadius: 24,
-        textDecoration: "none",
-        background: active ? GOLD_BG : "transparent",
-        transition: "all 0.2s ease",
-        minHeight: "auto",
-        flexShrink: 0,
-      }}
-    >
-      <Icon
-        style={{
-          width: 22,
-          height: 22,
-          color: active ? GOLD : MUTED,
-          strokeWidth: active ? 2.2 : 1.8,
-          flexShrink: 0,
-        }}
-      />
-      <span
-        style={{
-          fontSize: 10,
-          fontWeight: 600,
-          color: active ? GOLD : MUTED,
-          lineHeight: 1,
-          whiteSpace: "nowrap",
-        }}
-      >
-        {label}
-      </span>
-    </Link>
-  );
-}
+const NAV_ITEMS: NavItemDef[] = [
+  // authRequired:true → item hidden entirely when user is not logged in
+  { href: "/decouvrir", icon: Compass, label: "Découvrir", authRequired: true  },
+  { href: "/favoris",   icon: Heart,   label: "Favoris",   authRequired: true  },
+  { href: "/annonces",  icon: Home,    label: "Annonces",  authRequired: false },
+  // Profil always visible; unauthHref sends guests to /connexion
+  { href: "/compte",    icon: User,    label: "Profil",    authRequired: false, unauthHref: "/connexion" },
+];
+
+const GOLD  = "#C8A97E";
+const MUTED = "#8A8FA8";
 
 export function BottomNav() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user }  = useAuth();
 
   // Hidden on /decouvrir (full-screen swipe), /admin and /auth routes
   if (pathname === "/decouvrir") return null;
@@ -86,56 +35,92 @@ export function BottomNav() {
 
   function isActive(href: string) {
     if (href === "/decouvrir") return pathname === "/decouvrir";
-    if (href === "/annonces")  return pathname.startsWith("/annonces");
+    if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   }
 
-  // ── Non connecté : 2 items ─────────────────────────────────────────────────
-  if (!user) {
-    return (
-      <nav className="md:hidden" style={NAV_PILL_STYLE}>
-        <NavItem href="/annonces"  icon={Home} label="Annonces" active={isActive("/annonces")} />
-        <NavItem href="/connexion" icon={User} label="Profil"   active={false}                 />
-      </nav>
-    );
-  }
-
-  // ── Connecté : 5 items avec bouton central surélevé ───────────────────────
   return (
-    <nav className="md:hidden" style={NAV_PILL_STYLE}>
-      <NavItem href="/decouvrir" icon={Compass} label="Découvrir" active={isActive("/decouvrir")} />
-      <NavItem href="/favoris"   icon={Heart}   label="Favoris"   active={isActive("/favoris")}   />
+    <nav
+      className="md:hidden"
+      style={{
+        position: "fixed",
+        bottom: "calc(16px + env(safe-area-inset-bottom, 0px))",
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 50,
 
-      {/* Bouton central ➕ surélevé */}
-      <Link
-        href="/publier"
-        aria-label="Publier une annonce"
-        style={{
-          width: 54,
-          height: 54,
-          borderRadius: "50%",
-          background: "var(--accent-gold)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: -20,
-          boxShadow: "0 4px 16px rgba(200,151,58,0.5)",
-          flexShrink: 0,
-          textDecoration: "none",
-          transition: "transform 0.2s, opacity 0.2s",
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1.08)";
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLAnchorElement).style.transform = "";
-        }}
-      >
-        <Plus style={{ width: 24, height: 24, color: "#fff", strokeWidth: 2.5 }} />
-      </Link>
+        /* Pill geometry */
+        height: 60,
+        maxWidth: 320,
+        width: "auto",
+        padding: "0 8px",
+        borderRadius: 40,
 
-      <NavItem href="/annonces" icon={Home} label="Annonces" active={isActive("/annonces")} />
-      <NavItem href="/compte"   icon={User} label="Profil"   active={isActive("/compte")}   />
+        /* Glass surface */
+        background: "rgba(22,27,38,0.96)",
+        backdropFilter: "blur(20px) saturate(180%)",
+        WebkitBackdropFilter: "blur(20px) saturate(180%)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.20)",
+
+        /* Layout */
+        display: "flex",
+        alignItems: "center",
+        gap: 4,
+      }}
+    >
+      {NAV_ITEMS.filter((item) => !item.authRequired || !!user).map(({ href, icon: Icon, label, authRequired, unauthHref }) => {
+        const dest =
+          !user && authRequired
+            ? `/connexion?redirect=${href}`
+            : !user && unauthHref
+            ? unauthHref
+            : href;
+
+        const active = isActive(href);
+
+        return (
+          <Link
+            key={href}
+            href={dest}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 2,
+              padding: "6px 14px",
+              borderRadius: 30,
+              textDecoration: "none",
+              background: active ? "rgba(200,169,126,0.18)" : "transparent",
+              transition: "all 0.2s ease",
+              minHeight: "auto",
+            }}
+          >
+            <Icon
+              style={{
+                width: 22,
+                height: 22,
+                color: active ? GOLD : MUTED,
+                strokeWidth: active ? 2.2 : 1.8,
+                transition: "color 0.2s ease",
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 600,
+                color: active ? GOLD : MUTED,
+                lineHeight: 1,
+                whiteSpace: "nowrap",
+                transition: "color 0.2s ease",
+              }}
+            >
+              {label}
+            </span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }

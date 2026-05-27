@@ -55,22 +55,20 @@
 
 /* ── Design System tokens ── */
 :root {
-  --bg-primary:    #0F0F0F;
-  --bg-secondary:  #242424;
-  --bg-card:       #1A1A1A;
+  --bg-primary:    #0A1216;
+  --bg-secondary:  #111a1f;
+  --bg-card:       #161B26;
   --bg-card-dark:  #1a252b;
   --bg-card-light: #2c2f36;
   --color-accent:  #E9E900;
   --color-accent-dark: #c4c400;
-  --accent-gold:        #C8973A;
-  --accent-gold-light:  #E8B04A;
-  --text-primary:  #FFFFFF;
-  --text-secondary-new: #B0A090;
-  --text-tertiary: #707070;
+  --accent-gold:   #C8A97E;
+  --text-primary:  #F5F5F5;
+  --text-secondary-new: #C8C8D0;
   --success:       #4CAF50;
   --danger:        #FF4D4D;
   --border-subtle: rgba(255,255,255,0.06);
-  --shadow-card:   0 4px 24px rgba(0,0,0,0.5);
+  --shadow-card:   0 8px 32px rgba(0,0,0,0.4);
   --color-text-white: #ffffff;
   --color-text-black: #0A1216;
   --color-text-muted: #666666;
@@ -119,18 +117,10 @@
 
 /* ── Light mode token overrides ── */
 html:not(.dark) {
-  --bg-primary:    #F5F0E8;
-  --bg-secondary:  #EDE8DF;
-  --bg-card:            #FFFFFF;
+  --bg-primary:    #f4f4ef;
+  --bg-secondary:  #eaeae5;
   --bg-card-dark:  #e2e2dd;
   --bg-card-light: #d8d8d3;
-  --accent-gold:        #B8852A;
-  --accent-gold-light:  #D4983A;
-  --text-primary:       #1A1208;
-  --text-secondary-new: #6B5B3E;
-  --text-tertiary:      #9A8870;
-  --border-subtle:      rgba(0,0,0,0.08);
-  --shadow-card:        0 4px 24px rgba(0,0,0,0.1);
   --color-text-white: #0A1216;
   --color-text-muted: #555555;
   --color-border:  #c8c8c3;
@@ -524,22 +514,4 @@ html:not(.dark) .text-secondary {
   inset: 0;
   z-index: 10;
   touch-action: none;
-}
-
-/* ── Bare input — for inputs inside styled pill containers (search bar, etc.)
-   Overrides the global input !important rules that set opaque background.
-   Higher specificity (class > element) beats the global input rule.         ── */
-.input-bare {
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-  min-height: auto !important;
-  color: var(--text-primary) !important;
-}
-.input-bare:focus {
-  border-color: transparent !important;
-  box-shadow: none !important;
-  outline: none;
 }

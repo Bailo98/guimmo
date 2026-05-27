@@ -54,17 +54,10 @@ export function Header() {
   const NO_HEADER = ["/inscription", "/connexion", "/mot-de-passe-oublie"];
   if (NO_HEADER.includes(pathname)) return null;
 
-  const isHome = pathname === "/";
-
   return (
     <header
       className="fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300"
-      style={{
-        background: isHome ? "transparent" : "var(--nav-bg)",
-        backdropFilter: isHome ? "none" : "blur(16px) saturate(180%)",
-        WebkitBackdropFilter: isHome ? "none" : "blur(16px) saturate(180%)",
-        borderBottom: isHome ? "1px solid transparent" : "1px solid var(--nav-border)",
-      }}
+      style={{ background: "var(--nav-bg)", backdropFilter: "blur(16px) saturate(180%)", WebkitBackdropFilter: "blur(16px) saturate(180%)", borderBottom: "1px solid var(--nav-border)" }}
     >
       <div className="max-w-7xl mx-auto px-4 h-[72px] flex items-center justify-between gap-4">
         <Logo />
@@ -200,19 +193,6 @@ export function Header() {
             </div>
           )}
 
-          {/* Mobile : avatar (lien compte) + hamburger (menu nav) */}
-          <Link
-            href={user ? "/compte" : "/connexion"}
-            className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center transition-colors hover:bg-black/5"
-            style={{ color: "var(--nav-text)" }}
-            aria-label={user ? "Mon compte" : "Se connecter"}
-          >
-            {user
-              ? <Avatar url={profile?.avatar_url} name={displayName} size="sm" />
-              : <User className="w-5 h-5" />
-            }
-          </Link>
-
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden w-9 h-9 rounded-xl flex items-center justify-center transition-colors hover:bg-black/5"
@@ -224,10 +204,9 @@ export function Header() {
         </div>
       </div>
 
-      {/* ── Menu mobile dropdown ── */}
       {menuOpen && (
         <div
-          className="md:hidden border-t px-4 pb-4 space-y-1"
+          className="md:hidden border-t px-4 pb-4 space-y-1 animate-[slideDown_0.2s_ease-out]"
           style={{ background: "var(--nav-dropdown-bg)", borderColor: "var(--nav-border)" }}
         >
           <Link href="/annonces" onClick={() => setMenuOpen(false)}
@@ -255,10 +234,8 @@ export function Header() {
                   <User className="w-4 h-4" /> Mon compte
                 </Link>
               )}
-              <button
-                onClick={() => { handleSignOut(); setMenuOpen(false); }}
-                className="w-full flex items-center gap-2 px-3 py-3 rounded-xl text-red-500 hover:bg-red-500/10"
-              >
+              <button onClick={() => { handleSignOut(); setMenuOpen(false); }}
+                className="w-full flex items-center gap-2 px-3 py-3 rounded-xl text-red-500 hover:bg-red-500/10">
                 <LogOut className="w-4 h-4" /> Se déconnecter
               </button>
             </>
@@ -278,8 +255,7 @@ export function Header() {
           )}
           {isProprietaire && (
             <Link href="/publier" onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center gap-2 font-bold py-3 rounded-xl mt-2"
-              style={{ background: "var(--accent-gold)", color: "#0A1216" }}>
+              className="flex items-center justify-center gap-2 bg-[#E9E900] hover:bg-[#c4c400] text-white font-bold py-3 rounded-xl mt-2">
               <Plus className="w-4 h-4" /> Publier une annonce
             </Link>
           )}

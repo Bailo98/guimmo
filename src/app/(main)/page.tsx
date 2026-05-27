@@ -1,9 +1,6 @@
 ﻿import Link from "next/link";
 import Image from "next/image";
-import {
-  MapPin, ChevronRight, Bed, Square, CheckCircle2,
-  Home as HomeIcon, Building2, Trees, Briefcase,
-} from "lucide-react";
+import { MapPin, ChevronRight, Bed, Square, CheckCircle2 } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { RecentlyViewedSection } from "@/components/ui/RecentlyViewedSection";
 import { HeroSearch } from "@/components/home/HeroSearch";
@@ -24,15 +21,6 @@ export const metadata: Metadata = {
     siteName: "LogerBien",
   },
 };
-
-// ─── catégories visuelles ─────────────────────────────────────────────────────
-
-const CATEGORIES = [
-  { label: "Maisons",  Icon: HomeIcon,  type: "house"     },
-  { label: "Apparts",  Icon: Building2, type: "apartment" },
-  { label: "Terrains", Icon: Trees,     type: "land"      },
-  { label: "Bureaux",  Icon: Briefcase, type: "office"    },
-];
 
 // ─── data ─────────────────────────────────────────────────────────────────────
 
@@ -268,57 +256,6 @@ export default async function HomePage() {
 
               {/* Search box */}
               <HeroSearch />
-
-              {/* ── Catégories visuelles ── */}
-              <div
-                className="scrollbar-none"
-                style={{
-                  display: "flex",
-                  gap: 12,
-                  overflowX: "auto",
-                  padding: "4px 0",
-                  marginTop: "1.5rem",
-                  justifyContent: "center",
-                }}
-              >
-                {CATEGORIES.map(({ label, Icon, type }) => (
-                  <a
-                    key={type}
-                    href={`/annonces?type=${type}`}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 8,
-                      flexShrink: 0,
-                      textDecoration: "none",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 72,
-                        height: 72,
-                        borderRadius: 18,
-                        background: "var(--accent-gold)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Icon size={28} color="#FFFFFF" strokeWidth={1.8} />
-                    </div>
-                    <span
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        color: "var(--text-primary)",
-                      }}
-                    >
-                      {label}
-                    </span>
-                  </a>
-                ))}
-              </div>
             </div>
 
             {/* ── Right column — preview cards (desktop only, only if real data) ── */}
