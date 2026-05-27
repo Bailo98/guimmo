@@ -1,177 +1,134 @@
-﻿"use client";
+"use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 import { VoiceSearchButton } from "@/components/ui/VoiceSearchButton";
 
-const QUARTIERS = [
-  { id: "kipe",       name: "Kipé" },
-  { id: "hamdallaye", name: "Hamdallaye" },
-  { id: "dixinn",     name: "Dixinn" },
-  { id: "ratoma",     name: "Ratoma" },
-  { id: "taouyah",    name: "Taouyah" },
-  { id: "sonfonia",   name: "Sonfonia" },
-  { id: "lambanyi",   name: "Lambanyi" },
-  { id: "kaloum",     name: "Kaloum" },
-  { id: "matam",      name: "Matam" },
-  { id: "madina",     name: "Madina" },
-];
-
-const TYPES = [
-  { id: "apartment", name: "Appartement" },
-  { id: "house",     name: "Maison" },
-  { id: "studio",    name: "Studio" },
-  { id: "villa",     name: "Villa" },
-  { id: "room",      name: "Chambre" },
-  { id: "office",    name: "Bureau" },
-  { id: "land",      name: "Terrain" },
-];
-
-const SELECT_BASE: React.CSSProperties = {
-  background: "#1a252b",
-  border: "1px solid #1e2a30",
-  color: "#666666",
-  borderRadius: "12px",
-  padding: "0 14px",
-  fontSize: "16px",
-  width: "100%",
-  height: "48px",
-  minHeight: "48px",
-  outline: "none",
-  appearance: "none",
-  WebkitAppearance: "none",
-};
-
 export function HeroSearch() {
-  const [tab, setTab]               = useState<"rent" | "sale">("rent");
-  const [neighborhood, setNeighborhood] = useState("");
-  const [type, setType]             = useState("");
+  const [query, setQuery] = useState("");
   const router = useRouter();
 
   function handleVoiceResult(text: string) {
-    const lower = text.toLowerCase();
-    const match = QUARTIERS.find((q) => lower.includes(q.name.toLowerCase()));
-    if (match) { setNeighborhood(match.id); return; }
-    const typeMatch = TYPES.find((t) => lower.includes(t.name.toLowerCase()));
-    if (typeMatch) { setType(typeMatch.id); return; }
+    setQuery(text);
     router.push(`/annonces?q=${encodeURIComponent(text)}`);
   }
 
-  function handleSearch() {
-    const params = new URLSearchParams();
-    params.set("tx", tab);
-    if (neighborhood) params.set("neighborhood", neighborhood);
-    if (type)         params.set("type", type);
-    router.push(`/annonces?${params.toString()}`);
+  function handleSearch(e?: React.FormEvent) {
+    e?.preventDefault();
+    router.push(
+      `/annonces${query.trim() ? `?q=${encodeURIComponent(query.trim())}` : ""}`,
+    );
   }
 
   return (
-    <div
-      className="rounded-2xl p-3 sm:p-4 w-full max-w-[640px] lg:max-w-[680px] mx-auto"
-      style={{
-        background: "#111a1f",
-        border: "1px solid #1e2a30",
-      }}
+    <form
+      onSubmit={handleSearch}
+      style={{ width: "100%", maxWidth: 680, margin: "0 auto" }}
     >
-      {/* Tabs — pleine largeur, 50/50 */}
       <div
-        className="grid grid-cols-2 gap-1 mb-4 p-1 rounded-[10px]"
-        style={{ background: "#0A1216", borderRadius: 12 }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          height: 52,
+          borderRadius: 30,
+          background: "var(--bg-secondary)",
+          border: "1px solid var(--border-subtle)",
+          padding: "0 6px 0 18px",
+          gap: 8,
+        }}
       >
-        {(["rent", "sale"] as const).map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className="flex-1 text-sm font-semibold rounded-lg transition-all"
-            style={{
-              minHeight: "44px",
-              borderRadius: 10,
-              ...(tab === t
-                ? { background: "#E9E900", color: "#0A1216", fontWeight: 700 }
-                : { color: "#666666" }),
-            }}
-          >
-            {t === "rent" ? "🔑 Location" : "💰 Achat"}
-          </button>
-        ))}
-      </div>
+        {/* Search icon */}
+        <Search
+          style={{
+            width: 18,
+            height: 18,
+            color: "var(--text-tertiary)",
+            flexShrink: 0,
+          }}
+        />
 
-      {/* Selects — empilés mobile, côte à côte sm+ */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-        <div>
-          <label
-            htmlFor="hs-quartier"
-            className="block text-xs font-semibold mb-1.5"
-            style={{ color: "#666666" }}
-          >
-            Quartier
-          </label>
-          <div className="relative">
-            <select
-              id="hs-quartier"
-              value={neighborhood}
-              onChange={(e) => {
-                setNeighborhood(e.target.value);
-                (e.target as HTMLSelectElement).style.color = e.target.value
-                  ? "#ffffff"
-                  : "rgba(247,242,230,0.55)";
-              }}
-              style={SELECT_BASE}
-            >
-              <option value="" style={{ color: "#0A1216" }}>Tous les quartiers</option>
-              {QUARTIERS.map((q) => (
-                <option key={q.id} value={q.id} style={{ color: "#0A1216" }}>
-                  {q.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div>
-          <label
-            htmlFor="hs-type"
-            className="block text-xs font-semibold mb-1.5"
-            style={{ color: "#666666" }}
-          >
-            Type de bien
-          </label>
-          <div className="relative">
-            <select
-              id="hs-type"
-              value={type}
-              onChange={(e) => {
-                setType(e.target.value);
-                (e.target as HTMLSelectElement).style.color = e.target.value
-                  ? "#ffffff"
-                  : "rgba(247,242,230,0.55)";
-              }}
-              style={SELECT_BASE}
-            >
-              <option value="" style={{ color: "#0A1216" }}>Tous les types</option>
-              {TYPES.map((t) => (
-                <option key={t.id} value={t.id} style={{ color: "#0A1216" }}>
-                  {t.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
+        {/* Text input — .input-bare overrides global !important rules */}
+        <input
+          type="text"
+          className="input-bare"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Où veux-tu habiter ?"
+          style={{
+            flex: 1,
+            fontSize: 15,
+            fontFamily: "var(--font-space-grotesk), sans-serif",
+          }}
+        />
 
-      {/* Bouton Rechercher + micro — flex row pleine largeur */}
-      <div className="flex gap-2">
-        <button
-          onClick={handleSearch}
-          className="flex-1 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-colors"
-          style={{ background: "#E9E900", color: "#0A1216", minHeight: "52px", fontWeight: 700 }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "#c4c400"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "#E9E900"; }}
-        >
-          <Search className="w-4 h-4" />
-          Rechercher
-        </button>
+        {/* Voice search */}
         <VoiceSearchButton onResult={handleVoiceResult} />
+
+        {/* Filters → /annonces */}
+        <button
+          type="button"
+          onClick={() =>
+            router.push(
+              `/annonces${query.trim() ? `?q=${encodeURIComponent(query.trim())}` : ""}`,
+            )
+          }
+          aria-label="Filtres avancés"
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.08)",
+            border: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "var(--text-tertiary)",
+            flexShrink: 0,
+            transition: "background 0.2s",
+            minHeight: "auto",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background =
+              "rgba(255,255,255,0.14)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background =
+              "rgba(255,255,255,0.08)";
+          }}
+        >
+          <SlidersHorizontal style={{ width: 15, height: 15 }} />
+        </button>
+
+        {/* Submit */}
+        <button
+          type="submit"
+          style={{
+            height: 40,
+            paddingLeft: 20,
+            paddingRight: 20,
+            borderRadius: 24,
+            background: "var(--accent-gold)",
+            border: "none",
+            cursor: "pointer",
+            fontSize: 13,
+            fontWeight: 700,
+            color: "#fff",
+            flexShrink: 0,
+            transition: "opacity 0.2s",
+            minHeight: "auto",
+            whiteSpace: "nowrap",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.opacity = "0.85";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.opacity = "1";
+          }}
+        >
+          Chercher
+        </button>
       </div>
-    </div>
+    </form>
   );
 }

@@ -525,3 +525,21 @@ html:not(.dark) .text-secondary {
   z-index: 10;
   touch-action: none;
 }
+
+/* ── Bare input — for inputs inside styled pill containers (search bar, etc.)
+   Overrides the global input !important rules that set opaque background.
+   Higher specificity (class > element) beats the global input rule.         ── */
+.input-bare {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  min-height: auto !important;
+  color: var(--text-primary) !important;
+}
+.input-bare:focus {
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none;
+}
