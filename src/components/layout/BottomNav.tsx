@@ -91,7 +91,7 @@ export function BottomNav() {
               padding: "6px 14px",
               borderRadius: 30,
               textDecoration: "none",
-              background: active ? "rgba(200,169,126,0.18)" : "transparent",
+              background: active ? "rgba(212,175,55,0.15)" : "transparent",
               transition: "all 0.2s ease",
               minHeight: "auto",
             }}

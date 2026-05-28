@@ -5,9 +5,9 @@
 
 @theme {
   /* Brand */
-  --color-brand: #E9E900;
-  --color-brand-dark: #c4c400;
-  --color-brand-light: #f0f000;
+  --color-brand: #D4AF37;
+  --color-brand-dark: #B8963A;
+  --color-brand-light: #E8C84A;
 
   /* Surfaces */
   --color-surface-dark: #111a1f;
@@ -60,8 +60,8 @@
   --bg-card:       #1E1E1E;
   --bg-card-dark:  #1a252b;
   --bg-card-light: #2c2f36;
-  --color-accent:  #E9E900;
-  --color-accent-dark: #c4c400;
+  --color-accent:  #D4AF37;
+  --color-accent-dark: #B8963A;
   --accent-gold:        #D4AF37;
   --accent-gold-light:  #E8C84A;
   --text-primary:       #FFFFFF;
@@ -85,9 +85,9 @@
   --bl-bg:          #0A1216;
   --bl-surface:     #111a1f;
   --bl-surface-2:   #1a252b;
-  --bl-amber:       #E9E900;
-  --bl-amber-light: #E9E900;
-  --bl-green:       #E9E900;
+  --bl-amber:       #D4AF37;
+  --bl-amber-light: #E8C84A;
+  --bl-green:       #D4AF37;
   --bl-cream:       #ffffff;
   --bl-cream-dim:   rgba(255,255,255,0.65);
   --bl-cream-faint: rgba(255,255,255,0.45);
@@ -97,14 +97,14 @@
   --LogerBien-bg:          #0A1216;
   --LogerBien-bg-alt:      #060d10;
   --LogerBien-surface:     #111a1f;
-  --LogerBien-amber:       #E9E900;
-  --LogerBien-amber-light: #E9E900;
+  --LogerBien-amber:       #D4AF37;
+  --LogerBien-amber-light: #E8C84A;
   --LogerBien-cream:       #ffffff;
   --LogerBien-cream-dim:   rgba(255,255,255,0.65);
   --LogerBien-cream-faint: rgba(255,255,255,0.45);
   --LogerBien-border:      rgba(30,42,48,0.8);
   --LogerBien-border-md:   #1e2a30;
-  --LogerBien-green:       #E9E900;
+  --LogerBien-green:       #D4AF37;
   --LogerBien-sidebar:     #060d10;
 
   /* Navigation */
@@ -202,9 +202,9 @@ html:not(.dark) {
   font-weight: 500;
 }
 .bl-badge-active {
-  background: rgba(233,233,0,0.12);
-  color: #c4c400;
-  border: 1px solid rgba(233,233,0,0.25);
+  background: rgba(212,175,55,0.12);
+  color: #D4AF37;
+  border: 1px solid rgba(212,175,55,0.25);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 11px;
@@ -229,9 +229,9 @@ html:not(.dark) {
   font-weight: 500;
 }
 .bl-badge-pro {
-  background: rgba(233,233,0,0.12);
-  color: #c4c400;
-  border: 1px solid rgba(233,233,0,0.30);
+  background: rgba(212,175,55,0.12);
+  color: #D4AF37;
+  border: 1px solid rgba(212,175,55,0.30);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 11px;
@@ -250,12 +250,12 @@ html:not(.dark) {
   border-left: 3px solid transparent;
 }
 .bl-nav-item:hover {
-  background: rgba(233,233,0,0.04);
+  background: rgba(212,175,55,0.04);
   color: #ffffff;
 }
 .bl-nav-item.active {
   border-left-color: var(--color-accent);
-  background: rgba(233,233,0,0.07);
+  background: rgba(212,175,55,0.07);
   color: var(--color-accent);
   border-radius: 0 10px 10px 0;
 }
@@ -388,8 +388,8 @@ input, select, textarea {
   font-family: var(--font-space-grotesk), sans-serif;
 }
 input:focus, select:focus, textarea:focus {
-  border-color: #E9E900 !important;
-  box-shadow: 0 0 0 2px rgba(233,233,0,0.15) !important;
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 0 2px rgba(212,175,55,0.15) !important;
   outline: none;
 }
 input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.45) !important; opacity: 1; }
@@ -402,7 +402,7 @@ html:not(.dark) textarea::placeholder { color: rgba(10,18,22,0.45) !important; }
   color: #0A1216 !important;
 }
 .admin-add-btn {
-  background: #E9E900 !important;
+  background: #D4AF37 !important;
   border: none !important;
 }
 .admin-btn-dark {
@@ -413,12 +413,12 @@ html:not(.dark) textarea::placeholder { color: rgba(10,18,22,0.45) !important; }
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: #0A1216; }
-::-webkit-scrollbar-thumb { background: #E9E900; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #c4c400; }
+::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #B8963A; }
 
 /* Utility classes */
 .text-gradient {
-  background: linear-gradient(135deg, #E9E900, #c4c400);
+  background: linear-gradient(135deg, #D4AF37, #B8963A);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

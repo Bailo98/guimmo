@@ -255,7 +255,10 @@ export function Header() {
           )}
           {isProprietaire && (
             <Link href="/publier" onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center gap-2 bg-[#E9E900] hover:bg-[#c4c400] text-white font-bold py-3 rounded-xl mt-2">
+              className="flex items-center justify-center gap-2 font-bold py-3 rounded-xl mt-2"
+              style={{ background: "#D4AF37", color: "#0B0F19" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#B8963A"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#D4AF37"; }}>
               <Plus className="w-4 h-4" /> Publier une annonce
             </Link>
           )}
