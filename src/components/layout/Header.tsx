@@ -120,38 +120,14 @@ export function Header() {
 
               {userMenuOpen && (
                 <div
-                  className="absolute right-0 top-full mt-2 w-48 rounded-2xl overflow-hidden z-50 border"
+                  className="absolute right-0 top-full mt-2 w-52 rounded-2xl overflow-hidden z-50 border"
                   style={{ background: "var(--nav-dropdown-bg)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderColor: "var(--nav-border)" }}
+                  onClick={() => setUserMenuOpen(false)}
                 >
-                  <div className="px-4 py-3 border-b" style={{ borderColor: "var(--nav-border)" }}>
+                  <div className="px-4 py-4">
                     <p className="text-sm font-semibold truncate" style={{ color: "var(--nav-text-active)" }}>{displayName}</p>
-                    <p className="text-xs truncate" style={{ color: "var(--nav-text)" }}>{user.email}</p>
+                    <p className="text-xs truncate mt-0.5" style={{ color: "var(--nav-text)" }}>{user.email}</p>
                   </div>
-                  {isAdmin ? (
-                    <Link href="/admin" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-sm font-semibold hover:bg-black/5 transition-colors"
-                      style={{ color: "var(--nav-text)" }}>
-                      <Shield className="w-4 h-4" /> Administration
-                    </Link>
-                  ) : (
-                    <Link href="/compte" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-sm hover:bg-black/5 transition-colors"
-                      style={{ color: "var(--nav-text)" }}>
-                      <User className="w-4 h-4" /> Mon compte
-                    </Link>
-                  )}
-                  {isProprietaire && !isAdmin && (
-                    <Link href="/publier" onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-4 py-3 text-sm hover:bg-black/5 transition-colors"
-                      style={{ color: "var(--nav-text)" }}>
-                      <Plus className="w-4 h-4" /> Publier une annonce
-                    </Link>
-                  )}
-                  <button onClick={handleSignOut}
-                    className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-colors border-t"
-                    style={{ borderColor: "var(--nav-border)" }}>
-                    <LogOut className="w-4 h-4" /> Se déconnecter
-                  </button>
                 </div>
               )}
             </div>
