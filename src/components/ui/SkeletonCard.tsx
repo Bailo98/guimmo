@@ -43,11 +43,11 @@
       }}>
         {/* Prix + badge */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div className="skeleton" style={{ height: 22, width: "42%", borderRadius: 6, background: "rgba(255,255,255,0.10)" }} />
+          <div className="skeleton" style={{ height: 22, width: "42%", borderRadius: 6, background: "var(--border-subtle)" }} />
           <div className="skeleton" style={{ height: 20, width: 64, borderRadius: 20, background: "var(--border-subtle)" }} />
         </div>
         {/* Titre */}
-        <div className="skeleton" style={{ height: 16, width: "78%", borderRadius: 5, background: "rgba(255,255,255,0.10)" }} />
+        <div className="skeleton" style={{ height: 16, width: "78%", borderRadius: 5, background: "var(--border-subtle)" }} />
         {/* Quartier */}
         <div className="skeleton" style={{ height: 13, width: "55%", borderRadius: 5, background: "var(--border-subtle)" }} />
       </div>

@@ -92,6 +92,12 @@
   --bl-cream-dim:   rgba(255,255,255,0.65);
   --bl-cream-faint: rgba(255,255,255,0.45);
   --bl-border:      #1e2a30;
+
+  /* Photo-overlay text — always white, never overridden in html:not(.dark).
+     Use these for ANY text sitting on top of a dark photo gradient scrim. */
+  --photo-text:       #ffffff;
+  --photo-text-dim:   rgba(255,255,255,0.65);
+  --photo-text-muted: rgba(255,255,255,0.50);
   --bl-border-md:   #1e2a30;
 
   --LogerBien-bg:          #0A1216;
@@ -605,9 +611,12 @@ html:not(.dark) .dark\:bg-\[var\(--bg-card-light\)\] { background-color: var(--b
 /* Catch-all for Tailwind arbitrary white text like text-[rgba(255,255,255,...)] */
 html:not(.dark) [class*="text-[rgba(255,255,255"] { color: var(--bl-cream) !important; }
 
-/* Remaining inline rgba(255,255,255,...) colors via attribute selector */
-html:not(.dark) [style*="color: rgba(255,255,255"] { color: var(--bl-cream-dim) !important; }
-html:not(.dark) [style*="color:rgba(255,255,255"] { color: var(--bl-cream-dim) !important; }
+/* NOTE: We intentionally do NOT add a catch-all for inline
+   rgba(255,255,255,...) color styles here. Those values are used by photo
+   overlay texts (price, title, neighbourhood on PropertyCard) that must
+   stay white even in light mode. Use var(--photo-text) / var(--photo-text-dim)
+   for overlay text and Tailwind text-white classes (handled above) for
+   card body text. */
 
 /* Fix placeholder colors for inputs with Tailwind placeholder: classes */
 html:not(.dark) .placeholder\:text-white\/30::placeholder { color: rgba(10,18,22,0.30) !important; }

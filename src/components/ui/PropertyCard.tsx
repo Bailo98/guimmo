@@ -133,10 +133,8 @@ export function PropertyCard({
       <div
         className={cn("group flex gap-3 rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5", className)}
         style={{
-          background: "var(--border-subtle)",
-          backdropFilter: "blur(20px) saturate(180%)",
-          WebkitBackdropFilter: "blur(20px) saturate(180%)",
-          border: "1px solid rgba(255,255,255,0.08)",
+          background: "var(--bg-card)",
+          border: "1px solid var(--color-border)",
         }}
       >
         <Link href={`/annonces/${property.id}`} className="relative w-28 flex-shrink-0">
@@ -144,23 +142,23 @@ export function PropertyCard({
             {primaryImage ? (
               <Image src={primaryImage.url} alt={property.title} fill className="object-cover" sizes="112px" loading="lazy" />
             ) : (
-              <div className="w-full h-full bg-white/5" />
+              <div className="w-full h-full" style={{ background: "var(--bg-secondary)" }} />
             )}
           </div>
         </Link>
         <div className="flex-1 p-3 min-w-0">
           <Link href={`/annonces/${property.id}`}>
-            <p className="font-bold text-sm text-white line-clamp-1">{property.title}</p>
-            <div className="flex items-center gap-1 text-white/50 text-xs mt-0.5">
+            <p className="font-bold text-sm dark:text-white text-[#121212] line-clamp-1">{property.title}</p>
+            <div className="flex items-center gap-1 dark:text-white/50 text-[rgba(18,18,18,0.5)] text-xs mt-0.5">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="flex-shrink-0 text-white/40">
+                strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="flex-shrink-0 dark:text-white/40 text-[rgba(18,18,18,0.4)]">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
               </svg>
               <span>{neighborhoodLabel}</span>
             </div>
-            <p className="text-white font-bold text-sm mt-1">
+            <p className="dark:text-white text-[#121212] font-bold text-sm mt-1">
               {formatPrice(property.price)}
-              {property.price_period === "month" && <span className="text-xs font-normal text-white/40">/mois</span>}
+              {property.price_period === "month" && <span className="text-xs font-normal dark:text-white/40 text-[rgba(18,18,18,0.4)]">/mois</span>}
             </p>
           </Link>
         </div>
@@ -211,10 +209,10 @@ export function PropertyCard({
         <div style={{
           position: "absolute", inset: 0, zIndex: 0,
           display: "flex", flexDirection: "column", alignItems: "center",
-          justifyContent: "center", gap: 8, background: "#111820",
+          justifyContent: "center", gap: 8, background: "var(--bg-secondary)",
         }}>
-          <Home style={{ width: 40, height: 40, color: "rgba(255,255,255,0.15)", strokeWidth: 1.2 }} />
-          <span style={{ color: "rgba(255,255,255,0.18)", fontSize: 11 }}>Aucune photo</span>
+          <Home style={{ width: 40, height: 40, color: "var(--bl-cream-faint)", strokeWidth: 1.2 }} />
+          <span style={{ color: "var(--bl-cream-faint)", fontSize: 11 }}>Aucune photo</span>
         </div>
       )}
 
@@ -343,14 +341,14 @@ export function PropertyCard({
           <span style={{
             fontSize: 22,
             fontWeight: 800,
-            color: "var(--bl-cream)",
+            color: "var(--photo-text)",
             lineHeight: 1.1,
             textShadow: "0 2px 6px rgba(0,0,0,0.50)",
           }}>
             {formatPrice(property.price)}
           </span>
           {property.price_period === "month" && (
-            <span style={{ fontSize: 12, color: "var(--bl-cream-dim)" }}>/mois</span>
+            <span style={{ fontSize: 12, color: "var(--photo-text-dim)" }}>/mois</span>
           )}
         </div>
 
@@ -359,7 +357,7 @@ export function PropertyCard({
           <p style={{
             margin: "2px 0 0",
             fontSize: 11,
-            color: "rgba(255,255,255,0.50)",
+            color: "var(--photo-text-muted)",
             lineHeight: 1,
             fontWeight: 500,
           }}>
@@ -373,7 +371,7 @@ export function PropertyCard({
           margin: "4px 0 0",
           fontSize: 14,
           fontWeight: 600,
-          color: "var(--bl-cream)",
+          color: "var(--photo-text)",
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -391,7 +389,7 @@ export function PropertyCard({
           overflow: "hidden",
         }}>
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none"
-            stroke="rgba(255,255,255,0.65)" strokeWidth="2"
+            stroke="var(--photo-text-dim)" strokeWidth="2"
             strokeLinecap="round" strokeLinejoin="round"
             style={{ flexShrink: 0 }}>
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
@@ -399,7 +397,7 @@ export function PropertyCard({
           </svg>
           <span style={{
             fontSize: 12,
-            color: "var(--bl-cream-dim)",
+            color: "var(--photo-text-dim)",
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
