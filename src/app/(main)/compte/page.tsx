@@ -7,8 +7,8 @@ import {
   Plus, Eye, MapPin, LogOut, Pencil, Trash2, User,
   CheckCircle, XCircle, RotateCcw, AlertTriangle, Search,
   Bell, BellOff, Heart, MessageCircle, BarChart2, Home,
-  TrendingUp, Phone, ChevronRight, Download, Calendar,
-  Star, CreditCard, Award,
+  TrendingUp, Phone, ChevronRight, Calendar,
+  Star, CreditCard, Award, Menu, X, Mail,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 
@@ -70,6 +70,10 @@ interface FavoriteProperty {
 interface Review {
   id: string; reviewer_id: string; reviewed_id: string;
   rating: number; comment: string | null; created_at: string;
+}
+interface ReviewWithProfile {
+  id: string; rating: number; comment: string | null;
+  created_at: string; reviewer_name: string | null; reviewer_avatar: string | null;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -569,6 +573,49 @@ async function loadRecentLeads(userId: string): Promise<Lead[]> {
       message: m.message, created_at: m.created_at,
       sender_name: pMap[m.sender_id]?.full_name ?? null,
       sender_phone: pMap[m.sender_id]?.phone ?? null,
+    }));
+  } catch { return []; }
+}
+
+async function loadAnnonceurStats(userId: string): Promise<{
+  listings: number; views: number; demands: number; visits: number; avgRating: number; reviewCount: number;
+}> {
+  if (!supabase) return { listings: 0, views: 0, demands: 0, visits: 0, avgRating: 0, reviewCount: 0 };
+  try {
+    const [propsRes, visitsRes, demandsRes, reviewsRes] = await Promise.all([
+      supabase.from("properties").select("id, views").eq("owner_id", userId),
+      supabase.from("visits").select("id", { count: "exact", head: true }).eq("owner_id", userId),
+      supabase.from("messages").select("id", { count: "exact", head: true }).eq("receiver_id", userId),
+      supabase.from("reviews").select("rating").eq("reviewed_id", userId),
+    ]);
+    const listings = (propsRes.data ?? []).length;
+    const views = (propsRes.data ?? []).reduce((a: number, p: { views: number | null }) => a + (p.views ?? 0), 0);
+    const demands = demandsRes.count ?? 0;
+    const visits = visitsRes.count ?? 0;
+    const ratings = reviewsRes.error ? [] : (reviewsRes.data ?? []).map((r: { rating: number }) => r.rating);
+    const avgRating = ratings.length > 0 ? ratings.reduce((a: number, r: number) => a + r, 0) / ratings.length : 0;
+    return { listings, views, demands, visits, avgRating, reviewCount: ratings.length };
+  } catch { return { listings: 0, views: 0, demands: 0, visits: 0, avgRating: 0, reviewCount: 0 }; }
+}
+
+async function loadRecentReviewsWithProfiles(userId: string): Promise<ReviewWithProfile[]> {
+  if (!supabase) return [];
+  try {
+    const { data: reviews, error } = await supabase
+      .from("reviews")
+      .select("id, rating, comment, created_at, reviewer_id")
+      .eq("reviewed_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(3);
+    if (error || !reviews) return [];
+    const reviewerIds = reviews.map((r: { reviewer_id: string }) => r.reviewer_id);
+    const { data: profiles } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", reviewerIds);
+    const pMap: Record<string, { full_name: string | null; avatar_url: string | null }> = {};
+    for (const p of profiles ?? []) pMap[p.id] = p;
+    return reviews.map((r: { id: string; rating: number; comment: string | null; created_at: string; reviewer_id: string }) => ({
+      id: r.id, rating: r.rating, comment: r.comment, created_at: r.created_at,
+      reviewer_name: pMap[r.reviewer_id]?.full_name ?? null,
+      reviewer_avatar: pMap[r.reviewer_id]?.avatar_url ?? null,
     }));
   } catch { return []; }
 }
@@ -1259,6 +1306,144 @@ function AbonnementSection({ profile }: { profile: ReturnType<typeof useAuth>["p
   );
 }
 
+// ─── DASHBOARD LISTING CARD ───────────────────────────────────────────────────
+
+function DashboardListingCard({ listing }: { listing: Listing }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    function handleClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [menuOpen]);
+
+  const statusInfo = listing.status === "pending"
+    ? { label: "En attente", bg: "rgba(234,179,8,0.90)", color: "#fff" }
+    : !listing.available_now
+    ? { label: "Inactif", bg: "rgba(239,68,68,0.90)", color: "#fff" }
+    : { label: "Publié", bg: "rgba(34,197,94,0.90)", color: "#fff" };
+
+  return (
+    <div className="rounded-2xl overflow-hidden" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+      <div className="relative" style={{ aspectRatio: "16/10" }}>
+        {listing.primary_image
+          ? <Image src={listing.primary_image} alt={listing.title} fill className="object-cover" sizes="(max-width:768px) 50vw,25vw" />
+          : <div className="w-full h-full flex items-center justify-center text-3xl" style={{ background: "var(--bl-surface-2)" }}>🏠</div>}
+        <span className="absolute top-2 left-2 text-[11px] font-bold px-2 py-0.5 rounded-full"
+          style={{ background: statusInfo.bg, color: statusInfo.color }}>{statusInfo.label}</span>
+        <div ref={menuRef} className="absolute top-2 right-2">
+          <button
+            onClick={(e) => { e.stopPropagation(); setMenuOpen(v => !v); }}
+            className="w-7 h-7 rounded-full flex items-center justify-center font-bold"
+            style={{ background: "rgba(0,0,0,0.55)", color: "#fff", backdropFilter: "blur(4px)", fontSize: 15, lineHeight: 1 }}>
+            ···
+          </button>
+          {menuOpen && (
+            <div className="absolute right-0 top-9 rounded-xl overflow-hidden shadow-xl z-20 w-40"
+              style={{ background: "var(--nav-dropdown-bg)", border: "1px solid var(--bl-border-md)", backdropFilter: "blur(12px)" }}>
+              <Link href={`/annonces/${listing.id}`}
+                className="flex items-center gap-2 px-3 py-2.5 text-xs font-medium hover:bg-white/5"
+                style={{ color: "var(--bl-cream-dim)" }}>
+                <Eye className="w-3.5 h-3.5" /> Voir l&apos;annonce
+              </Link>
+              <Link href={`/publier?edit=${listing.id}`}
+                className="flex items-center gap-2 px-3 py-2.5 text-xs font-medium hover:bg-white/5"
+                style={{ color: "var(--bl-cream-dim)" }}>
+                <Pencil className="w-3.5 h-3.5" /> Modifier
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="p-3">
+        <p className="font-bold text-xs line-clamp-2 leading-snug mb-1" style={{ color: "var(--bl-cream)" }}>{listing.title}</p>
+        <p className="font-bold text-sm mb-1.5" style={{ color: "var(--bl-amber)" }}>{formatPrice(listing.price, "GNF", listing.price_period)}</p>
+        <div className="flex items-center gap-1 text-[11px] mb-1.5" style={{ color: "var(--bl-cream-faint)" }}>
+          <MapPin className="w-3 h-3 flex-shrink-0" />
+          <span className="truncate">{NL[listing.neighborhood] ?? listing.neighborhood}</span>
+        </div>
+        <div className="flex items-center gap-3 text-[11px]" style={{ color: "var(--bl-cream-faint)" }}>
+          <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {listing.views} vues</span>
+          <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> {listing.whatsapp_clicks} contacts</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── ANNONCEUR SIDEBAR ────────────────────────────────────────────────────────
+
+function AnnonceurSidebarContent({
+  tabs, activeTab, onTabChange, profile, displayName, initials, accountTypeLabel, onSignOut, onClose,
+}: {
+  tabs: DashTab[]; activeTab: string; onTabChange: (t: string) => void;
+  profile: ReturnType<typeof useAuth>["profile"];
+  displayName: string; initials: string; accountTypeLabel: string;
+  onSignOut: () => Promise<void>;
+  onClose?: () => void;
+}) {
+  return (
+    <div className="flex flex-col h-full" style={{ background: "#0F1923" }}>
+      {onClose && (
+        <div className="flex items-center justify-between px-4 pt-4 pb-2">
+          <span className="text-xs font-bold" style={{ color: "rgba(255,255,255,0.30)", letterSpacing: "0.15em", textTransform: "uppercase" }}>Menu</span>
+          <button onClick={onClose} style={{ color: "rgba(255,255,255,0.50)" }}><X className="w-5 h-5" /></button>
+        </div>
+      )}
+      {/* Profile */}
+      <div className="px-4 py-5 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center font-bold text-sm flex-shrink-0"
+            style={{ background: "rgba(212,175,55,0.20)", color: "#D4AF37" }}>
+            {profile?.avatar_url
+              ? <Image src={profile.avatar_url} alt={displayName} width={40} height={40} className="w-10 h-10 object-cover rounded-full" />
+              : initials}
+          </div>
+          <div className="min-w-0">
+            <p className="font-bold text-sm truncate" style={{ color: "#fff" }}>{displayName}</p>
+            <p className="text-[11px] truncate" style={{ color: "rgba(255,255,255,0.40)" }}>{accountTypeLabel}</p>
+          </div>
+        </div>
+      </div>
+      {/* Nav */}
+      <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
+        {tabs.map((t) => {
+          const isActive = activeTab === t.key;
+          return (
+            <button key={t.key}
+              onClick={() => { onTabChange(t.key); onClose?.(); }}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left"
+              style={{
+                background: isActive ? "rgba(212,175,55,0.12)" : "transparent",
+                color: isActive ? "#D4AF37" : "rgba(255,255,255,0.50)",
+                borderLeft: isActive ? "3px solid #D4AF37" : "3px solid transparent",
+              }}>
+              {t.icon}
+              <span className="truncate flex-1">{t.label}</span>
+              {(t.badge ?? 0) > 0 && (
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
+                  style={{ background: "#D4AF37", color: "#0B0F19" }}>{t.badge}</span>
+              )}
+            </button>
+          );
+        })}
+      </nav>
+      {/* Sign out */}
+      <div className="px-2 pb-4 pt-2 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+        <button onClick={onSignOut}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors"
+          style={{ color: "rgba(240,68,68,0.70)" }}>
+          <LogOut className="w-4 h-4" /> Se déconnecter
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── DASHBOARD ANNONCEUR (unified) ────────────────────────────────────────────
 
 function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
@@ -1267,199 +1452,470 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }) {
-  const [tab, setTab]               = useState("dashboard");
-  const [statsData, setStatsData]   = useState<DayStat[]>([]);
-  const [statsLoading, setStatsLoading] = useState(true);
-  const [totalViews, setTotalViews] = useState(0);
-  const [totalWA, setTotalWA]       = useState(0);
-  const [activeCount, setActiveCount] = useState(0);
-  const [msgCount, setMsgCount]     = useState(0);
+  const [tab, setTab]                     = useState("dashboard");
+  const [sidebarOpen, setSidebarOpen]     = useState(false);
+  const [statsData, setStatsData]         = useState<DayStat[]>([]);
+  const [statsLoading, setStatsLoading]   = useState(true);
+  const [totalViews, setTotalViews]       = useState(0);
+  const [totalWA, setTotalWA]             = useState(0);
+  const [activeCount, setActiveCount]     = useState(0);
+  const [msgCount, setMsgCount]           = useState(0);
   const [pendingVisits, setPendingVisits] = useState(0);
+  const [annStats, setAnnStats]           = useState<{
+    listings: number; views: number; demands: number; visits: number; avgRating: number; reviewCount: number;
+  } | null>(null);
+  const [recentReviews, setRecentReviews] = useState<ReviewWithProfile[]>([]);
+  const [dashListings, setDashListings]   = useState<Listing[]>([]);
+  const [dashListingsLoading, setDashListingsLoading] = useState(true);
 
-  const role     = profile?.role ?? "proprietaire";
-  const isAgent  = role === "agent";
-  const isAgence = ["agence", "agency"].includes(role) || profile?.account_type === "agence";
-
-  const displayName = (isAgence ? profile?.agency_name : null) ?? profile?.full_name ?? "Annonceur";
-  const initials    = displayName.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
+  const role          = profile?.role ?? "proprietaire";
+  const isAgent       = role === "agent";
+  const isAgence      = ["agence", "agency"].includes(role) || profile?.account_type === "agence";
+  const accountTypeLabel = isAgence ? "Agence immobilière" : isAgent ? "Agent immobilier" : "Propriétaire";
+  const displayName   = (isAgence ? profile?.agency_name : null) ?? profile?.full_name ?? "Annonceur";
+  const initials      = displayName.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const memberSince   = (profile as any)?.created_at
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ? new Date((profile as any).created_at).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })
+    : null;
+  const wa            = profile?.phone?.replace(/\D/g, "") ?? "";
 
   useEffect(() => {
     Promise.all([
       loadDayStats(user.id, 30),
       loadMessagesCount(user.id),
-    ]).then(([{ data, active, totalViews: tv, totalWA: tw }, mc]) => {
+      loadAnnonceurStats(user.id),
+      loadRecentReviewsWithProfiles(user.id),
+    ]).then(([{ data, active, totalViews: tv, totalWA: tw }, mc, ann, revs]) => {
       setStatsData(data); setActiveCount(active); setTotalViews(tv); setTotalWA(tw);
       setMsgCount(mc); setStatsLoading(false);
+      setAnnStats(ann); setRecentReviews(revs);
     });
+  }, [user.id]);
+
+  useEffect(() => {
+    async function loadDashListings() {
+      if (!supabase) { setDashListingsLoading(false); return; }
+      const { data } = await supabase.from("properties")
+        .select("id,title,neighborhood,price,price_period,available_now,views,expires_at,status,property_images(url,is_primary,sort_order)")
+        .eq("owner_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(4);
+      const { data: sd } = await supabase.from("listing_stats").select("property_id,whatsapp_clicks");
+      const waMap: Record<string, number> = {};
+      for (const s of sd ?? []) waMap[s.property_id] = (waMap[s.property_id] ?? 0) + (s.whatsapp_clicks ?? 0);
+      const mapped: Listing[] = (data ?? []).map((row) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const imgs: any[] = (row as any).property_images ?? [];
+        const primary = imgs.find((i) => i.is_primary) ?? imgs.sort((a, b) => a.sort_order - b.sort_order)[0];
+        return {
+          id: row.id, title: row.title, neighborhood: row.neighborhood,
+          price: row.price, price_period: row.price_period,
+          available_now: row.available_now ?? true, views: row.views ?? 0,
+          whatsapp_clicks: waMap[row.id] ?? 0, primary_image: primary?.url ?? null,
+          expires_at: (row as { expires_at?: string | null }).expires_at ?? null,
+          status: (row as { status?: string | null }).status ?? null,
+        };
+      });
+      setDashListings(mapped); setDashListingsLoading(false);
+    }
+    loadDashListings();
   }, [user.id]);
 
   const chartData    = statsData.map((d) => ({ ...d, label: fmtDate(d.date) }));
   const chartSampled = chartData.filter((_, i) => i % 5 === 0);
 
-  const tabs: DashTab[] = [
-    { key: "dashboard",    label: "Tableau de bord",     icon: <BarChart2 className="w-4 h-4" /> },
-    { key: "annonces",     label: "Mes annonces",        icon: <Home className="w-4 h-4" /> },
-    { key: "visites",      label: "Visites & demandes",  icon: <Calendar className="w-4 h-4" />, badge: pendingVisits },
-    { key: "messages",     label: "Messages",            icon: <MessageCircle className="w-4 h-4" /> },
-    { key: "statistiques", label: "Statistiques",        icon: <TrendingUp className="w-4 h-4" /> },
+  const sidebarTabs: DashTab[] = [
+    { key: "dashboard",    label: "Tableau de bord",    icon: <BarChart2 className="w-4 h-4" /> },
+    { key: "annonces",     label: "Mes annonces",       icon: <Home className="w-4 h-4" /> },
+    { key: "visites",      label: "Visites & demandes", icon: <Calendar className="w-4 h-4" />, badge: pendingVisits },
+    { key: "messages",     label: "Messages",           icon: <MessageCircle className="w-4 h-4" /> },
+    { key: "statistiques", label: "Statistiques",       icon: <TrendingUp className="w-4 h-4" /> },
     { key: "avis",         label: "Avis & évaluations", icon: <Star className="w-4 h-4" /> },
-    { key: "profil",       label: "Profil",              icon: <User className="w-4 h-4" /> },
-    { key: "abonnement",   label: "Abonnement",          icon: <CreditCard className="w-4 h-4" /> },
+    { key: "profil",       label: "Profil",             icon: <User className="w-4 h-4" /> },
+    { key: "abonnement",   label: "Abonnement",         icon: <CreditCard className="w-4 h-4" /> },
   ];
 
+  const sidebarProps = { tabs: sidebarTabs, activeTab: tab, onTabChange: setTab, profile, displayName, initials, accountTypeLabel, onSignOut: signOut };
+
   return (
-    <DashboardLayout tabs={tabs} active={tab} onChange={setTab} signOut={signOut}
-      userName={displayName} userInitials={initials}
-      userBadge={profile?.is_verified_pro ? (isAgence ? "Agence Premium" : isAgent ? "Agent Pro" : "Pro") : undefined}>
+    <div style={{ display: "flex", minHeight: "80vh" }}>
+      {/* ── Sidebar desktop ── */}
+      <aside className="hidden lg:flex flex-col flex-shrink-0" style={{ width: 220, background: "#0F1923", borderRight: "1px solid rgba(255,255,255,0.06)" }}>
+        <AnnonceurSidebarContent {...sidebarProps} />
+      </aside>
 
-      {/* ── TABLEAU DE BORD ── */}
-      {tab === "dashboard" && (
-        <>
-          <div className="mb-6">
-            <h1 style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-amber-light)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>
-              Bonjour{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}
-            </h1>
-            <p className="text-sm mt-1" style={{ color: "var(--bl-cream-dim)", fontWeight: 300 }}>Performance sur 30 jours</p>
-            <p className="text-xs mt-0.5 capitalize" style={{ color: "var(--bl-cream-faint)" }}>{todayLabel()}</p>
-          </div>
-
-          {statsLoading ? (
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              {[1,2,3,4].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "var(--bl-surface-2)" }} />)}
-            </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <StatCard label="Vues (30 jours)"   value={totalViews}  sub="toutes annonces"   borderColor="#D4AF37" />
-                <StatCard label="Clics WhatsApp"     value={totalWA}     sub="30 derniers jours" borderColor="#D4AF37" />
-                <StatCard label="Messages reçus"     value={msgCount}    sub="cette semaine"     borderColor="#D4AF37" />
-                <StatCard label="Annonces actives"   value={activeCount} sub={profile?.is_verified_pro ? "illimitées" : "sur 5 max"} borderColor="#D4AF37" />
-              </div>
-
-              <DashboardChart
-                type="bar"
-                title="Vues par jour — 30 jours"
-                data={chartData}
-                series={[{ dataKey: "views", name: "Vues", color: "#D4AF37" }]}
-                ticks={chartSampled.map((d) => d.label)}
-              />
-
-              <SectionHeader title="Dernières annonces" action={
-                <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
-                  <Plus className="w-3.5 h-3.5" /> Publier
-                </Link>
-              } />
-              <ListingsManager userId={user.id} limit={3} />
-
-              <MonthlyReportSection userId={user.id} />
-            </>
-          )}
-        </>
-      )}
-
-      {/* ── MES ANNONCES ── */}
-      {tab === "annonces" && (
-        <>
-          <SectionHeader title="Mes annonces" action={
-            <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
-              <Plus className="w-3.5 h-3.5" /> Publier
-            </Link>
-          } />
-          <ListingsManager userId={user.id} />
-        </>
-      )}
-
-      {/* ── VISITES & DEMANDES ── */}
-      {tab === "visites" && (
-        <>
-          <SectionHeader title="Visites & demandes" subtitle="Reçues sur vos annonces" />
-          <VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />
-        </>
-      )}
-
-      {/* ── MESSAGES ── */}
-      {tab === "messages" && (
-        <div>
-          <SectionHeader title="Messages" />
-          <Link href="/messages" className="flex items-center justify-between rounded-2xl p-5" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
-            <div className="flex items-center gap-3">
-              <MessageCircle className="w-6 h-6 text-blue-400" />
-              <div>
-                <p className="font-bold" style={{ color: "var(--bl-cream)" }}>Mes messages</p>
-                <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Ouvrir la messagerie complète</p>
-              </div>
-            </div>
-            <ChevronRight className="w-5 h-5" style={{ color: "var(--bl-cream-faint)" }} />
-          </Link>
+      {/* ── Mobile drawer ── */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+          <aside style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 270, zIndex: 51 }}>
+            <AnnonceurSidebarContent {...sidebarProps} onClose={() => setSidebarOpen(false)} />
+          </aside>
         </div>
       )}
 
-      {/* ── STATISTIQUES ── */}
-      {tab === "statistiques" && (
-        <>
-          <SectionHeader title="Statistiques" subtitle="30 derniers jours" />
-          {statsLoading ? (
-            <div className="h-48 rounded-2xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />
-          ) : (
-            <>
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <StatCard label="Vues totales"       value={totalViews}  borderColor="#D4AF37" />
-                <StatCard label="Contacts WhatsApp"  value={totalWA}     borderColor="#D4AF37" />
-                <StatCard label="Messages reçus"     value={msgCount}    borderColor="#D4AF37" />
-                <StatCard label="Annonces actives"   value={activeCount} borderColor="#D4AF37" />
+      {/* ── Content column ── */}
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+        {/* Mobile top bar */}
+        <div className="lg:hidden flex items-center gap-3 px-4 py-3" style={{ background: "#0F1923", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+          <button onClick={() => setSidebarOpen(true)} style={{ color: "rgba(255,255,255,0.70)" }}>
+            <Menu className="w-5 h-5" />
+          </button>
+          <span className="font-bold text-sm flex-1 truncate" style={{ color: "#fff" }}>{displayName}</span>
+          <span className="text-[11px] px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>{accountTypeLabel}</span>
+        </div>
+
+        {/* ── Profile header ── */}
+        <div style={{ background: "linear-gradient(135deg,#0F1923 0%,#162030 60%,#1a2535 100%)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "24px 24px 20px" }}>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-wrap">
+            {/* Avatar */}
+            <div className="relative flex-shrink-0">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden flex items-center justify-center font-bold text-2xl"
+                style={{ background: "rgba(212,175,55,0.20)", color: "#D4AF37", border: "3px solid rgba(212,175,55,0.30)" }}>
+                {profile?.avatar_url
+                  ? <Image src={profile.avatar_url} alt={displayName} width={80} height={80} className="w-full h-full object-cover" />
+                  : initials}
               </div>
-              <DashboardChart
-                type="line"
-                title="Vues + WhatsApp — 30 jours"
-                data={chartData}
-                height={200}
-                series={[
-                  { dataKey: "views",           name: "Vues",     color: "#D4AF37" },
-                  { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
-                ]}
-                ticks={chartSampled.map((d) => d.label)}
-                showDots
-              />
-            </>
-          )}
-        </>
-      )}
+              {profile?.is_verified_pro && (
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "#D4AF37" }}>
+                  <CheckCircle className="w-3.5 h-3.5" style={{ color: "#0B0F19" }} />
+                </div>
+              )}
+            </div>
 
-      {/* ── AVIS & ÉVALUATIONS ── */}
-      {tab === "avis" && (
-        <>
-          <SectionHeader title="Avis & évaluations" subtitle="Les avis laissés par vos clients" />
-          <ReviewsSection userId={user.id} />
-        </>
-      )}
+            {/* Name + contact */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap mb-1">
+                <h1 className="font-bold text-lg sm:text-xl" style={{ color: "#fff", fontFamily: "var(--font-display), sans-serif" }}>{displayName}</h1>
+                {profile?.is_verified_pro && (
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>VÉRIFIÉ ✓</span>
+                )}
+              </div>
+              <div className="flex items-center gap-3 text-xs flex-wrap mb-3" style={{ color: "rgba(255,255,255,0.45)" }}>
+                <span>{accountTypeLabel}</span>
+                <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> Conakry, Guinée</span>
+                {memberSince && <span>Membre depuis {memberSince}</span>}
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                {profile?.phone && (
+                  <a href={`tel:${profile.phone}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
+                    style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)", color: "rgba(255,255,255,0.75)" }}>
+                    <Phone className="w-3.5 h-3.5" /> {profile.phone}
+                  </a>
+                )}
+                {user.email && (
+                  <a href={`mailto:${user.email}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
+                    style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)", color: "rgba(255,255,255,0.75)" }}>
+                    <Mail className="w-3.5 h-3.5" /> Email
+                  </a>
+                )}
+                {wa && (
+                  <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold"
+                    style={{ background: "#25D366", color: "#fff" }}>
+                    WhatsApp
+                  </a>
+                )}
+              </div>
+            </div>
 
-      {/* ── PROFIL ── */}
-      {tab === "profil" && (
-        <>
-          <SectionHeader title="Mon profil" />
-          {(isAgent || isAgence) && (
-            <Link
-              href={isAgence ? `/agences/${user.id}` : `/agents/${user.id}`}
-              className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4"
-              style={{ background: "rgba(212,175,55,0.07)", border: "1px solid rgba(212,175,55,0.20)" }}>
-              <span className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>
-                Voir mon profil public
-              </span>
-              <ChevronRight className="w-4 h-4" style={{ color: "var(--bl-amber)" }} />
-            </Link>
-          )}
-          <ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} />
-        </>
-      )}
+            {/* Stats row */}
+            {annStats && (
+              <div className="flex items-center gap-5 sm:gap-6 flex-wrap sm:flex-nowrap sm:border-l sm:pl-6" style={{ borderColor: "rgba(255,255,255,0.10)" }}>
+                {[
+                  { label: "Annonces",  value: String(annStats.listings) },
+                  { label: "Vues",      value: String(annStats.views) },
+                  { label: "Demandes",  value: String(annStats.demands) },
+                  { label: "Visites",   value: String(annStats.visits) },
+                  ...(annStats.reviewCount > 0 ? [{ label: "Note", value: `${annStats.avgRating.toFixed(1)}★` }] : []),
+                ].map((s) => (
+                  <div key={s.label} className="text-center">
+                    <p className="font-bold text-base sm:text-lg" style={{ color: "#D4AF37" }}>{s.value}</p>
+                    <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.38)" }}>{s.label}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
 
-      {/* ── ABONNEMENT ── */}
-      {tab === "abonnement" && (
-        <>
-          <SectionHeader title="Abonnement" subtitle="Gérez votre plan" />
-          <AbonnementSection profile={profile} />
-        </>
-      )}
-    </DashboardLayout>
+        {/* ── Body: main + right panel ── */}
+        <div style={{ flex: 1, display: "flex" }}>
+          {/* Main tab content */}
+          <div style={{ flex: 1, minWidth: 0, padding: "24px", overflowY: "auto" }}>
+
+            {/* ── TABLEAU DE BORD ── */}
+            {tab === "dashboard" && (
+              <>
+                <div className="mb-5">
+                  <h2 style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-amber-light)", fontSize: 22, fontWeight: 700 }}>
+                    Bonjour{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}
+                  </h2>
+                  <p className="text-sm mt-0.5 capitalize" style={{ color: "var(--bl-cream-faint)", fontWeight: 300 }}>
+                    Performance sur 30 jours · {todayLabel()}
+                  </p>
+                </div>
+
+                {statsLoading ? (
+                  <div className="grid grid-cols-2 gap-3 mb-6">
+                    {[1,2,3,4].map((i) => <div key={i} className="h-24 animate-pulse rounded-xl" style={{ background: "var(--bl-surface-2)" }} />)}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3 mb-6">
+                    <StatCard label="Vues (30j)"       value={totalViews}  sub="toutes annonces"   borderColor="#D4AF37" />
+                    <StatCard label="Clics WhatsApp"   value={totalWA}     sub="30 derniers jours" borderColor="#D4AF37" />
+                    <StatCard label="Messages reçus"   value={msgCount}    sub="cette semaine"     borderColor="#D4AF37" />
+                    <StatCard label="Annonces actives" value={activeCount} sub={profile?.is_verified_pro ? "illimitées" : "sur 5 max"} borderColor="#D4AF37" />
+                  </div>
+                )}
+
+                {!statsLoading && (
+                  <DashboardChart
+                    type="bar"
+                    title="Vues par jour — 30 jours"
+                    data={chartData}
+                    series={[{ dataKey: "views", name: "Vues", color: "#D4AF37" }]}
+                    ticks={chartSampled.map((d) => d.label)}
+                  />
+                )}
+
+                <div className="flex items-center justify-between mb-3 mt-6">
+                  <h3 className="font-bold text-sm" style={{ color: "var(--bl-cream)" }}>Annonces récentes</h3>
+                  <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg"
+                    style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
+                    <Plus className="w-3.5 h-3.5" /> Publier
+                  </Link>
+                </div>
+
+                {dashListingsLoading ? (
+                  <div className="grid grid-cols-2 gap-3">
+                    {[1,2].map((i) => <div key={i} className="rounded-2xl animate-pulse" style={{ aspectRatio: "16/10", background: "var(--bl-surface-2)" }} />)}
+                  </div>
+                ) : dashListings.length === 0 ? (
+                  <div className="text-center py-10 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
+                    <p className="text-3xl mb-2">🏠</p>
+                    <p className="font-bold mb-3" style={{ color: "var(--bl-cream)" }}>Aucune annonce</p>
+                    <Link href="/publier" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm"
+                      style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
+                      <Plus className="w-4 h-4" /> Publier maintenant →
+                    </Link>
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-2 gap-3">
+                      {dashListings.map((listing) => <DashboardListingCard key={listing.id} listing={listing} />)}
+                    </div>
+                    <button onClick={() => setTab("annonces")}
+                      className="w-full mt-4 py-2.5 rounded-xl text-sm font-bold transition-colors"
+                      style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.25)", color: "var(--bl-amber)" }}>
+                      Voir toutes les annonces →
+                    </button>
+                  </>
+                )}
+
+                <MonthlyReportSection userId={user.id} />
+              </>
+            )}
+
+            {/* ── MES ANNONCES ── */}
+            {tab === "annonces" && (
+              <>
+                <SectionHeader title="Mes annonces" action={
+                  <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
+                    <Plus className="w-3.5 h-3.5" /> Publier
+                  </Link>
+                } />
+                <ListingsManager userId={user.id} />
+              </>
+            )}
+
+            {/* ── VISITES & DEMANDES ── */}
+            {tab === "visites" && (
+              <>
+                <SectionHeader title="Visites & demandes" subtitle="Reçues sur vos annonces" />
+                <VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />
+              </>
+            )}
+
+            {/* ── MESSAGES ── */}
+            {tab === "messages" && (
+              <div>
+                <SectionHeader title="Messages" />
+                <Link href="/messages" className="flex items-center justify-between rounded-2xl p-5"
+                  style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+                  <div className="flex items-center gap-3">
+                    <MessageCircle className="w-6 h-6 text-blue-400" />
+                    <div>
+                      <p className="font-bold" style={{ color: "var(--bl-cream)" }}>Mes messages</p>
+                      <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Ouvrir la messagerie complète</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5" style={{ color: "var(--bl-cream-faint)" }} />
+                </Link>
+              </div>
+            )}
+
+            {/* ── STATISTIQUES ── */}
+            {tab === "statistiques" && (
+              <>
+                <SectionHeader title="Statistiques" subtitle="30 derniers jours" />
+                {statsLoading ? (
+                  <div className="h-48 rounded-2xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />
+                ) : (
+                  <>
+                    <div className="grid grid-cols-2 gap-3 mb-6">
+                      <StatCard label="Vues totales"      value={totalViews}  borderColor="#D4AF37" />
+                      <StatCard label="Contacts WhatsApp" value={totalWA}     borderColor="#D4AF37" />
+                      <StatCard label="Messages reçus"    value={msgCount}    borderColor="#D4AF37" />
+                      <StatCard label="Annonces actives"  value={activeCount} borderColor="#D4AF37" />
+                    </div>
+                    <DashboardChart
+                      type="line"
+                      title="Vues + WhatsApp — 30 jours"
+                      data={chartData}
+                      height={200}
+                      series={[
+                        { dataKey: "views",           name: "Vues",     color: "#D4AF37" },
+                        { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
+                      ]}
+                      ticks={chartSampled.map((d) => d.label)}
+                      showDots
+                    />
+                  </>
+                )}
+              </>
+            )}
+
+            {/* ── AVIS & ÉVALUATIONS ── */}
+            {tab === "avis" && (
+              <>
+                <SectionHeader title="Avis & évaluations" subtitle="Les avis laissés par vos clients" />
+                <ReviewsSection userId={user.id} />
+              </>
+            )}
+
+            {/* ── PROFIL ── */}
+            {tab === "profil" && (
+              <>
+                <SectionHeader title="Mon profil" />
+                {(isAgent || isAgence) && (
+                  <Link href={isAgence ? `/agences/${user.id}` : `/agents/${user.id}`}
+                    className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4"
+                    style={{ background: "rgba(212,175,55,0.07)", border: "1px solid rgba(212,175,55,0.20)" }}>
+                    <span className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>Voir mon profil public</span>
+                    <ChevronRight className="w-4 h-4" style={{ color: "var(--bl-amber)" }} />
+                  </Link>
+                )}
+                <ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} />
+              </>
+            )}
+
+            {/* ── ABONNEMENT ── */}
+            {tab === "abonnement" && (
+              <>
+                <SectionHeader title="Abonnement" subtitle="Gérez votre plan" />
+                <AbonnementSection profile={profile} />
+              </>
+            )}
+          </div>
+
+          {/* ── Right panel (xl+) ── */}
+          <aside className="hidden xl:flex flex-col gap-4 flex-shrink-0"
+            style={{ width: 280, padding: "24px", borderLeft: "1px solid var(--bl-border)" }}>
+
+            {/* Statut du profil */}
+            <div className="rounded-2xl p-4" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+              <p className="text-[11px] font-bold uppercase mb-3" style={{ color: "var(--bl-cream-faint)", letterSpacing: "0.12em" }}>Statut du profil</p>
+              {profile?.is_verified_pro ? (
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(34,197,94,0.15)" }}>
+                    <CheckCircle className="w-5 h-5" style={{ color: "#22c55e" }} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm" style={{ color: "#22c55e" }}>VÉRIFIÉ</p>
+                    <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>Compte professionnel actif</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(234,179,8,0.15)" }}>
+                    <AlertTriangle className="w-5 h-5" style={{ color: "#eab308" }} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm" style={{ color: "#eab308" }}>EN ATTENTE</p>
+                    <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>Vérification en cours</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Plan actuel */}
+            <div className="rounded-2xl p-4"
+              style={{ background: "var(--bl-surface)", border: profile?.is_verified_pro ? "1px solid rgba(212,175,55,0.30)" : "1px solid var(--bl-border)" }}>
+              <p className="text-[11px] font-bold uppercase mb-3" style={{ color: "var(--bl-cream-faint)", letterSpacing: "0.12em" }}>Plan actuel</p>
+              <div className="flex items-center gap-2 mb-3">
+                <CreditCard className="w-5 h-5" style={{ color: profile?.is_verified_pro ? "var(--bl-amber)" : "var(--bl-cream-faint)" }} />
+                <p className="font-bold" style={{ color: "var(--bl-cream)" }}>{profile?.is_verified_pro ? "Plan Pro" : "Plan Gratuit"}</p>
+                {profile?.is_verified_pro && (
+                  <span className="ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>Actif</span>
+                )}
+              </div>
+              <Link href="/tarifs" className="flex items-center justify-center py-2 rounded-xl text-xs font-bold transition-all"
+                style={profile?.is_verified_pro
+                  ? { background: "var(--bl-surface-2)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }
+                  : { background: "var(--bl-amber)", color: "#0B0F19" }}>
+                {profile?.is_verified_pro ? "Gérer l'abonnement" : "Passer Pro →"}
+              </Link>
+            </div>
+
+            {/* Avis récents */}
+            <div className="rounded-2xl p-4" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+              <p className="text-[11px] font-bold uppercase mb-3" style={{ color: "var(--bl-cream-faint)", letterSpacing: "0.12em" }}>Avis des utilisateurs</p>
+              {recentReviews.length === 0 ? (
+                <div className="text-center py-4">
+                  <Star className="w-6 h-6 mx-auto mb-2" style={{ color: "var(--bl-cream-faint)" }} />
+                  <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>Aucun avis pour l&apos;instant</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {recentReviews.map((r) => {
+                    const ini = (r.reviewer_name ?? "?").split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
+                    return (
+                      <div key={r.id} className="flex gap-2.5">
+                        <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center text-[10px] font-bold flex-shrink-0"
+                          style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>
+                          {r.reviewer_avatar
+                            ? <Image src={r.reviewer_avatar} alt={r.reviewer_name ?? ""} width={28} height={28} className="w-7 h-7 object-cover rounded-full" />
+                            : ini}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-0.5 mb-0.5">
+                            {[1,2,3,4,5].map((s) => (
+                              <Star key={s} className="w-2.5 h-2.5" fill={s <= r.rating ? "#D4AF37" : "none"} style={{ color: "#D4AF37" }} />
+                            ))}
+                          </div>
+                          {r.comment && <p className="text-xs line-clamp-2" style={{ color: "var(--bl-cream-dim)" }}>{r.comment}</p>}
+                          <p className="text-[10px] mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>
+                            {r.reviewer_name ?? "Anonyme"} · {new Date(r.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <button onClick={() => setTab("avis")}
+                    className="w-full mt-1 py-2 rounded-xl text-xs font-bold"
+                    style={{ background: "rgba(212,175,55,0.08)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.20)" }}>
+                    Voir tous les avis →
+                  </button>
+                </div>
+              )}
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1695,8 +2151,8 @@ export default function ComptePage() {
 
   // ── Annonceur (proprietaire / owner / agent / agence / agency) ───────────────
   return (
-    <div className="max-w-3xl lg:max-w-5xl mx-auto lg:px-0">
-      <div className="lg:rounded-2xl lg:overflow-hidden" style={{ border: "1px solid var(--bl-border)" }}>
+    <div className="max-w-3xl lg:max-w-6xl mx-auto lg:px-0">
+      <div style={{ border: "1px solid var(--bl-border)", borderRadius: "0 0 16px 16px", overflow: "hidden" }}>
         <AnnonceurDashboard {...dashProps} />
       </div>
     </div>
