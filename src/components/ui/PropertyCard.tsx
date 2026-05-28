@@ -257,7 +257,7 @@ export function PropertyCard({
             position: "absolute", left: 10, top: "40%", transform: "translateY(-50%)", zIndex: 5,
             width: 30, height: 30, background: "rgba(0,0,0,0.50)", border: "none",
             borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", color: "var(--bl-cream)", backdropFilter: "blur(4px)",
+            cursor: "pointer", color: "#ffffff", backdropFilter: "blur(4px)",
           }}>
           <ChevronLeft style={{ width: 15, height: 15 }} />
         </button>
@@ -269,7 +269,7 @@ export function PropertyCard({
             position: "absolute", right: 10, top: "40%", transform: "translateY(-50%)", zIndex: 5,
             width: 30, height: 30, background: "rgba(0,0,0,0.50)", border: "none",
             borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", color: "var(--bl-cream)", backdropFilter: "blur(4px)",
+            cursor: "pointer", color: "#ffffff", backdropFilter: "blur(4px)",
           }}>
           <ChevronRight style={{ width: 15, height: 15 }} />
         </button>

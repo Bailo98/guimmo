@@ -221,7 +221,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           display: "block", textAlign: "center", width: "100%", maxWidth: 320,
           marginTop: 24, padding: "14px 0", borderRadius: 14,
           background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.12)",
-          color: "var(--bl-cream)", fontWeight: 600, fontSize: 15, textDecoration: "none",
+          color: "#ffffff", fontWeight: 600, fontSize: 15, textDecoration: "none",
         }}>
           Voir toutes les annonces
         </a>
@@ -259,14 +259,14 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
       <div
         style={{
           position: "fixed",
-          top: 0,
+          top: 72,
           left: 0,
           right: 0,
           zIndex: 200,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px",
+          padding: "12px 16px",
           background: "linear-gradient(rgba(0,0,0,0.50) 0%, transparent 100%)",
           pointerEvents: "none",
         }}
@@ -283,7 +283,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
             cursor: "pointer",
-            color: "var(--bl-cream)",
+            color: "#ffffff",
             flexShrink: 0,
           }}
         >
@@ -295,31 +295,16 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
         {/* Title + sub-title */}
         <div style={{ textAlign: "center", flex: 1 }}>
-          <p style={{ margin: 0, color: "var(--bl-cream)", fontSize: 15, fontWeight: 600, lineHeight: 1.3 }}>
+          <p style={{ margin: 0, color: "#ffffff", fontSize: 15, fontWeight: 600, lineHeight: 1.3 }}>
             Découvrir
           </p>
-          <p style={{ margin: 0, color: "var(--bl-cream-dim)", fontSize: 11, lineHeight: 1.4 }}>
+          <p style={{ margin: 0, color: "rgba(255,255,255,0.70)", fontSize: 11, lineHeight: 1.4 }}>
             Conakry, Guinée
           </p>
         </div>
 
-        {/* Filter button */}
-        <button
-          aria-label="Filtres"
-          style={{
-            pointerEvents: "auto",
-            width: 32, height: 32,
-            background: "rgba(255,255,255,0.12)",
-            border: "none",
-            borderRadius: 8,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer",
-            fontSize: 16,
-            flexShrink: 0,
-          }}
-        >
-          ⚙️
-        </button>
+        {/* Placeholder — keeps title centred (settings button removed) */}
+        <div style={{ width: 32, flexShrink: 0 }} />
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════
@@ -400,7 +385,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             >
               <div style={{
                 border: "3px solid #D4AF37", borderRadius: 8,
-                padding: "8px 16px", color: "var(--bl-cream)",
+                padding: "8px 16px", color: "#ffffff",
                 fontSize: 32, fontWeight: 900, letterSpacing: 2,
                 textTransform: "uppercase", transform: "rotate(-15deg)",
                 textShadow: "0 2px 8px rgba(0,0,0,0.6)", whiteSpace: "nowrap",
@@ -416,7 +401,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             >
               <div style={{
                 border: "3px solid #FF4D4D", borderRadius: 8,
-                padding: "8px 16px", color: "var(--bl-cream)",
+                padding: "8px 16px", color: "#ffffff",
                 fontSize: 32, fontWeight: 900, letterSpacing: 2,
                 textTransform: "uppercase", transform: "rotate(15deg)",
                 textShadow: "0 2px 8px rgba(0,0,0,0.6)", whiteSpace: "nowrap",
@@ -483,7 +468,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 margin: 0,
                 fontSize: 24,
                 fontWeight: 800,
-                color: "var(--bl-cream)",
+                color: "#ffffff",
                 lineHeight: 1.1,
                 textShadow: "0 2px 8px rgba(0,0,0,0.5)",
               }}>
@@ -493,7 +478,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 <p style={{
                   margin: "2px 0 8px",
                   fontSize: 13,
-                  color: "var(--bl-cream-dim)",
+                  color: "rgba(255,255,255,0.75)",
                   lineHeight: 1,
                 }}>
                   /mois
@@ -503,7 +488,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               {/* Titre */}
               <p style={{
                 margin: "0 0 5px",
-                color: "var(--bl-cream)",
+                color: "#ffffff",
                 fontWeight: 700,
                 fontSize: 17,
                 lineHeight: 1.3,
@@ -526,13 +511,13 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                   📍 {getNeighborhoodName(topCard.neighborhood)}
                 </span>
                 <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>·</span>
-                <span style={{ color: "var(--bl-cream-dim)", fontSize: 13, whiteSpace: "nowrap" }}>
+                <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, whiteSpace: "nowrap" }}>
                   {topCard.transaction_type === "rent" ? "Location" : "Vente"}
                 </span>
                 {(topCard.rooms ?? 0) > 0 && (
                   <>
                     <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>·</span>
-                    <span style={{ color: "var(--bl-cream-dim)", fontSize: 13, whiteSpace: "nowrap" }}>
+                    <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, whiteSpace: "nowrap" }}>
                       🛏 {topCard.rooms}
                     </span>
                   </>
@@ -565,7 +550,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               borderRadius: "50%",
               background: "rgba(255,255,255,0.12)",
               border: "1.5px solid rgba(255,255,255,0.25)",
-              color: "var(--bl-cream)",
+              color: "#ffffff",
               cursor: "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
               WebkitTapHighlightColor: "transparent",
@@ -589,7 +574,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               borderRadius: "50%",
               background: "#C8973A",
               border: "none",
-              color: "var(--bl-cream)",
+              color: "#ffffff",
               cursor: "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
               WebkitTapHighlightColor: "transparent",

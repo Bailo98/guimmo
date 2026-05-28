@@ -592,6 +592,7 @@ async function loadAnnonceurStats(userId: string): Promise<{
     const views = (propsRes.data ?? []).reduce((a: number, p: { views: number | null }) => a + (p.views ?? 0), 0);
     const demands = demandsRes.count ?? 0;
     const visits = visitsRes.count ?? 0;
+    // Silently ignore reviews errors (42P01, 404, "relation does not exist")
     const ratings = reviewsRes.error ? [] : (reviewsRes.data ?? []).map((r: { rating: number }) => r.rating);
     const avgRating = ratings.length > 0 ? ratings.reduce((a: number, r: number) => a + r, 0) / ratings.length : 0;
     return { listings, views, demands, visits, avgRating, reviewCount: ratings.length };
@@ -607,6 +608,7 @@ async function loadRecentReviewsWithProfiles(userId: string): Promise<ReviewWith
       .eq("reviewed_id", userId)
       .order("created_at", { ascending: false })
       .limit(3);
+    // Silently ignore: table missing (42P01 / "relation does not exist") or 404
     if (error || !reviews) return [];
     const reviewerIds = reviews.map((r: { reviewer_id: string }) => r.reviewer_id);
     const { data: profiles } = await supabase.from("profiles").select("id, full_name, avatar_url").in("id", reviewerIds);
@@ -1176,7 +1178,7 @@ function ReviewsSection({ userId }: { userId: string }) {
           .eq("reviewed_id", userId)
           .order("created_at", { ascending: false })
           .limit(20);
-        // Silently treat missing table (42P01) or any DB error as unavailable
+        // Silently ignore: table missing (42P01 / "relation does not exist") or 404 — no logging
         if (error) { setUnavailable(true); return; }
         setReviews((data ?? []) as Review[]);
       } catch {
