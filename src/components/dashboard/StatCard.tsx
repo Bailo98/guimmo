@@ -6,15 +6,24 @@ export function StatCard({ label, value, sub, borderColor = "var(--bl-amber)" }:
 }) {
   return (
     <div style={{
-      background: "var(--bl-surface)",
+      background: "var(--bg-card)",
+      border: "1px solid var(--color-border)",
       borderLeft: `3px solid ${borderColor}`,
       borderRadius: "0 12px 12px 0",
       padding: "14px 16px",
     }}>
-      <span className="bl-stat-label">{label}</span>
-      <span className="bl-stat-value">{value}</span>
+      <span style={{
+        fontSize: 9, letterSpacing: "1.5px", textTransform: "uppercase" as const,
+        fontWeight: 500, marginBottom: 4, display: "block",
+        color: "var(--text-secondary)",
+      }}>{label}</span>
+      <span style={{
+        color: "var(--text-primary)",
+        fontSize: "clamp(22px, 5vw, 28px)",
+        fontWeight: 700, lineHeight: 1, display: "block",
+      }}>{value}</span>
       {sub && (
-        <span style={{ fontSize: 11, color: "var(--bl-cream-faint)", marginTop: 4, display: "block" }}>
+        <span style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 4, display: "block", opacity: 0.7 }}>
           {sub}
         </span>
       )}

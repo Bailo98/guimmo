@@ -1655,9 +1655,9 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
         </div>
 
         {/* ── Body: main + right panel ── */}
-        <div style={{ flex: 1, display: "flex" }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "row", minHeight: 0, alignItems: "flex-start" }}>
           {/* Main tab content */}
-          <div style={{ flex: 1, minWidth: 0, padding: "24px", overflowY: "auto" }}>
+          <div style={{ flex: 1, minWidth: 0, padding: "24px" }}>
 
             {/* ── TABLEAU DE BORD ── */}
             {tab === "dashboard" && (
@@ -1835,12 +1835,12 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
           </div>
 
           {/* ── Right panel (xl+) ── */}
-          <aside className="hidden xl:flex flex-col gap-4 flex-shrink-0"
-            style={{ width: 280, padding: "24px", borderLeft: "1px solid var(--bl-border)" }}>
+          <aside className="hidden xl:flex flex-col gap-4"
+            style={{ width: 280, flexShrink: 0, padding: "24px", borderLeft: "1px solid var(--color-border)", position: "sticky", top: 0, alignSelf: "flex-start" }}>
 
             {/* Statut du profil */}
-            <div className="rounded-2xl p-4" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
-              <p className="text-[11px] font-bold uppercase mb-3" style={{ color: "var(--bl-cream-faint)", letterSpacing: "0.12em" }}>Statut du profil</p>
+            <div className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}>
+              <p className="text-[11px] font-bold uppercase mb-3" style={{ color: "var(--text-secondary)", letterSpacing: "0.12em" }}>Statut du profil</p>
               {profile?.is_verified ? (
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(34,197,94,0.15)" }}>
@@ -1848,7 +1848,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                   </div>
                   <div>
                     <p className="font-bold text-sm" style={{ color: "#22c55e" }}>VÉRIFIÉ</p>
-                    <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>Compte professionnel actif</p>
+                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Compte professionnel actif</p>
                   </div>
                 </div>
               ) : (
@@ -1858,7 +1858,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                   </div>
                   <div>
                     <p className="font-bold text-sm" style={{ color: "#eab308" }}>EN ATTENTE</p>
-                    <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>Vérification en cours</p>
+                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Vérification en cours</p>
                   </div>
                 </div>
               )}
@@ -1866,11 +1866,11 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
 
             {/* Plan actuel */}
             <div className="rounded-2xl p-4"
-              style={{ background: "var(--bl-surface)", border: profile?.is_verified_pro ? "1px solid rgba(212,175,55,0.30)" : "1px solid var(--bl-border)" }}>
-              <p className="text-[11px] font-bold uppercase mb-3" style={{ color: "var(--bl-cream-faint)", letterSpacing: "0.12em" }}>Plan actuel</p>
+              style={{ background: "var(--bg-card)", border: profile?.is_verified_pro ? "1px solid rgba(212,175,55,0.40)" : "1px solid var(--color-border)" }}>
+              <p className="text-[11px] font-bold uppercase mb-3" style={{ color: "var(--text-secondary)", letterSpacing: "0.12em" }}>Plan actuel</p>
               <div className="flex items-center gap-2 mb-3">
                 <CreditCard className="w-5 h-5" style={{ color: profile?.is_verified_pro ? "var(--bl-amber)" : "var(--bl-cream-faint)" }} />
-                <p className="font-bold" style={{ color: "var(--bl-cream)" }}>{profile?.is_verified_pro ? "Plan Pro" : "Plan Gratuit"}</p>
+                <p className="font-bold" style={{ color: "var(--text-primary)" }}>{profile?.is_verified_pro ? "Plan Pro" : "Plan Gratuit"}</p>
                 {profile?.is_verified_pro && (
                   <span className="ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>Actif</span>
                 )}
@@ -1884,12 +1884,12 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
             </div>
 
             {/* Avis récents */}
-            <div className="rounded-2xl p-4" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
-              <p className="text-[11px] font-bold uppercase mb-3" style={{ color: "var(--bl-cream-faint)", letterSpacing: "0.12em" }}>Avis des utilisateurs</p>
+            <div className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}>
+              <p className="text-[11px] font-bold uppercase mb-3" style={{ color: "var(--text-secondary)", letterSpacing: "0.12em" }}>Avis des utilisateurs</p>
               {recentReviews.length === 0 ? (
                 <div className="text-center py-4">
-                  <Star className="w-6 h-6 mx-auto mb-2" style={{ color: "var(--bl-cream-faint)" }} />
-                  <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>Aucun avis pour l&apos;instant</p>
+                  <Star className="w-6 h-6 mx-auto mb-2" style={{ color: "var(--text-secondary)" }} />
+                  <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Aucun avis pour l&apos;instant</p>
                 </div>
               ) : (
                 <div className="space-y-3">
