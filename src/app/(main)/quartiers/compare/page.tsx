@@ -23,7 +23,7 @@ function Stars({ value }: { value: number }) {
   return (
     <div className="flex gap-0.5">
       {[1,2,3,4,5].map(i => (
-        <div key={i} className={`w-3 h-3 rounded-sm ${i <= value ? "bg-[#E9E900]" : "bg-slate-200 dark:bg-slate-700"}`} />
+        <div key={i} className={`w-3 h-3 rounded-sm ${i <= value ? "bg-[#D4AF37]" : "bg-slate-200 dark:bg-slate-700"}`} />
       ))}
     </div>
   );
@@ -83,9 +83,9 @@ export default function CompareQuartiersPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 pb-24">
       <nav className="flex items-center gap-2 text-xs text-slate-400 mb-6">
-        <Link href="/" className="hover:text-[#E9E900]">Accueil</Link>
+        <Link href="/" className="hover:text-[#D4AF37]">Accueil</Link>
         <span>/</span>
-        <Link href="/quartiers/kipe" className="hover:text-[#E9E900]">Quartiers</Link>
+        <Link href="/quartiers/kipe" className="hover:text-[#D4AF37]">Quartiers</Link>
         <span>/</span>
         <span className="text-slate-600 dark:text-slate-300">Comparer</span>
       </nav>
@@ -107,8 +107,8 @@ export default function CompareQuartiersPage() {
             onClick={() => toggle(n.id)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold border transition-all ${
               selected.includes(n.id)
-                ? "bg-[#E9E900] border-[#E9E900] text-white"
-                : "border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#E9E900] hover:text-[#E9E900]"
+                ? "bg-[#D4AF37] border-[#D4AF37] text-white"
+                : "border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-300 hover:border-[#D4AF37] hover:text-[#D4AF37]"
             }`}
           >
             <MapPin className="w-3.5 h-3.5" />
@@ -175,13 +175,13 @@ export default function CompareQuartiersPage() {
           <Link
             key={n.id}
             href={`/quartiers/${n.id}`}
-            className="flex items-center justify-between p-4 bg-[#2c2f36] rounded-2xl border border-[#1e2a30] hover:border-[#E9E900] transition-colors group"
+            className="flex items-center justify-between p-4 bg-[#2c2f36] rounded-2xl border border-[#1e2a30] hover:border-[#D4AF37] transition-colors group"
           >
             <div>
               <p className="font-bold text-slate-900 dark:text-white">{n.label}</p>
               <p className="text-xs text-slate-400 mt-0.5">Voir les annonces</p>
             </div>
-            <MapPin className="w-5 h-5 text-[#E9E900] group-hover:scale-110 transition-transform" />
+            <MapPin className="w-5 h-5 text-[#D4AF37] group-hover:scale-110 transition-transform" />
           </Link>
         ))}
       </div>

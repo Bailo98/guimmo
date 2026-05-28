@@ -143,8 +143,8 @@ function InscriptionForm() {
                 key={s}
                 className={cn(
                   "h-1.5 rounded-full transition-all duration-300",
-                  s < step  ? "bg-[#E9E900] w-12"
-                  : s === step ? "bg-[#E9E900] w-16"
+                  s < step  ? "bg-[#D4AF37] w-12"
+                  : s === step ? "bg-[#D4AF37] w-16"
                   : "bg-[#2a3040] w-8"
                 )}
               />
@@ -170,23 +170,23 @@ function InscriptionForm() {
                       className={cn(
                         "w-full flex items-center gap-3 p-4 rounded-2xl border transition-all text-left",
                         role === r.value
-                          ? "border-[#E9E900] bg-[rgba(233,233,0,0.10)]"
+                          ? "border-[#D4AF37] bg-[rgba(212,175,55,0.10)]"
                           : "hover:border-white/20"
                       )}
                       style={{
                         minHeight: 80,
-                        borderColor: role === r.value ? "#E9E900" : "#1e2a30",
-                        background: role === r.value ? "rgba(233,233,0,0.10)" : "#111a1f",
+                        borderColor: role === r.value ? "#D4AF37" : "#1e2a30",
+                        background: role === r.value ? "rgba(212,175,55,0.10)" : "#111a1f",
                       }}
                     >
                       <span style={{ fontSize: 32, lineHeight: 1, flexShrink: 0 }}>{r.icon}</span>
                       <div className="flex-1">
-                        <p className={cn("font-semibold text-sm", role === r.value ? "text-[#E9E900]" : "text-white")}>
+                        <p className={cn("font-semibold text-sm", role === r.value ? "text-[#D4AF37]" : "text-white")}>
                           {r.label}
                         </p>
                         <p className="text-[#666666] text-xs mt-0.5">{r.desc}</p>
                       </div>
-                      {role === r.value && <CheckCircle className="w-4 h-4 text-[#E9E900] flex-shrink-0" />}
+                      {role === r.value && <CheckCircle className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />}
                     </button>
                   ))}
                 </div>
@@ -228,7 +228,7 @@ function InscriptionForm() {
                       type="button"
                       onClick={() => switchMode(m)}
                       className="py-2.5 text-sm font-bold rounded-lg transition-colors"
-                      style={mode === m ? { background: "#E9E900", color: "#0A1216" } : { color: "#666666" }}
+                      style={mode === m ? { background: "#D4AF37", color: "#0A1216" } : { color: "#666666" }}
                     >
                       {m === "phone" ? "📱 Téléphone" : "✉️ Email"}
                     </button>
@@ -250,7 +250,7 @@ function InscriptionForm() {
                         placeholder={role === "agency" ? "Conakry Premium Immo" : "Mamadou Diallo"}
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm"
+                        className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
                         style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                         required
                         autoComplete="name"
@@ -272,7 +272,7 @@ function InscriptionForm() {
                           placeholder="Ex: Immo Guinée SARL"
                           value={form.agencyName}
                           onChange={(e) => setForm({ ...form, agencyName: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm"
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
                           style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                         />
                       </div>
@@ -292,7 +292,7 @@ function InscriptionForm() {
                         value={form.bio}
                         onChange={(e) => setForm({ ...form, bio: e.target.value })}
                         maxLength={200}
-                        className="w-full rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm resize-none"
+                        className="w-full rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm resize-none"
                         style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                       />
                     </div>
@@ -311,13 +311,13 @@ function InscriptionForm() {
                           placeholder="Ex : 628 000 000"
                           value={form.phone}
                           onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm"
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
                           style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                           required
                           autoComplete="tel"
                         />
                       </div>
-                      <button type="button" onClick={() => switchMode("email")} className="text-xs text-[#E9E900] hover:underline mt-1.5 block">
+                      <button type="button" onClick={() => switchMode("email")} className="text-xs text-[#D4AF37] hover:underline mt-1.5 block">
                         Utiliser mon email à la place →
                       </button>
                     </div>
@@ -333,13 +333,13 @@ function InscriptionForm() {
                           placeholder="vous@email.com"
                           value={form.email}
                           onChange={(e) => setForm({ ...form, email: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm"
+                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
                           style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                           required
                           autoComplete="email"
                         />
                       </div>
-                      <button type="button" onClick={() => switchMode("phone")} className="text-xs text-[#E9E900] hover:underline mt-1.5 block">
+                      <button type="button" onClick={() => switchMode("phone")} className="text-xs text-[#D4AF37] hover:underline mt-1.5 block">
                         ← Utiliser mon numéro de téléphone
                       </button>
                     </div>
@@ -357,7 +357,7 @@ function InscriptionForm() {
                         placeholder="•••••••• (min. 8 caractères)"
                         value={form.password}
                         onChange={(e) => setForm({ ...form, password: e.target.value })}
-                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
+                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
                         style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16 }}
                         required
                         minLength={8}
@@ -391,7 +391,7 @@ function InscriptionForm() {
 
                 <p className="text-[#666666] text-xs text-center mt-4">
                   En créant un compte, vous acceptez nos{" "}
-                  <Link href="/cgv" className="text-[#E9E900] hover:underline">
+                  <Link href="/cgv" className="text-[#D4AF37] hover:underline">
                     conditions d&apos;utilisation
                   </Link>
                 </p>

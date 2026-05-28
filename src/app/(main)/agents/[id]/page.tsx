@@ -82,7 +82,7 @@ export default async function AgentProfilePage({ params }: Props) {
           ) : (
             <div
               className="w-20 h-20 rounded-2xl flex items-center justify-center text-2xl font-black flex-shrink-0"
-              style={{ background: "rgba(200,144,30,0.20)", border: "1px solid rgba(200,144,30,0.30)", color: "var(--bl-amber-light)" }}
+              style={{ background: "rgba(212,175,55,0.20)", border: "1px solid rgba(212,175,55,0.30)", color: "var(--bl-amber-light)" }}
             >
               {initials}
             </div>

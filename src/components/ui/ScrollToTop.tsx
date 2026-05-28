@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import { ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -19,7 +19,7 @@ export function ScrollToTop() {
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       aria-label="Retour en haut"
       className={cn(
-        "fixed z-[55] w-10 h-10 rounded-full bg-[#E9E900] shadow-lg flex items-center justify-center transition-all duration-300",
+        "fixed z-[55] w-10 h-10 rounded-full bg-[#D4AF37] shadow-lg flex items-center justify-center transition-all duration-300",
         visible ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"
       )}
       style={{

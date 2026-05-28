@@ -27,8 +27,8 @@ const ACTION_STYLES: Record<string, { bg: string; icon: React.ReactNode; label: 
     dot: "bg-red-500",
   },
   warning: {
-    bg: "bg-yellow-100 dark:bg-yellow-900/30",
-    icon: <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-[#D4AF37]" />,
+    bg: "bg-[#D4AF37]/10",
+    icon: <AlertTriangle className="w-4 h-4 text-[#D4AF37]" />,
     label: "Avertissement",
     dot: "bg-[#D4AF37]",
   },
@@ -54,7 +54,7 @@ export default function AdminLogsPage() {
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">Historique complet des actions administratives</p>
         </div>
-        <button className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl border border-[#1e2a30] text-slate-600 dark:text-slate-300 hover:border-[#E9E900] hover:text-[#E9E900] transition-colors">
+        <button className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl border border-[#1e2a30] text-slate-600 dark:text-slate-300 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors">
           <Download className="w-4 h-4" />
           Exporter
         </button>
@@ -86,7 +86,7 @@ export default function AdminLogsPage() {
                 </div>
 
                 {/* Content */}
-                <div className={`flex-1 bg-[#2c2f36] rounded-2xl p-4 border border-[#1e2a30] ${index === 0 ? "border-l-4 border-l-[#E9E900]" : ""}`}>
+                <div className={`flex-1 bg-[#2c2f36] rounded-2xl p-4 border border-[#1e2a30] ${index === 0 ? "border-l-4 border-l-[#D4AF37]" : ""}`}>
                   <p className="text-sm font-medium text-slate-900 dark:text-white leading-snug">{log.message}</p>
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                     <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{log.admin}</span>

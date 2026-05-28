@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { MessageSquare, X, Send } from "lucide-react";
@@ -30,7 +30,7 @@ function parseLinks(text: string): React.ReactNode[] {
         href={m[2]}
         target={isExternal ? "_blank" : undefined}
         rel={isExternal ? "noopener noreferrer" : undefined}
-        style={{ color: "#E9E900", textDecoration: "underline", textUnderlineOffset: 2 }}
+        style={{ color: "#D4AF37", textDecoration: "underline", textUnderlineOffset: 2 }}
       >
         {m[1]}
       </a>
@@ -124,7 +124,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                background: "#E9E900",
+                background: "#D4AF37",
                 padding: "12px 16px",
                 flexShrink: 0,
               }}
@@ -194,14 +194,14 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
                         onClick={() => sendMessage(s)}
                         style={{
                           background: "transparent",
-                          border: "1px solid rgba(233,233,0,0.35)",
-                          color: "#E9E900",
+                          border: "1px solid rgba(212,175,55,0.35)",
+                          color: "#D4AF37",
                           borderRadius: 999, padding: "5px 11px",
                           fontSize: 11, fontWeight: 500, cursor: "pointer",
                           transition: "background 0.15s",
                           minHeight: "auto",
                         }}
-                        onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(233,233,0,0.08)"; }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(212,175,55,0.08)"; }}
                         onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
                       >
                         {s}
@@ -229,7 +229,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
                           : "16px 16px 16px 4px",
                       padding: "10px 14px",
                       fontSize: 13, lineHeight: 1.5,
-                      background: msg.role === "user" ? "#E9E900" : "#2c3a44",
+                      background: msg.role === "user" ? "#D4AF37" : "#2c3a44",
                       color: msg.role === "user" ? "#0A1216" : "#f0f0f0",
                     }}
                   >
@@ -257,7 +257,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
                         style={{
                           width: 7, height: 7,
                           borderRadius: "50%",
-                          background: "#E9E900",
+                          background: "#D4AF37",
                           display: "inline-block",
                           animation: `lb-bounce 1.2s ease-in-out ${j * 0.2}s infinite`,
                         }}
@@ -309,7 +309,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
                 aria-label="Envoyer"
                 style={{
                   width: 36, height: 36, borderRadius: "50%",
-                  background: input.trim() && !loading ? "#E9E900" : "rgba(255,255,255,0.07)",
+                  background: input.trim() && !loading ? "#D4AF37" : "rgba(255,255,255,0.07)",
                   border: "none",
                   cursor: input.trim() && !loading ? "pointer" : "not-allowed",
                   display: "flex", alignItems: "center", justifyContent: "center",
@@ -341,11 +341,11 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
           zIndex: 50,
           width: 52, height: 52,
           borderRadius: "50%",
-          background: "#E9E900",
+          background: "#D4AF37",
           border: "none",
           cursor: "pointer",
           display: "flex", alignItems: "center", justifyContent: "center",
-          boxShadow: "0 4px 20px rgba(233,233,0,0.4)",
+          boxShadow: "0 4px 20px rgba(212,175,55,0.4)",
           transition: "transform 0.2s, background 0.2s",
           minHeight: "auto",
         }}

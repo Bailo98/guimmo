@@ -92,7 +92,7 @@ export function PropertyGallery({ images }: { images: GalleryImage[] }) {
                 className={cn(
                   "relative w-16 h-12 flex-shrink-0 rounded-lg overflow-hidden transition-all",
                   i === current
-                    ? "ring-2 ring-[#E9E900] opacity-100"
+                    ? "ring-2 ring-[#D4AF37] opacity-100"
                     : "opacity-60 hover:opacity-80"
                 )}
                 aria-label={`Voir photo ${i + 1}`}

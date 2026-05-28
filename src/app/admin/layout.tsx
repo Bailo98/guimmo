@@ -15,7 +15,7 @@ const BG_SIDEBAR  = "#0A1216";
 const BORDER      = "#1e2a30";
 const TEXT_PRI    = "#ffffff";
 const TEXT_SEC    = "rgba(255,255,255,0.55)";
-const ACCENT      = "#E9E900";
+const ACCENT      = "#D4AF37";
 const SEPARATOR   = "rgba(30,42,48,0.60)";
 
 // ─── Nav items ────────────────────────────────────────────────────────────────
@@ -69,7 +69,7 @@ function NavLink({
         padding: "10px 16px",
         borderRadius: 10,
         borderLeft: `3px solid ${isActive ? ACCENT : "transparent"}`,
-        background: isActive ? "rgba(233,233,0,0.15)" : "transparent",
+        background: isActive ? "rgba(212,175,55,0.15)" : "transparent",
         color: isActive ? ACCENT : TEXT_SEC,
         fontSize: 14, fontWeight: 500,
         textDecoration: "none",

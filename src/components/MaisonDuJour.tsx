@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { formatPrice } from "@/lib/utils";
@@ -86,8 +86,8 @@ export async function MaisonDuJour() {
             className="relative overflow-hidden rounded-[20px]"
             style={{
               background: "var(--bg-card-dark)",
-              border: "1px solid rgba(200,169,126,0.25)",
-              boxShadow: "0 8px 40px rgba(200,169,126,0.12)",
+              border: "1px solid rgba(212,175,55,0.25)",
+              boxShadow: "0 8px 40px rgba(212,175,55,0.12)",
             }}
           >
             {/* Photo */}
@@ -180,9 +180,9 @@ export async function MaisonDuJour() {
                 <span
                   className="text-xs font-semibold px-2.5 py-1 rounded-full"
                   style={{
-                    background: "rgba(233,233,0,0.10)",
-                    color: "#E9E900",
-                    border: "1px solid rgba(233,233,0,0.20)",
+                    background: "rgba(212,175,55,0.10)",
+                    color: "#D4AF37",
+                    border: "1px solid rgba(212,175,55,0.20)",
                   }}
                 >
                   {property.transaction_type === "rent" ? "Location" : "Vente"}

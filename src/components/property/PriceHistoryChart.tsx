@@ -48,7 +48,7 @@ export function PriceHistoryChart({ price }: Props) {
   return (
     <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30]">
       <h2 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-        <TrendingUp className="w-4 h-4 text-[#E9E900]" />
+        <TrendingUp className="w-4 h-4 text-[#D4AF37]" />
         Historique des prix
       </h2>
 
@@ -65,10 +65,10 @@ export function PriceHistoryChart({ price }: Props) {
           <Line
             type="monotone"
             dataKey="price"
-            stroke="#E9E900"
+            stroke="#D4AF37"
             strokeWidth={2}
             dot={false}
-            activeDot={{ r: 4, fill: "#E9E900", strokeWidth: 0 }}
+            activeDot={{ r: 4, fill: "#D4AF37", strokeWidth: 0 }}
           />
         </LineChart>
       </ResponsiveContainer>

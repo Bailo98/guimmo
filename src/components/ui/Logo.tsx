@@ -28,7 +28,7 @@ export function Logo({ size = "md", className, href = "/" }: LogoProps) {
   return (
     <Link href={href} className={cn("flex items-center gap-2.5", className)}>
       <div style={{
-        width: box, height: box, background: "#E9E900", borderRadius: 8,
+        width: box, height: box, background: "#D4AF37", borderRadius: 8,
         display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
       }}>
         <HouseIcon size={icon} />

@@ -61,9 +61,9 @@ export default async function ProprietaireProfilePage({ params }: Props) {
     <div className="max-w-5xl mx-auto px-4 pb-16 pt-4">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-slate-400 mb-6">
-        <Link href="/" className="hover:text-[#E9E900]">Accueil</Link>
+        <Link href="/" className="hover:text-[#D4AF37]">Accueil</Link>
         <span>/</span>
-        <Link href="/annonces" className="hover:text-[#E9E900]">Annonces</Link>
+        <Link href="/annonces" className="hover:text-[#D4AF37]">Annonces</Link>
         <span>/</span>
         <span className="text-slate-600 dark:text-slate-300">{owner.name}</span>
       </nav>
@@ -74,7 +74,7 @@ export default async function ProprietaireProfilePage({ params }: Props) {
           {/* Avatar */}
           <div
             className="w-20 h-20 rounded-full flex items-center justify-center text-white font-black text-3xl flex-shrink-0"
-            style={{ background: "linear-gradient(135deg, #E9E900, #c4c400)" }}
+            style={{ background: "linear-gradient(135deg, #D4AF37, #B8963A)" }}
           >
             {owner.name.charAt(0)}
           </div>
@@ -95,12 +95,12 @@ export default async function ProprietaireProfilePage({ params }: Props) {
             <div className="mt-3">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-xs text-slate-500 dark:text-slate-400">Score de confiance</span>
-                <span className="text-xs font-bold text-[#E9E900]">{owner.trustScore}%</span>
+                <span className="text-xs font-bold text-[#D4AF37]">{owner.trustScore}%</span>
               </div>
               <div className="w-full max-w-xs bg-slate-100 dark:bg-[#151922] rounded-full h-2">
                 <div
                   className="h-2 rounded-full"
-                  style={{ width: `${owner.trustScore}%`, background: "linear-gradient(90deg, #E9E900, #c4c400)" }}
+                  style={{ width: `${owner.trustScore}%`, background: "linear-gradient(90deg, #D4AF37, #B8963A)" }}
                 />
               </div>
             </div>
@@ -145,7 +145,7 @@ export default async function ProprietaireProfilePage({ params }: Props) {
             key={stat.label}
             className="bg-[#2c2f36] rounded-2xl p-4 border border-[#1e2a30] text-center"
           >
-            <p className="text-2xl font-black text-[#E9E900]">{stat.value}</p>
+            <p className="text-2xl font-black text-[#D4AF37]">{stat.value}</p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center justify-center gap-1">
               {stat.icon}
               {stat.label}

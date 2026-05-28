@@ -22,7 +22,7 @@ export default function AdminPaiementsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white">Paiements</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">Total encaissé : <span className="text-[#E9E900] font-bold">{formatPrice(total)}</span></p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">Total encaissé : <span className="text-[#D4AF37] font-bold">{formatPrice(total)}</span></p>
         </div>
       </div>
       <div className="space-y-3">

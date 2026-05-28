@@ -42,7 +42,7 @@ const SECTIONS = [
   {
     id: "negociation",
     icon: TrendingDown,
-    color: "#E9E900",
+    color: "#D4AF37",
     bg: "bg-orange-50 dark:bg-orange-900/20",
     title: "Négocier son loyer en Guinée",
     items: [
@@ -55,7 +55,7 @@ const SECTIONS = [
   {
     id: "droits",
     icon: Scale,
-    color: "#E9E900",
+    color: "#D4AF37",
     bg: "bg-green-50 dark:bg-green-900/20",
     title: "Vos droits en tant que locataire",
     items: [
@@ -74,7 +74,7 @@ export default function GuidePage() {
     <div className="max-w-4xl mx-auto px-4 py-10">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1.5 text-sm text-slate-400 mb-8">
-        <Link href="/" className="hover:text-[#E9E900] transition-colors flex items-center gap-1">
+        <Link href="/" className="hover:text-[#D4AF37] transition-colors flex items-center gap-1">
           <Home className="w-3.5 h-3.5" /> Accueil
         </Link>
         <ChevronRight className="w-3.5 h-3.5" />
@@ -83,7 +83,7 @@ export default function GuidePage() {
 
       {/* Hero */}
       <div className="mb-12">
-        <div className="inline-flex items-center gap-2 bg-[#E9E900]/10 text-[#E9E900] text-xs font-bold px-3 py-1.5 rounded-full mb-4">
+        <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 text-[#D4AF37] text-xs font-bold px-3 py-1.5 rounded-full mb-4">
           Guide complet
         </div>
         <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4 leading-tight">
@@ -144,10 +144,10 @@ export default function GuidePage() {
               <Link
                 key={n.id}
                 href={`/annonces?neighborhood=${n.id}`}
-                className="group flex flex-col items-center gap-2 p-3 rounded-2xl bg-[#2c2f36] border border-[#1e2a30] hover:border-[#E9E900] hover:bg-[#c4c400]/5 transition-all text-center"
+                className="group flex flex-col items-center gap-2 p-3 rounded-2xl bg-[#2c2f36] border border-[#1e2a30] hover:border-[#D4AF37] hover:bg-[#B8963A]/5 transition-all text-center"
               >
-                <MapPin className="w-5 h-5 text-slate-300 dark:text-slate-600 group-hover:text-[#E9E900] transition-colors" />
-                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 group-hover:text-[#E9E900] transition-colors">{n.name}</span>
+                <MapPin className="w-5 h-5 text-slate-300 dark:text-slate-600 group-hover:text-[#D4AF37] transition-colors" />
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 group-hover:text-[#D4AF37] transition-colors">{n.name}</span>
                 <span className="text-[10px] text-slate-400">{n.commune}</span>
               </Link>
             ))}
@@ -163,7 +163,7 @@ export default function GuidePage() {
         </p>
         <Link
           href="/annonces"
-          className="inline-flex items-center gap-2 bg-[#E9E900] text-white font-bold px-8 py-3.5 rounded-2xl hover:bg-[#c4c400] transition-colors"
+          className="inline-flex items-center gap-2 bg-[#D4AF37] text-white font-bold px-8 py-3.5 rounded-2xl hover:bg-[#B8963A] transition-colors"
         >
           Trouver mon logement sur LogerBien <ArrowRight className="w-4 h-4" />
         </Link>

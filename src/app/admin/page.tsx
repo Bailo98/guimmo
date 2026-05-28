@@ -12,7 +12,7 @@ const SURFACE = "#111a1f";
 const BORDER  = "#1e2a30";
 const TEXT_PRI = "#ffffff";
 const TEXT_SEC = "rgba(255,255,255,0.55)";
-const ACCENT   = "#E9E900";
+const ACCENT   = "#D4AF37";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Stats {
@@ -75,7 +75,7 @@ function ActionCard({
         padding: "18px 20px", textDecoration: "none",
         transition: "border-color 0.15s",
       }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(200,144,30,0.35)"; }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(212,175,55,0.35)"; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = BORDER; }}
     >
       <div style={{
@@ -159,11 +159,11 @@ export default function AdminDashboardPage() {
         className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
       >
         <StatCard label="Total annonces"    value={v?.total        ?? null} accentColor={TEXT_PRI}   icon={FileText} />
-        <StatCard label="Actives"           value={v?.active       ?? null} accentColor="#E9E900"    icon={CheckCircle} />
+        <StatCard label="Actives"           value={v?.active       ?? null} accentColor="#D4AF37"    icon={CheckCircle} />
         <StatCard label="En attente"        value={v?.pending      ?? null} accentColor={ACCENT}     icon={Clock} />
         <StatCard label="Utilisateurs"      value={v?.users        ?? null} accentColor="#60a5fa"    icon={Users} />
         <StatCard label="Cette semaine"     value={v?.thisWeek     ?? null} accentColor={ACCENT}     icon={TrendingUp} />
-        <StatCard label="À vérifier"        value={v?.pendingVerif ?? null} accentColor="#E9E900"    icon={Users} />
+        <StatCard label="À vérifier"        value={v?.pendingVerif ?? null} accentColor="#D4AF37"    icon={Users} />
         <StatCard label="Signalements"      value={v?.reports      ?? null} accentColor="#ef4444"    icon={AlertTriangle} />
       </div>
 
@@ -187,7 +187,7 @@ export default function AdminDashboardPage() {
         <ActionCard
           href="/admin/annonces/nouvelle"
           icon={Plus}
-          iconColor="#E9E900"
+          iconColor="#D4AF37"
           title="Ajouter une annonce"
           desc="Publier manuellement"
         />

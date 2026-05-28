@@ -53,7 +53,7 @@ export function AuthPromptModal({ onClose, redirectUrl, action }: Props) {
         {/* Subtitle */}
         <p className="text-sm mb-6 leading-relaxed" style={{ color: "#666666" }}>
           Pour{" "}
-          <span style={{ color: "#E9E900" }}>{action ?? "contacter ce propriétaire"}</span>
+          <span style={{ color: "#D4AF37" }}>{action ?? "contacter ce propriétaire"}</span>
           , créez votre compte LogerBien. C&apos;est gratuit et rapide.
         </p>
 
@@ -61,7 +61,7 @@ export function AuthPromptModal({ onClose, redirectUrl, action }: Props) {
         <button
           onClick={goSignup}
           className="w-full flex items-center justify-center gap-2 font-bold text-white rounded-2xl mb-3 transition-colors"
-          style={{ background: "#E9E900", height: 52, fontSize: 15 }}
+          style={{ background: "#D4AF37", height: 52, fontSize: 15 }}
         >
           Créer mon compte →
         </button>

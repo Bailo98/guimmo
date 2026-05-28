@@ -93,7 +93,7 @@ export default async function QuartierPage({ params }: Props) {
 
       {/* Hero */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-[#E9E900] text-sm font-semibold mb-2">
+        <div className="flex items-center gap-2 text-[#D4AF37] text-sm font-semibold mb-2">
           <MapPin className="w-4 h-4" />
           <span>{hood?.commune ?? "Conakry"}, Guinée</span>
         </div>
@@ -112,7 +112,7 @@ export default async function QuartierPage({ params }: Props) {
           </div>
           {avgFormatted && (
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
-              style={{ background: "rgba(233,233,0,0.12)", border: "1px solid rgba(233,233,0,0.25)", color: "#E9E900" }}>
+              style={{ background: "rgba(212,175,55,0.12)", border: "1px solid rgba(212,175,55,0.25)", color: "#D4AF37" }}>
               Prix moyen : {avgFormatted}
             </div>
           )}
@@ -128,7 +128,7 @@ export default async function QuartierPage({ params }: Props) {
           <p className="text-white/40 text-sm mb-6">Revenez bientôt ou explorez d'autres quartiers.</p>
           <Link
             href="/annonces"
-            className="inline-flex items-center gap-2 bg-[#E9E900] hover:bg-[#c4c400] text-white font-bold px-6 py-3 rounded-xl transition-colors"
+            className="inline-flex items-center gap-2 bg-[#D4AF37] hover:bg-[#B8963A] text-white font-bold px-6 py-3 rounded-xl transition-colors"
           >
             Voir toutes les annonces
           </Link>

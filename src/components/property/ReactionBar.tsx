@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
@@ -125,7 +125,7 @@ export function ReactionBar({ propertyId, compact = false }: ReactionBarProps) {
               padding: compact ? "4px 10px" : "7px 14px",
               borderRadius: 999,
               border: isActive
-                ? "1.5px solid rgba(200,169,126,0.70)"
+                ? "1.5px solid rgba(212,175,55,0.70)"
                 : "1.5px solid rgba(255,255,255,0.10)",
               background: isActive
                 ? "rgba(212,175,55,0.15)"

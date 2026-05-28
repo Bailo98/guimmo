@@ -64,8 +64,8 @@ export function useToast(): ToastContextValue {
 
 const STYLES: Record<ToastType, { style: React.CSSProperties; textColor: string; icon: React.ReactNode }> = {
   success: {
-    style: { background: "rgba(233,233,0,0.10)", border: "1px solid #E9E900" },
-    textColor: "#E9E900",
+    style: { background: "rgba(212,175,55,0.10)", border: "1px solid #D4AF37" },
+    textColor: "#D4AF37",
     icon: <CheckCircle className="w-4 h-4 flex-shrink-0" />,
   },
   error: {
@@ -74,8 +74,8 @@ const STYLES: Record<ToastType, { style: React.CSSProperties; textColor: string;
     icon: <AlertCircle className="w-4 h-4 flex-shrink-0" />,
   },
   info: {
-    style: { background: "rgba(233,233,0,0.10)", border: "1px solid rgba(233,233,0,0.50)" },
-    textColor: "#E9E900",
+    style: { background: "rgba(212,175,55,0.10)", border: "1px solid rgba(212,175,55,0.50)" },
+    textColor: "#D4AF37",
     icon: <Info className="w-4 h-4 flex-shrink-0" />,
   },
 };

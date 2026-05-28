@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
@@ -142,8 +142,8 @@ export function Onboarding() {
             width: 120,
             height: 120,
             borderRadius: "50%",
-            background: "rgba(200,169,126,0.12)",
-            border: "2px solid rgba(200,169,126,0.25)",
+            background: "rgba(212,175,55,0.12)",
+            border: "2px solid rgba(212,175,55,0.25)",
           }}
         >
           {screen.icon}
@@ -232,7 +232,7 @@ export function Onboarding() {
           border: "none",
           cursor: "pointer",
           minWidth: 200,
-          boxShadow: "0 4px 20px rgba(200,169,126,0.35)",
+          boxShadow: "0 4px 20px rgba(212,175,55,0.35)",
           letterSpacing: 0,
           textTransform: "none",
           minHeight: "auto",

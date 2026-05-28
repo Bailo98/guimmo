@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -108,9 +108,9 @@ export default function PropertyMap({ neighborhood, lat, lng, title }: PropertyM
               center={coords}
               radius={300}
               pathOptions={{
-                fillColor: "#E9E900",
+                fillColor: "#D4AF37",
                 fillOpacity: 0.10,
-                color: "#E9E900",
+                color: "#D4AF37",
                 weight: 1.5,
                 opacity: 0.35,
               }}

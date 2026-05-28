@@ -13,7 +13,7 @@ const TYPE_LABELS: Record<string, string> = {
   shop: "Boutique", land: "Terrain",
 };
 
-const ACCENT = "#E9E900";
+const ACCENT = "#D4AF37";
 const S_CARD: React.CSSProperties = {
   background: "rgba(255,255,255,0.03)",
   border: "1px solid #1e2a30",
@@ -186,7 +186,7 @@ export default function AdminModerationPage() {
         /* ── Pending listings ── */
         pending.length === 0 ? (
           <div style={{ ...S_CARD, textAlign: "center", padding: "48px 20px" }}>
-            <CheckCircle size={32} style={{ color: "#E9E900", margin: "0 auto 12px", display: "block" }} />
+            <CheckCircle size={32} style={{ color: "#D4AF37", margin: "0 auto 12px", display: "block" }} />
             <p style={{ color: "#ffffff", fontWeight: 700, marginBottom: 4 }}>File vide !</p>
             <p style={{ color: "#666666", fontSize: 13 }}>Toutes les annonces ont été traitées.</p>
           </div>
@@ -200,7 +200,7 @@ export default function AdminModerationPage() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 2 }}>
                         <p style={{ color: "#ffffff", fontWeight: 700, fontSize: 15, margin: 0 }}>{prop.title}</p>
-                        <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "rgba(233,233,0,0.15)", color: ACCENT }}>
+                        <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "rgba(212,175,55,0.15)", color: ACCENT }}>
                           {TYPE_LABELS[prop.type] ?? prop.type}
                         </span>
                         <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.55)" }}>
@@ -221,7 +221,7 @@ export default function AdminModerationPage() {
                     <button
                       disabled={busy}
                       onClick={() => approve(prop)}
-                      style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 14px", borderRadius: 10, border: "none", background: "#E9E900", color: "#fff", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer" }}
+                      style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 14px", borderRadius: 10, border: "none", background: "#D4AF37", color: "#fff", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer" }}
                     >
                       <CheckCircle size={15} /> Approuver
                     </button>
@@ -277,7 +277,7 @@ export default function AdminModerationPage() {
                     <button
                       disabled={busy}
                       onClick={() => resolveReport(rep, "keep")}
-                      style={{ flex: 1, padding: "8px 12px", borderRadius: 10, border: "none", background: "rgba(233,233,0,0.12)", color: "#E9E900", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer" }}
+                      style={{ flex: 1, padding: "8px 12px", borderRadius: 10, border: "none", background: "rgba(212,175,55,0.12)", color: "#D4AF37", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer" }}
                     >
                       Maintenir l&apos;annonce
                     </button>

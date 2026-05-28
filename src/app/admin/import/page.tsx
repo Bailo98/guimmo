@@ -13,7 +13,7 @@ const SURFACE  = "#111a1f";
 const BORDER   = "#1e2a30";
 const TEXT_PRI = "#ffffff";
 const TEXT_SEC = "rgba(255,255,255,0.55)";
-const ACCENT   = "#E9E900";
+const ACCENT   = "#D4AF37";
 
 interface CsvRow {
   title: string;
@@ -190,9 +190,9 @@ export default function AdminImportPage() {
         <>
           {/* Counts */}
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(233,233,0,0.10)", border: "1px solid rgba(233,233,0,0.20)", borderRadius: 10, padding: "8px 14px" }}>
-              <CheckCircle size={15} color="#E9E900" />
-              <span style={{ fontSize: 13, fontWeight: 700, color: "#E9E900" }}>{validCount} ligne(s) valides</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(212,175,55,0.10)", border: "1px solid rgba(212,175,55,0.20)", borderRadius: 10, padding: "8px 14px" }}>
+              <CheckCircle size={15} color="#D4AF37" />
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#D4AF37" }}>{validCount} ligne(s) valides</span>
             </div>
             {invalidCount > 0 && (
               <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.20)", borderRadius: 10, padding: "8px 14px" }}>
@@ -230,7 +230,7 @@ export default function AdminImportPage() {
                       <td style={{ padding: "8px 12px", color: TEXT_SEC, whiteSpace: "nowrap" }}>{r.data.neighborhood}</td>
                       <td style={{ padding: "8px 12px", whiteSpace: "nowrap" }}>
                         {r.valid ? (
-                          <span style={{ fontSize: 10, fontWeight: 700, color: "#E9E900", background: "rgba(233,233,0,0.12)", padding: "3px 8px", borderRadius: 999 }}>✓ OK</span>
+                          <span style={{ fontSize: 10, fontWeight: 700, color: "#D4AF37", background: "rgba(212,175,55,0.12)", padding: "3px 8px", borderRadius: 999 }}>✓ OK</span>
                         ) : (
                           <span style={{ fontSize: 10, fontWeight: 700, color: "#ef4444", background: "rgba(239,68,68,0.15)", padding: "3px 8px", borderRadius: 999 }} title={r.error}>⚠ Erreur</span>
                         )}
@@ -244,9 +244,9 @@ export default function AdminImportPage() {
 
           {/* Success banner */}
           {done > 0 && (
-            <div style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(233,233,0,0.10)", border: "1px solid rgba(233,233,0,0.20)", borderRadius: 12, padding: 16, marginBottom: 16 }}>
-              <CheckCircle size={20} color="#E9E900" />
-              <p style={{ fontSize: 14, fontWeight: 600, color: "#E9E900" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, background: "rgba(212,175,55,0.10)", border: "1px solid rgba(212,175,55,0.20)", borderRadius: 12, padding: 16, marginBottom: 16 }}>
+              <CheckCircle size={20} color="#D4AF37" />
+              <p style={{ fontSize: 14, fontWeight: 600, color: "#D4AF37" }}>
                 {done} annonce(s) importée(s) avec succès !
               </p>
             </div>

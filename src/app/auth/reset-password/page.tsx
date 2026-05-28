@@ -87,7 +87,7 @@ export default function ResetPasswordPage() {
                       required
                       minLength={8}
                       style={{ ...INPUT, fontSize: 16 }}
-                      className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
+                      className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
                     />
                     <button type="button" onClick={() => setShowPwd(!showPwd)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white">
@@ -109,7 +109,7 @@ export default function ResetPasswordPage() {
                       placeholder="Répétez le mot de passe"
                       required
                       style={{ ...INPUT, fontSize: 16 }}
-                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
+                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
                     />
                   </div>
                 </div>

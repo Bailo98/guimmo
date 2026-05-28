@@ -12,7 +12,7 @@ const SURFACE  = "#111a1f";
 const BORDER   = "#1e2a30";
 const TEXT_PRI = "#ffffff";
 const TEXT_SEC = "rgba(255,255,255,0.55)";
-const ACCENT   = "#E9E900";
+const ACCENT   = "#D4AF37";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 type DbStatus = "active" | "pending" | "paused" | "sold";
@@ -33,8 +33,8 @@ interface Property {
 }
 
 const STATUS_LABELS: Record<DbStatus, { label: string; color: string; bg: string }> = {
-  active:  { label: "Actif",      color: "#E9E900", bg: "rgba(233,233,0,0.12)" },
-  pending: { label: "En attente", color: "#E9E900", bg: "rgba(251,146,60,0.15)" },
+  active:  { label: "Actif",      color: "#D4AF37", bg: "rgba(212,175,55,0.12)" },
+  pending: { label: "En attente", color: "#D4AF37", bg: "rgba(251,146,60,0.15)" },
   paused:  { label: "Suspendu",   color: "#ef4444", bg: "rgba(239,68,68,0.15)" },
   sold:    { label: "Vendu",      color: TEXT_SEC,  bg: "rgba(255,255,255,0.06)" },
 };
@@ -307,7 +307,7 @@ export default function AdminAnnoncesPage() {
                       target="_blank"
                       title="Voir l'annonce"
                       style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(255,255,255,0.06)", color: TEXT_SEC, textDecoration: "none", transition: "background 0.12s" }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(200,144,30,0.18)"; (e.currentTarget as HTMLAnchorElement).style.color = ACCENT; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(212,175,55,0.18)"; (e.currentTarget as HTMLAnchorElement).style.color = ACCENT; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.06)"; (e.currentTarget as HTMLAnchorElement).style.color = TEXT_SEC; }}
                     >
                       <Eye size={15} />
@@ -316,9 +316,9 @@ export default function AdminAnnoncesPage() {
                       onClick={() => handleApprove(p.id)}
                       disabled={p.status === "active"}
                       title="Approuver"
-                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(233,233,0,0.12)", color: "#E9E900", border: "none", cursor: "pointer", opacity: p.status === "active" ? 0.35 : 1, transition: "background 0.12s" }}
-                      onMouseEnter={(e) => { if (p.status !== "active") (e.currentTarget as HTMLButtonElement).style.background = "rgba(233,233,0,0.25)"; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(233,233,0,0.12)"; }}
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(212,175,55,0.12)", color: "#D4AF37", border: "none", cursor: "pointer", opacity: p.status === "active" ? 0.35 : 1, transition: "background 0.12s" }}
+                      onMouseEnter={(e) => { if (p.status !== "active") (e.currentTarget as HTMLButtonElement).style.background = "rgba(212,175,55,0.25)"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(212,175,55,0.12)"; }}
                     >
                       <CheckCircle size={15} />
                     </button>
@@ -326,9 +326,9 @@ export default function AdminAnnoncesPage() {
                       onClick={() => handleSuspend(p.id)}
                       disabled={p.status === "paused"}
                       title="Suspendre"
-                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: `rgba(233,233,0,0.12)`, color: ACCENT, border: "none", cursor: "pointer", opacity: p.status === "paused" ? 0.35 : 1, transition: "background 0.12s" }}
-                      onMouseEnter={(e) => { if (p.status !== "paused") (e.currentTarget as HTMLButtonElement).style.background = "rgba(233,233,0,0.25)"; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(233,233,0,0.12)"; }}
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: `rgba(212,175,55,0.12)`, color: ACCENT, border: "none", cursor: "pointer", opacity: p.status === "paused" ? 0.35 : 1, transition: "background 0.12s" }}
+                      onMouseEnter={(e) => { if (p.status !== "paused") (e.currentTarget as HTMLButtonElement).style.background = "rgba(212,175,55,0.25)"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(212,175,55,0.12)"; }}
                     >
                       <XCircle size={15} />
                     </button>

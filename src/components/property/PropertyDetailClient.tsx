@@ -108,7 +108,7 @@ export function PropertyDetailClient({ property }: Props) {
 
           {/* Boosted badge */}
           {property.is_boosted && (
-            <div className="absolute top-3 left-3 bg-[#E9E900] text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+            <div className="absolute top-3 left-3 bg-[#D4AF37] text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
               ⚡ Annonce boostée
             </div>
           )}
@@ -123,7 +123,7 @@ export function PropertyDetailClient({ property }: Props) {
                 onClick={() => setActiveIndex(i)}
                 className={cn(
                   "relative w-16 h-12 flex-shrink-0 rounded-lg overflow-hidden transition-all",
-                  i === activeIndex ? "ring-2 ring-[#E9E900] opacity-100" : "opacity-60 hover:opacity-80"
+                  i === activeIndex ? "ring-2 ring-[#D4AF37] opacity-100" : "opacity-60 hover:opacity-80"
                 )}
               >
                 <Image src={img.url} alt={property.title} fill className="object-cover" sizes="64px" />

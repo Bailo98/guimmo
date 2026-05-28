@@ -35,7 +35,7 @@ export function ShareButton({ title }: Props) {
   return (
     <button
       onClick={handleShare}
-      className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-[#E9E900] transition-colors"
+      className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-[#D4AF37] transition-colors"
       title="Partager cet article"
     >
       {copied ? (

@@ -17,7 +17,7 @@ export default function Error({ reset }: { reset: () => void }) {
       >
         <div
           className="w-24 h-24 rounded-3xl flex items-center justify-center text-5xl font-black"
-          style={{ backgroundColor: "#E9E900", color: "#fff" }}
+          style={{ backgroundColor: "#D4AF37", color: "#fff" }}
         >
           !
         </div>
@@ -54,9 +54,9 @@ export default function Error({ reset }: { reset: () => void }) {
         <button
           onClick={reset}
           className="flex items-center justify-center gap-2 font-bold px-7 py-3 rounded-xl transition-colors"
-          style={{ backgroundColor: "#E9E900", color: "#fff" }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#c4c400")}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#E9E900")}
+          style={{ backgroundColor: "#D4AF37", color: "#fff" }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#B8963A")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#D4AF37")}
         >
           <RefreshCw className="w-4 h-4" />
           Réessayer
@@ -78,7 +78,7 @@ export default function Error({ reset }: { reset: () => void }) {
         transition={{ duration: 0.4, delay: 0.4 }}
         className="absolute bottom-8 flex items-center gap-2"
       >
-        <span className="text-lg font-black" style={{ color: "#E9E900" }}>Loger</span>
+        <span className="text-lg font-black" style={{ color: "#D4AF37" }}>Loger</span>
         <span className="text-lg font-black text-white">Bien</span>
         <span className="text-xs ml-2" style={{ color: "#475569" }}>— Plateforme immobilière guinéenne</span>
       </motion.footer>

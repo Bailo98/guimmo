@@ -87,7 +87,7 @@ export function HeroSearch() {
               minHeight: "44px",
               borderRadius: 10,
               ...(tab === t
-                ? { background: "#E9E900", color: "#0A1216", fontWeight: 700 }
+                ? { background: "#D4AF37", color: "#0A1216", fontWeight: 700 }
                 : { color: "#666666" }),
             }}
           >
@@ -163,9 +163,9 @@ export function HeroSearch() {
         <button
           onClick={handleSearch}
           className="flex-1 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-colors"
-          style={{ background: "#E9E900", color: "#0A1216", minHeight: "52px", fontWeight: 700 }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "#c4c400"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "#E9E900"; }}
+          style={{ background: "#D4AF37", color: "#0A1216", minHeight: "52px", fontWeight: 700 }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "#B8963A"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "#D4AF37"; }}
         >
           <Search className="w-4 h-4" />
           Rechercher

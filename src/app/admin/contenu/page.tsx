@@ -63,7 +63,7 @@ export default function AdminContenuPage() {
         </div>
         <button
           onClick={handleSave}
-          className="flex items-center gap-2 bg-[#E9E900] text-white font-bold px-4 py-2.5 rounded-xl hover:bg-[#c4c400] transition-colors"
+          className="flex items-center gap-2 bg-[#D4AF37] text-white font-bold px-4 py-2.5 rounded-xl hover:bg-[#B8963A] transition-colors"
         >
           <Save className="w-4 h-4" />
           {saved ? "✓ Enregistré !" : "Enregistrer"}
@@ -80,7 +80,7 @@ export default function AdminContenuPage() {
               onClick={() => setTab(t.id)}
               className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors ${
                 tab === t.id
-                  ? "border-[#E9E900] text-[#E9E900]"
+                  ? "border-[#D4AF37] text-[#D4AF37]"
                   : "border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
               }`}
             >
@@ -118,7 +118,7 @@ export default function AdminContenuPage() {
                       value={contact[f.key as keyof typeof contact]}
                       onChange={(e) => setContact({ ...contact, [f.key]: e.target.value })}
                       placeholder={f.placeholder}
-                      className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
+                      className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
                     />
                   </div>
                 </div>
@@ -132,7 +132,7 @@ export default function AdminContenuPage() {
               type="text"
               value={contact.address}
               onChange={(e) => setContact({ ...contact, address: e.target.value })}
-              className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
+              className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
             />
           </div>
         </div>
@@ -154,7 +154,7 @@ export default function AdminContenuPage() {
                   type="text"
                   value={about[f.key as keyof typeof about]}
                   onChange={(e) => setAbout({ ...about, [f.key]: e.target.value })}
-                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
+                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
                 />
               </div>
             ))}
@@ -169,7 +169,7 @@ export default function AdminContenuPage() {
                   rows={3}
                   value={about[f.key as keyof typeof about]}
                   onChange={(e) => setAbout({ ...about, [f.key]: e.target.value })}
-                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900] resize-none"
+                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none"
                 />
               </div>
             ))}
@@ -187,7 +187,7 @@ export default function AdminContenuPage() {
                     type="text"
                     value={about[f.key as keyof typeof about]}
                     onChange={(e) => setAbout({ ...about, [f.key]: e.target.value })}
-                    className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#E9E900]"
+                    className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
                   />
                 </div>
               ))}
@@ -257,7 +257,7 @@ function TeamEditor() {
                   type="text"
                   value={m[f.key as keyof typeof m]}
                   onChange={(e) => updateMember(m.id, f.key, e.target.value)}
-                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-slate-900 dark:text-white"
+                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-slate-900 dark:text-white"
                 />
               </div>
             ))}
@@ -267,7 +267,7 @@ function TeamEditor() {
                 rows={2}
                 value={m.bio}
                 onChange={(e) => updateMember(m.id, "bio", e.target.value)}
-                className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E9E900] resize-none text-slate-900 dark:text-white"
+                className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none text-slate-900 dark:text-white"
               />
             </div>
           </div>
@@ -278,7 +278,7 @@ function TeamEditor() {
       ))}
       <button
         onClick={addMember}
-        className="w-full py-3 rounded-2xl border-2 border-dashed border-slate-200 dark:border-[#2a3040] text-slate-500 hover:border-[#E9E900] hover:text-[#E9E900] transition-colors text-sm font-semibold"
+        className="w-full py-3 rounded-2xl border-2 border-dashed border-slate-200 dark:border-[#2a3040] text-slate-500 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors text-sm font-semibold"
       >
         + Ajouter un membre
       </button>
@@ -320,7 +320,7 @@ function BlogEditor() {
     <div className="space-y-4">
       <button
         onClick={addPost}
-        className="flex items-center gap-2 bg-[#E9E900] text-white font-bold px-4 py-2.5 rounded-xl hover:bg-[#c4c400] transition-colors text-sm"
+        className="flex items-center gap-2 bg-[#D4AF37] text-white font-bold px-4 py-2.5 rounded-xl hover:bg-[#B8963A] transition-colors text-sm"
       >
         + Nouvel article
       </button>
@@ -339,7 +339,7 @@ function BlogEditor() {
             </div>
             <button
               onClick={() => setEditing(editing === post.id ? null : post.id)}
-              className="text-xs font-semibold text-[#E9E900] hover:underline"
+              className="text-xs font-semibold text-[#D4AF37] hover:underline"
             >
               {editing === post.id ? "Fermer" : "Modifier"}
             </button>
@@ -351,12 +351,12 @@ function BlogEditor() {
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 mb-1">Titre</label>
                   <input type="text" value={post.title} onChange={(e) => updatePost(post.id, "title", e.target.value)}
-                    className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-slate-900 dark:text-white" />
+                    className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-slate-900 dark:text-white" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 mb-1">Catégorie</label>
                   <select value={post.category} onChange={(e) => updatePost(post.id, "category", e.target.value)}
-                    className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-slate-900 dark:text-white">
+                    className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-slate-900 dark:text-white">
                     {["Guide", "Actualité", "Conseil", "Marché", "Annonce"].map((c) => <option key={c}>{c}</option>)}
                   </select>
                 </div>
@@ -364,7 +364,7 @@ function BlogEditor() {
               <div>
                 <label className="block text-xs font-semibold text-slate-500 mb-1">Contenu</label>
                 <textarea rows={6} value={post.content} onChange={(e) => updatePost(post.id, "content", e.target.value)}
-                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#E9E900] resize-none text-slate-900 dark:text-white"
+                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none text-slate-900 dark:text-white"
                   placeholder="Écrivez votre article ici..." />
               </div>
               <div className="flex items-center justify-between">

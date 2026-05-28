@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Download, X } from "lucide-react";
@@ -92,7 +92,7 @@ export function PWAInstallBanner() {
         {/* App icon */}
         <div
           className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-lg"
-          style={{ background: "rgba(200,144,30,0.20)", border: "1px solid rgba(200,144,30,0.30)" }}
+          style={{ background: "rgba(212,175,55,0.20)", border: "1px solid rgba(212,175,55,0.30)" }}
         >
           🏠
         </div>
@@ -112,7 +112,7 @@ export function PWAInstallBanner() {
           <button
             onClick={install}
             className="flex items-center gap-1 px-3 rounded-lg font-bold text-[#0A1216] text-xs"
-            style={{ height: 32, background: "#E9E900", minHeight: "auto" }}
+            style={{ height: 32, background: "#D4AF37", minHeight: "auto" }}
           >
             <Download className="w-3 h-3" />
             Installer
@@ -191,7 +191,7 @@ export function PWAInstallBanner() {
                     className="flex-shrink-0 flex items-center justify-center font-bold text-xs"
                     style={{
                       width: 28, height: 28, borderRadius: "50%",
-                      background: "#E9E900", color: "#0A1216",
+                      background: "#D4AF37", color: "#0A1216",
                       marginTop: 1,
                     }}
                   >
@@ -208,7 +208,7 @@ export function PWAInstallBanner() {
               style={{
                 marginTop: 24,
                 width: "100%",
-                background: "#E9E900",
+                background: "#D4AF37",
                 color: "#0A1216",
                 border: "none",
                 borderRadius: 14,

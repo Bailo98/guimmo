@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import TinderCard from "react-tinder-card";
 import Image from "next/image";
@@ -434,7 +434,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               {topCard.is_featured && (
                 <span style={{
                   background: "rgba(212,175,55,0.20)", color: "#D4AF37",
-                  border: "1px solid rgba(200,169,126,0.5)", borderRadius: 20,
+                  border: "1px solid rgba(212,175,55,0.5)", borderRadius: 20,
                   padding: "3px 10px", fontSize: 11, fontWeight: 600,
                   backdropFilter: "blur(8px)",
                 }}>

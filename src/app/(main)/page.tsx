@@ -143,7 +143,7 @@ function PreviewCard({ property, index }: PreviewCardProps) {
           <MapPin className="w-3 h-3 flex-shrink-0" />
           <span>{neighborhoodLabel}</span>
         </div>
-        <p className="font-black text-sm mt-2" style={{ color: "#E9E900" }}>{priceStr}</p>
+        <p className="font-black text-sm mt-2" style={{ color: "#D4AF37" }}>{priceStr}</p>
         <div className="flex items-center gap-3 mt-1.5 text-xs" style={{ color: "rgba(17,26,20,0.45)" }}>
           {(property.rooms ?? 0) > 0 && (
             <span className="flex items-center gap-1"><Bed className="w-3 h-3" />{property.rooms} ch.</span>
@@ -178,7 +178,7 @@ export default async function HomePage() {
         className="relative min-h-[100svh] flex flex-col overflow-hidden"
         style={{
           background:
-            "radial-gradient(ellipse 60% 50% at 85% 40%, rgba(233,233,0,0.07) 0%, transparent 60%), " +
+            "radial-gradient(ellipse 60% 50% at 85% 40%, rgba(212,175,55,0.07) 0%, transparent 60%), " +
             "radial-gradient(ellipse 50% 45% at 15% 80%, rgba(30,42,48,0.6) 0%, transparent 55%), " +
             "#0A1216",
         }}
@@ -207,12 +207,12 @@ export default async function HomePage() {
               <div
                 className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-8"
                 style={{
-                  background: "rgba(233,233,0,0.08)",
-                  border: "1px solid rgba(233,233,0,0.25)",
+                  background: "rgba(212,175,55,0.08)",
+                  border: "1px solid rgba(212,175,55,0.25)",
                 }}
               >
-                <span className="w-2 h-2 rounded-full" style={{ background: "#E9E900", animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite" }} />
-                <span className="text-sm font-medium" style={{ color: "#E9E900" }}>
+                <span className="w-2 h-2 rounded-full" style={{ background: "#D4AF37", animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite" }} />
+                <span className="text-sm font-medium" style={{ color: "#D4AF37" }}>
                   Annonces vérifiées · Contact direct
                 </span>
               </div>
@@ -232,7 +232,7 @@ export default async function HomePage() {
               >
                 Trouvez votre<br />
                 logement{" "}
-                <span style={{ color: "#E9E900" }}>idéal</span><br />
+                <span style={{ color: "#D4AF37" }}>idéal</span><br />
                 en Guinée
               </h1>
 
@@ -273,7 +273,7 @@ export default async function HomePage() {
         <div className="relative pb-8 flex justify-center">
           <div
             className="w-6 h-9 rounded-full flex items-start justify-center pt-2"
-            style={{ border: "2px solid rgba(233,233,0,0.20)" }}
+            style={{ border: "2px solid rgba(212,175,55,0.20)" }}
           >
             <div
               className="w-1 h-2 rounded-full"
@@ -314,7 +314,7 @@ export default async function HomePage() {
               <Link
                 href="/annonces"
                 className="flex items-center gap-1 text-sm font-semibold hover:underline"
-                style={{ color: "#E9E900" }}
+                style={{ color: "#D4AF37" }}
               >
                 Voir tout <ChevronRight className="w-4 h-4" />
               </Link>
@@ -349,7 +349,7 @@ export default async function HomePage() {
               <Link
                 href="/annonces"
                 className="flex items-center gap-1 text-sm font-semibold hover:underline"
-                style={{ color: "#E9E900" }}
+                style={{ color: "#D4AF37" }}
               >
                 Voir tout <ChevronRight className="w-4 h-4" />
               </Link>
@@ -397,9 +397,9 @@ export default async function HomePage() {
               >
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center mb-3 transition-colors"
-                  style={{ background: "rgba(233,233,0,0.12)" }}
+                  style={{ background: "rgba(212,175,55,0.12)" }}
                 >
-                  <MapPin className="w-4 h-4" style={{ color: "#E9E900" }} />
+                  <MapPin className="w-4 h-4" style={{ color: "#D4AF37" }} />
                 </div>
                 <p
                   className="font-bold text-sm"
@@ -415,7 +415,7 @@ export default async function HomePage() {
                 </p>
                 <p
                   className="text-xs font-semibold mt-2"
-                  style={{ color: "#E9E900" }}
+                  style={{ color: "#D4AF37" }}
                 >
                   Voir →
                 </p>
@@ -477,7 +477,7 @@ export default async function HomePage() {
         className="py-20"
         style={{
           background:
-            "radial-gradient(ellipse 80% 60% at 50% 100%, rgba(233,233,0,0.12) 0%, transparent 60%), " +
+            "radial-gradient(ellipse 80% 60% at 50% 100%, rgba(212,175,55,0.12) 0%, transparent 60%), " +
             "#0A1216",
         }}
       >
@@ -499,7 +499,7 @@ export default async function HomePage() {
             <Link
               href="/publier"
               className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl transition-opacity hover:opacity-90 text-sm"
-              style={{ background: "#E9E900", color: "#0A1216" }}
+              style={{ background: "#D4AF37", color: "#0A1216" }}
             >
               Publier gratuitement
             </Link>

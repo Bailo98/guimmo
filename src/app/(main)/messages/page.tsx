@@ -92,8 +92,8 @@ function buildConversations(messages: DbMessage[], userId: string): Conversation
 function EmptyMessages() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
-      <div className="w-20 h-20 rounded-full bg-[#E9E900]/10 flex items-center justify-center mb-5">
-        <MessageSquare className="w-9 h-9 text-[#E9E900]" />
+      <div className="w-20 h-20 rounded-full bg-[#D4AF37]/10 flex items-center justify-center mb-5">
+        <MessageSquare className="w-9 h-9 text-[#D4AF37]" />
       </div>
       <h1 className="text-xl font-bold text-[#ffffff] mb-2">
         Aucun message pour l&apos;instant
@@ -103,7 +103,7 @@ function EmptyMessages() {
       </p>
       <Link
         href="/annonces"
-        className="bg-[#E9E900] hover:bg-[#c4c400] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+        className="bg-[#D4AF37] hover:bg-[#B8963A] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
       >
         Explorer les annonces
       </Link>
@@ -223,7 +223,7 @@ export default function MessagesPage() {
   if (authLoading || fetching) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-2 border-[#E9E900] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -242,7 +242,7 @@ export default function MessagesPage() {
       <div className="flex items-center gap-3 mb-5">
         <h1 className="text-xl font-bold text-[#ffffff]">Messages</h1>
         {totalUnread > 0 && (
-          <span className="bg-[#E9E900] text-white text-xs font-bold px-2.5 py-1 rounded-full">
+          <span className="bg-[#D4AF37] text-white text-xs font-bold px-2.5 py-1 rounded-full">
             {totalUnread} non lu{totalUnread > 1 ? "s" : ""}
           </span>
         )}
@@ -265,7 +265,7 @@ export default function MessagesPage() {
                 style={{ background: "#111a1f" }}
               >
                 {/* Avatar */}
-                <div className="w-12 h-12 rounded-xl bg-[#E9E900] flex-shrink-0 flex items-center justify-center text-white font-bold text-lg">
+                <div className="w-12 h-12 rounded-xl bg-[#D4AF37] flex-shrink-0 flex items-center justify-center text-white font-bold text-lg">
                   {initial}
                 </div>
 
@@ -281,14 +281,14 @@ export default function MessagesPage() {
                   </div>
                   <div className="flex items-center gap-1 mb-1">
                     <Home className="w-3 h-3 text-white/40 flex-shrink-0" />
-                    <p className="text-xs text-[#E9E900] font-medium truncate">{conv.propertyTitle}</p>
+                    <p className="text-xs text-[#D4AF37] font-medium truncate">{conv.propertyTitle}</p>
                   </div>
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-[13px] text-[rgba(255,255,255,0.55)] truncate leading-snug">
                       {conv.lastMessage?.content ?? ""}
                     </p>
                     {conv.unreadCount > 0 && (
-                      <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-[#E9E900] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                      <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-[#D4AF37] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                         {conv.unreadCount > 9 ? "9+" : conv.unreadCount}
                       </span>
                     )}

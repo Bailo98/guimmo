@@ -120,7 +120,7 @@ function ConnexionForm() {
                 type="button"
                 onClick={() => switchMode("phone")}
                 className="py-2.5 text-sm font-bold rounded-lg transition-colors"
-                style={mode === "phone" ? { background: "#E9E900", color: "#0A1216" } : { color: "#666666" }}
+                style={mode === "phone" ? { background: "#D4AF37", color: "#0A1216" } : { color: "#666666" }}
               >
                 📱 Téléphone
               </button>
@@ -128,7 +128,7 @@ function ConnexionForm() {
                 type="button"
                 onClick={() => switchMode("email")}
                 className="py-2.5 text-sm font-bold rounded-lg transition-colors"
-                style={mode === "email" ? { background: "#E9E900", color: "#0A1216" } : { color: "#666666" }}
+                style={mode === "email" ? { background: "#D4AF37", color: "#0A1216" } : { color: "#666666" }}
               >
                 ✉️ Email
               </button>
@@ -149,7 +149,7 @@ function ConnexionForm() {
                       placeholder="Ex : 628 000 000"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
+                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                       required
                       autoComplete="tel"
                     />
@@ -169,7 +169,7 @@ function ConnexionForm() {
                       placeholder="vous@email.com"
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
+                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                       required
                       autoComplete="email"
                     />
@@ -190,7 +190,7 @@ function ConnexionForm() {
                     placeholder="••••••••"
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#E9E900] text-sm" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
+                    className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
                     required
                     autoComplete="current-password"
                   />
@@ -205,7 +205,7 @@ function ConnexionForm() {
               </div>
 
               <div className="flex justify-end">
-                <Link href="/mot-de-passe-oublie" className="text-xs text-[#E9E900] hover:underline">
+                <Link href="/mot-de-passe-oublie" className="text-xs text-[#D4AF37] hover:underline">
                   Mot de passe oublié ?
                 </Link>
               </div>
@@ -249,7 +249,7 @@ function ConnexionForm() {
 
             <p className="text-center text-sm text-[#666666] mt-6">
               Pas encore de compte ?{" "}
-              <Link href="/inscription" className="text-[#E9E900] font-semibold hover:underline">
+              <Link href="/inscription" className="text-[#D4AF37] font-semibold hover:underline">
                 S&apos;inscrire
               </Link>
             </p>

@@ -62,10 +62,10 @@ export default function TarifsPage() {
         {/* Hero free card */}
         <div
           className="rounded-3xl p-8 md:p-12 text-center relative overflow-hidden"
-          style={{ background: "linear-gradient(135deg, rgba(200,144,30,0.18) 0%, rgba(233,233,0,0.12) 100%)", border: "1px solid rgba(200,144,30,0.30)" }}
+          style={{ background: "linear-gradient(135deg, rgba(212,175,55,0.18) 0%, rgba(212,175,55,0.12) 100%)", border: "1px solid rgba(212,175,55,0.30)" }}
         >
           <div className="text-6xl mb-4">🎉</div>
-          <div className="inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4" style={{ background: "rgba(200,144,30,0.20)", border: "1px solid rgba(200,144,30,0.35)", color: "var(--LogerBien-amber-light)" }}>
+          <div className="inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-4" style={{ background: "rgba(212,175,55,0.20)", border: "1px solid rgba(212,175,55,0.35)", color: "var(--LogerBien-amber-light)" }}>
             Offre de lancement
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-white mb-3">0 GNF</h2>
@@ -74,7 +74,7 @@ export default function TarifsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left mb-8 max-w-xl mx-auto">
             {FREE_FEATURES.map((f) => (
               <div key={f} className="flex items-start gap-2.5">
-                <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "var(--LogerBien-green, #E9E900)" }} />
+                <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "var(--LogerBien-green, #D4AF37)" }} />
                 <span className="text-white/75 text-sm">{f}</span>
               </div>
             ))}
@@ -84,7 +84,7 @@ export default function TarifsPage() {
             <Link
               href="/publier"
               className="inline-flex items-center justify-center gap-2 font-black px-8 py-3.5 rounded-2xl text-sm transition-all hover:opacity-90"
-              style={{ background: "var(--LogerBien-amber)", color: "#fff", boxShadow: "0 4px 20px rgba(200,144,30,0.35)" }}
+              style={{ background: "var(--LogerBien-amber)", color: "#fff", boxShadow: "0 4px 20px rgba(212,175,55,0.35)" }}
             >
               Publier une annonce gratuite <ArrowRight className="w-4 h-4" />
             </Link>

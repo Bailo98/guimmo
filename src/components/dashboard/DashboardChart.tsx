@@ -30,7 +30,7 @@ const TOOLTIP_STYLE = {
     color: "#ffffff",
     fontSize: 12,
   },
-  cursor: { fill: "rgba(200,144,30,0.08)" },
+  cursor: { fill: "rgba(212,175,55,0.08)" },
 };
 
 export default function DashboardChart({
@@ -71,7 +71,7 @@ export default function DashboardChart({
                 dataKey={s.dataKey}
                 name={s.name}
                 fill={s.color}
-                activeBar={{ fill: "#E9E900" }}
+                activeBar={{ fill: "#D4AF37" }}
                 radius={[3, 3, 0, 0]}
               />
             ))}
@@ -95,8 +95,8 @@ export default function DashboardChart({
                 name={s.name}
                 stroke={s.color}
                 strokeWidth={2}
-                dot={showDots && i === 0 ? { fill: "#E9E900", r: 3, strokeWidth: 0 } : false}
-                activeDot={showDots && i === 0 ? { r: 5, fill: "#E9E900" } : { r: 4 }}
+                dot={showDots && i === 0 ? { fill: "#D4AF37", r: 3, strokeWidth: 0 } : false}
+                activeDot={showDots && i === 0 ? { r: 5, fill: "#D4AF37" } : { r: 4 }}
               />
             ))}
           </LineChart>

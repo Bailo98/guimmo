@@ -14,7 +14,7 @@ const SURFACE  = "#111a1f";
 const BORDER   = "#1e2a30";
 const TEXT_PRI = "#ffffff";
 const TEXT_SEC = "rgba(255,255,255,0.55)";
-const ACCENT   = "#E9E900";
+const ACCENT   = "#D4AF37";
 
 const INPUT_STYLE: React.CSSProperties = {
   width: "100%", background: "rgba(255,255,255,0.06)", border: `1px solid ${BORDER}`,
@@ -147,7 +147,7 @@ export default function AdminNouvelleAnnoncePage() {
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh", padding: 24 }}>
         <div style={{ textAlign: "center", maxWidth: 360 }}>
-          <CheckCircle size={56} color="#E9E900" style={{ margin: "0 auto 16px" }} />
+          <CheckCircle size={56} color="#D4AF37" style={{ margin: "0 auto 16px" }} />
           <h2 style={{ color: TEXT_PRI, fontWeight: 900, fontSize: 20, marginBottom: 8 }}>Annonce publiée !</h2>
           <p style={{ color: TEXT_SEC, fontSize: 14, marginBottom: 24 }}>L&apos;annonce a été ajoutée avec succès.</p>
           <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
@@ -315,14 +315,14 @@ export default function AdminNouvelleAnnoncePage() {
                   style={{
                     display: "flex", alignItems: "center", gap: 8,
                     padding: "8px 16px", borderRadius: 10, fontSize: 13, fontWeight: 500,
-                    border: `1px solid ${val ? "#E9E900" : BORDER}`,
-                    background: val ? "rgba(233,233,0,0.12)" : "transparent",
-                    color: val ? "#E9E900" : TEXT_SEC, cursor: "pointer",
+                    border: `1px solid ${val ? "#D4AF37" : BORDER}`,
+                    background: val ? "rgba(212,175,55,0.12)" : "transparent",
+                    color: val ? "#D4AF37" : TEXT_SEC, cursor: "pointer",
                   }}>
                   <span style={{
                     width: 16, height: 16, borderRadius: "50%",
-                    border: `2px solid ${val ? "#E9E900" : TEXT_SEC}`,
-                    background: val ? "#E9E900" : "transparent",
+                    border: `2px solid ${val ? "#D4AF37" : TEXT_SEC}`,
+                    background: val ? "#D4AF37" : "transparent",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     flexShrink: 0,
                   }}>

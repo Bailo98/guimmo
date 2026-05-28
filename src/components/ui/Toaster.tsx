@@ -18,10 +18,10 @@ const ICONS = {
 };
 
 const STYLES: Record<string, React.CSSProperties> = {
-  success: { background: "rgba(233,233,0,0.10)", border: "1px solid #E9E900", color: "#E9E900" },
+  success: { background: "rgba(212,175,55,0.10)", border: "1px solid #D4AF37", color: "#D4AF37" },
   error:   { background: "rgba(239,68,68,0.10)",  border: "1px solid #ef4444", color: "#fca5a5" },
-  info:    { background: "rgba(233,233,0,0.08)",  border: "1px solid rgba(233,233,0,0.40)", color: "#E9E900" },
-  warning: { background: "rgba(233,233,0,0.10)",  border: "1px solid #E9E900", color: "#E9E900" },
+  info:    { background: "rgba(212,175,55,0.08)",  border: "1px solid rgba(212,175,55,0.40)", color: "#D4AF37" },
+  warning: { background: "rgba(212,175,55,0.10)",  border: "1px solid #D4AF37", color: "#D4AF37" },
 };
 
 export function Toaster() {

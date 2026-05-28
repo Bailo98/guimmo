@@ -16,7 +16,7 @@ const DashboardChart = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div style={{ height: 140, background: "#111a1f", borderRadius: "0 12px 12px 0", borderLeft: "3px solid rgba(200,144,30,0.20)", marginBottom: 24 }} />
+      <div style={{ height: 140, background: "#111a1f", borderRadius: "0 12px 12px 0", borderLeft: "3px solid rgba(212,175,55,0.20)", marginBottom: 24 }} />
     ),
   }
 );
@@ -275,7 +275,7 @@ function ProfileForm({ user, profile, refreshProfile }: {
           {profile?.is_verified_pro ? "Annonces illimitées · Badge vérifié · Priorité dans les résultats" : "Jusqu'à 5 annonces · Visibilité standard"}
         </p>
         <Link href="/tarifs" className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
-          style={{ background: "rgba(233,233,0,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(233,233,0,0.25)" }}>
+          style={{ background: "rgba(212,175,55,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.25)" }}>
           {profile?.is_verified_pro ? "Gérer l'abonnement" : "Passer Pro"} →
         </Link>
       </div>
@@ -423,7 +423,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
                   <p className="font-bold text-sm mt-1" style={{ color: "var(--bl-amber-light)" }}>{formatPrice(listing.price, "GNF", listing.price_period)}</p>
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                     {listing.status === "pending" ? (
-                      <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ background: "rgba(233,233,0,0.15)", color: "#E9E900" }}>
+                      <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>
                         ⏳ En attente de validation
                       </span>
                     ) : (
@@ -461,18 +461,18 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
                         setActionLoading(null);
                       }}
                       disabled={busy || isRenewBusy}
-                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-[#E9E900] transition-colors hover:bg-amber-900/10"
-                      style={{ border: "1px solid rgba(200,144,30,0.30)" }}
+                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-[#D4AF37] transition-colors hover:bg-amber-900/10"
+                      style={{ border: "1px solid rgba(212,175,55,0.30)" }}
                     >
-                      {isRenewBusy ? <div className="w-3.5 h-3.5 border border-[#E9E900] border-t-transparent rounded-full animate-spin" /> : <RotateCcw className="w-3.5 h-3.5" />}
+                      {isRenewBusy ? <div className="w-3.5 h-3.5 border border-[#D4AF37] border-t-transparent rounded-full animate-spin" /> : <RotateCcw className="w-3.5 h-3.5" />}
                       Renouveler
                     </button>
                   );
                 })()}
                 <button onClick={() => toggleAvailability(listing)} disabled={busy}
                   className={cn("flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-colors",
-                    listing.available_now ? "text-red-400 hover:bg-red-900/20" : "text-[#E9E900] hover:bg-green-900/20")}
-                  style={{ border: listing.available_now ? "1px solid rgba(240,68,68,0.25)" : "1px solid rgba(233,233,0,0.25)" }}>
+                    listing.available_now ? "text-red-400 hover:bg-red-900/20" : "text-[#D4AF37] hover:bg-green-900/20")}
+                  style={{ border: listing.available_now ? "1px solid rgba(240,68,68,0.25)" : "1px solid rgba(212,175,55,0.25)" }}>
                   {isAvailBusy ? <div className="w-3.5 h-3.5 border border-current border-t-transparent rounded-full animate-spin" />
                     : listing.available_now ? <><XCircle className="w-3.5 h-3.5" /> Marquer loué</>
                     : <><RotateCcw className="w-3.5 h-3.5" /> Remettre dispo</>}
@@ -488,7 +488,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
           );
         })}
         {!limit && (
-          <Link href="/publier" className="flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-colors" style={{ border: "1px dashed rgba(200,144,30,0.40)", color: "var(--bl-amber)" }}>
+          <Link href="/publier" className="flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-colors" style={{ border: "1px dashed rgba(212,175,55,0.40)", color: "var(--bl-amber)" }}>
             <Plus className="w-4 h-4" /> Publier une annonce
           </Link>
         )}
@@ -689,7 +689,7 @@ function VisitRequestsManager({ userId, onPendingCount }: {
     if (s === "confirmed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e" }}>✅ Confirmée</span>;
     if (s === "cancelled") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "#ef4444" }}>❌ Annulée</span>;
     if (s === "completed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(160,160,160,0.15)", color: "#aaa" }}>✓ Terminée</span>;
-    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(233,233,0,0.15)", color: "#E9E900" }}>⏳ En attente</span>;
+    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>⏳ En attente</span>;
   };
 
   if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: "#1a252b" }} />)}</div>;
@@ -713,7 +713,7 @@ function VisitRequestsManager({ userId, onPendingCount }: {
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                  style={{ background: "rgba(233,233,0,0.15)", color: "#E9E900" }}>{ini}</div>
+                  style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>{ini}</div>
                 <div>
                   <p className="text-sm font-bold" style={{ color: "var(--bl-cream)" }}>{v.visitor_name}</p>
                   <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>{v.properties?.title ?? v.property_id}</p>
@@ -728,7 +728,7 @@ function VisitRequestsManager({ userId, onPendingCount }: {
             {/* Owner note display */}
             {v.owner_note && noteId !== v.id && (
               <p className="text-xs px-3 py-2 rounded-lg flex items-start gap-1.5"
-                style={{ background: "rgba(233,233,0,0.06)", border: "1px solid rgba(233,233,0,0.15)", color: "var(--bl-cream-dim)" }}>
+                style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.15)", color: "var(--bl-cream-dim)" }}>
                 <Pencil className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: "var(--bl-amber)" }} />
                 {v.owner_note}
               </p>
@@ -845,21 +845,21 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
           </div>
 
           {statsLoading ? (
-            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(200,144,30,0.20)", borderRadius: "0 12px 12px 0", background: "#1a252b" }} />)}</div>
+            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "#1a252b" }} />)}</div>
           ) : (
             <>
               <div className="grid grid-cols-2 gap-3 mb-6">
-                <StatCard label="Vues 7 jours" value={totalViews} sub="toutes annonces" borderColor="#E9E900" />
-                <StatCard label="Clics WhatsApp" value={totalWA} sub="7 derniers jours" borderColor="#E9E900" />
-                <StatCard label="Messages reçus" value={msgCount} sub="cette semaine" borderColor="#E9E900" />
-                <StatCard label="Annonces actives" value={activeCount} sub="sur 5 max" borderColor="#E9E900" />
+                <StatCard label="Vues 7 jours" value={totalViews} sub="toutes annonces" borderColor="#D4AF37" />
+                <StatCard label="Clics WhatsApp" value={totalWA} sub="7 derniers jours" borderColor="#D4AF37" />
+                <StatCard label="Messages reçus" value={msgCount} sub="cette semaine" borderColor="#D4AF37" />
+                <StatCard label="Annonces actives" value={activeCount} sub="sur 5 max" borderColor="#D4AF37" />
               </div>
 
               <DashboardChart
                 type="bar"
                 title="Vues par jour — 7 jours"
                 data={statsData.map((d) => ({ ...d, label: fmtDate(d.date) }))}
-                series={[{ dataKey: "views", name: "Vues", color: "#E9E900" }]}
+                series={[{ dataKey: "views", name: "Vues", color: "#D4AF37" }]}
               />
 
               <SectionHeader title="Mes annonces" action={
@@ -941,7 +941,7 @@ function VisitorVisitsSection({ userId }: { userId: string }) {
     if (s === "confirmed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e" }}>✅ Confirmée</span>;
     if (s === "cancelled") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "#ef4444" }}>❌ Annulée</span>;
     if (s === "completed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(160,160,160,0.15)", color: "#aaa" }}>✓ Terminée</span>;
-    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(233,233,0,0.15)", color: "#E9E900" }}>⏳ En attente</span>;
+    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>⏳ En attente</span>;
   };
 
   if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "#1a252b" }} />)}</div>;
@@ -952,7 +952,7 @@ function VisitorVisitsSection({ userId }: { userId: string }) {
       <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucune visite planifiée</p>
       <p className="text-sm mb-4" style={{ color: "var(--bl-cream-faint)" }}>Vos demandes de visite apparaîtront ici.</p>
       <Link href="/annonces" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm"
-        style={{ background: "rgba(233,233,0,0.15)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.30)" }}>
+        style={{ background: "rgba(212,175,55,0.15)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.30)" }}>
         Explorer les annonces
       </Link>
     </div>
@@ -981,7 +981,7 @@ function VisitorVisitsSection({ userId }: { userId: string }) {
             </div>
             {v.owner_note && (
               <p className="text-xs px-3 py-2 rounded-lg flex items-start gap-1.5"
-                style={{ background: "rgba(233,233,0,0.06)", border: "1px solid rgba(233,233,0,0.15)", color: "var(--bl-cream-dim)" }}>
+                style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.15)", color: "var(--bl-cream-dim)" }}>
                 <Pencil className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: "var(--bl-amber)" }} />
                 {v.owner_note}
               </p>
@@ -1074,7 +1074,7 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
             </button>
           } />
           {showNew && (
-            <div className="rounded-2xl p-4 mb-4" style={{ background: "var(--bl-surface)", border: "1px solid rgba(200,144,30,0.30)" }}>
+            <div className="rounded-2xl p-4 mb-4" style={{ background: "var(--bl-surface)", border: "1px solid rgba(212,175,55,0.30)" }}>
               <p className="font-bold text-sm mb-3" style={{ color: "var(--bl-cream)" }}>Nouvelle recherche</p>
               <div className="space-y-2">
                 <input type="text" placeholder="Nom de la recherche *" value={newLabel} onChange={(e) => setNewLabel(e.target.value)} style={inputStyle} />
@@ -1125,11 +1125,11 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
                     {s.transaction_type && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.07)", color: "var(--bl-cream-dim)" }}>{s.transaction_type === "rent" ? "Location" : "Vente"}</span>}
                   </div>
                   <div className="flex items-center gap-2">
-                    <Link href={buildUrl(s)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold" style={{ background: "rgba(233,233,0,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(233,233,0,0.25)" }}>
+                    <Link href={buildUrl(s)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold" style={{ background: "rgba(212,175,55,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.25)" }}>
                       Voir les annonces <ChevronRight className="w-3.5 h-3.5" />
                     </Link>
                     <button onClick={() => toggleNotify(s)} className="flex items-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold"
-                      style={s.notify_whatsapp ? { background: "rgba(233,233,0,0.12)", color: "#E9E900", border: "1px solid rgba(233,233,0,0.25)" } : { background: "#1a252b", color: "var(--bl-cream-faint)", border: "1px solid var(--bl-border)" }}>
+                      style={s.notify_whatsapp ? { background: "rgba(212,175,55,0.12)", color: "#D4AF37", border: "1px solid rgba(212,175,55,0.25)" } : { background: "#1a252b", color: "var(--bl-cream-faint)", border: "1px solid var(--bl-border)" }}>
                       {s.notify_whatsapp ? <Bell className="w-3.5 h-3.5" /> : <BellOff className="w-3.5 h-3.5" />} Alerte
                     </button>
                   </div>
@@ -1232,15 +1232,15 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
           </div>
 
           {statsLoading ? (
-            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4,5].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(200,144,30,0.20)", borderRadius: "0 12px 12px 0", background: "#1a252b" }} />)}</div>
+            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4,5].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "#1a252b" }} />)}</div>
           ) : (
             <>
               <div className="grid grid-cols-2 gap-3 mb-6">
-                <StatCard label="Vues ce mois"  value={totalViews}  borderColor="#E9E900" />
-                <StatCard label="Clics WhatsApp" value={totalWA}    borderColor="#E9E900" />
-                <StatCard label="Messages reçus" value={msgCount}   borderColor="#E9E900" />
-                <StatCard label="Annonces actives" value={activeCount} borderColor="#E9E900" />
-                <StatCard label="Statut" value={profile?.is_verified_pro ? "✓ Pro" : "Agent"} sub={profile?.is_verified_pro ? "Vérifié" : "Standard"} borderColor="#E9E900" />
+                <StatCard label="Vues ce mois"  value={totalViews}  borderColor="#D4AF37" />
+                <StatCard label="Clics WhatsApp" value={totalWA}    borderColor="#D4AF37" />
+                <StatCard label="Messages reçus" value={msgCount}   borderColor="#D4AF37" />
+                <StatCard label="Annonces actives" value={activeCount} borderColor="#D4AF37" />
+                <StatCard label="Statut" value={profile?.is_verified_pro ? "✓ Pro" : "Agent"} sub={profile?.is_verified_pro ? "Vérifié" : "Standard"} borderColor="#D4AF37" />
               </div>
 
               <DashboardChart
@@ -1248,7 +1248,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
                 title="Vues sur 30 jours"
                 data={chartLine}
                 height={160}
-                series={[{ dataKey: "views", name: "Vues", color: "#E9E900" }]}
+                series={[{ dataKey: "views", name: "Vues", color: "#D4AF37" }]}
                 ticks={chartSampled.map((d) => d.label)}
                 showDots
               />
@@ -1272,7 +1272,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
                     return (
                       <div key={lead.id} className="flex items-center gap-3 rounded-xl p-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
                         <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                          style={{ background: "rgba(200,144,30,0.20)", color: "var(--bl-amber-light)" }}>{ini}</div>
+                          style={{ background: "rgba(212,175,55,0.20)", color: "var(--bl-amber-light)" }}>{ini}</div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold truncate" style={{ color: "var(--bl-cream)" }}>{name}</p>
                           <p className="text-xs truncate" style={{ color: "var(--bl-cream-faint)" }}>{lead.message}</p>
@@ -1323,7 +1323,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
                 return (
                   <div key={lead.id} className="flex items-center gap-3 rounded-xl p-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
                     <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                      style={{ background: "rgba(200,144,30,0.20)", color: "var(--bl-amber-light)" }}>{ini}</div>
+                      style={{ background: "rgba(212,175,55,0.20)", color: "var(--bl-amber-light)" }}>{ini}</div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold truncate" style={{ color: "var(--bl-cream)" }}>{name}</p>
                       <p className="text-xs truncate" style={{ color: "var(--bl-cream-faint)" }}>{lead.message}</p>
@@ -1351,7 +1351,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
             data={chartLine}
             height={200}
             series={[
-              { dataKey: "views", name: "Vues", color: "#E9E900" },
+              { dataKey: "views", name: "Vues", color: "#D4AF37" },
               { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
             ]}
             ticks={chartSampled.map((d) => d.label)}
@@ -1362,12 +1362,12 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
         <>
           <SectionHeader title="Mon profil" />
           {profile?.is_verified_pro && (
-            <div className="flex items-center gap-2 mb-4 px-3 py-2.5 rounded-xl" style={{ background: "rgba(233,233,0,0.10)", border: "1px solid rgba(233,233,0,0.25)" }}>
+            <div className="flex items-center gap-2 mb-4 px-3 py-2.5 rounded-xl" style={{ background: "rgba(212,175,55,0.10)", border: "1px solid rgba(212,175,55,0.25)" }}>
               <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: "var(--bl-amber)" }} />
               <p className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>Agent professionnel vérifié</p>
             </div>
           )}
-          <Link href={`/agents/${user.id}`} className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4" style={{ background: "rgba(200,144,30,0.07)", border: "1px solid rgba(200,144,30,0.20)" }}>
+          <Link href={`/agents/${user.id}`} className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4" style={{ background: "rgba(212,175,55,0.07)", border: "1px solid rgba(212,175,55,0.20)" }}>
             <span className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>Voir mon profil public</span>
             <ChevronRight className="w-4 h-4" style={{ color: "var(--bl-amber)" }} />
           </Link>
@@ -1452,16 +1452,16 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
           </div>
 
           {statsLoading ? (
-            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4,5,6].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(200,144,30,0.20)", borderRadius: "0 12px 12px 0", background: "#1a252b" }} />)}</div>
+            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4,5,6].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "#1a252b" }} />)}</div>
           ) : (
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-                <StatCard label="Vues totales (30j)"   value={totalViews}  borderColor="#E9E900" />
-                <StatCard label="Annonces actives"     value={activeCount} sub={`${totalCount} au total`} borderColor="#E9E900" />
-                <StatCard label="Contacts WhatsApp"    value={totalWA}     sub="30 derniers jours" borderColor="#E9E900" />
-                <StatCard label="Messages reçus"       value={msgCount}    sub="ce mois" borderColor="#E9E900" />
-                <StatCard label="Leads"                value={leads.length} sub={<Link href="/messages" style={{ color: "var(--bl-amber)" }}>Voir messages →</Link>} borderColor="#E9E900" />
-                <StatCard label="Statut"               value={profile?.is_verified_pro ? "Premium ✓" : "Agence"} sub="Plan actuel" borderColor="#E9E900" />
+                <StatCard label="Vues totales (30j)"   value={totalViews}  borderColor="#D4AF37" />
+                <StatCard label="Annonces actives"     value={activeCount} sub={`${totalCount} au total`} borderColor="#D4AF37" />
+                <StatCard label="Contacts WhatsApp"    value={totalWA}     sub="30 derniers jours" borderColor="#D4AF37" />
+                <StatCard label="Messages reçus"       value={msgCount}    sub="ce mois" borderColor="#D4AF37" />
+                <StatCard label="Leads"                value={leads.length} sub={<Link href="/messages" style={{ color: "var(--bl-amber)" }}>Voir messages →</Link>} borderColor="#D4AF37" />
+                <StatCard label="Statut"               value={profile?.is_verified_pro ? "Premium ✓" : "Agence"} sub="Plan actuel" borderColor="#D4AF37" />
               </div>
 
               <DashboardChart
@@ -1470,7 +1470,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
                 data={chartData}
                 height={160}
                 series={[
-                  { dataKey: "views", name: "Vues", color: "#E9E900" },
+                  { dataKey: "views", name: "Vues", color: "#D4AF37" },
                   { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
                 ]}
                 ticks={chartSampled.map((d) => d.label)}
@@ -1479,7 +1479,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="bl-section-title">Top annonces</h2>
                 <button onClick={exportCSV} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
-                  style={{ background: "rgba(233,233,0,0.10)", color: "var(--bl-amber)", border: "1px solid rgba(233,233,0,0.25)" }}>
+                  style={{ background: "rgba(212,175,55,0.10)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.25)" }}>
                   <Download className="w-3.5 h-3.5" /> Exporter CSV
                 </button>
               </div>
@@ -1514,7 +1514,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
           <SectionHeader title="Leads de l'agence" subtitle="Contacts reçus récemment" action={
             leads.length > 0 ? (
               <button onClick={exportCSV} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg"
-                style={{ background: "rgba(233,233,0,0.10)", color: "var(--bl-amber)", border: "1px solid rgba(233,233,0,0.25)" }}>
+                style={{ background: "rgba(212,175,55,0.10)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.25)" }}>
                 <Download className="w-3.5 h-3.5" /> CSV
               </button>
             ) : undefined
@@ -1524,7 +1524,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
               <Phone className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
               <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucun lead</p>
               <p className="text-sm mb-4" style={{ color: "var(--bl-cream-faint)" }}>Tous vos contacts reçus apparaîtront ici.</p>
-              <Link href="/messages" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm" style={{ background: "rgba(233,233,0,0.15)", color: "var(--bl-amber)", border: "1px solid rgba(200,144,30,0.30)" }}>Voir les messages</Link>
+              <Link href="/messages" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm" style={{ background: "rgba(212,175,55,0.15)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.30)" }}>Voir les messages</Link>
             </div>
           ) : (
             <div className="space-y-2">
@@ -1535,7 +1535,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
                 return (
                   <div key={lead.id} className="flex items-center gap-3 rounded-xl p-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
                     <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                      style={{ background: "rgba(200,144,30,0.20)", color: "var(--bl-amber-light)" }}>{ini}</div>
+                      style={{ background: "rgba(212,175,55,0.20)", color: "var(--bl-amber-light)" }}>{ini}</div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold truncate" style={{ color: "var(--bl-cream)" }}>{name}</p>
                       <p className="text-xs truncate" style={{ color: "var(--bl-cream-faint)" }}>{lead.message}</p>
@@ -1566,7 +1566,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
             data={chartData}
             height={200}
             series={[
-              { dataKey: "views", name: "Vues", color: "#E9E900" },
+              { dataKey: "views", name: "Vues", color: "#D4AF37" },
               { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
             ]}
             ticks={chartSampled.map((d) => d.label)}
@@ -1576,7 +1576,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
       {tab === "profil" && (
         <>
           <SectionHeader title="Profil de l'agence" />
-          <Link href={`/agences/${user.id}`} className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4" style={{ background: "rgba(200,144,30,0.07)", border: "1px solid rgba(200,144,30,0.20)" }}>
+          <Link href={`/agences/${user.id}`} className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4" style={{ background: "rgba(212,175,55,0.07)", border: "1px solid rgba(212,175,55,0.20)" }}>
             <span className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>Voir le profil public de l&apos;agence</span>
             <ChevronRight className="w-4 h-4" style={{ color: "var(--bl-amber)" }} />
           </Link>

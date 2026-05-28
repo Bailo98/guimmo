@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -291,13 +291,13 @@ export function PropertyCard({
         {isNew && !property.is_featured && !property.is_diaspora && <PropertyBadge type="new" />}
         {property.is_boosted && (
           <span style={{
-            background: "#E9E900", color: "#0A1216",
+            background: "#D4AF37", color: "#0A1216",
             fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap",
           }}>★ Pro</span>
         )}
         {property.video_url && (
           <span style={{
-            background: "rgba(233,233,0,0.90)", color: "#0A1216",
+            background: "rgba(212,175,55,0.90)", color: "#0A1216",
             fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap",
           }}>▶ Vidéo</span>
         )}

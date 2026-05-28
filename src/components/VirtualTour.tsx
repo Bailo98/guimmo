@@ -128,12 +128,12 @@ export function VirtualTour({ rooms }: Props) {
       {/* ── Trigger card ── */}
       <div style={{
         background: "linear-gradient(135deg, #111a1f 0%, #0A1216 100%)",
-        border: "1px solid #E9E900", borderRadius: 14, padding: "18px 20px", marginBottom: 24,
+        border: "1px solid #D4AF37", borderRadius: 14, padding: "18px 20px", marginBottom: 24,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
           <div style={{
             width: 44, height: 44, borderRadius: 12,
-            background: "rgba(233,233,0,0.15)",
+            background: "rgba(212,175,55,0.15)",
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 22, flexShrink: 0,
           }}>
@@ -163,9 +163,9 @@ export function VirtualTour({ rooms }: Props) {
           {rooms.length > 5 && (
             <div style={{
               width: 56, height: 56, borderRadius: 8, flexShrink: 0,
-              background: "rgba(233,233,0,0.12)", border: "1px solid rgba(233,233,0,0.25)",
+              background: "rgba(212,175,55,0.12)", border: "1px solid rgba(212,175,55,0.25)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              color: "#E9E900", fontSize: 11, fontWeight: 700,
+              color: "#D4AF37", fontSize: 11, fontWeight: 700,
             }}>
               +{rooms.length - 5}
             </div>
@@ -175,7 +175,7 @@ export function VirtualTour({ rooms }: Props) {
         <button
           onClick={openTour}
           style={{
-            width: "100%", background: "#E9E900", color: "#fff", border: "none",
+            width: "100%", background: "#D4AF37", color: "#fff", border: "none",
             borderRadius: 12, padding: "13px 16px", fontWeight: 700, fontSize: 14,
             cursor: "pointer", display: "flex", alignItems: "center",
             justifyContent: "center", gap: 8, minHeight: 48,
@@ -243,7 +243,7 @@ export function VirtualTour({ rooms }: Props) {
                 display: "flex", alignItems: "center", justifyContent: "center",
                 background: "#0a0a0a", zIndex: 1,
               }}>
-                <div className="w-10 h-10 border-2 border-white/20 border-t-[#E9E900] rounded-full animate-spin" />
+                <div className="w-10 h-10 border-2 border-white/20 border-t-[#D4AF37] rounded-full animate-spin" />
               </div>
             )}
 
@@ -312,7 +312,7 @@ export function VirtualTour({ rooms }: Props) {
                 >
                   <div style={{
                     width: 64, height: 64, borderRadius: 8, overflow: "hidden", flexShrink: 0,
-                    border: i === current ? "2px solid #E9E900" : "2px solid rgba(255,255,255,0.12)",
+                    border: i === current ? "2px solid #D4AF37" : "2px solid rgba(255,255,255,0.12)",
                     opacity: i === current ? 1 : 0.55,
                     transition: "border-color 0.15s, opacity 0.15s",
                   }}>
@@ -325,7 +325,7 @@ export function VirtualTour({ rooms }: Props) {
                     />
                   </div>
                   <p style={{
-                    color: i === current ? "#E9E900" : "rgba(255,255,255,0.45)",
+                    color: i === current ? "#D4AF37" : "rgba(255,255,255,0.45)",
                     fontSize: 10, maxWidth: 64,
                     overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                     margin: 0, transition: "color 0.15s",

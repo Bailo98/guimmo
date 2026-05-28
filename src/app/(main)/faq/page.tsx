@@ -95,7 +95,7 @@ function AccordionItem({ question, answer, isOpen, onToggle }: AccordionItemProp
         </span>
         <ChevronDown
           className={cn(
-            "w-5 h-5 flex-shrink-0 text-[#E9E900] transition-transform duration-200",
+            "w-5 h-5 flex-shrink-0 text-[#D4AF37] transition-transform duration-200",
             isOpen && "rotate-180"
           )}
         />
@@ -135,7 +135,7 @@ export default function FAQPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0f1117]">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#E9E900] via-[#c4c400] to-[#c2540a] text-white">
+      <div className="bg-gradient-to-br from-[#D4AF37] via-[#B8963A] to-[#c2540a] text-white">
         <div className="max-w-3xl mx-auto px-4 py-16 md:py-20 text-center">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-medium mb-5">
             <HelpCircle className="w-4 h-4" />
@@ -172,7 +172,7 @@ export default function FAQPage() {
             </p>
             <button
               onClick={() => setSearch("")}
-              className="mt-4 text-[#E9E900] text-sm font-semibold hover:underline"
+              className="mt-4 text-[#D4AF37] text-sm font-semibold hover:underline"
             >
               Effacer la recherche
             </button>
@@ -182,7 +182,7 @@ export default function FAQPage() {
             {filtered.map((section) => (
               <div key={section.category}>
                 <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                  <span className="w-1.5 h-5 bg-[#E9E900] rounded-full inline-block" />
+                  <span className="w-1.5 h-5 bg-[#D4AF37] rounded-full inline-block" />
                   {section.category}
                 </h2>
                 <div className="bg-[#2c2f36] rounded-2xl border border-[#1e2a30] px-5 md:px-6">

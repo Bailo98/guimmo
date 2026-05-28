@@ -84,7 +84,7 @@ export default function EstimateurPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0f1117]">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#E9E900] via-[#c4c400] to-[#c2540a] text-white">
+      <div className="bg-gradient-to-br from-[#D4AF37] via-[#B8963A] to-[#c2540a] text-white">
         <div className="max-w-5xl mx-auto px-4 py-14 md:py-16">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-medium mb-5">
             <Calculator className="w-4 h-4" />
@@ -117,7 +117,7 @@ export default function EstimateurPage() {
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#0f1117] border border-[#1e2a30] rounded-xl px-4 py-3 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#E9E900]/50"
+                  className="w-full bg-slate-50 dark:bg-[#0f1117] border border-[#1e2a30] rounded-xl px-4 py-3 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
                 >
                   {PROPERTY_TYPES.map((t) => (
                     <option key={t.value} value={t.value}>
@@ -135,7 +135,7 @@ export default function EstimateurPage() {
                 <select
                   value={neighborhood}
                   onChange={(e) => setNeighborhood(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#0f1117] border border-[#1e2a30] rounded-xl px-4 py-3 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#E9E900]/50"
+                  className="w-full bg-slate-50 dark:bg-[#0f1117] border border-[#1e2a30] rounded-xl px-4 py-3 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
                 >
                   {NEIGHBORHOODS.map((n) => (
                     <option key={n.id} value={n.id}>
@@ -148,7 +148,7 @@ export default function EstimateurPage() {
               {/* Surface */}
               <div>
                 <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                  Surface : <span className="text-[#E9E900]">{surface} m²</span>
+                  Surface : <span className="text-[#D4AF37]">{surface} m²</span>
                 </label>
                 <input
                   type="range"
@@ -157,7 +157,7 @@ export default function EstimateurPage() {
                   step={5}
                   value={surface}
                   onChange={(e) => setSurface(Number(e.target.value))}
-                  className="w-full accent-[#E9E900]"
+                  className="w-full accent-[#D4AF37]"
                 />
                 <div className="flex justify-between text-xs text-slate-400 mt-1">
                   <span>15 m²</span>
@@ -169,7 +169,7 @@ export default function EstimateurPage() {
                   max={400}
                   value={surface}
                   onChange={(e) => setSurface(Math.max(15, Math.min(400, Number(e.target.value))))}
-                  className="mt-2 w-32 bg-slate-50 dark:bg-[#0f1117] border border-[#1e2a30] rounded-xl px-3 py-2 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#E9E900]/50"
+                  className="mt-2 w-32 bg-slate-50 dark:bg-[#0f1117] border border-[#1e2a30] rounded-xl px-3 py-2 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
                 />
               </div>
 
@@ -186,8 +186,8 @@ export default function EstimateurPage() {
                       className={cn(
                         "w-11 h-11 rounded-xl font-bold text-sm border transition-all",
                         rooms === n
-                          ? "bg-[#E9E900] text-white border-[#E9E900]"
-                          : "bg-slate-50 dark:bg-[#0f1117] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[#2a3040] hover:border-[#E9E900] hover:text-[#E9E900]"
+                          ? "bg-[#D4AF37] text-white border-[#D4AF37]"
+                          : "bg-slate-50 dark:bg-[#0f1117] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[#2a3040] hover:border-[#D4AF37] hover:text-[#D4AF37]"
                       )}
                     >
                       {n}
@@ -210,7 +210,7 @@ export default function EstimateurPage() {
                   onClick={() => setFurnished((f) => !f)}
                   className={cn(
                     "relative w-12 h-6 rounded-full transition-colors",
-                    furnished ? "bg-[#E9E900]" : "bg-slate-200 dark:bg-slate-700"
+                    furnished ? "bg-[#D4AF37]" : "bg-slate-200 dark:bg-slate-700"
                   )}
                   role="switch"
                   aria-checked={furnished}
@@ -227,7 +227,7 @@ export default function EstimateurPage() {
               {/* CTA */}
               <button
                 onClick={handleEstimate}
-                className="w-full bg-[#E9E900] hover:bg-[#c4c400] text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-base"
+                className="w-full bg-[#D4AF37] hover:bg-[#B8963A] text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-base"
               >
                 <Calculator className="w-5 h-5" />
                 Estimer le loyer
@@ -254,9 +254,9 @@ export default function EstimateurPage() {
                   </div>
 
                   {/* Mid */}
-                  <div className="bg-gradient-to-br from-[#E9E900]/10 to-[#c4c400]/5 border border-[#E9E900]/20 rounded-xl p-4 text-center mb-5">
+                  <div className="bg-gradient-to-br from-[#D4AF37]/10 to-[#B8963A]/5 border border-[#D4AF37]/20 rounded-xl p-4 text-center mb-5">
                     <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Prix estimé</p>
-                    <p className="text-3xl font-black text-[#E9E900]">
+                    <p className="text-3xl font-black text-[#D4AF37]">
                       {formatPrice(result.mid)}
                     </p>
                     <p className="text-xs text-slate-400 mt-1">par mois</p>
@@ -275,7 +275,7 @@ export default function EstimateurPage() {
                       </div>
                       <div className="h-3 bg-slate-100 dark:bg-[#0f1117] rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-[#E9E900] rounded-full transition-all duration-500"
+                          className="h-full bg-[#D4AF37] rounded-full transition-all duration-500"
                           style={{ width: `${Math.min(100, (result.mid / (avgMarket * 2)) * 100)}%` }}
                         />
                       </div>
@@ -329,7 +329,7 @@ export default function EstimateurPage() {
                   </p>
                   <Link
                     href="/publier"
-                    className="flex items-center justify-center gap-2 bg-[#E9E900] hover:bg-[#c4c400] text-white font-bold px-5 py-3 rounded-xl transition-colors text-sm"
+                    className="flex items-center justify-center gap-2 bg-[#D4AF37] hover:bg-[#B8963A] text-white font-bold px-5 py-3 rounded-xl transition-colors text-sm"
                   >
                     Publier mon annonce
                     <ChevronRight className="w-4 h-4" />
@@ -338,8 +338,8 @@ export default function EstimateurPage() {
               </>
             ) : (
               <div className="bg-[#2c2f36] rounded-2xl border border-[#1e2a30] p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-[#E9E900]/10 flex items-center justify-center mx-auto mb-4">
-                  <Calculator className="w-8 h-8 text-[#E9E900]" />
+                <div className="w-16 h-16 rounded-full bg-[#D4AF37]/10 flex items-center justify-center mx-auto mb-4">
+                  <Calculator className="w-8 h-8 text-[#D4AF37]" />
                 </div>
                 <h3 className="font-bold text-slate-900 dark:text-white mb-2">
                   Votre estimation apparaîtra ici

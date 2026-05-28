@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -77,7 +77,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
       const suffix = period === "month" ? "/m" : "";
       return L.divIcon({
         className: "",
-        html: `<div style="background:#E9E900;color:#0A1216;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.5);cursor:pointer;border:2px solid rgba(0,0,0,0.1);">${millions}${suffix} GNF</div>`,
+        html: `<div style="background:#D4AF37;color:#0A1216;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.5);cursor:pointer;border:2px solid rgba(0,0,0,0.1);">${millions}${suffix} GNF</div>`,
         iconAnchor: [0, 0],
         iconSize: [0, 0],
       });
@@ -145,7 +145,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
           border: "1px solid rgba(255,255,255,0.12)",
           borderRadius: 12,
           padding: "9px 14px",
-          color: userPos ? "#E9E900" : "rgba(255,255,255,0.80)",
+          color: userPos ? "#D4AF37" : "rgba(255,255,255,0.80)",
           display: "flex",
           alignItems: "center",
           gap: 6,
@@ -166,7 +166,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
               width: 14,
               height: 14,
               border: "2px solid rgba(255,255,255,0.3)",
-              borderTopColor: "#E9E900",
+              borderTopColor: "#D4AF37",
               borderRadius: "50%",
               display: "inline-block",
               animation: "spin 0.7s linear infinite",
@@ -225,7 +225,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
           <div style={{ flex: 1, minWidth: 0 }}>
             <p
               style={{
-                color: "#E9E900",
+                color: "#D4AF37",
                 fontWeight: 800,
                 fontSize: 15,
                 lineHeight: 1.2,
@@ -266,7 +266,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
             <Link
               href={`/annonces/${selected.id}`}
               style={{
-                background: "#E9E900",
+                background: "#D4AF37",
                 color: "#0A1216",
                 fontWeight: 800,
                 fontSize: 13,

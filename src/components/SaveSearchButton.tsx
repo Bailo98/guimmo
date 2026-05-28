@@ -58,9 +58,9 @@ export function SaveSearchButton(props: Props) {
         style={{
           display: "inline-flex", alignItems: "center", gap: 7,
           padding: "9px 16px", borderRadius: 10,
-          border: saved ? "1px solid rgba(110,201,122,0.30)" : "1px solid rgba(200,144,30,0.30)",
-          background: saved ? "rgba(233,233,0,0.08)" : "rgba(200,144,30,0.08)",
-          color: saved ? "#E9E900" : "#E9E900",
+          border: saved ? "1px solid rgba(110,201,122,0.30)" : "1px solid rgba(212,175,55,0.30)",
+          background: saved ? "rgba(212,175,55,0.08)" : "rgba(212,175,55,0.08)",
+          color: saved ? "#D4AF37" : "#D4AF37",
           fontWeight: 700, fontSize: 13, cursor: saved ? "default" : "pointer",
           opacity: saving ? 0.7 : 1, transition: "opacity 0.15s",
           whiteSpace: "nowrap",

@@ -76,7 +76,7 @@ function formatDate(date: Date): string {
 const DOT_CLASSES: Record<TimelineEvent["type"], string> = {
   publish: "bg-blue-500",
   milestone: "bg-purple-500",
-  price: "bg-[#E9E900]",
+  price: "bg-[#D4AF37]",
   available: "bg-green-500",
 };
 
@@ -99,7 +99,7 @@ export function PropertyTimeline({ price, createdAt, availableNow }: Props) {
   return (
     <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30]">
       <h2 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-        <History className="w-4 h-4 text-[#E9E900]" /> Historique de l&apos;annonce
+        <History className="w-4 h-4 text-[#D4AF37]" /> Historique de l&apos;annonce
       </h2>
 
       <ol className="space-y-0">

@@ -260,7 +260,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   else
     otherEquip.push({ icon: "🏠", label: "RDC" });
 
-  const CARD_AVAIL = { background: "rgba(233,233,0,0.06)", border: "1px solid rgba(233,233,0,0.20)" };
+  const CARD_AVAIL = { background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.20)" };
   const CARD_NONE  = { background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.20)" };
 
   return (
@@ -355,7 +355,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               {/* Status + type badges */}
               <div className="flex items-center gap-2 flex-wrap">
                 {property.available_now ? (
-                  <span className="inline-flex items-center gap-1.5 font-bold text-sm px-3 py-1.5 rounded-full" style={{ background: "rgba(233,233,0,0.12)", border: "1px solid rgba(233,233,0,0.30)", color: "#E9E900" }}>
+                  <span className="inline-flex items-center gap-1.5 font-bold text-sm px-3 py-1.5 rounded-full" style={{ background: "rgba(212,175,55,0.12)", border: "1px solid rgba(212,175,55,0.30)", color: "#D4AF37" }}>
                     <CheckCircle className="w-4 h-4" /> Disponible
                   </span>
                 ) : (
@@ -414,7 +414,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </span>
                   )}
                 </div>
-                <p className="text-2xl md:text-3xl font-black mt-3" style={{ color: "#E9E900" }}>
+                <p className="text-2xl md:text-3xl font-black mt-3" style={{ color: "#D4AF37" }}>
                   {formatPrice(property.price, "GNF", property.price_period)}
                 </p>
               </div>
@@ -616,12 +616,12 @@ export default async function PropertyDetailPage({ params }: Props) {
                   )}
                   <div className="flex flex-wrap gap-2">
                     {(profileData as {is_verified?: boolean} | null)?.is_verified && (
-                      <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(233,233,0,0.12)", color: "#E9E900", border: "1px solid rgba(233,233,0,0.30)" }}>
+                      <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(212,175,55,0.12)", color: "#D4AF37", border: "1px solid rgba(212,175,55,0.30)" }}>
                         ✓ Propriétaire vérifié LogerBien
                       </span>
                     )}
                     {(property.property_images?.length ?? 0) > 0 && (
-                      <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(233,233,0,0.15)", color: "#E9E900", border: "1px solid rgba(233,233,0,0.25)" }}>
+                      <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37", border: "1px solid rgba(212,175,55,0.25)" }}>
                         📷 Photos réelles
                       </span>
                     )}
@@ -693,7 +693,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <Link
                     href={`/compte/annonces/${property.id}/modifier`}
                     className="flex items-center justify-center gap-2 w-full font-bold py-4 px-4 rounded-2xl transition-all text-sm"
-                    style={{ background: "#E9E900", color: "#0A1216" }}
+                    style={{ background: "#D4AF37", color: "#0A1216" }}
                   >
                     ✏️ Gérer cette annonce
                   </Link>
@@ -703,7 +703,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <Link
                       href={`/connexion?redirect=/annonces/${property.id}`}
                       className="flex items-center justify-center gap-2 w-full font-bold py-4 px-4 rounded-2xl transition-all text-sm"
-                      style={{ background: "#E9E900", color: "#0A1216" }}
+                      style={{ background: "#D4AF37", color: "#0A1216" }}
                     >
                       🔑 Se connecter
                     </Link>
@@ -763,7 +763,7 @@ export default async function PropertyDetailPage({ params }: Props) {
           <Link
             href={`/compte/annonces/${property.id}/modifier`}
             className="flex items-center justify-center gap-2 w-full font-bold rounded-2xl text-sm"
-            style={{ background: "#E9E900", color: "#0A1216", minHeight: "52px" }}
+            style={{ background: "#D4AF37", color: "#0A1216", minHeight: "52px" }}
           >
             ✏️ Gérer cette annonce
           </Link>
@@ -772,7 +772,7 @@ export default async function PropertyDetailPage({ params }: Props) {
             <Link
               href={`/connexion?redirect=/annonces/${property.id}`}
               className="flex-1 flex items-center justify-center gap-2 font-bold rounded-2xl text-sm"
-              style={{ background: "#E9E900", color: "#0A1216", minHeight: "52px" }}
+              style={{ background: "#D4AF37", color: "#0A1216", minHeight: "52px" }}
             >
               🔑 Se connecter
             </Link>

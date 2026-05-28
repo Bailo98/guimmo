@@ -496,7 +496,7 @@ export default function PublierPage() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ background: "rgba(233,233,0,0.10)", border: "1px solid rgba(233,233,0,0.20)" }}>
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ background: "rgba(212,175,55,0.10)", border: "1px solid rgba(212,175,55,0.20)" }}>
             <span className="text-3xl">🔒</span>
           </div>
           <h1 className="text-2xl font-black text-white mb-2">Connexion requise</h1>
@@ -506,7 +506,7 @@ export default function PublierPage() {
           <div className="flex flex-col gap-3">
             <a
               href="/connexion?redirect=/publier"
-              className="w-full flex items-center justify-center gap-2 bg-[#E9E900] hover:bg-[#c4c400] text-[#0A1216] font-black py-3.5 px-6 rounded-2xl transition-colors text-sm"
+              className="w-full flex items-center justify-center gap-2 bg-[#D4AF37] hover:bg-[#B8963A] text-[#0A1216] font-black py-3.5 px-6 rounded-2xl transition-colors text-sm"
             >
               Se connecter
             </a>
@@ -603,7 +603,7 @@ export default function PublierPage() {
                   className={cn(
                     "flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all active:scale-95",
                     form.txType === tx.id
-                      ? "border-[#E9E900] bg-[rgba(233,233,0,0.12)]"
+                      ? "border-[#D4AF37] bg-[rgba(212,175,55,0.12)]"
                       : "hover:border-white/30"
                   )}
                 >
@@ -700,13 +700,13 @@ export default function PublierPage() {
               🎥 Vidéo de visite <span className="text-white/40 font-normal">(optionnel — max 60 s, 50 Mo)</span>
             </label>
             {videoUploading && (
-              <div style={{ background: "rgba(233,233,0,0.10)", border: "1px solid rgba(233,233,0,0.25)", borderRadius: 10, padding: "10px 14px", marginBottom: 8 }}>
+              <div style={{ background: "rgba(212,175,55,0.10)", border: "1px solid rgba(212,175,55,0.25)", borderRadius: 10, padding: "10px 14px", marginBottom: 8 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                  <div style={{ width: 14, height: 14, border: "2px solid #E9E900", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
-                  <span style={{ fontSize: 13, color: "#E9E900", fontWeight: 600 }}>Upload vidéo en cours…</span>
+                  <div style={{ width: 14, height: 14, border: "2px solid #D4AF37", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
+                  <span style={{ fontSize: 13, color: "#D4AF37", fontWeight: 600 }}>Upload vidéo en cours…</span>
                 </div>
-                <div style={{ height: 4, background: "rgba(233,233,0,0.15)", borderRadius: 4, overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: "60%", background: "#E9E900", borderRadius: 4, animation: "progressPulse 1.5s ease-in-out infinite" }} />
+                <div style={{ height: 4, background: "rgba(212,175,55,0.15)", borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: "60%", background: "#D4AF37", borderRadius: 4, animation: "progressPulse 1.5s ease-in-out infinite" }} />
                 </div>
               </div>
             )}
@@ -737,7 +737,7 @@ export default function PublierPage() {
           <div>
             <div style={{
               background: "linear-gradient(135deg, #111a1f 0%, #0A1216 100%)",
-              border: "1px solid rgba(200,144,30,0.30)",
+              border: "1px solid rgba(212,175,55,0.30)",
               borderRadius: 14, padding: "14px 16px",
             }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: form.hasVirtualTour ? 14 : 0 }}>
@@ -754,7 +754,7 @@ export default function PublierPage() {
                   onClick={() => setForm((f) => ({ ...f, hasVirtualTour: !f.hasVirtualTour }))}
                   style={{
                     width: 44, height: 24, borderRadius: 12, border: "none",
-                    background: form.hasVirtualTour ? "#E9E900" : "rgba(255,255,255,0.12)",
+                    background: form.hasVirtualTour ? "#D4AF37" : "rgba(255,255,255,0.12)",
                     position: "relative", cursor: "pointer", flexShrink: 0, transition: "background 0.2s",
                   }}
                 >
@@ -780,8 +780,8 @@ export default function PublierPage() {
                         onClick={() => tourInputRefs.current[room.id]?.click()}
                         style={{
                           width: 52, height: 52, borderRadius: 8, flexShrink: 0,
-                          background: room.preview ? "transparent" : "rgba(233,233,0,0.10)",
-                          border: room.preview ? "none" : "1px dashed rgba(200,144,30,0.40)",
+                          background: room.preview ? "transparent" : "rgba(212,175,55,0.10)",
+                          border: room.preview ? "none" : "1px dashed rgba(212,175,55,0.40)",
                           overflow: "hidden", cursor: "pointer", position: "relative",
                           display: "flex", alignItems: "center", justifyContent: "center",
                         }}
@@ -837,8 +837,8 @@ export default function PublierPage() {
                       type="button"
                       onClick={addTourRoom}
                       style={{
-                        width: "100%", background: "transparent", border: "1px dashed rgba(200,144,30,0.30)",
-                        borderRadius: 10, padding: "10px", color: "#E9E900", fontSize: 13, fontWeight: 600,
+                        width: "100%", background: "transparent", border: "1px dashed rgba(212,175,55,0.30)",
+                        borderRadius: 10, padding: "10px", color: "#D4AF37", fontSize: 13, fontWeight: 600,
                         cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                       }}
                     >
@@ -988,9 +988,9 @@ export default function PublierPage() {
                     style={{
                       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                       gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70, minWidth: 70,
-                      border: form.waterSource === opt.id ? "2px solid #E9E900" : "1px solid #1e2a30",
-                      background: form.waterSource === opt.id ? "rgba(233,233,0,0.12)" : "#111a1f",
-                      color: form.waterSource === opt.id ? "#E9E900" : "#666666",
+                      border: form.waterSource === opt.id ? "2px solid #D4AF37" : "1px solid #1e2a30",
+                      background: form.waterSource === opt.id ? "rgba(212,175,55,0.12)" : "#111a1f",
+                      color: form.waterSource === opt.id ? "#D4AF37" : "#666666",
                       fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                     }}>
                     <span style={{ fontSize: 24 }}>{opt.icon}</span>
@@ -1014,9 +1014,9 @@ export default function PublierPage() {
                     style={{
                       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                       gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70, minWidth: 70,
-                      border: form.electricity === opt.id ? "2px solid #E9E900" : "1px solid #1e2a30",
-                      background: form.electricity === opt.id ? "rgba(233,233,0,0.12)" : "#111a1f",
-                      color: form.electricity === opt.id ? "#E9E900" : "#666666",
+                      border: form.electricity === opt.id ? "2px solid #D4AF37" : "1px solid #1e2a30",
+                      background: form.electricity === opt.id ? "rgba(212,175,55,0.12)" : "#111a1f",
+                      color: form.electricity === opt.id ? "#D4AF37" : "#666666",
                       fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                     }}>
                     <span style={{ fontSize: 24 }}>{opt.icon}</span>
@@ -1038,9 +1038,9 @@ export default function PublierPage() {
                     style={{
                       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                       gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70,
-                      border: form.internet === opt.id ? "2px solid #E9E900" : "1px solid #1e2a30",
-                      background: form.internet === opt.id ? "rgba(233,233,0,0.12)" : "#111a1f",
-                      color: form.internet === opt.id ? "#E9E900" : "#666666",
+                      border: form.internet === opt.id ? "2px solid #D4AF37" : "1px solid #1e2a30",
+                      background: form.internet === opt.id ? "rgba(212,175,55,0.12)" : "#111a1f",
+                      color: form.internet === opt.id ? "#D4AF37" : "#666666",
                       fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                     }}>
                     <span style={{ fontSize: 24 }}>{opt.icon}</span>
@@ -1067,9 +1067,9 @@ export default function PublierPage() {
                       style={{
                         display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                         gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70,
-                        border: active ? "2px solid #E9E900" : "1px solid #1e2a30",
-                        background: active ? "rgba(233,233,0,0.12)" : "#111a1f",
-                        color: active ? "#E9E900" : "#666666",
+                        border: active ? "2px solid #D4AF37" : "1px solid #1e2a30",
+                        background: active ? "rgba(212,175,55,0.12)" : "#111a1f",
+                        color: active ? "#D4AF37" : "#666666",
                         fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                       }}>
                       <span style={{ fontSize: 24 }}>{opt.icon}</span>
@@ -1151,7 +1151,7 @@ export default function PublierPage() {
               className={cn(
                 "w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 font-semibold text-sm transition-all",
                 geoState === "done"
-                  ? "border-[#E9E900] bg-[rgba(233,233,0,0.12)] text-[#E9E900]"
+                  ? "border-[#D4AF37] bg-[rgba(212,175,55,0.12)] text-[#D4AF37]"
                   : geoState === "error"
                   ? "border-red-400 bg-[rgba(239,68,68,0.10)] text-red-400"
                   : "text-white/70 hover:border-white/40 hover:text-white"
@@ -1222,7 +1222,7 @@ export default function PublierPage() {
           </div>
 
           {/* Summary */}
-          <div className="rounded-2xl p-4 border border-[rgba(233,233,0,0.25)]" style={{ background: "rgba(200,144,30,0.08)" }}>
+          <div className="rounded-2xl p-4 border border-[rgba(212,175,55,0.25)]" style={{ background: "rgba(212,175,55,0.08)" }}>
             <p className="text-[10px] font-bold text-orange-500 uppercase tracking-wider mb-3">
               Récapitulatif
             </p>
@@ -1320,7 +1320,7 @@ export default function PublierPage() {
           <button
             onClick={handleSubmit}
             disabled={!form.phone || submitting}
-            className="w-full bg-[#E9E900] hover:bg-[#c4c400] disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-4 px-6 rounded-2xl text-base transition-colors shadow-[0_8px_32px_rgba(249,115,22,0.35)] flex items-center justify-center gap-2"
+            className="w-full bg-[#D4AF37] hover:bg-[#B8963A] disabled:opacity-50 disabled:cursor-not-allowed text-white font-black py-4 px-6 rounded-2xl text-base transition-colors shadow-[0_8px_32px_rgba(249,115,22,0.35)] flex items-center justify-center gap-2"
           >
             {submitting ? (
               <>
@@ -1361,7 +1361,7 @@ export default function PublierPage() {
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all",
                 canAdvance
-                  ? "bg-[#E9E900] hover:bg-[#c4c400] text-white shadow-[0_4px_20px_rgba(233,233,0,0.25)]"
+                  ? "bg-[#D4AF37] hover:bg-[#B8963A] text-white shadow-[0_4px_20px_rgba(212,175,55,0.25)]"
                   : "bg-white/5 text-white/30 cursor-not-allowed"
               )}
             >

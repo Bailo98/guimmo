@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { X, Search } from "lucide-react";
@@ -147,7 +147,7 @@ export default function BudgetEstimator() {
                   key={cur}
                   onClick={() => setCurrency(cur)}
                   style={{
-                    background: currency === cur ? "#E9E900" : "transparent",
+                    background: currency === cur ? "#D4AF37" : "transparent",
                     color: currency === cur ? "#0A1216" : "rgba(255,255,255,0.55)",
                     border: "none", borderRadius: 999, padding: "5px 18px",
                     fontSize: 12, fontWeight: 700, cursor: "pointer",
@@ -161,7 +161,7 @@ export default function BudgetEstimator() {
 
             {/* Budget display */}
             <div style={{ textAlign: "center", marginBottom: 14 }}>
-              <p style={{ fontSize: 24, fontWeight: 800, color: "#E9E900", lineHeight: 1 }}>
+              <p style={{ fontSize: 24, fontWeight: 800, color: "#D4AF37", lineHeight: 1 }}>
                 {currency === "GNF"
                   ? formatGNF(budget)
                   : `$${new Intl.NumberFormat("en-US").format(Math.round(budget / USD_RATE))}`}
@@ -178,7 +178,7 @@ export default function BudgetEstimator() {
               type="range"
               min={sliderMin} max={sliderMax} step={sliderStep} value={displayValue}
               onChange={handleSlider}
-              style={{ width: "100%", accentColor: "#E9E900", marginBottom: 12, height: 4, cursor: "pointer" }}
+              style={{ width: "100%", accentColor: "#D4AF37", marginBottom: 12, height: 4, cursor: "pointer" }}
             />
 
             {/* Presets */}
@@ -191,7 +191,7 @@ export default function BudgetEstimator() {
                     key={p.label}
                     onClick={() => setBudget(gnfVal)}
                     style={{
-                      background: active ? "#E9E900" : "rgba(255,255,255,0.07)",
+                      background: active ? "#D4AF37" : "rgba(255,255,255,0.07)",
                       color: active ? "#0A1216" : "rgba(255,255,255,0.7)",
                       border: "none", borderRadius: 999, padding: "5px 12px",
                       fontSize: 12, fontWeight: 600, cursor: "pointer",
@@ -206,7 +206,7 @@ export default function BudgetEstimator() {
 
             {/* Count indicator */}
             <div style={{
-              background: "rgba(233,233,0,0.07)", border: "1px solid rgba(233,233,0,0.15)",
+              background: "rgba(212,175,55,0.07)", border: "1px solid rgba(212,175,55,0.15)",
               borderRadius: 12, padding: "10px 14px", marginBottom: 14,
               textAlign: "center", minHeight: 48, display: "flex",
               alignItems: "center", justifyContent: "center",
@@ -218,7 +218,7 @@ export default function BudgetEstimator() {
                   Ajustez votre budget pour voir les résultats
                 </span>
               ) : (
-                <span style={{ fontSize: 13, color: "#E9E900", fontWeight: 600 }}>
+                <span style={{ fontSize: 13, color: "#D4AF37", fontWeight: 600 }}>
                   {count === 0
                     ? "Aucune annonce dans cette fourchette"
                     : `${count} annonce${count > 1 ? "s" : ""} dans cette fourchette de prix`}
@@ -232,7 +232,7 @@ export default function BudgetEstimator() {
               disabled={count === 0 || count === null}
               style={{
                 width: "100%",
-                background: count && count > 0 ? "#E9E900" : "rgba(255,255,255,0.08)",
+                background: count && count > 0 ? "#D4AF37" : "rgba(255,255,255,0.08)",
                 color: count && count > 0 ? "#0A1216" : "rgba(255,255,255,0.35)",
                 border: "none", borderRadius: 12, padding: "12px 16px",
                 fontSize: 14, fontWeight: 700,
@@ -259,12 +259,12 @@ export default function BudgetEstimator() {
           zIndex: 50,
           width: 52, height: 52,
           borderRadius: "50%",
-          background: open ? "#c4c400" : "#E9E900",
+          background: open ? "#B8963A" : "#D4AF37",
           border: "none",
           cursor: "pointer",
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 22,
-          boxShadow: "0 4px 20px rgba(233,233,0,0.35)",
+          boxShadow: "0 4px 20px rgba(212,175,55,0.35)",
           transition: "background 0.2s, transform 0.15s",
           minHeight: "auto",
         }}

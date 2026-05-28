@@ -32,7 +32,7 @@ export default function AProposPage() {
       <StatsSection />
 
       {/* Mission */}
-      <div className="rounded-2xl p-8 mb-14" style={{ background: "rgba(200,144,30,0.08)", border: "1px solid rgba(200,144,30,0.20)" }}>
+      <div className="rounded-2xl p-8 mb-14" style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.20)" }}>
         <h2 className="text-xl font-black text-white mb-3">Notre mission</h2>
         <p className="text-white/60 leading-relaxed">
           Rendre la recherche de logement en Guinée transparente, rapide et sécurisée. Que vous cherchiez un studio à Dixinn ou une villa à Hamdallaye, LogerBien vous connecte directement aux propriétaires vérifiés — sans intermédiaires abusifs, sans frais cachés.

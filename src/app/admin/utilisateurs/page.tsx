@@ -10,7 +10,7 @@ const SURFACE  = "#111a1f";
 const BORDER   = "#1e2a30";
 const TEXT_PRI = "#ffffff";
 const TEXT_SEC = "rgba(255,255,255,0.55)";
-const ACCENT   = "#E9E900";
+const ACCENT   = "#D4AF37";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Profile {
@@ -29,7 +29,7 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-  buyer: TEXT_SEC, owner: "#E9E900", agent: "#60a5fa",
+  buyer: TEXT_SEC, owner: "#D4AF37", agent: "#60a5fa",
   agency: "#a78bfa", admin: ACCENT,
 };
 
@@ -155,7 +155,7 @@ export default function AdminUtilisateursPage() {
                   {/* Avatar */}
                   <div style={{
                     width: 40, height: 40, borderRadius: "50%", flexShrink: 0,
-                    background: "rgba(200,144,30,0.20)", color: ACCENT,
+                    background: "rgba(212,175,55,0.20)", color: ACCENT,
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontWeight: 700, fontSize: 16,
                   }}>
@@ -169,7 +169,7 @@ export default function AdminUtilisateursPage() {
                         {u.full_name || "Sans nom"}
                       </p>
                       {u.is_verified && (
-                        <CheckCircle size={14} color="#E9E900" />
+                        <CheckCircle size={14} color="#D4AF37" />
                       )}
                       {u.role && (
                         <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, color: roleColor, background: `${roleColor}18` }}>

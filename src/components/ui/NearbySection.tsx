@@ -68,8 +68,8 @@ export function NearbySection({ properties, horizontal = false }: Props) {
 
   const header = (
     <div className="flex items-center gap-2 mb-4">
-      <div className="w-7 h-7 bg-[#E9E900]/10 rounded-lg flex items-center justify-center">
-        <MapPin className="w-4 h-4 text-[#E9E900]" />
+      <div className="w-7 h-7 bg-[#D4AF37]/10 rounded-lg flex items-center justify-center">
+        <MapPin className="w-4 h-4 text-[#D4AF37]" />
       </div>
       <h2 className="font-black text-slate-900 dark:text-white text-lg">Près de vous</h2>
       <span className="text-xs text-slate-400 ml-1">dans un rayon de {MAX_DISTANCE_KM} km</span>
@@ -84,7 +84,7 @@ export function NearbySection({ properties, horizontal = false }: Props) {
           {nearby.map((p, i) => (
             <div key={p.id} className="relative flex-none w-64 snap-start">
               <PropertyCard property={p} index={i} />
-              <div className="absolute top-3 left-3 bg-[#E9E900] text-white text-[10px] font-bold px-2 py-0.5 rounded-full pointer-events-none">
+              <div className="absolute top-3 left-3 bg-[#D4AF37] text-white text-[10px] font-bold px-2 py-0.5 rounded-full pointer-events-none">
                 {p.distanceKm < 1
                   ? `${Math.round(p.distanceKm * 1000)} m`
                   : `${p.distanceKm.toFixed(1)} km`}
@@ -103,7 +103,7 @@ export function NearbySection({ properties, horizontal = false }: Props) {
         {nearby.map((p, i) => (
           <div key={p.id} className="relative">
             <PropertyCard property={p} index={i} />
-            <div className="absolute top-3 left-3 bg-[#E9E900] text-white text-[10px] font-bold px-2 py-0.5 rounded-full pointer-events-none">
+            <div className="absolute top-3 left-3 bg-[#D4AF37] text-white text-[10px] font-bold px-2 py-0.5 rounded-full pointer-events-none">
               {p.distanceKm < 1
                 ? `${Math.round(p.distanceKm * 1000)} m`
                 : `${p.distanceKm.toFixed(1)} km`}

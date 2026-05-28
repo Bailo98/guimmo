@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { Calendar, X, Loader2, CheckCircle2 } from "lucide-react";
@@ -135,7 +135,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
             <Link
               href={`/connexion?redirect=/annonces/${propertyId}`}
               className="inline-block px-6 py-2.5 rounded-xl font-bold text-sm"
-              style={{ background: "#E9E900", color: "#0A1216" }}
+              style={{ background: "#D4AF37", color: "#0A1216" }}
               onClick={() => { document.body.style.overflow = ""; }}
             >
               Se connecter
@@ -186,9 +186,9 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
                     onClick={() => setPreferredTime(t.id)}
                     className="px-2 py-2.5 rounded-xl text-xs font-semibold text-center transition-all"
                     style={{
-                      background: preferredTime === t.id ? "rgba(233,233,0,0.15)" : "rgba(255,255,255,0.04)",
-                      border: preferredTime === t.id ? "1px solid rgba(233,233,0,0.50)" : "1px solid rgba(255,255,255,0.08)",
-                      color: preferredTime === t.id ? "#E9E900" : "rgba(255,255,255,0.60)",
+                      background: preferredTime === t.id ? "rgba(212,175,55,0.15)" : "rgba(255,255,255,0.04)",
+                      border: preferredTime === t.id ? "1px solid rgba(212,175,55,0.50)" : "1px solid rgba(255,255,255,0.08)",
+                      color: preferredTime === t.id ? "#D4AF37" : "rgba(255,255,255,0.60)",
                     }}
                   >
                     {t.label}
@@ -216,7 +216,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
               className="w-full flex items-center justify-center gap-2 rounded-xl font-bold text-sm"
               style={{
                 minHeight: 52,
-                background: canSubmit && !loading ? "#E9E900" : "rgba(255,255,255,0.08)",
+                background: canSubmit && !loading ? "#D4AF37" : "rgba(255,255,255,0.08)",
                 color: canSubmit && !loading ? "#0A1216" : "rgba(255,255,255,0.30)",
               }}
             >

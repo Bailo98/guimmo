@@ -62,7 +62,7 @@ export default async function AgentsPage() {
       <div className="mb-8">
         <div
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-3"
-          style={{ background: "rgba(233,233,0,0.15)", color: "var(--LogerBien-amber-light)", border: "1px solid rgba(233,233,0,0.25)" }}
+          style={{ background: "rgba(212,175,55,0.15)", color: "var(--LogerBien-amber-light)", border: "1px solid rgba(212,175,55,0.25)" }}
         >
           <UserCheck className="w-3.5 h-3.5" /> Agents certifiés
         </div>
@@ -104,7 +104,7 @@ export default async function AgentsPage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-bold text-white text-sm">{agent.name}</p>
                       {/* Agent Officiel badge */}
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(233,233,0,0.15)", color: "#E9E900", border: "1px solid rgba(233,233,0,0.25)" }}>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37", border: "1px solid rgba(212,175,55,0.25)" }}>
                         ✓ Agent Officiel
                       </span>
                     </div>
@@ -145,7 +145,7 @@ export default async function AgentsPage() {
       {/* Devenir agent — form section */}
       <div
         className="mt-12 rounded-2xl p-6"
-        style={{ background: "rgba(200,144,30,0.08)", border: "1px solid rgba(200,144,30,0.20)" }}
+        style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.20)" }}
       >
         <h2 className="text-white font-black text-lg mb-1">Devenir agent LogerBien</h2>
         <p className="text-white/50 text-sm mb-5">Rejoignez notre réseau et touchez des milliers de clients à Conakry</p>

@@ -94,7 +94,7 @@ export function AvailabilityCalendar({ availableNow }: Props) {
     <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30]">
       {/* Header */}
       <h2 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-        <Calendar className="w-4 h-4 text-[#E9E900]" />
+        <Calendar className="w-4 h-4 text-[#D4AF37]" />
         Disponibilités
       </h2>
 

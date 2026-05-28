@@ -19,8 +19,8 @@ function calcScore(p: Props): number {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 71) return "#E9E900";
-  if (score >= 41) return "#E9E900";
+  if (score >= 71) return "#D4AF37";
+  if (score >= 41) return "#D4AF37";
   return "#f87171";
 }
 
@@ -84,7 +84,7 @@ export function ListingScore(props: Props) {
           .filter((c) => !c.skip)
           .map((c) => (
             <div key={c.label} style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <span style={{ fontSize: 11, color: c.ok ? "#E9E900" : "rgba(255,255,255,0.30)" }}>
+              <span style={{ fontSize: 11, color: c.ok ? "#D4AF37" : "rgba(255,255,255,0.30)" }}>
                 {c.ok ? "✓" : "○"}
               </span>
               <span style={{ fontSize: 11, color: c.ok ? "rgba(255,255,255,0.70)" : "rgba(255,255,255,0.30)" }}>
