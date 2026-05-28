@@ -1168,17 +1168,24 @@ function ReviewsSection({ userId }: { userId: string }) {
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return; }
-    supabase
-      .from("reviews")
-      .select("*")
-      .eq("reviewed_id", userId)
-      .order("created_at", { ascending: false })
-      .limit(20)
-      .then(({ data, error }) => {
-        if (error) setUnavailable(true);
-        else setReviews((data ?? []) as Review[]);
+    async function load() {
+      try {
+        const { data, error } = await supabase!
+          .from("reviews")
+          .select("*")
+          .eq("reviewed_id", userId)
+          .order("created_at", { ascending: false })
+          .limit(20);
+        // Silently treat missing table (42P01) or any DB error as unavailable
+        if (error) { setUnavailable(true); return; }
+        setReviews((data ?? []) as Review[]);
+      } catch {
+        setUnavailable(true);
+      } finally {
         setLoading(false);
-      });
+      }
+    }
+    void load();
   }, [userId]);
 
   if (loading) return (
@@ -1592,6 +1599,12 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                 {profile?.is_verified_pro && (
                   <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>VÉRIFIÉ ✓</span>
                 )}
+                <button
+                  onClick={() => setTab("profil")}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all"
+                  style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.13)", color: "rgba(255,255,255,0.70)" }}>
+                  <Pencil className="w-3 h-3" /> Modifier le profil
+                </button>
               </div>
               <div className="flex items-center gap-3 text-xs flex-wrap mb-3" style={{ color: "rgba(255,255,255,0.45)" }}>
                 <span>{accountTypeLabel}</span>
@@ -1625,11 +1638,11 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
             {annStats && (
               <div className="flex items-center gap-5 sm:gap-6 flex-wrap sm:flex-nowrap sm:border-l sm:pl-6" style={{ borderColor: "rgba(255,255,255,0.10)" }}>
                 {[
-                  { label: "Annonces",  value: String(annStats.listings) },
-                  { label: "Vues",      value: String(annStats.views) },
-                  { label: "Demandes",  value: String(annStats.demands) },
-                  { label: "Visites",   value: String(annStats.visits) },
-                  ...(annStats.reviewCount > 0 ? [{ label: "Note", value: `${annStats.avgRating.toFixed(1)}★` }] : []),
+                  { label: "Annonces", value: String(annStats.listings) },
+                  { label: "Vues",     value: String(annStats.views) },
+                  { label: "Demandes", value: String(annStats.demands) },
+                  { label: "Visites",  value: String(annStats.visits) },
+                  { label: "Note ⭐",  value: annStats.reviewCount > 0 ? `${annStats.avgRating.toFixed(1)}` : "—" },
                 ].map((s) => (
                   <div key={s.label} className="text-center">
                     <p className="font-bold text-base sm:text-lg" style={{ color: "#D4AF37" }}>{s.value}</p>
@@ -1828,7 +1841,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
             {/* Statut du profil */}
             <div className="rounded-2xl p-4" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
               <p className="text-[11px] font-bold uppercase mb-3" style={{ color: "var(--bl-cream-faint)", letterSpacing: "0.12em" }}>Statut du profil</p>
-              {profile?.is_verified_pro ? (
+              {profile?.is_verified ? (
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(34,197,94,0.15)" }}>
                     <CheckCircle className="w-5 h-5" style={{ color: "#22c55e" }} />
@@ -1880,6 +1893,24 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                 </div>
               ) : (
                 <div className="space-y-3">
+                  {/* Avg rating summary */}
+                  {annStats && annStats.reviewCount > 0 && (
+                    <div className="flex items-center gap-3 pb-3 border-b" style={{ borderColor: "var(--bl-border)" }}>
+                      <p className="text-2xl font-bold" style={{ color: "var(--bl-amber)", fontFamily: "var(--font-display), sans-serif" }}>
+                        {annStats.avgRating.toFixed(1)}
+                      </p>
+                      <div>
+                        <div className="flex items-center gap-0.5">
+                          {[1,2,3,4,5].map((s) => (
+                            <Star key={s} className="w-3 h-3"
+                              fill={s <= Math.round(annStats.avgRating) ? "#D4AF37" : "none"}
+                              style={{ color: "#D4AF37" }} />
+                          ))}
+                        </div>
+                        <p className="text-[10px] mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>{annStats.reviewCount} avis</p>
+                      </div>
+                    </div>
+                  )}
                   {recentReviews.map((r) => {
                     const ini = (r.reviewer_name ?? "?").split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
                     return (
