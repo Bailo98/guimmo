@@ -182,28 +182,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     await topCardRef.current?.swipe(dir);
   }, []);
 
-  // ── Bookmark — save to favorites without swiping the card away ────────────
-  const handleBookmark = useCallback(async () => {
-    const top = cardsRef.current[0];
-    if (!top) return;
-    if (!user) {
-      router.push("/connexion?redirect=/decouvrir");
-      return;
-    }
-    toggleFavorite(top.id);
-    toast("🔖 Sauvegardé", "success");
-    if (isSupabaseConfigured && supabase) {
-      try {
-        await supabase
-          .from("favorites")
-          .upsert(
-            { user_id: user.id, property_id: top.id },
-            { onConflict: "user_id,property_id", ignoreDuplicates: true }
-          );
-      } catch { /* silent */ }
-    }
-  }, [user, toggleFavorite, router]);
-
   // ── Render ─────────────────────────────────────────────────────────────────
   if (!mounted) return null;
 
@@ -575,7 +553,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           zIndex: 20,
           display: "flex",
           flexDirection: "column",
-          gap: 12,
+          gap: 20,
           alignItems: "center",
         }}>
           {/* ✕ Passer */}
@@ -599,29 +577,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6"  y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-
-          {/* 🔖 Sauvegarder (sans swiper) */}
-          <button
-            onClick={handleBookmark}
-            aria-label="Sauvegarder"
-            style={{
-              width: 48, height: 48,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.12)",
-              border: "1.5px solid rgba(255,255,255,0.25)",
-              color: "#fff",
-              cursor: "pointer",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              WebkitTapHighlightColor: "transparent",
-              flexShrink: 0,
-            }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" strokeWidth="2"
-              strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
             </svg>
           </button>
 
