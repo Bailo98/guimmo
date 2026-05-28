@@ -8,10 +8,10 @@ import {
 import { supabase } from "@/lib/supabase";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
-const SURFACE = "#111a1f";
-const BORDER  = "#1e2a30";
-const TEXT_PRI = "#ffffff";
-const TEXT_SEC = "rgba(255,255,255,0.55)";
+const SURFACE  = "var(--bl-surface)";
+const BORDER   = "var(--color-border)";
+const TEXT_PRI = "var(--bl-cream)";
+const TEXT_SEC = "var(--bl-cream-dim)";
 const ACCENT   = "#D4AF37";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -44,7 +44,7 @@ function StatCard({
         {label}
       </p>
       {value === null ? (
-        <div style={{ height: 36, width: 60, background: "#1e2a30", borderRadius: 6, animation: "pulse 1.5s ease-in-out infinite" }} />
+        <div style={{ height: 36, width: 60, background: "var(--color-border)", borderRadius: 6, animation: "pulse 1.5s ease-in-out infinite" }} />
       ) : (
         <p style={{
           fontSize: "clamp(22px, 4vw, 32px)",

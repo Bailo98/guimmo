@@ -111,7 +111,7 @@ export function NearbySection({ properties, horizontal = false }: Props) {
           </div>
         ))}
       </div>
-      <div className="mt-4 border-t border-slate-100 dark:border-[#2a3040]" />
+      <div className="mt-4 border-t border-slate-100 dark:border-[var(--color-border)]" />
     </section>
   );
 }

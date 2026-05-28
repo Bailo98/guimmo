@@ -10,14 +10,14 @@ import { useAuth } from "@/lib/auth-context";
 import { NEIGHBORHOODS } from "@/data/neighborhoods";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
-const SURFACE  = "#111a1f";
-const BORDER   = "#1e2a30";
-const TEXT_PRI = "#ffffff";
-const TEXT_SEC = "rgba(255,255,255,0.55)";
+const SURFACE  = "var(--bl-surface)";
+const BORDER   = "var(--color-border)";
+const TEXT_PRI = "var(--bl-cream)";
+const TEXT_SEC = "var(--bl-cream-dim)";
 const ACCENT   = "#D4AF37";
 
 const INPUT_STYLE: React.CSSProperties = {
-  width: "100%", background: "rgba(255,255,255,0.06)", border: `1px solid ${BORDER}`,
+  width: "100%", background: "var(--border-subtle)", border: `1px solid ${BORDER}`,
   color: TEXT_PRI, borderRadius: 10, height: 48, padding: "0 16px",
   fontSize: 14, outline: "none", boxSizing: "border-box",
 };

@@ -17,7 +17,7 @@ export default function Error({ reset }: { reset: () => void }) {
       >
         <div
           className="w-24 h-24 rounded-3xl flex items-center justify-center text-5xl font-black"
-          style={{ backgroundColor: "#D4AF37", color: "#fff" }}
+          style={{ backgroundColor: "#D4AF37", color: "var(--bl-cream)" }}
         >
           !
         </div>
@@ -54,7 +54,7 @@ export default function Error({ reset }: { reset: () => void }) {
         <button
           onClick={reset}
           className="flex items-center justify-center gap-2 font-bold px-7 py-3 rounded-xl transition-colors"
-          style={{ backgroundColor: "#D4AF37", color: "#fff" }}
+          style={{ backgroundColor: "#D4AF37", color: "var(--bl-cream)" }}
           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#B8963A")}
           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#D4AF37")}
         >
@@ -64,7 +64,7 @@ export default function Error({ reset }: { reset: () => void }) {
         <Link
           href="/"
           className="flex items-center justify-center gap-2 font-semibold px-7 py-3 rounded-xl transition-colors border"
-          style={{ color: "#fff", borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(255,255,255,0.08)" }}
+          style={{ color: "var(--bl-cream)", borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(255,255,255,0.08)" }}
         >
           <Home className="w-4 h-4" />
           Retour à l&apos;accueil

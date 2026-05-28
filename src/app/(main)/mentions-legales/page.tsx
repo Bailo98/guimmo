@@ -21,7 +21,7 @@ export default function MentionsLegalesPage() {
       <div className="space-y-8 text-slate-600 dark:text-slate-300 leading-relaxed">
         <section>
           <h2 className="text-lg font-black text-slate-900 dark:text-white mb-3">Éditeur de la plateforme</h2>
-          <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30] text-sm space-y-1">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)] text-sm space-y-1">
             <p><span className="font-semibold text-slate-900 dark:text-white">Dénomination sociale :</span> LogerBien SARL</p>
             <p><span className="font-semibold text-slate-900 dark:text-white">Siège social :</span> Kipé, Conakry, République de Guinée</p>
             <p><span className="font-semibold text-slate-900 dark:text-white">Directeur de la publication :</span> Aliou Barry</p>
@@ -32,7 +32,7 @@ export default function MentionsLegalesPage() {
 
         <section>
           <h2 className="text-lg font-black text-slate-900 dark:text-white mb-3">Hébergement</h2>
-          <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30] text-sm space-y-1">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)] text-sm space-y-1">
             <p><span className="font-semibold text-slate-900 dark:text-white">Hébergeur :</span> Vercel Inc.</p>
             <p><span className="font-semibold text-slate-900 dark:text-white">Adresse :</span> 440 N Barranca Ave #4133, Covina, CA 91723, USA</p>
             <p><span className="font-semibold text-slate-900 dark:text-white">Site :</span> vercel.com</p>

@@ -319,7 +319,7 @@ export default function PublierRapidePage() {
             value={form.price}
             onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
             className="w-full rounded-xl px-4 py-3 text-white font-semibold focus:outline-none"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16, minHeight: 52 }}
+            style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16, minHeight: 52 }}
           />
           {priceLabel && <p className="text-[#D4AF37] font-bold text-sm mt-1.5 ml-1">{priceLabel}{form.txType === "rent" ? "/mois" : ""}</p>}
         </div>
@@ -333,7 +333,7 @@ export default function PublierRapidePage() {
             value={form.neighborhood}
             onChange={(e) => setForm((f) => ({ ...f, neighborhood: e.target.value }))}
             className="w-full rounded-xl px-4 py-3 text-white focus:outline-none appearance-none"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16, minHeight: 52 }}
+            style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16, minHeight: 52 }}
           >
             <option value="">— Choisir un quartier —</option>
             {COMMUNES.map((commune) => (
@@ -356,7 +356,7 @@ export default function PublierRapidePage() {
             value={form.phone}
             onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
             className="w-full rounded-xl px-4 py-3 text-white font-semibold focus:outline-none"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16, minHeight: 52 }}
+            style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16, minHeight: 52 }}
           />
           <p className="text-white/40 text-xs mt-1.5 ml-1">Les acheteurs vous contacteront via ce numéro</p>
         </div>

@@ -237,13 +237,13 @@ export default function ConversationPage() {
 
   return (
     <div
-      className="flex flex-col bg-[#0A1216]"
+      className="flex flex-col bg-[var(--bg-primary)]"
       style={{ height: "calc(100dvh - 4rem - 4rem - env(safe-area-inset-bottom, 0px))" }}
     >
       {/* ── Header ── */}
       <div
-        className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-[#1e2a30]"
-        style={{ background: "#0A1216" }}
+        className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-[var(--color-border)]"
+        style={{ background: "var(--bg-primary)" }}
       >
         <button
           onClick={() => router.push("/messages")}
@@ -293,7 +293,7 @@ export default function ConversationPage() {
                   className={`px-4 py-2.5 text-sm leading-relaxed ${
                     isMe
                       ? "bg-[#D4AF37] text-white"
-                      : "bg-[#111a1f] text-[#ffffff] border border-[#1e2a30]"
+                      : "bg-[var(--bl-surface)] text-[#ffffff] border border-[var(--color-border)]"
                   }`}
                   style={{
                     borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
@@ -319,9 +319,9 @@ export default function ConversationPage() {
       {/* ── Input ── */}
       <form
         onSubmit={handleSend}
-        className="flex-shrink-0 px-4 py-3 border-t border-[#1e2a30]"
+        className="flex-shrink-0 px-4 py-3 border-t border-[var(--color-border)]"
         style={{
-          background: "#0A1216",
+          background: "var(--bg-primary)",
           paddingBottom: "max(12px, env(safe-area-inset-bottom))",
         }}
       >
@@ -334,7 +334,7 @@ export default function ConversationPage() {
             placeholder="Écrire un message…"
             rows={1}
             style={{ fontSize: 16 }}
-            className="flex-1 resize-none bg-[#111a1f] border border-[#1e2a30] text-[#ffffff] placeholder:text-white/30 rounded-3xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 max-h-32 overflow-y-auto"
+            className="flex-1 resize-none bg-[var(--bl-surface)] border border-[var(--color-border)] text-[#ffffff] placeholder:text-white/30 rounded-3xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 max-h-32 overflow-y-auto"
           />
           <button
             type="submit"

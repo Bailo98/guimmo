@@ -1,4 +1,4 @@
-export function SkeletonCard() {
+﻿export function SkeletonCard() {
   return (
     <div
       style={{
@@ -25,14 +25,14 @@ export function SkeletonCard() {
       <div className="skeleton" style={{
         position: "absolute", top: 12, right: 12,
         width: 38, height: 38, borderRadius: "50%",
-        background: "rgba(255,255,255,0.08)",
+        background: "var(--border-subtle)",
       }} />
 
       {/* Simulated badge top-left */}
       <div className="skeleton" style={{
         position: "absolute", top: 12, left: 12,
         width: 72, height: 22, borderRadius: 20,
-        background: "rgba(255,255,255,0.08)",
+        background: "var(--border-subtle)",
       }} />
 
       {/* Info overlay bottom */}
@@ -44,12 +44,12 @@ export function SkeletonCard() {
         {/* Prix + badge */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div className="skeleton" style={{ height: 22, width: "42%", borderRadius: 6, background: "rgba(255,255,255,0.10)" }} />
-          <div className="skeleton" style={{ height: 20, width: 64, borderRadius: 20, background: "rgba(255,255,255,0.08)" }} />
+          <div className="skeleton" style={{ height: 20, width: 64, borderRadius: 20, background: "var(--border-subtle)" }} />
         </div>
         {/* Titre */}
         <div className="skeleton" style={{ height: 16, width: "78%", borderRadius: 5, background: "rgba(255,255,255,0.10)" }} />
         {/* Quartier */}
-        <div className="skeleton" style={{ height: 13, width: "55%", borderRadius: 5, background: "rgba(255,255,255,0.07)" }} />
+        <div className="skeleton" style={{ height: 13, width: "55%", borderRadius: 5, background: "var(--border-subtle)" }} />
       </div>
 
       {/* Simulated contact button bottom-right */}

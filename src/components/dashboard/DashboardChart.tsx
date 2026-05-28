@@ -24,10 +24,10 @@ interface DashboardChartProps {
 const TICK = { fill: "#666666", fontSize: 10 };
 const TOOLTIP_STYLE = {
   contentStyle: {
-    background: "#111a1f",
-    border: "1px solid #1e2a30",
+    background: "var(--bl-surface)",
+    border: "1px solid var(--color-border)",
     borderRadius: 8,
-    color: "#ffffff",
+    color: "var(--bl-cream)",
     fontSize: 12,
   },
   cursor: { fill: "rgba(212,175,55,0.08)" },

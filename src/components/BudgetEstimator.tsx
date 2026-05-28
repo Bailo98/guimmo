@@ -101,7 +101,7 @@ export default function BudgetEstimator() {
             right: 16,
             zIndex: 50,
             width: "min(320px, calc(100vw - 32px))",
-            background: "#1a252b",
+            background: "var(--bl-surface-2)",
             borderRadius: 20,
             boxShadow: "0 8px 40px rgba(0,0,0,0.55)",
             border: "1px solid rgba(255,255,255,0.08)",
@@ -114,7 +114,7 @@ export default function BudgetEstimator() {
             padding: "14px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)",
           }}>
             <div>
-              <p style={{ fontSize: 14, fontWeight: 700, color: "#fff", lineHeight: 1 }}>
+              <p style={{ fontSize: 14, fontWeight: 700, color: "var(--bl-cream)", lineHeight: 1 }}>
                 💰 Estimateur de budget
               </p>
               <p style={{ fontSize: 11, color: "var(--text-secondary-new)", marginTop: 3 }}>
@@ -124,7 +124,7 @@ export default function BudgetEstimator() {
             <button
               onClick={() => setOpen(false)}
               style={{
-                background: "rgba(255,255,255,0.07)", border: "none", borderRadius: "50%",
+                background: "var(--border-subtle)", border: "none", borderRadius: "50%",
                 width: 30, height: 30, display: "flex", alignItems: "center",
                 justifyContent: "center", cursor: "pointer", color: "rgba(255,255,255,0.6)",
                 minHeight: "auto",
@@ -139,7 +139,7 @@ export default function BudgetEstimator() {
           <div style={{ padding: "16px" }}>
             {/* Currency toggle */}
             <div style={{
-              display: "flex", background: "rgba(255,255,255,0.05)",
+              display: "flex", background: "var(--border-subtle)",
               borderRadius: 999, padding: 3, marginBottom: 16, width: "fit-content",
             }}>
               {(["GNF", "USD"] as const).map((cur) => (
@@ -212,9 +212,9 @@ export default function BudgetEstimator() {
               alignItems: "center", justifyContent: "center",
             }}>
               {loading ? (
-                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>Recherche en cours…</span>
+                <span style={{ fontSize: 13, color: "var(--bl-cream-faint)" }}>Recherche en cours…</span>
               ) : count === null ? (
-                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>
+                <span style={{ fontSize: 13, color: "var(--bl-cream-faint)" }}>
                   Ajustez votre budget pour voir les résultats
                 </span>
               ) : (

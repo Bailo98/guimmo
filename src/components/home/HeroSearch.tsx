@@ -28,8 +28,8 @@ const TYPES = [
 ];
 
 const SELECT_BASE: React.CSSProperties = {
-  background: "#1a252b",
-  border: "1px solid #1e2a30",
+  background: "var(--bl-surface-2)",
+  border: "1px solid var(--color-border)",
   color: "#666666",
   borderRadius: "12px",
   padding: "0 14px",
@@ -69,14 +69,14 @@ export function HeroSearch() {
     <div
       className="rounded-2xl p-3 sm:p-4 w-full max-w-[640px] lg:max-w-[680px] mx-auto"
       style={{
-        background: "#111a1f",
-        border: "1px solid #1e2a30",
+        background: "var(--bl-surface)",
+        border: "1px solid var(--color-border)",
       }}
     >
       {/* Tabs — pleine largeur, 50/50 */}
       <div
         className="grid grid-cols-2 gap-1 mb-4 p-1 rounded-[10px]"
-        style={{ background: "#0A1216", borderRadius: 12 }}
+        style={{ background: "var(--bg-primary)", borderRadius: 12 }}
       >
         {(["rent", "sale"] as const).map((t) => (
           <button
@@ -87,7 +87,7 @@ export function HeroSearch() {
               minHeight: "44px",
               borderRadius: 10,
               ...(tab === t
-                ? { background: "#D4AF37", color: "#0A1216", fontWeight: 700 }
+                ? { background: "#D4AF37", color: "var(--bg-primary)", fontWeight: 700 }
                 : { color: "#666666" }),
             }}
           >
@@ -118,9 +118,9 @@ export function HeroSearch() {
               }}
               style={SELECT_BASE}
             >
-              <option value="" style={{ color: "#0A1216" }}>Tous les quartiers</option>
+              <option value="" style={{ color: "var(--bg-primary)" }}>Tous les quartiers</option>
               {QUARTIERS.map((q) => (
-                <option key={q.id} value={q.id} style={{ color: "#0A1216" }}>
+                <option key={q.id} value={q.id} style={{ color: "var(--bg-primary)" }}>
                   {q.name}
                 </option>
               ))}
@@ -147,9 +147,9 @@ export function HeroSearch() {
               }}
               style={SELECT_BASE}
             >
-              <option value="" style={{ color: "#0A1216" }}>Tous les types</option>
+              <option value="" style={{ color: "var(--bg-primary)" }}>Tous les types</option>
               {TYPES.map((t) => (
-                <option key={t.id} value={t.id} style={{ color: "#0A1216" }}>
+                <option key={t.id} value={t.id} style={{ color: "var(--bg-primary)" }}>
                   {t.name}
                 </option>
               ))}
@@ -163,7 +163,7 @@ export function HeroSearch() {
         <button
           onClick={handleSearch}
           className="flex-1 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-colors"
-          style={{ background: "#D4AF37", color: "#0A1216", minHeight: "52px", fontWeight: 700 }}
+          style={{ background: "#D4AF37", color: "var(--bg-primary)", minHeight: "52px", fontWeight: 700 }}
           onMouseEnter={(e) => { e.currentTarget.style.background = "#B8963A"; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = "#D4AF37"; }}
         >

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
@@ -95,7 +95,7 @@ export function ReportButton({ propertyId, propertyTitle = "", isLoggedIn = fals
         className="space-y-5"
         style={{
           position: "relative",
-          background: "#1a252b",
+          background: "var(--bl-surface-2)",
           borderRadius: 20,
           padding: 24,
           width: "100%",
@@ -128,7 +128,7 @@ export function ReportButton({ propertyId, propertyTitle = "", isLoggedIn = fals
               <button
                 onClick={close}
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:text-white transition-colors"
-                style={{ background: "rgba(255,255,255,0.08)" }}
+                style={{ background: "var(--border-subtle)" }}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -166,7 +166,7 @@ export function ReportButton({ propertyId, propertyTitle = "", isLoggedIn = fals
               onChange={(e) => setDetails(e.target.value)}
               rows={2}
               className="w-full rounded-xl px-4 py-3 text-white text-sm resize-none focus:outline-none"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", minHeight: 64 }}
+              style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", minHeight: 64 }}
             />
 
             {/* Reporter phone */}
@@ -176,7 +176,7 @@ export function ReportButton({ propertyId, propertyTitle = "", isLoggedIn = fals
               value={reporterPhone}
               onChange={(e) => setReporterPhone(e.target.value)}
               className="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none"
-              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", minHeight: 52 }}
+              style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", minHeight: 52 }}
             />
 
             {/* Submit */}
@@ -207,7 +207,7 @@ export function ReportButton({ propertyId, propertyTitle = "", isLoggedIn = fals
         className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs transition-all"
         style={{
           border:     hovered ? "1px solid rgba(239,68,68,0.3)" : "1px solid rgba(255,255,255,0.12)",
-          background: "rgba(255,255,255,0.04)",
+          background: "var(--border-subtle)",
           color:      hovered ? "#ef4444" : "#aaaaaa",
         }}
       >

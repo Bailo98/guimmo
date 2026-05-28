@@ -26,7 +26,7 @@ export default function SelectionPage() {
   const regular = sorted.filter((p) => !p.is_boosted);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0f1117]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[var(--bg-primary)]">
       {/* Editorial hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-[#1e1008] text-white">
         {/* Decorative orb */}
@@ -182,7 +182,7 @@ export default function SelectionPage() {
 
         {/* Bottom editorial note */}
         {sorted.length > 0 && (
-          <div className="mt-12 bg-[#2c2f36] border border-[#1e2a30] rounded-2xl p-6 text-center">
+          <div className="mt-12 bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-2xl p-6 text-center">
             <p className="text-slate-400 dark:text-slate-500 text-sm max-w-lg mx-auto">
               Notre sélection est mise à jour chaque semaine par l&apos;équipe LogerBien. Seuls les biens
               ayant passé notre processus de vérification sont inclus.

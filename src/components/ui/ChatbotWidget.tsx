@@ -135,13 +135,13 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
                     width: 30, height: 30, borderRadius: "50%",
                     background: "rgba(0,0,0,0.15)",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 14, fontWeight: 800, color: "#0A1216",
+                    fontSize: 14, fontWeight: 800, color: "var(--bg-primary)",
                   }}
                 >
                   LB
                 </span>
                 <div>
-                  <p style={{ fontSize: 13, fontWeight: 700, color: "#0A1216", lineHeight: 1.2 }}>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: "var(--bg-primary)", lineHeight: 1.2 }}>
                     Assistant LogerBien
                   </p>
                   <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 2 }}>
@@ -155,7 +155,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
                 aria-label="Fermer"
                 style={{
                   background: "rgba(0,0,0,0.12)", border: "none", borderRadius: "50%",
-                  width: 28, height: 28, cursor: "pointer", color: "#0A1216",
+                  width: 28, height: 28, cursor: "pointer", color: "var(--bg-primary)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   minHeight: "auto",
                 }}
@@ -292,10 +292,10 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
                 placeholder="Posez votre question…"
                 style={{
                   flex: 1,
-                  background: "#111a1f",
+                  background: "var(--bl-surface)",
                   border: "1px solid rgba(255,255,255,0.1)",
                   borderRadius: 999,
-                  color: "#fff",
+                  color: "var(--bl-cream)",
                   fontSize: 13,
                   padding: "9px 14px",
                   outline: "none",
@@ -353,8 +353,8 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
         onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = ""; }}
       >
         {open
-          ? <X style={{ width: 22, height: 22, color: "#0A1216" }} />
-          : <MessageSquare style={{ width: 22, height: 22, color: "#0A1216" }} />
+          ? <X style={{ width: 22, height: 22, color: "var(--bg-primary)" }} />
+          : <MessageSquare style={{ width: 22, height: 22, color: "var(--bg-primary)" }} />
         }
       </button>
 

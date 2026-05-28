@@ -33,7 +33,7 @@ export function PropertyQRCode({ url, title }: Props) {
   }
 
   return (
-    <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30] print:break-inside-avoid">
+    <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)] print:break-inside-avoid">
       <h2 className="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
         <QrCode className="w-4 h-4 text-[#D4AF37]" /> QR Code de l&apos;annonce
       </h2>

@@ -16,7 +16,7 @@ const DashboardChart = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div style={{ height: 140, background: "#111a1f", borderRadius: "0 12px 12px 0", borderLeft: "3px solid rgba(212,175,55,0.20)", marginBottom: 24 }} />
+      <div style={{ height: 140, background: "var(--bl-surface)", borderRadius: "0 12px 12px 0", borderLeft: "3px solid rgba(212,175,55,0.20)", marginBottom: 24 }} />
     ),
   }
 );
@@ -93,7 +93,7 @@ function todayLabel() {
 function DeleteDialog({ title, onConfirm, onCancel }: { title: string; onConfirm: () => void; onCancel: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ background: "#111a1f", border: "1px solid var(--bl-border-md)" }}>
+      <div className="rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border-md)" }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(240,68,68,0.15)" }}>
             <AlertTriangle className="w-5 h-5 text-red-400" />
@@ -121,7 +121,7 @@ function DeleteAccountDialog({ onConfirm, onCancel }: { onConfirm: () => void; o
   const [confirm, setConfirm] = useState("");
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ background: "#111a1f", border: "1px solid rgba(240,68,68,0.30)" }}>
+      <div className="rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ background: "var(--bl-surface)", border: "1px solid rgba(240,68,68,0.30)" }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(240,68,68,0.15)" }}>
             <AlertTriangle className="w-5 h-5 text-red-400" />
@@ -137,7 +137,7 @@ function DeleteAccountDialog({ onConfirm, onCancel }: { onConfirm: () => void; o
         <input
           type="text" value={confirm} onChange={(e) => setConfirm(e.target.value)}
           placeholder="SUPPRIMER"
-          style={{ background: "#1a252b", border: "1px solid rgba(240,68,68,0.30)", borderRadius: 10, padding: "10px 14px", color: "var(--bl-cream)", fontSize: 14, width: "100%", outline: "none", marginBottom: 16 }}
+          style={{ background: "var(--bl-surface-2)", border: "1px solid rgba(240,68,68,0.30)", borderRadius: 10, padding: "10px 14px", color: "var(--bl-cream)", fontSize: 14, width: "100%", outline: "none", marginBottom: 16 }}
         />
         <div className="flex gap-3">
           <button onClick={onCancel} className="flex-1 py-2.5 rounded-xl text-sm font-semibold" style={{ border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}>Annuler</button>
@@ -188,7 +188,7 @@ function ProfileForm({ user, profile, refreshProfile }: {
   }
 
   const inputCss: React.CSSProperties = {
-    background: "#1a252b", border: "1px solid var(--bl-border-md)",
+    background: "var(--bl-surface-2)", border: "1px solid var(--bl-border-md)",
     borderRadius: 10, padding: "0 14px", color: "var(--bl-cream)",
     fontSize: 16, width: "100%", outline: "none", height: 50,
     transition: "border-color 0.15s",
@@ -204,7 +204,7 @@ function ProfileForm({ user, profile, refreshProfile }: {
         {...props}
         style={inputCss}
         onFocus={(e) => (e.currentTarget.style.borderColor = "var(--bl-amber)")}
-        onBlur={(e) => (e.currentTarget.style.borderColor = "#1e2a30")}
+        onBlur={(e) => (e.currentTarget.style.borderColor = "var(--color-border)")}
       />
     );
   }
@@ -228,9 +228,9 @@ function ProfileForm({ user, profile, refreshProfile }: {
         </div>
         <div>
           <label style={labelCss}>Email</label>
-          <div className="flex items-center justify-between px-3.5 rounded-xl" style={{ height: 50, background: "#111a1f", border: "1px solid var(--bl-border)" }}>
+          <div className="flex items-center justify-between px-3.5 rounded-xl" style={{ height: 50, background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
             <span style={{ color: "var(--bl-cream-dim)", fontSize: 14 }} className="truncate">{user.email}</span>
-            <span className="text-[11px] px-2.5 py-1 rounded-full ml-2 flex-shrink-0" style={{ background: "rgba(255,255,255,0.06)", color: "var(--bl-cream-faint)" }}>Non modifiable</span>
+            <span className="text-[11px] px-2.5 py-1 rounded-full ml-2 flex-shrink-0" style={{ background: "var(--border-subtle)", color: "var(--bl-cream-faint)" }}>Non modifiable</span>
           </div>
         </div>
         <div>
@@ -245,7 +245,7 @@ function ProfileForm({ user, profile, refreshProfile }: {
               placeholder="Décrivez votre expertise..."
               style={{ ...inputCss, height: "auto", padding: "12px 14px", resize: "none" }}
               onFocus={(e) => (e.currentTarget.style.borderColor = "var(--bl-amber)")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "#1e2a30")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "var(--color-border)")}
             />
           </div>
         )}
@@ -260,7 +260,7 @@ function ProfileForm({ user, profile, refreshProfile }: {
       <button
         onClick={save} disabled={saving || !fullName.trim()}
         className="w-full py-3 rounded-xl font-bold text-sm transition-colors disabled:opacity-50 mb-6"
-        style={{ background: "var(--bl-amber)", color: "#fff" }}
+        style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}
       >
         {saving ? <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : "Sauvegarder le profil"}
       </button>
@@ -377,7 +377,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
 
   if (loading) return (
     <div className="space-y-3">
-      {[1,2].map((i) => <div key={i} className="h-28 rounded-2xl animate-pulse" style={{ background: "#1a252b" }} />)}
+      {[1,2].map((i) => <div key={i} className="h-28 rounded-2xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}
     </div>
   );
 
@@ -386,7 +386,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
       <div className="text-4xl mb-3">🏠</div>
       <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucune annonce</p>
       <p className="text-sm mb-4" style={{ color: "var(--bl-cream-faint)" }}>Publiez votre premier bien en quelques minutes.</p>
-      <Link href="/publier" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors" style={{ background: "var(--bl-amber)", color: "#fff" }}>
+      <Link href="/publier" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
         <Plus className="w-4 h-4" /> Publier maintenant →
       </Link>
     </div>
@@ -410,7 +410,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
           return (
             <div key={listing.id} className={cn("rounded-2xl overflow-hidden transition-opacity", busy && "opacity-60 pointer-events-none")} style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
               <div className="flex gap-3 p-3">
-                <Link href={`/annonces/${listing.id}`} className="relative w-24 h-20 flex-shrink-0 rounded-xl overflow-hidden" style={{ background: "#1a252b" }}>
+                <Link href={`/annonces/${listing.id}`} className="relative w-24 h-20 flex-shrink-0 rounded-xl overflow-hidden" style={{ background: "var(--bl-surface-2)" }}>
                   {listing.primary_image
                     ? <Image src={listing.primary_image} alt={listing.title} fill className="object-cover" sizes="96px" />
                     : <div className="w-full h-full flex items-center justify-center text-2xl">🏠</div>}
@@ -592,7 +592,7 @@ function MonthlyReportSection({ userId }: { userId: string }) {
     <div className="mt-6">
       <SectionHeader title="Rapports mensuels" subtitle="Activité envoyée par WhatsApp" />
       {loading ? (
-        <div className="h-20 rounded-2xl animate-pulse" style={{ background: "#1a252b" }} />
+        <div className="h-20 rounded-2xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />
       ) : (
         <div className="space-y-2">
           {reports.map((r) => (
@@ -692,7 +692,7 @@ function VisitRequestsManager({ userId, onPendingCount }: {
     return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>⏳ En attente</span>;
   };
 
-  if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: "#1a252b" }} />)}</div>;
+  if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}</div>;
 
   if (visits.length === 0) return (
     <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
@@ -724,7 +724,7 @@ function VisitRequestsManager({ userId, onPendingCount }: {
             <div className="flex items-center gap-4 text-xs" style={{ color: "var(--bl-cream-dim)" }}>
               <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{dateLabel} · {TIME_LABEL[v.scheduled_time] ?? v.scheduled_time}</span>
             </div>
-            {v.visitor_message && <p className="text-xs px-3 py-2 rounded-lg" style={{ background: "rgba(255,255,255,0.04)", color: "var(--bl-cream-dim)" }}>{v.visitor_message}</p>}
+            {v.visitor_message && <p className="text-xs px-3 py-2 rounded-lg" style={{ background: "var(--border-subtle)", color: "var(--bl-cream-dim)" }}>{v.visitor_message}</p>}
             {/* Owner note display */}
             {v.owner_note && noteId !== v.id && (
               <p className="text-xs px-3 py-2 rounded-lg flex items-start gap-1.5"
@@ -740,25 +740,25 @@ function VisitRequestsManager({ userId, onPendingCount }: {
                   type="text" value={noteText}
                   onChange={(e) => setNoteText(e.target.value)}
                   placeholder="Note privée…"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "6px 10px", color: "#fff", fontSize: 13, flex: 1, outline: "none" }}
+                  style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "6px 10px", color: "var(--bl-cream)", fontSize: 13, flex: 1, outline: "none" }}
                 />
-                <button onClick={() => saveNote(v.id)} className="px-3 py-1.5 rounded-lg text-xs font-bold" style={{ background: "var(--bl-amber)", color: "#0A1216" }}>OK</button>
-                <button onClick={() => setNoteId(null)} className="px-3 py-1.5 rounded-lg text-xs" style={{ background: "rgba(255,255,255,0.08)", color: "var(--bl-cream-faint)" }}>✕</button>
+                <button onClick={() => saveNote(v.id)} className="px-3 py-1.5 rounded-lg text-xs font-bold" style={{ background: "var(--bl-amber)", color: "var(--bg-primary)" }}>OK</button>
+                <button onClick={() => setNoteId(null)} className="px-3 py-1.5 rounded-lg text-xs" style={{ background: "var(--border-subtle)", color: "var(--bl-cream-faint)" }}>✕</button>
               </div>
             )}
             <div className="flex items-center gap-2 flex-wrap">
               <a href={`tel:${v.visitor_phone}`}
                 className="flex items-center justify-center gap-1.5 text-xs font-bold py-2 px-3 rounded-lg"
-                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}>
+                style={{ background: "var(--border-subtle)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}>
                 <Phone className="w-3.5 h-3.5" /> {v.visitor_phone}
               </a>
               <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center px-3 py-2 rounded-lg text-xs font-bold"
-                style={{ background: "#25D366", color: "#fff" }}>WA</a>
+                style={{ background: "#25D366", color: "var(--bl-cream)" }}>WA</a>
               {noteId !== v.id && (
                 <button onClick={() => { setNoteId(v.id); setNoteText(v.owner_note ?? ""); }}
                   className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-bold"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-faint)" }}>
+                  style={{ background: "var(--border-subtle)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-faint)" }}>
                   <Pencil className="w-3 h-3" /> Note
                 </button>
               )}
@@ -845,7 +845,7 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
           </div>
 
           {statsLoading ? (
-            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "#1a252b" }} />)}</div>
+            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "var(--bl-surface-2)" }} />)}</div>
           ) : (
             <>
               <div className="grid grid-cols-2 gap-3 mb-6">
@@ -863,7 +863,7 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
               />
 
               <SectionHeader title="Mes annonces" action={
-                <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "#fff" }}>
+                <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
                   <Plus className="w-3.5 h-3.5" /> Publier
                 </Link>
               } />
@@ -877,7 +877,7 @@ function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
       {tab === "annonces" && (
         <>
           <SectionHeader title="Mes annonces" action={
-            <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "#fff" }}>
+            <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
               <Plus className="w-3.5 h-3.5" /> Publier
             </Link>
           } />
@@ -944,7 +944,7 @@ function VisitorVisitsSection({ userId }: { userId: string }) {
     return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>⏳ En attente</span>;
   };
 
-  if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "#1a252b" }} />)}</div>;
+  if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}</div>;
 
   if (visits.length === 0) return (
     <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
@@ -1049,7 +1049,7 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
   }
 
   const inputStyle: React.CSSProperties = {
-    background: "#1a252b", border: "1px solid var(--bl-border-md)",
+    background: "var(--bl-surface-2)", border: "1px solid var(--bl-border-md)",
     borderRadius: 12, padding: "10px 14px", color: "var(--bl-cream)", fontSize: 14, width: "100%", outline: "none",
   };
 
@@ -1069,7 +1069,7 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
       {tab === "recherches" && (
         <div>
           <SectionHeader title="Votre espace recherche" subtitle="Gérez vos critères et alertes" action={
-            <button onClick={() => setShowNew(true)} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "#fff" }}>
+            <button onClick={() => setShowNew(true)} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
               <Plus className="w-3.5 h-3.5" /> Nouvelle
             </button>
           } />
@@ -1096,18 +1096,18 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
               </div>
               <div className="flex gap-2 mt-3">
                 <button onClick={() => setShowNew(false)} className="flex-1 py-2.5 rounded-xl text-sm font-semibold" style={{ border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}>Annuler</button>
-                <button onClick={saveNewSearch} disabled={saving || !newLabel.trim()} className="flex-1 py-2.5 rounded-xl text-sm font-bold disabled:opacity-50" style={{ background: "var(--bl-amber)", color: "#fff" }}>Sauvegarder</button>
+                <button onClick={saveNewSearch} disabled={saving || !newLabel.trim()} className="flex-1 py-2.5 rounded-xl text-sm font-bold disabled:opacity-50" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>Sauvegarder</button>
               </div>
             </div>
           )}
           {searchesLoading ? (
-            <div className="space-y-3">{[1,2].map((i) => <div key={i} className="h-20 rounded-2xl animate-pulse" style={{ background: "#1a252b" }} />)}</div>
+            <div className="space-y-3">{[1,2].map((i) => <div key={i} className="h-20 rounded-2xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}</div>
           ) : searches.length === 0 ? (
             <div className="text-center py-12 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
               <Search className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
               <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucune recherche sauvegardée</p>
               <p className="text-sm mb-4" style={{ color: "var(--bl-cream-faint)" }}>Sauvegardez vos critères pour recevoir des alertes.</p>
-              <button onClick={() => setShowNew(true)} className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm" style={{ background: "var(--bl-amber)", color: "#fff" }}>
+              <button onClick={() => setShowNew(true)} className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
                 <Plus className="w-4 h-4" /> Créer une recherche
               </button>
             </div>
@@ -1120,16 +1120,16 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
                     <button onClick={() => deleteSearch(s.id)} style={{ color: "var(--bl-cream-faint)" }} className="hover:text-red-400 transition-colors flex-shrink-0"><Trash2 className="w-4 h-4" /></button>
                   </div>
                   <div className="flex flex-wrap gap-1.5 mb-3">
-                    {s.neighborhood && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.07)", color: "var(--bl-cream-dim)" }}>{NL[s.neighborhood] ?? s.neighborhood}</span>}
-                    {s.type && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.07)", color: "var(--bl-cream-dim)" }}>{TL[s.type] ?? s.type}</span>}
-                    {s.transaction_type && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.07)", color: "var(--bl-cream-dim)" }}>{s.transaction_type === "rent" ? "Location" : "Vente"}</span>}
+                    {s.neighborhood && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "var(--border-subtle)", color: "var(--bl-cream-dim)" }}>{NL[s.neighborhood] ?? s.neighborhood}</span>}
+                    {s.type && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "var(--border-subtle)", color: "var(--bl-cream-dim)" }}>{TL[s.type] ?? s.type}</span>}
+                    {s.transaction_type && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "var(--border-subtle)", color: "var(--bl-cream-dim)" }}>{s.transaction_type === "rent" ? "Location" : "Vente"}</span>}
                   </div>
                   <div className="flex items-center gap-2">
                     <Link href={buildUrl(s)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold" style={{ background: "rgba(212,175,55,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.25)" }}>
                       Voir les annonces <ChevronRight className="w-3.5 h-3.5" />
                     </Link>
                     <button onClick={() => toggleNotify(s)} className="flex items-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold"
-                      style={s.notify_whatsapp ? { background: "rgba(212,175,55,0.12)", color: "#D4AF37", border: "1px solid rgba(212,175,55,0.25)" } : { background: "#1a252b", color: "var(--bl-cream-faint)", border: "1px solid var(--bl-border)" }}>
+                      style={s.notify_whatsapp ? { background: "rgba(212,175,55,0.12)", color: "#D4AF37", border: "1px solid rgba(212,175,55,0.25)" } : { background: "var(--bl-surface-2)", color: "var(--bl-cream-faint)", border: "1px solid var(--bl-border)" }}>
                       {s.notify_whatsapp ? <Bell className="w-3.5 h-3.5" /> : <BellOff className="w-3.5 h-3.5" />} Alerte
                     </button>
                   </div>
@@ -1232,7 +1232,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
           </div>
 
           {statsLoading ? (
-            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4,5].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "#1a252b" }} />)}</div>
+            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4,5].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "var(--bl-surface-2)" }} />)}</div>
           ) : (
             <>
               <div className="grid grid-cols-2 gap-3 mb-6">
@@ -1257,7 +1257,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
                 <Link href="/messages" className="text-xs font-bold" style={{ color: "var(--bl-amber)" }}>Tout voir →</Link>
               } />
               {leadsLoading ? (
-                <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "#1a252b" }} />)}</div>
+                <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}</div>
               ) : leads.length === 0 ? (
                 <div className="text-center py-10 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
                   <Phone className="w-7 h-7 mx-auto mb-2" style={{ color: "var(--bl-cream-faint)" }} />
@@ -1307,7 +1307,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
         <>
           <SectionHeader title="Leads" subtitle="Tous vos contacts reçus" />
           {leadsLoading ? (
-            <div className="space-y-2">{[1,2,3,4,5].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "#1a252b" }} />)}</div>
+            <div className="space-y-2">{[1,2,3,4,5].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}</div>
           ) : leads.length === 0 ? (
             <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
               <Phone className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
@@ -1331,7 +1331,7 @@ function AgentDashboard({ user, profile, signOut, refreshProfile }: {
                     {wa && (
                       <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
                         className="text-xs font-bold px-3 py-1.5 rounded-lg flex-shrink-0"
-                        style={{ background: "#25D366", color: "#fff" }}>
+                        style={{ background: "#25D366", color: "var(--bl-cream)" }}>
                         Contacter
                       </a>
                     )}
@@ -1452,7 +1452,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
           </div>
 
           {statsLoading ? (
-            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4,5,6].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "#1a252b" }} />)}</div>
+            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4,5,6].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "var(--bl-surface-2)" }} />)}</div>
           ) : (
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
@@ -1545,7 +1545,7 @@ function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
                       {wa && (
                         <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
                           className="text-xs font-bold px-2.5 py-1 rounded-lg"
-                          style={{ background: "#25D366", color: "#fff" }}>
+                          style={{ background: "#25D366", color: "var(--bl-cream)" }}>
                           WA
                         </a>
                       )}

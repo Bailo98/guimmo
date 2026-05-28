@@ -6,10 +6,10 @@ import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabase";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
-const SURFACE  = "#111a1f";
-const BORDER   = "#1e2a30";
-const TEXT_PRI = "#ffffff";
-const TEXT_SEC = "rgba(255,255,255,0.55)";
+const SURFACE  = "var(--bl-surface)";
+const BORDER   = "var(--color-border)";
+const TEXT_PRI = "var(--bl-cream)";
+const TEXT_SEC = "var(--bl-cream-dim)";
 const ACCENT   = "#D4AF37";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -126,10 +126,10 @@ export default function AdminUtilisateursPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 14, display: "flex", gap: 12, alignItems: "center", opacity: 1 - i * 0.15 }}>
-              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
+              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--border-subtle)" }} />
               <div style={{ flex: 1 }}>
-                <div style={{ height: 12, width: 160, background: "rgba(255,255,255,0.06)", borderRadius: 4, marginBottom: 6 }} />
-                <div style={{ height: 10, width: 240, background: "rgba(255,255,255,0.04)", borderRadius: 4 }} />
+                <div style={{ height: 12, width: 160, background: "var(--border-subtle)", borderRadius: 4, marginBottom: 6 }} />
+                <div style={{ height: 10, width: 240, background: "var(--border-subtle)", borderRadius: 4 }} />
               </div>
             </div>
           ))}
@@ -218,7 +218,7 @@ export default function AdminUtilisateursPage() {
           onClick={() => setConfirmDelete(null)}
         >
           <div
-            style={{ background: "#111a1f", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
+            style={{ background: "var(--bl-surface)", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>

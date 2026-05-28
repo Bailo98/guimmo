@@ -83,7 +83,10 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0A1216",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#121212" },
+    { media: "(prefers-color-scheme: light)", color: "#F5EBD7" },
+  ],
   // Required for env(safe-area-inset-bottom) to return real values on iOS.
   // Without this the browser clips the viewport to the safe area and the
   // env() functions always return 0, making the bottom-nav padding useless.

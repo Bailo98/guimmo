@@ -107,7 +107,7 @@ export default function ParametresPage() {
       </div>
 
       {/* Avatar */}
-      <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30] flex items-center gap-4">
+      <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)] flex items-center gap-4">
         <div className="relative">
           <div className={`w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden ${profileLoading ? "bg-slate-200 dark:bg-slate-700 animate-pulse" : "bg-gradient-to-br from-[#D4AF37] to-[#B8963A]"}`}>
             {!profileLoading && (avatar ? (
@@ -137,7 +137,7 @@ export default function ParametresPage() {
       </div>
 
       {/* Profile fields */}
-      <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30] space-y-4">
+      <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)] space-y-4">
         <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <User className="w-4 h-4 text-[#D4AF37]" /> Profil
         </h2>
@@ -165,7 +165,7 @@ export default function ParametresPage() {
                   value={form[f.key as keyof typeof form]}
                   onChange={(e) => f.key !== "email" && setForm({ ...form, [f.key]: e.target.value })}
                   readOnly={f.key === "email"}
-                  className={`w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none ${f.key === "email" ? "opacity-60 cursor-not-allowed" : "focus:ring-2 focus:ring-[#D4AF37]"}`}
+                  className={`w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none ${f.key === "email" ? "opacity-60 cursor-not-allowed" : "focus:ring-2 focus:ring-[#D4AF37]"}`}
                 />
                 {f.key === "email" && (
                   <p className="text-xs text-slate-400 mt-1">L&apos;email ne peut pas être modifié ici.</p>
@@ -183,7 +183,7 @@ export default function ParametresPage() {
       </div>
 
       {/* Preferences */}
-      <div className="bg-[#2c2f36] rounded-2xl border border-[#1e2a30] overflow-hidden">
+      <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--color-border)] overflow-hidden">
         <h2 className="font-bold text-slate-900 dark:text-white px-5 pt-5 pb-3 flex items-center gap-2">
           <Shield className="w-4 h-4 text-[#D4AF37]" /> Préférences
         </h2>
@@ -211,7 +211,7 @@ export default function ParametresPage() {
       {/* Disconnect */}
       <button
         onClick={handleLogout}
-        className="w-full flex items-center justify-center gap-2 bg-slate-100 dark:bg-[#1e2430] text-slate-700 dark:text-slate-200 font-semibold py-3.5 rounded-2xl border border-[#1e2a30] hover:bg-slate-200 dark:hover:bg-[#2a3040] transition-colors"
+        className="w-full flex items-center justify-center gap-2 bg-slate-100 dark:bg-[#1e2430] text-slate-700 dark:text-slate-200 font-semibold py-3.5 rounded-2xl border border-[var(--color-border)] hover:bg-slate-200 dark:hover:bg-[#2a3040] transition-colors"
       >
         <LogOut className="w-4 h-4" /> Se déconnecter
       </button>
@@ -233,7 +233,7 @@ export default function ParametresPage() {
       {/* Delete confirmation modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4" onClick={() => setShowDeleteModal(false)}>
-          <div className="bg-[#2c2f36] rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-red-200 dark:border-red-900/40" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-red-200 dark:border-red-900/40" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between mb-4">
               <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
                 <Trash2 className="w-5 h-5 text-red-600" />
@@ -251,10 +251,10 @@ export default function ParametresPage() {
               value={deleteConfirm}
               onChange={(e) => setDeleteConfirm(e.target.value)}
               placeholder="SUPPRIMER"
-              className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-4 py-2.5 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
             <div className="flex gap-3">
-              <button onClick={() => setShowDeleteModal(false)} className="flex-1 py-2.5 rounded-xl border border-[#1e2a30] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-[#151922]">
+              <button onClick={() => setShowDeleteModal(false)} className="flex-1 py-2.5 rounded-xl border border-[var(--color-border)] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-[#151922]">
                 Annuler
               </button>
               <button

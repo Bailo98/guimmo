@@ -238,7 +238,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
             </p>
             <p
               style={{
-                color: "#fff",
+                color: "var(--bl-cream)",
                 fontWeight: 600,
                 fontSize: 13,
                 whiteSpace: "nowrap",
@@ -249,7 +249,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
             >
               {selected.title}
             </p>
-            <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 11 }}>
+            <p style={{ color: "var(--bl-cream-faint)", fontSize: 11 }}>
               📍 {neighbourhoodLabel(selected.neighborhood)}
             </p>
           </div>
@@ -267,7 +267,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
               href={`/annonces/${selected.id}`}
               style={{
                 background: "#D4AF37",
-                color: "#0A1216",
+                color: "var(--bg-primary)",
                 fontWeight: 800,
                 fontSize: 13,
                 padding: "8px 16px",
@@ -283,7 +283,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
             <button
               onClick={() => setSelected(null)}
               style={{
-                background: "rgba(255,255,255,0.08)",
+                background: "var(--border-subtle)",
                 border: "none",
                 borderRadius: 10,
                 padding: "6px 10px",

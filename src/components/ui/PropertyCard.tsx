@@ -133,7 +133,7 @@ export function PropertyCard({
       <div
         className={cn("group flex gap-3 rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5", className)}
         style={{
-          background: "rgba(255,255,255,0.04)",
+          background: "var(--border-subtle)",
           backdropFilter: "blur(20px) saturate(180%)",
           WebkitBackdropFilter: "blur(20px) saturate(180%)",
           border: "1px solid rgba(255,255,255,0.08)",
@@ -259,7 +259,7 @@ export function PropertyCard({
             position: "absolute", left: 10, top: "40%", transform: "translateY(-50%)", zIndex: 5,
             width: 30, height: 30, background: "rgba(0,0,0,0.50)", border: "none",
             borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", color: "#fff", backdropFilter: "blur(4px)",
+            cursor: "pointer", color: "var(--bl-cream)", backdropFilter: "blur(4px)",
           }}>
           <ChevronLeft style={{ width: 15, height: 15 }} />
         </button>
@@ -271,7 +271,7 @@ export function PropertyCard({
             position: "absolute", right: 10, top: "40%", transform: "translateY(-50%)", zIndex: 5,
             width: 30, height: 30, background: "rgba(0,0,0,0.50)", border: "none",
             borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", color: "#fff", backdropFilter: "blur(4px)",
+            cursor: "pointer", color: "var(--bl-cream)", backdropFilter: "blur(4px)",
           }}>
           <ChevronRight style={{ width: 15, height: 15 }} />
         </button>
@@ -291,13 +291,13 @@ export function PropertyCard({
         {isNew && !property.is_featured && !property.is_diaspora && <PropertyBadge type="new" />}
         {property.is_boosted && (
           <span style={{
-            background: "#D4AF37", color: "#0A1216",
+            background: "#D4AF37", color: "var(--bg-primary)",
             fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap",
           }}>★ Pro</span>
         )}
         {property.video_url && (
           <span style={{
-            background: "rgba(212,175,55,0.90)", color: "#0A1216",
+            background: "rgba(212,175,55,0.90)", color: "var(--bg-primary)",
             fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap",
           }}>▶ Vidéo</span>
         )}
@@ -343,14 +343,14 @@ export function PropertyCard({
           <span style={{
             fontSize: 22,
             fontWeight: 800,
-            color: "#FFFFFF",
+            color: "var(--bl-cream)",
             lineHeight: 1.1,
             textShadow: "0 2px 6px rgba(0,0,0,0.50)",
           }}>
             {formatPrice(property.price)}
           </span>
           {property.price_period === "month" && (
-            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.70)" }}>/mois</span>
+            <span style={{ fontSize: 12, color: "var(--bl-cream-dim)" }}>/mois</span>
           )}
         </div>
 
@@ -373,7 +373,7 @@ export function PropertyCard({
           margin: "4px 0 0",
           fontSize: 14,
           fontWeight: 600,
-          color: "#FFFFFF",
+          color: "var(--bl-cream)",
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -399,7 +399,7 @@ export function PropertyCard({
           </svg>
           <span style={{
             fontSize: 12,
-            color: "rgba(255,255,255,0.65)",
+            color: "var(--bl-cream-dim)",
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",

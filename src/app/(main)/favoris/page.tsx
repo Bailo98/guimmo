@@ -83,7 +83,7 @@ export default function FavorisPage() {
           <Link
             href="/annonces"
             className="inline-block font-semibold px-6 py-3 rounded-xl transition-colors hover:opacity-90"
-            style={{ background: "var(--LogerBien-amber)", color: "#fff" }}
+            style={{ background: "var(--LogerBien-amber)", color: "var(--bl-cream)" }}
           >
             Parcourir les annonces
           </Link>

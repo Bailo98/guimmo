@@ -9,7 +9,7 @@ const VirtualTour = dynamic(
     loading: () => (
       <div style={{
         height: "200px",
-        background: "#111a1f",
+        background: "var(--bl-surface)",
         borderRadius: "12px",
         display: "flex",
         alignItems: "center",

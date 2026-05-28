@@ -261,8 +261,8 @@ export default function MessagesPage() {
                 }}
                 onTouchEnd={() => { if (longPressTimer.current) clearTimeout(longPressTimer.current); }}
                 onTouchMove={() => { if (longPressTimer.current) clearTimeout(longPressTimer.current); }}
-                className="w-full text-left flex items-start gap-3 p-4 rounded-2xl border border-[#1e2a30] hover:border-[#2a3a46] hover:bg-white/5 transition-all"
-                style={{ background: "#111a1f" }}
+                className="w-full text-left flex items-start gap-3 p-4 rounded-2xl border border-[var(--color-border)] hover:border-[#2a3a46] hover:bg-white/5 transition-all"
+                style={{ background: "var(--bl-surface)" }}
               >
                 {/* Avatar */}
                 <div className="w-12 h-12 rounded-xl bg-[#D4AF37] flex-shrink-0 flex items-center justify-center text-white font-bold text-lg">
@@ -312,7 +312,7 @@ export default function MessagesPage() {
                   onClick={() => setContextMenu(null)}
                 >
                   <div
-                    className="bg-[#111a1f] rounded-2xl border border-[#1e2a30] overflow-hidden min-w-[180px] shadow-xl"
+                    className="bg-[var(--bl-surface)] rounded-2xl border border-[var(--color-border)] overflow-hidden min-w-[180px] shadow-xl"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <button
@@ -323,7 +323,7 @@ export default function MessagesPage() {
                     </button>
                     <button
                       onClick={() => setContextMenu(null)}
-                      className="flex items-center w-full px-4 py-3 text-[#666666] text-sm border-t border-[#1e2a30]"
+                      className="flex items-center w-full px-4 py-3 text-[#666666] text-sm border-t border-[var(--color-border)]"
                     >
                       Annuler
                     </button>

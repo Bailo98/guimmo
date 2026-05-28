@@ -140,7 +140,7 @@ export default async function AgenceProfilePage({ params }: Props) {
         <Link
           href="/messages"
           className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-2xl font-bold text-sm transition-opacity hover:opacity-75"
-          style={{ background: "rgba(255,255,255,0.07)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream)" }}
+          style={{ background: "var(--border-subtle)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream)" }}
         >
           <MessageCircle className="w-4 h-4" />
           Message
@@ -173,7 +173,7 @@ export default async function AgenceProfilePage({ params }: Props) {
                   className="rounded-2xl overflow-hidden hover:-translate-y-0.5 transition-transform"
                   style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}
                 >
-                  <div className="relative h-40" style={{ background: "rgba(255,255,255,0.04)" }}>
+                  <div className="relative h-40" style={{ background: "var(--border-subtle)" }}>
                     {primary?.url ? (
                       <Image src={primary.url} alt={listing.title} fill className="object-cover" sizes="(max-width: 640px) 100vw, 50vw" />
                     ) : (

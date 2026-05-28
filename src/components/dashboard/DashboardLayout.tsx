@@ -23,7 +23,7 @@ function NavLinks({ tabs, active, onChange, onSelect }: {
           {t.label}
           {(t.badge ?? 0) > 0 && (
             <span className="ml-auto text-[10px] font-black min-w-[18px] h-[18px] flex items-center justify-center rounded-full"
-              style={{ background: "#D4AF37", color: "#0A1216" }}>
+              style={{ background: "#D4AF37", color: "var(--bg-primary)" }}>
               {(t.badge ?? 0) > 9 ? "9+" : t.badge}
             </span>
           )}
@@ -73,7 +73,7 @@ function SidebarProfile({ name, initials, badge }: { name: string; initials: str
   return (
     <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: "1px solid var(--bl-border)" }}>
       <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0"
-        style={{ background: "var(--bl-amber)", color: "#fff" }}>
+        style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
         {initials}
       </div>
       <div className="min-w-0">

@@ -95,7 +95,7 @@ function ConnexionForm() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A1216] flex flex-col">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col">
       <div className="p-4 flex items-center justify-between">
         <Logo size="lg" />
         <Link href="/" className="text-sm text-[#666666] hover:text-white transition-colors">
@@ -105,9 +105,9 @@ function ConnexionForm() {
 
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-sm">
-          <div className="rounded-3xl p-8" style={{ background: "#111a1f", border: "1px solid #1e2a30", borderRadius: 24 }}>
+          <div className="rounded-3xl p-8" style={{ background: "var(--bl-surface)", border: "1px solid var(--color-border)", borderRadius: 24 }}>
             <div className="text-center mb-8">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}>
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}>
                 <Lock className="w-8 h-8 text-white/70" />
               </div>
               <h1 className="text-2xl font-black text-white">Connexion</h1>
@@ -115,12 +115,12 @@ function ConnexionForm() {
             </div>
 
             {/* Mode toggle — outside <form> so it can never accidentally submit */}
-            <div className="grid grid-cols-2 p-1 mb-4 rounded-xl" style={{ background: "#0A1216" }}>
+            <div className="grid grid-cols-2 p-1 mb-4 rounded-xl" style={{ background: "var(--bg-primary)" }}>
               <button
                 type="button"
                 onClick={() => switchMode("phone")}
                 className="py-2.5 text-sm font-bold rounded-lg transition-colors"
-                style={mode === "phone" ? { background: "#D4AF37", color: "#0A1216" } : { color: "#666666" }}
+                style={mode === "phone" ? { background: "#D4AF37", color: "var(--bg-primary)" } : { color: "#666666" }}
               >
                 📱 Téléphone
               </button>
@@ -128,7 +128,7 @@ function ConnexionForm() {
                 type="button"
                 onClick={() => switchMode("email")}
                 className="py-2.5 text-sm font-bold rounded-lg transition-colors"
-                style={mode === "email" ? { background: "#D4AF37", color: "#0A1216" } : { color: "#666666" }}
+                style={mode === "email" ? { background: "#D4AF37", color: "var(--bg-primary)" } : { color: "#666666" }}
               >
                 ✉️ Email
               </button>
@@ -149,7 +149,7 @@ function ConnexionForm() {
                       placeholder="Ex : 628 000 000"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
+                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm" style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
                       required
                       autoComplete="tel"
                     />
@@ -169,7 +169,7 @@ function ConnexionForm() {
                       placeholder="vous@email.com"
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
+                      className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm" style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
                       required
                       autoComplete="email"
                     />
@@ -190,7 +190,7 @@ function ConnexionForm() {
                     placeholder="••••••••"
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm" style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
+                    className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm" style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
                     required
                     autoComplete="current-password"
                   />
@@ -224,7 +224,7 @@ function ConnexionForm() {
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#2a3040]" />
+                <div className="w-full border-t border-[var(--color-border)]" />
               </div>
               <div className="relative flex justify-center text-xs text-white/40 bg-transparent px-3">
                 ou
@@ -236,7 +236,7 @@ function ConnexionForm() {
               disabled={loading}
               onClick={handleGoogleSignIn}
               className="flex items-center justify-center gap-3 w-full disabled:opacity-50 text-white/80 font-semibold py-3 rounded-xl transition-colors text-sm hover:text-white"
-              style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)" }}
+              style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.12)" }}
             >
               <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -262,7 +262,7 @@ function ConnexionForm() {
 
 export default function ConnexionPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0A1216]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[var(--bg-primary)]" />}>
       <ConnexionForm />
     </Suspense>
   );

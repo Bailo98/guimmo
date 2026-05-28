@@ -36,7 +36,7 @@ const BOOST_PLANS = [
     price: 90000,
     priceLabel: "90.000 GNF",
     badge: "Populaire",
-    badgeColor: "#fff",
+    badgecolor: "var(--bl-cream)",
     badgeBg: "#D4AF37",
     popular: true,
     advantages: [
@@ -53,7 +53,7 @@ const BOOST_PLANS = [
     price: 150000,
     priceLabel: "150.000 GNF",
     badge: "Meilleur rapport",
-    badgeColor: "#fff",
+    badgecolor: "var(--bl-cream)",
     badgeBg: "#7c3aed",
     advantages: [
       "Mise en avant 30 jours",
@@ -241,7 +241,7 @@ export function BoostModal({ propertyId, propertyTitle, isBoosted, boostExpiry, 
                 onClick={handleConfirm}
                 disabled={loading}
                 className="flex-1 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2"
-                style={{ backgroundColor: "#D4AF37", color: "#fff", opacity: loading ? 0.8 : 1 }}
+                style={{ backgroundColor: "#D4AF37", color: "var(--bl-cream)", opacity: loading ? 0.8 : 1 }}
               >
                 {loading ? (
                   <>

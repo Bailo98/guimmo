@@ -71,7 +71,7 @@ export default function AdminContenuPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-slate-200 dark:border-[#2a3040]">
+      <div className="flex gap-2 border-b border-slate-200 dark:border-[var(--color-border)]">
         {TABS.map((t) => {
           const Icon = t.icon;
           return (
@@ -93,7 +93,7 @@ export default function AdminContenuPage() {
 
       {/* Contact tab */}
       {tab === "contact" && (
-        <div className="bg-[#2c2f36] rounded-2xl p-6 border border-[#1e2a30] space-y-5">
+        <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 border border-[var(--color-border)] space-y-5">
           <h2 className="font-bold text-slate-900 dark:text-white">Coordonnées de LogerBien</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -118,7 +118,7 @@ export default function AdminContenuPage() {
                       value={contact[f.key as keyof typeof contact]}
                       onChange={(e) => setContact({ ...contact, [f.key]: e.target.value })}
                       placeholder={f.placeholder}
-                      className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                      className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
                     />
                   </div>
                 </div>
@@ -132,7 +132,7 @@ export default function AdminContenuPage() {
               type="text"
               value={contact.address}
               onChange={(e) => setContact({ ...contact, address: e.target.value })}
-              className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+              className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
             />
           </div>
         </div>
@@ -140,7 +140,7 @@ export default function AdminContenuPage() {
 
       {/* About tab */}
       {tab === "about" && (
-        <div className="bg-[#2c2f36] rounded-2xl p-6 border border-[#1e2a30] space-y-5">
+        <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 border border-[var(--color-border)] space-y-5">
           <h2 className="font-bold text-slate-900 dark:text-white">Page À propos</h2>
 
           <div className="space-y-4">
@@ -154,7 +154,7 @@ export default function AdminContenuPage() {
                   type="text"
                   value={about[f.key as keyof typeof about]}
                   onChange={(e) => setAbout({ ...about, [f.key]: e.target.value })}
-                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                  className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
                 />
               </div>
             ))}
@@ -169,7 +169,7 @@ export default function AdminContenuPage() {
                   rows={3}
                   value={about[f.key as keyof typeof about]}
                   onChange={(e) => setAbout({ ...about, [f.key]: e.target.value })}
-                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none"
+                  className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none"
                 />
               </div>
             ))}
@@ -187,7 +187,7 @@ export default function AdminContenuPage() {
                     type="text"
                     value={about[f.key as keyof typeof about]}
                     onChange={(e) => setAbout({ ...about, [f.key]: e.target.value })}
-                    className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                    className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
                   />
                 </div>
               ))}
@@ -244,7 +244,7 @@ function TeamEditor() {
   return (
     <div className="space-y-4">
       {members.map((m) => (
-        <div key={m.id} className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30]">
+        <div key={m.id} className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
               { key: "name", label: "Nom" },
@@ -257,7 +257,7 @@ function TeamEditor() {
                   type="text"
                   value={m[f.key as keyof typeof m]}
                   onChange={(e) => updateMember(m.id, f.key, e.target.value)}
-                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-slate-900 dark:text-white"
+                  className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-slate-900 dark:text-white"
                 />
               </div>
             ))}
@@ -267,7 +267,7 @@ function TeamEditor() {
                 rows={2}
                 value={m.bio}
                 onChange={(e) => updateMember(m.id, "bio", e.target.value)}
-                className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none text-slate-900 dark:text-white"
+                className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none text-slate-900 dark:text-white"
               />
             </div>
           </div>
@@ -278,7 +278,7 @@ function TeamEditor() {
       ))}
       <button
         onClick={addMember}
-        className="w-full py-3 rounded-2xl border-2 border-dashed border-slate-200 dark:border-[#2a3040] text-slate-500 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors text-sm font-semibold"
+        className="w-full py-3 rounded-2xl border-2 border-dashed border-slate-200 dark:border-[var(--color-border)] text-slate-500 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors text-sm font-semibold"
       >
         + Ajouter un membre
       </button>
@@ -326,7 +326,7 @@ function BlogEditor() {
       </button>
 
       {posts.map((post) => (
-        <div key={post.id} className="bg-[#2c2f36] rounded-2xl border border-[#1e2a30] overflow-hidden">
+        <div key={post.id} className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--color-border)] overflow-hidden">
           <div className="p-4 flex items-center justify-between">
             <div>
               <p className="font-semibold text-slate-900 dark:text-white text-sm">{post.title || "Nouvel article"}</p>
@@ -346,17 +346,17 @@ function BlogEditor() {
           </div>
 
           {editing === post.id && (
-            <div className="border-t border-slate-100 dark:border-[#2a3040] p-4 space-y-3">
+            <div className="border-t border-slate-100 dark:border-[var(--color-border)] p-4 space-y-3">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 mb-1">Titre</label>
                   <input type="text" value={post.title} onChange={(e) => updatePost(post.id, "title", e.target.value)}
-                    className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-slate-900 dark:text-white" />
+                    className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-slate-900 dark:text-white" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 mb-1">Catégorie</label>
                   <select value={post.category} onChange={(e) => updatePost(post.id, "category", e.target.value)}
-                    className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-slate-900 dark:text-white">
+                    className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-slate-900 dark:text-white">
                     {["Guide", "Actualité", "Conseil", "Marché", "Annonce"].map((c) => <option key={c}>{c}</option>)}
                   </select>
                 </div>
@@ -364,7 +364,7 @@ function BlogEditor() {
               <div>
                 <label className="block text-xs font-semibold text-slate-500 mb-1">Contenu</label>
                 <textarea rows={6} value={post.content} onChange={(e) => updatePost(post.id, "content", e.target.value)}
-                  className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none text-slate-900 dark:text-white"
+                  className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none text-slate-900 dark:text-white"
                   placeholder="Écrivez votre article ici..." />
               </div>
               <div className="flex items-center justify-between">

@@ -100,7 +100,7 @@ export function MessageButton({
         disabled={checking}
         className={
           className ??
-          "flex items-center justify-center gap-2 w-full bg-[#111a1f] hover:bg-[#203a24] text-[#ffffff] font-semibold py-3 px-4 rounded-xl transition-colors border border-[#1e2a30] text-sm disabled:opacity-60"
+          "flex items-center justify-center gap-2 w-full bg-[var(--bl-surface)] hover:bg-[#203a24] text-[#ffffff] font-semibold py-3 px-4 rounded-xl transition-colors border border-[var(--color-border)] text-sm disabled:opacity-60"
         }
       >
         {checking
@@ -112,8 +112,8 @@ export function MessageButton({
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-[#0A1216] rounded-3xl border border-[#1e2a30] shadow-2xl">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#1e2a30]">
+          <div className="w-full max-w-md bg-[var(--bg-primary)] rounded-3xl border border-[var(--color-border)] shadow-2xl">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-border)]">
               <div>
                 <h2 className="font-bold text-[#ffffff] text-base">Envoyer un message</h2>
                 <p className="text-xs text-[#666666] truncate mt-0.5 max-w-[260px]">
@@ -138,7 +138,7 @@ export function MessageButton({
                 required
                 autoFocus
                 style={{ fontSize: 16 }}
-                className="w-full bg-[#111a1f] border border-[#1e2a30] rounded-xl px-4 py-3 text-sm text-[#ffffff] placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 resize-none"
+                className="w-full bg-[var(--bl-surface)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-sm text-[#ffffff] placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 resize-none"
               />
               <div className="flex items-center justify-between">
                 <span className="text-xs text-[rgba(255,255,255,0.40)]">{content.length}/2000</span>

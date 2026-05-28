@@ -30,14 +30,14 @@ export function AuthPromptModal({ onClose, redirectUrl, action }: Props) {
     >
       <div
         className="relative w-full max-w-[360px] rounded-[20px] p-8 text-center"
-        style={{ background: "#111a1f", border: "1px solid #1e2a30" }}
+        style={{ background: "var(--bl-surface)", border: "1px solid var(--color-border)" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full transition-colors"
-          style={{ color: "#666666", background: "rgba(255,255,255,0.06)" }}
+          style={{ color: "#666666", background: "var(--border-subtle)" }}
         >
           <X className="w-4 h-4" />
         </button>
@@ -46,7 +46,7 @@ export function AuthPromptModal({ onClose, redirectUrl, action }: Props) {
         <div className="text-4xl mb-4">🏠</div>
 
         {/* Title */}
-        <h2 className="font-black text-[20px] mb-2" style={{ color: "#ffffff", fontFamily: "Georgia, serif" }}>
+        <h2 className="font-black text-[20px] mb-2" style={{ color: "var(--bl-cream)", fontFamily: "Georgia, serif" }}>
           Créez votre compte gratuit
         </h2>
 

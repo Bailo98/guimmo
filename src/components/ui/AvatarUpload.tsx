@@ -96,7 +96,7 @@ export function AvatarUpload({ userId, currentUrl, name, onSuccess }: Props) {
           onMouseLeave={(e) => { if (!uploading) (e.currentTarget as HTMLElement).style.background = "rgba(0,0,0,0)"; }}
         >
           {uploading && (
-            <span style={{ width: 20, height: 20, border: "2px solid rgba(255,255,255,0.5)", borderTopColor: "#fff", borderRadius: "50%", display: "block", animation: "spin 0.7s linear infinite" }} />
+            <span style={{ width: 20, height: 20, border: "2px solid rgba(255,255,255,0.5)", borderTopColor: "transparent", borderRadius: "50%", display: "block", animation: "spin 0.7s linear infinite" }} />
           )}
         </span>
       </button>

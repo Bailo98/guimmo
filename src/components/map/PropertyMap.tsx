@@ -212,7 +212,7 @@ export function PropertyMap({ properties }: PropertyMapProps) {
             "flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg border transition-colors",
             heatmap
               ? "bg-[#D4AF37] text-white border-[#D4AF37]"
-              : "bg-[#2c2f36] text-slate-700 dark:text-white border-slate-200 dark:border-[#2a3040]"
+              : "bg-[var(--bg-card-light)] text-slate-700 dark:text-white border-slate-200 dark:border-[var(--color-border)]"
           )}
         >
           <Flame className="w-3.5 h-3.5" /> Carte des prix

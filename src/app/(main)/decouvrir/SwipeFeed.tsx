@@ -189,7 +189,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   if (reloading) {
     return (
       <div style={{
-        position: "fixed", inset: 0, zIndex: 10, background: "#0A1216",
+        position: "fixed", inset: 0, zIndex: 10, background: "var(--bg-primary)",
         display: "flex", flexDirection: "column", alignItems: "center",
         justifyContent: "center", padding: "0 32px",
       }}>
@@ -197,7 +197,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         <p style={{ color: "#D4AF37", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
           On recommence depuis le début…
         </p>
-        <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, textAlign: "center" }}>
+        <p style={{ color: "var(--bl-cream-faint)", fontSize: 13, textAlign: "center" }}>
           Toutes les annonces vont réapparaître
         </p>
         <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
@@ -209,7 +209,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   if (cards.length === 0 && everHadCards) {
     return (
       <div style={{
-        position: "fixed", inset: 0, zIndex: 10, background: "#0A1216",
+        position: "fixed", inset: 0, zIndex: 10, background: "var(--bg-primary)",
         display: "flex", flexDirection: "column", alignItems: "center",
         justifyContent: "center", padding: "0 32px",
       }}>
@@ -220,8 +220,8 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         <a href="/annonces" style={{
           display: "block", textAlign: "center", width: "100%", maxWidth: 320,
           marginTop: 24, padding: "14px 0", borderRadius: 14,
-          background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)",
-          color: "#fff", fontWeight: 600, fontSize: 15, textDecoration: "none",
+          background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.12)",
+          color: "var(--bl-cream)", fontWeight: 600, fontSize: 15, textDecoration: "none",
         }}>
           Voir toutes les annonces
         </a>
@@ -283,7 +283,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
             cursor: "pointer",
-            color: "#fff",
+            color: "var(--bl-cream)",
             flexShrink: 0,
           }}
         >
@@ -295,10 +295,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
         {/* Title + sub-title */}
         <div style={{ textAlign: "center", flex: 1 }}>
-          <p style={{ margin: 0, color: "#fff", fontSize: 15, fontWeight: 600, lineHeight: 1.3 }}>
+          <p style={{ margin: 0, color: "var(--bl-cream)", fontSize: 15, fontWeight: 600, lineHeight: 1.3 }}>
             Découvrir
           </p>
-          <p style={{ margin: 0, color: "rgba(255,255,255,0.55)", fontSize: 11, lineHeight: 1.4 }}>
+          <p style={{ margin: 0, color: "var(--bl-cream-dim)", fontSize: 11, lineHeight: 1.4 }}>
             Conakry, Guinée
           </p>
         </div>
@@ -400,7 +400,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             >
               <div style={{
                 border: "3px solid #D4AF37", borderRadius: 8,
-                padding: "8px 16px", color: "#fff",
+                padding: "8px 16px", color: "var(--bl-cream)",
                 fontSize: 32, fontWeight: 900, letterSpacing: 2,
                 textTransform: "uppercase", transform: "rotate(-15deg)",
                 textShadow: "0 2px 8px rgba(0,0,0,0.6)", whiteSpace: "nowrap",
@@ -416,7 +416,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             >
               <div style={{
                 border: "3px solid #FF4D4D", borderRadius: 8,
-                padding: "8px 16px", color: "#fff",
+                padding: "8px 16px", color: "var(--bl-cream)",
                 fontSize: 32, fontWeight: 900, letterSpacing: 2,
                 textTransform: "uppercase", transform: "rotate(15deg)",
                 textShadow: "0 2px 8px rgba(0,0,0,0.6)", whiteSpace: "nowrap",
@@ -483,7 +483,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 margin: 0,
                 fontSize: 24,
                 fontWeight: 800,
-                color: "#FFFFFF",
+                color: "var(--bl-cream)",
                 lineHeight: 1.1,
                 textShadow: "0 2px 8px rgba(0,0,0,0.5)",
               }}>
@@ -493,7 +493,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 <p style={{
                   margin: "2px 0 8px",
                   fontSize: 13,
-                  color: "rgba(255,255,255,0.7)",
+                  color: "var(--bl-cream-dim)",
                   lineHeight: 1,
                 }}>
                   /mois
@@ -503,7 +503,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               {/* Titre */}
               <p style={{
                 margin: "0 0 5px",
-                color: "#fff",
+                color: "var(--bl-cream)",
                 fontWeight: 700,
                 fontSize: 17,
                 lineHeight: 1.3,
@@ -526,13 +526,13 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                   📍 {getNeighborhoodName(topCard.neighborhood)}
                 </span>
                 <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>·</span>
-                <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 13, whiteSpace: "nowrap" }}>
+                <span style={{ color: "var(--bl-cream-dim)", fontSize: 13, whiteSpace: "nowrap" }}>
                   {topCard.transaction_type === "rent" ? "Location" : "Vente"}
                 </span>
                 {(topCard.rooms ?? 0) > 0 && (
                   <>
                     <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>·</span>
-                    <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 13, whiteSpace: "nowrap" }}>
+                    <span style={{ color: "var(--bl-cream-dim)", fontSize: 13, whiteSpace: "nowrap" }}>
                       🛏 {topCard.rooms}
                     </span>
                   </>
@@ -565,7 +565,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               borderRadius: "50%",
               background: "rgba(255,255,255,0.12)",
               border: "1.5px solid rgba(255,255,255,0.25)",
-              color: "#fff",
+              color: "var(--bl-cream)",
               cursor: "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
               WebkitTapHighlightColor: "transparent",
@@ -589,7 +589,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               borderRadius: "50%",
               background: "#C8973A",
               border: "none",
-              color: "#fff",
+              color: "var(--bl-cream)",
               cursor: "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
               WebkitTapHighlightColor: "transparent",

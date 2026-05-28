@@ -103,7 +103,7 @@ export default function TemoignagesPage() {
   const col3 = TESTIMONIALS.filter((_, i) => i % 3 === 2);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0f1117]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[var(--bg-primary)]">
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#D4AF37] via-[#B8963A] to-[#c2540a] text-white">
         <div className="max-w-4xl mx-auto px-4 py-16 md:py-20 text-center">
@@ -121,7 +121,7 @@ export default function TemoignagesPage() {
       </div>
 
       {/* Stats bar */}
-      <div className="bg-[#2c2f36] border-b border-[#1e2a30]">
+      <div className="bg-[var(--bg-card-light)] border-b border-[var(--color-border)]">
         <div className="max-w-4xl mx-auto px-4 py-5">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div className="flex flex-col items-center gap-1">
@@ -179,7 +179,7 @@ export default function TemoignagesPage() {
       </div>
 
       {/* Bottom CTA */}
-      <div className="bg-[#2c2f36] border-t border-slate-100 dark:border-[#2a3040]">
+      <div className="bg-[var(--bg-card-light)] border-t border-slate-100 dark:border-[var(--color-border)]">
         <div className="max-w-2xl mx-auto px-4 py-16 text-center">
           <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-3">
             Rejoignez la communauté LogerBien
@@ -196,7 +196,7 @@ export default function TemoignagesPage() {
             </Link>
             <Link
               href="/inscription"
-              className="inline-flex items-center justify-center gap-2 bg-[#2c2f36] border border-[#1e2a30] text-white font-bold px-7 py-3.5 rounded-xl hover:border-[#D4AF37] transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-[var(--bg-card-light)] border border-[var(--color-border)] text-white font-bold px-7 py-3.5 rounded-xl hover:border-[#D4AF37] transition-colors"
             >
               Créer un compte
             </Link>
@@ -213,7 +213,7 @@ function TestimonialCard({
   testimonial: (typeof TESTIMONIALS)[0];
 }) {
   return (
-    <div className="bg-[#2c2f36] rounded-2xl border border-[#1e2a30] p-5 flex flex-col gap-3">
+    <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--color-border)] p-5 flex flex-col gap-3">
       {/* Stars */}
       <StarRating rating={testimonial.rating} />
 
@@ -230,7 +230,7 @@ function TestimonialCard({
       )}
 
       {/* Author */}
-      <div className="flex items-center gap-3 pt-1 border-t border-slate-100 dark:border-[#2a3040] mt-auto">
+      <div className="flex items-center gap-3 pt-1 border-t border-slate-100 dark:border-[var(--color-border)] mt-auto">
         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#B8963A] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
           {testimonial.name.charAt(0)}
         </div>

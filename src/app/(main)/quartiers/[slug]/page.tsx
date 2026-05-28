@@ -45,7 +45,7 @@ export default async function QuartierPage({ params }: PageProps) {
   const saleCount = properties.filter((p) => p.transaction_type === "sale").length;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0f1117]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[var(--bg-primary)]">
       {/* Hero banner */}
       <div className="bg-gradient-to-br from-[#D4AF37] via-[#B8963A] to-[#c2540a] text-white">
         <div className="max-w-6xl mx-auto px-4 py-12 md:py-16">

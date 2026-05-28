@@ -140,10 +140,10 @@ export function VirtualTour({ rooms }: Props) {
             🏠
           </div>
           <div>
-            <p style={{ color: "#ffffff", fontWeight: 700, fontSize: 15, marginBottom: 2 }}>
+            <p style={{ color: "var(--bl-cream)", fontWeight: 700, fontSize: 15, marginBottom: 2 }}>
               Visite virtuelle
             </p>
-            <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 12 }}>
+            <p style={{ color: "var(--bl-cream-dim)", fontSize: 12 }}>
               {rooms.length} pièce{rooms.length > 1 ? "s" : ""} · Swipe &amp; pinch pour zoomer
             </p>
           </div>
@@ -153,7 +153,7 @@ export function VirtualTour({ rooms }: Props) {
         <div style={{ display: "flex", gap: 8, marginBottom: 14, overflowX: "auto" }}>
           {rooms.slice(0, 5).map((r) => (
             <div key={r.id} style={{
-              width: 56, height: 56, borderRadius: 8, overflow: "hidden", flexShrink: 0, background: "#0A1216",
+              width: 56, height: 56, borderRadius: 8, overflow: "hidden", flexShrink: 0, background: "var(--bg-primary)",
             }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={r.url} alt={r.room_name} loading="lazy"
@@ -175,7 +175,7 @@ export function VirtualTour({ rooms }: Props) {
         <button
           onClick={openTour}
           style={{
-            width: "100%", background: "#D4AF37", color: "#fff", border: "none",
+            width: "100%", background: "#D4AF37", color: "var(--bl-cream)", border: "none",
             borderRadius: 12, padding: "13px 16px", fontWeight: 700, fontSize: 14,
             cursor: "pointer", display: "flex", alignItems: "center",
             justifyContent: "center", gap: 8, minHeight: 48,
@@ -208,14 +208,14 @@ export function VirtualTour({ rooms }: Props) {
                 cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
               }}
             >
-              <X style={{ width: 20, height: 20, color: "#fff" }} />
+              <X style={{ width: 20, height: 20, color: "var(--bl-cream)" }} />
             </button>
 
             <div style={{ textAlign: "center" }}>
-              <p style={{ color: "#ffffff", fontWeight: 700, fontSize: 14, margin: 0 }}>
+              <p style={{ color: "var(--bl-cream)", fontWeight: 700, fontSize: 14, margin: 0 }}>
                 {room.room_name}
               </p>
-              <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, margin: 0 }}>
+              <p style={{ color: "var(--bl-cream-faint)", fontSize: 12, margin: 0 }}>
                 {current + 1} / {rooms.length}
               </p>
             </div>
@@ -282,7 +282,7 @@ export function VirtualTour({ rooms }: Props) {
               <div style={{
                 position: "absolute", bottom: 16, right: 16,
                 background: "rgba(0,0,0,0.55)", borderRadius: 20,
-                padding: "4px 10px", fontSize: 11, fontWeight: 700, color: "#ffffff",
+                padding: "4px 10px", fontSize: 11, fontWeight: 700, color: "var(--bl-cream)",
                 pointerEvents: "none",
               }}>
                 {Math.round(scale * 10) / 10}×

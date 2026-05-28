@@ -89,7 +89,7 @@ export function PropertyShareButton({ title, neighborhood, price, rooms, bathroo
         style={{
           minHeight: 44,
           background: "#25D366",
-          color: "#ffffff",
+          color: "var(--bl-cream)",
           display: "inline-flex",
           alignItems: "center",
           borderRadius: 12,

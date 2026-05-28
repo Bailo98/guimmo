@@ -68,11 +68,11 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
   }
 
   const inputCss: React.CSSProperties = {
-    background: "rgba(255,255,255,0.05)",
+    background: "var(--border-subtle)",
     border: "1px solid rgba(255,255,255,0.10)",
     borderRadius: 12,
     padding: "0 14px",
-    color: "#fff",
+    color: "var(--bl-cream)",
     fontSize: 14,
     width: "100%",
     outline: "none",
@@ -94,7 +94,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
       <div
         className="space-y-4"
         style={{
-          position: "relative", background: "#1a252b", borderRadius: 20,
+          position: "relative", background: "var(--bl-surface-2)", borderRadius: 20,
           padding: 24, width: "100%", maxWidth: 480,
           maxHeight: "88vh", overflowY: "auto",
         }}
@@ -108,7 +108,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
           <button
             onClick={close}
             className="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:text-white transition-colors"
-            style={{ background: "rgba(255,255,255,0.08)" }}
+            style={{ background: "var(--border-subtle)" }}
           >
             <X className="w-4 h-4" />
           </button>
@@ -135,7 +135,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
             <Link
               href={`/connexion?redirect=/annonces/${propertyId}`}
               className="inline-block px-6 py-2.5 rounded-xl font-bold text-sm"
-              style={{ background: "#D4AF37", color: "#0A1216" }}
+              style={{ background: "#D4AF37", color: "var(--bg-primary)" }}
               onClick={() => { document.body.style.overflow = ""; }}
             >
               Se connecter

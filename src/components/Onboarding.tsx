@@ -169,7 +169,7 @@ export function Onboarding() {
             fontFamily: "var(--font-playfair), Georgia, serif",
             fontSize: 28,
             fontWeight: 700,
-            color: "#ffffff",
+            color: "var(--bl-cream)",
             lineHeight: 1.25,
             marginBottom: 12,
           }}

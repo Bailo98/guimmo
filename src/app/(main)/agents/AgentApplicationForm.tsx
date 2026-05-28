@@ -52,7 +52,7 @@ export function AgentApplicationForm() {
         value={form.name}
         onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
         className="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none"
-        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", minHeight: 52 }}
+        style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", minHeight: 52 }}
       />
 
       {/* Téléphone */}
@@ -62,7 +62,7 @@ export function AgentApplicationForm() {
         value={form.phone}
         onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
         className="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none"
-        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", minHeight: 52 }}
+        style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", minHeight: 52 }}
       />
 
       {/* Quartier */}
@@ -70,7 +70,7 @@ export function AgentApplicationForm() {
         value={form.neighborhood}
         onChange={(e) => setForm((f) => ({ ...f, neighborhood: e.target.value }))}
         className="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none appearance-none"
-        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", minHeight: 52 }}
+        style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", minHeight: 52 }}
       >
         <option value="">— Votre quartier principal —</option>
         {COMMUNES.map((commune) => (

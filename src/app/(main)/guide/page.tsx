@@ -102,7 +102,7 @@ export default function GuidePage() {
             <section
               key={section.id}
               id={section.id}
-              className={`rounded-3xl p-6 md:p-8 ${sIdx % 2 === 0 ? "bg-[#2c2f36] border border-[#1e2a30]" : "bg-[#2c2f36] border border-[#1e2a30]"}`}
+              className={`rounded-3xl p-6 md:p-8 ${sIdx % 2 === 0 ? "bg-[var(--bg-card-light)] border border-[var(--color-border)]" : "bg-[var(--bg-card-light)] border border-[var(--color-border)]"}`}
             >
               <div className="flex items-center gap-3 mb-6">
                 <div className={`w-11 h-11 ${section.bg} rounded-2xl flex items-center justify-center flex-shrink-0`}>
@@ -129,7 +129,7 @@ export default function GuidePage() {
         })}
 
         {/* Neighborhoods section */}
-        <section id="quartiers" className="bg-[#2c2f36] rounded-3xl p-6 md:p-8 border border-[#1e2a30]">
+        <section id="quartiers" className="bg-[var(--bg-card-light)] rounded-3xl p-6 md:p-8 border border-[var(--color-border)]">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-11 h-11 bg-purple-50 dark:bg-purple-900/20 rounded-2xl flex items-center justify-center flex-shrink-0">
               <MapPin className="w-5 h-5 text-purple-500" />
@@ -144,7 +144,7 @@ export default function GuidePage() {
               <Link
                 key={n.id}
                 href={`/annonces?neighborhood=${n.id}`}
-                className="group flex flex-col items-center gap-2 p-3 rounded-2xl bg-[#2c2f36] border border-[#1e2a30] hover:border-[#D4AF37] hover:bg-[#B8963A]/5 transition-all text-center"
+                className="group flex flex-col items-center gap-2 p-3 rounded-2xl bg-[var(--bg-card-light)] border border-[var(--color-border)] hover:border-[#D4AF37] hover:bg-[#B8963A]/5 transition-all text-center"
               >
                 <MapPin className="w-5 h-5 text-slate-300 dark:text-slate-600 group-hover:text-[#D4AF37] transition-colors" />
                 <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 group-hover:text-[#D4AF37] transition-colors">{n.name}</span>

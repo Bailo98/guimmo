@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 /**
  * Thin client-side wrapper around PropertyMap.
  * next/dynamic with ssr:false must live in a Client Component.
@@ -12,7 +12,7 @@ const PropertyMap = dynamic(() => import("./PropertyMap"), {
       style={{
         height: 200,
         borderRadius: 16,
-        background: "#1a252b",
+        background: "var(--bl-surface-2)",
         border: "1px solid rgba(255,255,255,0.08)",
         display: "flex",
         alignItems: "center",

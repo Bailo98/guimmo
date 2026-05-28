@@ -69,7 +69,7 @@ export default async function ProprietaireProfilePage({ params }: Props) {
       </nav>
 
       {/* Profile Header */}
-      <div className="bg-[#2c2f36] rounded-2xl p-6 border border-[#1e2a30] mb-6">
+      <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 border border-[var(--color-border)] mb-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
           {/* Avatar */}
           <div
@@ -123,7 +123,7 @@ export default async function ProprietaireProfilePage({ params }: Props) {
 
         {/* Badges */}
         {owner.badges.length > 0 && (
-          <div className="mt-5 pt-5 border-t border-slate-100 dark:border-[#2a3040]">
+          <div className="mt-5 pt-5 border-t border-slate-100 dark:border-[var(--color-border)]">
             <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wide">Badges</p>
             <div className="flex flex-wrap gap-2">
               {owner.badges.map((b) => (
@@ -143,7 +143,7 @@ export default async function ProprietaireProfilePage({ params }: Props) {
         ].map((stat) => (
           <div
             key={stat.label}
-            className="bg-[#2c2f36] rounded-2xl p-4 border border-[#1e2a30] text-center"
+            className="bg-[var(--bg-card-light)] rounded-2xl p-4 border border-[var(--color-border)] text-center"
           >
             <p className="text-2xl font-black text-[#D4AF37]">{stat.value}</p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center justify-center gap-1">

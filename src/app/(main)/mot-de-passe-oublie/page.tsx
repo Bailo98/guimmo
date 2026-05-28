@@ -37,13 +37,13 @@ export default function MotDePasseOubliePage() {
   const waUrl = `https://wa.me/${SUPPORT_WA.replace(/\D/g, "")}?text=${waText}`;
 
   const INPUT: React.CSSProperties = {
-    background: "rgba(255,255,255,0.05)",
+    background: "var(--border-subtle)",
     border: "1px solid rgba(255,255,255,0.10)",
     fontSize: 16,
   };
 
   return (
-    <div className="min-h-screen bg-[#0A1216] flex flex-col">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col">
       <div className="p-4">
         <Logo />
       </div>
@@ -51,7 +51,7 @@ export default function MotDePasseOubliePage() {
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-sm">
           <div className="rounded-3xl p-8"
-            style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}>
+            style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
 
             <div className="text-center mb-6">
               <h1 className="text-2xl font-black text-white">Mot de passe oublié</h1>
@@ -69,7 +69,7 @@ export default function MotDePasseOubliePage() {
                   className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
                     tab === t ? "bg-[#D4AF37] text-white" : "text-white/50 hover:text-white"
                   }`}
-                  style={tab !== t ? { background: "rgba(255,255,255,0.05)" } : {}}
+                  style={tab !== t ? { background: "var(--border-subtle)" } : {}}
                 >
                   {t === "phone" ? "📱 Par téléphone" : "✉️ Par email"}
                 </button>
@@ -80,7 +80,7 @@ export default function MotDePasseOubliePage() {
             {tab === "phone" && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-4 text-sm leading-relaxed"
-                  style={{ background: "#1a252b", border: "1px solid #1e2a30", color: "rgba(255,255,255,0.75)" }}>
+                  style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", color: "rgba(255,255,255,0.75)" }}>
                   Pour réinitialiser votre mot de passe par téléphone, contactez notre équipe sur WhatsApp.
                   Nous vous aiderons en quelques minutes.
                 </div>
@@ -94,7 +94,7 @@ export default function MotDePasseOubliePage() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+224 6XX XXX XXX"
-                    style={{ ...INPUT, width: "100%", borderRadius: 12, padding: "12px 16px", color: "#ffffff" }}
+                    style={{ ...INPUT, width: "100%", borderRadius: 12, padding: "12px 16px", color: "var(--bl-cream)" }}
                     className="focus:outline-none focus:ring-2 focus:ring-[#D4AF37] placeholder:text-white/30"
                   />
                 </div>

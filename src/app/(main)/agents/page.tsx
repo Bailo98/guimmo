@@ -81,7 +81,7 @@ export default async function AgentsPage() {
             <div className="flex items-center gap-2 mb-3">
               <MapPin className="w-4 h-4 text-white/40 flex-shrink-0" />
               <h2 className="text-white font-bold text-base">{nbLabel(nb)}</h2>
-              <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.08)" }} />
+              <div className="flex-1 h-px" style={{ background: "var(--border-subtle)" }} />
             </div>
 
             <div className="space-y-3">
@@ -89,7 +89,7 @@ export default async function AgentsPage() {
                 <div
                   key={agent.id}
                   className="flex items-center gap-4 rounded-2xl p-4"
-                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+                  style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.08)" }}
                 >
                   {/* Avatar */}
                   <Avatar

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "224628000000";
 
 const CARD = {
-  background: "rgba(255,255,255,0.05)",
+  background: "var(--border-subtle)",
   backdropFilter: "blur(20px) saturate(180%)",
   WebkitBackdropFilter: "blur(20px) saturate(180%)",
   border: "1px solid rgba(255,255,255,0.10)",
@@ -84,14 +84,14 @@ export default function TarifsPage() {
             <Link
               href="/publier"
               className="inline-flex items-center justify-center gap-2 font-black px-8 py-3.5 rounded-2xl text-sm transition-all hover:opacity-90"
-              style={{ background: "var(--LogerBien-amber)", color: "#fff", boxShadow: "0 4px 20px rgba(212,175,55,0.35)" }}
+              style={{ background: "var(--LogerBien-amber)", color: "var(--bl-cream)", boxShadow: "0 4px 20px rgba(212,175,55,0.35)" }}
             >
               Publier une annonce gratuite <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/annonces"
               className="inline-flex items-center justify-center gap-2 font-semibold px-8 py-3.5 rounded-2xl text-sm transition-all hover:bg-white/10"
-              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "var(--LogerBien-cream)" }}
+              style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.15)", color: "var(--LogerBien-cream)" }}
             >
               Parcourir les annonces
             </Link>

@@ -117,9 +117,9 @@ function StarRatingDisplay({ rating }: { rating: number }) {
 
 export default function AgencesPage() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0f1117]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[var(--bg-primary)]">
       {/* Page header */}
-      <div className="bg-white dark:bg-[#1e2430] border-b border-slate-100 dark:border-[#2a3040]">
+      <div className="bg-white dark:bg-[#1e2430] border-b border-slate-100 dark:border-[var(--color-border)]">
         <div className="max-w-6xl mx-auto px-4 py-10 md:py-14">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/10 flex items-center justify-center">
@@ -161,7 +161,7 @@ export default function AgencesPage() {
           {AGENCIES.map((agency, index) => (
             <div
               key={agency.id}
-              className="bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] overflow-hidden hover:shadow-xl transition-shadow duration-200 flex flex-col"
+              className="bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[var(--color-border)] overflow-hidden hover:shadow-xl transition-shadow duration-200 flex flex-col"
             >
               {/* Card top */}
               <div className="p-5 flex-1">
@@ -206,7 +206,7 @@ export default function AgencesPage() {
                 </div>
 
                 {/* Stats row */}
-                <div className="flex items-center justify-between py-3 border-t border-slate-100 dark:border-[#2a3040]">
+                <div className="flex items-center justify-between py-3 border-t border-slate-100 dark:border-[var(--color-border)]">
                   <div className="text-center">
                     <p className="text-xl font-bold text-slate-900 dark:text-white">
                       {agency.listings}
@@ -245,7 +245,7 @@ export default function AgencesPage() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-14 text-center bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[#2a3040] p-8">
+        <div className="mt-14 text-center bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[var(--color-border)] p-8">
           <Building2 className="w-10 h-10 text-[#D4AF37] mx-auto mb-3" />
           <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
             Vous êtes une agence immobilière ?

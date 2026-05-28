@@ -11,12 +11,12 @@ import { supabase } from "@/lib/supabase";
 import { Avatar } from "@/components/ui/Avatar";
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
-const BG_SIDEBAR  = "#0A1216";
-const BORDER      = "#1e2a30";
-const TEXT_PRI    = "#ffffff";
-const TEXT_SEC    = "rgba(255,255,255,0.55)";
+const BG_SIDEBAR  = "var(--bl-bg)";
+const BORDER      = "var(--color-border)";
+const TEXT_PRI    = "var(--bl-cream)";
+const TEXT_SEC    = "var(--bl-cream-dim)";
 const ACCENT      = "#D4AF37";
-const SEPARATOR   = "rgba(30,42,48,0.60)";
+const SEPARATOR   = "var(--color-border)";
 
 // ─── Nav items ────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
@@ -240,7 +240,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (loading || !user || (profile !== null && profile.role !== "admin")) {
     return (
-      <div style={{ minHeight: "100vh", background: "#0A1216", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ minHeight: "100vh", background: "var(--bg-primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <div style={{ width: 36, height: 36, borderRadius: "50%", border: `2px solid ${ACCENT}`, borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -250,7 +250,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const sidebarProps = { pathname, pendingReports, pendingMod, user, profile, onSignOut: handleSignOut };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#0A1216" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
 
       {/* ── Desktop sidebar ── */}
       <aside
@@ -295,7 +295,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div style={{ position: "absolute", top: 12, right: 12 }}>
           <button
             onClick={() => setDrawerOpen(false)}
-            style={{ padding: 6, borderRadius: 8, border: "none", background: "#1e2a30", color: TEXT_SEC, cursor: "pointer" }}
+            style={{ padding: 6, borderRadius: 8, border: "none", background: "var(--color-border)", color: TEXT_SEC, cursor: "pointer" }}
           >
             <X size={18} />
           </button>

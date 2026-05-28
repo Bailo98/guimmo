@@ -16,7 +16,7 @@ const TYPE_LABELS: Record<string, string> = {
 const ACCENT = "#D4AF37";
 const S_CARD: React.CSSProperties = {
   background: "rgba(255,255,255,0.03)",
-  border: "1px solid #1e2a30",
+  border: "1px solid var(--color-border)",
   borderRadius: 16,
   padding: "14px 16px",
 };
@@ -141,7 +141,7 @@ export default function AdminModerationPage() {
 
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ color: "#ffffff", fontWeight: 800, fontSize: 24, margin: "0 0 4px" }}>
+        <h1 style={{ color: "var(--bl-cream)", fontWeight: 800, fontSize: 24, margin: "0 0 4px" }}>
           Modération
         </h1>
         <p style={{ color: "#666666", fontSize: 13, margin: 0 }}>
@@ -150,7 +150,7 @@ export default function AdminModerationPage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: "flex", gap: 4, background: "rgba(255,255,255,0.06)", borderRadius: 12, padding: 4, marginBottom: 20 }}>
+      <div style={{ display: "flex", gap: 4, background: "var(--border-subtle)", borderRadius: 12, padding: 4, marginBottom: 20 }}>
         <button style={tabStyle(tab === "pending")} onClick={() => setTab("pending")}>
           En attente
           {pending.length > 0 && (
@@ -187,7 +187,7 @@ export default function AdminModerationPage() {
         pending.length === 0 ? (
           <div style={{ ...S_CARD, textAlign: "center", padding: "48px 20px" }}>
             <CheckCircle size={32} style={{ color: "#D4AF37", margin: "0 auto 12px", display: "block" }} />
-            <p style={{ color: "#ffffff", fontWeight: 700, marginBottom: 4 }}>File vide !</p>
+            <p style={{ color: "var(--bl-cream)", fontWeight: 700, marginBottom: 4 }}>File vide !</p>
             <p style={{ color: "#666666", fontSize: 13 }}>Toutes les annonces ont été traitées.</p>
           </div>
         ) : (
@@ -199,11 +199,11 @@ export default function AdminModerationPage() {
                   <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 2 }}>
-                        <p style={{ color: "#ffffff", fontWeight: 700, fontSize: 15, margin: 0 }}>{prop.title}</p>
+                        <p style={{ color: "var(--bl-cream)", fontWeight: 700, fontSize: 15, margin: 0 }}>{prop.title}</p>
                         <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "rgba(212,175,55,0.15)", color: ACCENT }}>
                           {TYPE_LABELS[prop.type] ?? prop.type}
                         </span>
-                        <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.55)" }}>
+                        <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: "var(--border-subtle)", color: "var(--bl-cream-dim)" }}>
                           {prop.transaction_type === "rent" ? "Location" : "Vente"}
                         </span>
                       </div>
@@ -221,7 +221,7 @@ export default function AdminModerationPage() {
                     <button
                       disabled={busy}
                       onClick={() => approve(prop)}
-                      style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 14px", borderRadius: 10, border: "none", background: "#D4AF37", color: "#fff", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer" }}
+                      style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 14px", borderRadius: 10, border: "none", background: "#D4AF37", color: "var(--bl-cream)", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer" }}
                     >
                       <CheckCircle size={15} /> Approuver
                     </button>
@@ -236,7 +236,7 @@ export default function AdminModerationPage() {
                       href={`/annonces/${prop.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ padding: "9px 14px", borderRadius: 10, border: "1px solid #1e2a30", color: "#1e2a30", fontWeight: 600, fontSize: 12, textDecoration: "none", whiteSpace: "nowrap" }}
+                      style={{ padding: "9px 14px", borderRadius: 10, border: "1px solid var(--color-border)", color: "#1e2a30", fontWeight: 600, fontSize: 12, textDecoration: "none", whiteSpace: "nowrap" }}
                     >
                       Voir →
                     </a>
@@ -253,7 +253,7 @@ export default function AdminModerationPage() {
         reports.length === 0 ? (
           <div style={{ ...S_CARD, textAlign: "center", padding: "48px 20px" }}>
             <Flag size={32} style={{ color: "rgba(255,255,255,0.25)", margin: "0 auto 12px", display: "block" }} />
-            <p style={{ color: "#ffffff", fontWeight: 700, marginBottom: 4 }}>Aucun signalement en attente</p>
+            <p style={{ color: "var(--bl-cream)", fontWeight: 700, marginBottom: 4 }}>Aucun signalement en attente</p>
             <p style={{ color: "#666666", fontSize: 13 }}>Tous les signalements ont été traités.</p>
           </div>
         ) : (
@@ -267,7 +267,7 @@ export default function AdminModerationPage() {
               return (
                 <div key={rep.id} style={{ ...S_CARD, borderColor: "rgba(239,68,68,0.25)", opacity: busy ? 0.6 : 1 }}>
                   <div style={{ marginBottom: 10 }}>
-                    <p style={{ color: "#ffffff", fontWeight: 700, fontSize: 14, margin: "0 0 3px" }}>{propTitle}</p>
+                    <p style={{ color: "var(--bl-cream)", fontWeight: 700, fontSize: 14, margin: "0 0 3px" }}>{propTitle}</p>
                     <p style={{ color: "#f87171", fontSize: 12, margin: "0 0 2px" }}>{rep.reason ?? "Raison non précisée"}</p>
                     <p style={{ color: "#666666", fontSize: 11, margin: 0 }}>
                       Signalé par {reporterName} · {fmtDate(rep.created_at)}

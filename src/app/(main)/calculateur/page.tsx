@@ -36,7 +36,7 @@ export default function CalculateurPage() {
       </div>
 
       {/* Calculator card */}
-      <div className="bg-[#2c2f36] rounded-2xl p-6 border border-[#1e2a30] mb-6 space-y-6">
+      <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 border border-[var(--color-border)] mb-6 space-y-6">
         {/* Revenu */}
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -61,7 +61,7 @@ export default function CalculateurPage() {
             type="number"
             value={revenu}
             onChange={(e) => setRevenu(Math.max(0, parseInt(e.target.value) || 0))}
-            className="mt-3 w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
+            className="mt-3 w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
             placeholder="Entrez votre revenu"
           />
         </div>
@@ -79,7 +79,7 @@ export default function CalculateurPage() {
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                   !customCharges && charges === preset
                     ? "bg-[#D4AF37] border-[#D4AF37] text-white"
-                    : "border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-400 hover:border-[#D4AF37] hover:text-[#D4AF37]"
+                    : "border-slate-200 dark:border-[var(--color-border)] text-slate-600 dark:text-slate-400 hover:border-[#D4AF37] hover:text-[#D4AF37]"
                 }`}
               >
                 {formatPrice(preset)}
@@ -90,7 +90,7 @@ export default function CalculateurPage() {
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                 customCharges
                   ? "bg-[#D4AF37] border-[#D4AF37] text-white"
-                  : "border-slate-200 dark:border-[#2a3040] text-slate-600 dark:text-slate-400 hover:border-[#D4AF37] hover:text-[#D4AF37]"
+                  : "border-slate-200 dark:border-[var(--color-border)] text-slate-600 dark:text-slate-400 hover:border-[#D4AF37] hover:text-[#D4AF37]"
               }`}
             >
               Personnalisé
@@ -102,7 +102,7 @@ export default function CalculateurPage() {
               value={customChargesValue}
               onChange={(e) => setCustomChargesValue(e.target.value)}
               placeholder="Entrez vos charges en GNF"
-              className="w-full bg-[#2c2f36] border border-[#1e2a30] rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
+              className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
             />
           )}
           <p className="text-xs text-slate-400 mt-1">
@@ -146,11 +146,11 @@ export default function CalculateurPage() {
         </div>
 
         {budgetMax === 0 ? (
-          <div className="bg-[#2c2f36] rounded-2xl p-8 border border-[#1e2a30] text-center">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-8 border border-[var(--color-border)] text-center">
             <p className="text-slate-400 text-sm">Augmentez votre revenu ou réduisez vos charges pour voir des annonces.</p>
           </div>
         ) : filteredProperties.length === 0 ? (
-          <div className="bg-[#2c2f36] rounded-2xl p-8 border border-[#1e2a30] text-center">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-8 border border-[var(--color-border)] text-center">
             <p className="text-slate-500 dark:text-slate-400 text-sm mb-2">
               Aucune annonce disponible pour un budget de {formatPrice(budgetMax)}.
             </p>

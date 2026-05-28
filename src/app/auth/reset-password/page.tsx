@@ -43,18 +43,18 @@ export default function ResetPasswordPage() {
   }
 
   const INPUT = {
-    background: "rgba(255,255,255,0.05)",
+    background: "var(--border-subtle)",
     border: "1px solid rgba(255,255,255,0.10)",
   } as const;
 
   return (
-    <div className="min-h-screen bg-[#0A1216] flex flex-col">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col">
       <div className="p-4">
         <Logo />
       </div>
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-sm rounded-3xl p-8"
-          style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}>
+          style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
           {done ? (
             <div className="text-center">
               <CheckCircle className="w-14 h-14 text-[#D4AF37] mx-auto mb-4" />

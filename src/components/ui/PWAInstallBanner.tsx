@@ -85,7 +85,7 @@ export function PWAInstallBanner() {
         className="md:hidden fixed top-0 left-0 right-0 z-[60] flex items-center gap-3 px-4 shadow-2xl"
         style={{
           height: 60,
-          background: "#111a1f",
+          background: "var(--bl-surface)",
           borderBottom: "1px solid rgba(255,255,255,0.10)",
         }}
       >
@@ -137,7 +137,7 @@ export function PWAInstallBanner() {
           <div
             className="w-full"
             style={{
-              background: "#1a252b",
+              background: "var(--bl-surface-2)",
               borderRadius: "20px 20px 0 0",
               padding: "24px 20px 32px",
             }}
@@ -156,7 +156,7 @@ export function PWAInstallBanner() {
               <button
                 onClick={() => setShowIosModal(false)}
                 style={{
-                  background: "rgba(255,255,255,0.08)", border: "none", borderRadius: "50%",
+                  background: "var(--border-subtle)", border: "none", borderRadius: "50%",
                   width: 32, height: 32, cursor: "pointer", color: "rgba(255,255,255,0.6)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   minHeight: "auto",
@@ -191,7 +191,7 @@ export function PWAInstallBanner() {
                     className="flex-shrink-0 flex items-center justify-center font-bold text-xs"
                     style={{
                       width: 28, height: 28, borderRadius: "50%",
-                      background: "#D4AF37", color: "#0A1216",
+                      background: "#D4AF37", color: "var(--bg-primary)",
                       marginTop: 1,
                     }}
                   >
@@ -209,7 +209,7 @@ export function PWAInstallBanner() {
                 marginTop: 24,
                 width: "100%",
                 background: "#D4AF37",
-                color: "#0A1216",
+                color: "var(--bg-primary)",
                 border: "none",
                 borderRadius: 14,
                 padding: "14px 0",

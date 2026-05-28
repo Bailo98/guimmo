@@ -30,7 +30,7 @@ export function StatsSection() {
   return (
     <div className="grid grid-cols-2 gap-4 mb-14">
       {stats.map((s) => (
-        <div key={s.label} className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30] text-center">
+        <div key={s.label} className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)] text-center">
           <p className="text-2xl font-black text-[#009460]">{s.value}</p>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{s.label}</p>
         </div>

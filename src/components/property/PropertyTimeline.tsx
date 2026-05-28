@@ -97,7 +97,7 @@ export function PropertyTimeline({ price, createdAt, availableNow }: Props) {
   const events = buildTimeline(price, createdAt, availableNow);
 
   return (
-    <div className="bg-[#2c2f36] rounded-2xl p-5 border border-[#1e2a30]">
+    <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)]">
       <h2 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
         <History className="w-4 h-4 text-[#D4AF37]" /> Historique de l&apos;annonce
       </h2>

@@ -126,7 +126,7 @@ function InscriptionForm() {
   const selectedRole = USER_ROLES.find((r) => r.value === role);
 
   return (
-    <div className="min-h-screen bg-[#0A1216] flex flex-col">
+    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col">
       <div className="p-4 flex items-center justify-between">
         <Logo size="lg" />
         <Link href="/connexion" className="text-sm text-[#666666] hover:text-white transition-colors">
@@ -151,7 +151,7 @@ function InscriptionForm() {
             ))}
           </div>
 
-          <div className="rounded-3xl p-8" style={{ background: "#111a1f", border: "1px solid #1e2a30", borderRadius: 24 }}>
+          <div className="rounded-3xl p-8" style={{ background: "var(--bl-surface)", border: "1px solid var(--color-border)", borderRadius: 24 }}>
 
             {/* ── STEP 1 — Profil ── */}
             {step === 1 && (
@@ -176,7 +176,7 @@ function InscriptionForm() {
                       style={{
                         minHeight: 80,
                         borderColor: role === r.value ? "#D4AF37" : "#1e2a30",
-                        background: role === r.value ? "rgba(212,175,55,0.10)" : "#111a1f",
+                        background: role === r.value ? "rgba(212,175,55,0.10)" : "var(--bl-surface)",
                       }}
                     >
                       <span style={{ fontSize: 32, lineHeight: 1, flexShrink: 0 }}>{r.icon}</span>
@@ -221,14 +221,14 @@ function InscriptionForm() {
                 </div>
 
                 {/* Phone / Email toggle */}
-                <div className="grid grid-cols-2 p-1 mb-4 rounded-xl" style={{ background: "#0A1216" }}>
+                <div className="grid grid-cols-2 p-1 mb-4 rounded-xl" style={{ background: "var(--bg-primary)" }}>
                   {(["phone", "email"] as const).map((m) => (
                     <button
                       key={m}
                       type="button"
                       onClick={() => switchMode(m)}
                       className="py-2.5 text-sm font-bold rounded-lg transition-colors"
-                      style={mode === m ? { background: "#D4AF37", color: "#0A1216" } : { color: "#666666" }}
+                      style={mode === m ? { background: "#D4AF37", color: "var(--bg-primary)" } : { color: "#666666" }}
                     >
                       {m === "phone" ? "📱 Téléphone" : "✉️ Email"}
                     </button>
@@ -251,7 +251,7 @@ function InscriptionForm() {
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
                         className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
-                        style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
+                        style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
                         required
                         autoComplete="name"
                       />
@@ -273,7 +273,7 @@ function InscriptionForm() {
                           value={form.agencyName}
                           onChange={(e) => setForm({ ...form, agencyName: e.target.value })}
                           className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
-                          style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
+                          style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
                         />
                       </div>
                     </div>
@@ -293,7 +293,7 @@ function InscriptionForm() {
                         onChange={(e) => setForm({ ...form, bio: e.target.value })}
                         maxLength={200}
                         className="w-full rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm resize-none"
-                        style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
+                        style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
                       />
                     </div>
                   )}
@@ -312,7 +312,7 @@ function InscriptionForm() {
                           value={form.phone}
                           onChange={(e) => setForm({ ...form, phone: e.target.value })}
                           className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
-                          style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
+                          style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
                           required
                           autoComplete="tel"
                         />
@@ -334,7 +334,7 @@ function InscriptionForm() {
                           value={form.email}
                           onChange={(e) => setForm({ ...form, email: e.target.value })}
                           className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
-                          style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
+                          style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
                           required
                           autoComplete="email"
                         />
@@ -358,7 +358,7 @@ function InscriptionForm() {
                         value={form.password}
                         onChange={(e) => setForm({ ...form, password: e.target.value })}
                         className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-                        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16 }}
+                        style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16 }}
                         required
                         minLength={8}
                         autoComplete="new-password"
@@ -406,7 +406,7 @@ function InscriptionForm() {
 
 export default function InscriptionPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0A1216]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[var(--bg-primary)]" />}>
       <InscriptionForm />
     </Suspense>
   );

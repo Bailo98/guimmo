@@ -744,7 +744,7 @@ export default function PublierPage() {
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <span style={{ fontSize: 20 }}>🏠</span>
                   <div>
-                    <p style={{ color: "#ffffff", fontWeight: 700, fontSize: 13, marginBottom: 1 }}>Visite virtuelle</p>
+                    <p style={{ color: "var(--bl-cream)", fontWeight: 700, fontSize: 13, marginBottom: 1 }}>Visite virtuelle</p>
                     <p style={{ color: "#666666", fontSize: 11 }}>Photos par pièce · max 10 pièces</p>
                   </div>
                 </div>
@@ -770,7 +770,7 @@ export default function PublierPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {form.tourRooms.map((room, i) => (
                     <div key={room.id} style={{
-                      background: "#1a252b", border: "1px solid #1e2a30",
+                      background: "var(--bl-surface-2)", border: "1px solid var(--color-border)",
                       borderRadius: 10, padding: "10px 12px",
                       display: "flex", alignItems: "center", gap: 10,
                     }}>
@@ -808,9 +808,9 @@ export default function PublierPage() {
                         maxLength={30}
                         onChange={(e) => updateTourRoomName(room.id, e.target.value)}
                         style={{
-                          flex: 1, background: "rgba(255,255,255,0.06)",
+                          flex: 1, background: "var(--border-subtle)",
                           border: "1px solid rgba(255,255,255,0.10)", borderRadius: 8,
-                          padding: "8px 10px", color: "#ffffff", fontSize: 13,
+                          padding: "8px 10px", color: "var(--bl-cream)", fontSize: 13,
                           outline: "none",
                         }}
                       />
@@ -865,7 +865,7 @@ export default function PublierPage() {
                 value={form.price}
                 onChange={(e) => update("price", e.target.value)}
                 className="w-full rounded-xl px-4 py-3 pr-12 text-white font-semibold text-base focus:outline-none focus:ring-2 focus:ring-white/20"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}
               />
               <button
                 onClick={() => toggleMic("price")}
@@ -988,8 +988,8 @@ export default function PublierPage() {
                     style={{
                       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                       gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70, minWidth: 70,
-                      border: form.waterSource === opt.id ? "2px solid #D4AF37" : "1px solid #1e2a30",
-                      background: form.waterSource === opt.id ? "rgba(212,175,55,0.12)" : "#111a1f",
+                      border: form.waterSource === opt.id ? "2px solid #D4AF37" : "1px solid var(--color-border)",
+                      background: form.waterSource === opt.id ? "rgba(212,175,55,0.12)" : "var(--bl-surface)",
                       color: form.waterSource === opt.id ? "#D4AF37" : "#666666",
                       fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                     }}>
@@ -1014,8 +1014,8 @@ export default function PublierPage() {
                     style={{
                       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                       gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70, minWidth: 70,
-                      border: form.electricity === opt.id ? "2px solid #D4AF37" : "1px solid #1e2a30",
-                      background: form.electricity === opt.id ? "rgba(212,175,55,0.12)" : "#111a1f",
+                      border: form.electricity === opt.id ? "2px solid #D4AF37" : "1px solid var(--color-border)",
+                      background: form.electricity === opt.id ? "rgba(212,175,55,0.12)" : "var(--bl-surface)",
                       color: form.electricity === opt.id ? "#D4AF37" : "#666666",
                       fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                     }}>
@@ -1038,8 +1038,8 @@ export default function PublierPage() {
                     style={{
                       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                       gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70,
-                      border: form.internet === opt.id ? "2px solid #D4AF37" : "1px solid #1e2a30",
-                      background: form.internet === opt.id ? "rgba(212,175,55,0.12)" : "#111a1f",
+                      border: form.internet === opt.id ? "2px solid #D4AF37" : "1px solid var(--color-border)",
+                      background: form.internet === opt.id ? "rgba(212,175,55,0.12)" : "var(--bl-surface)",
                       color: form.internet === opt.id ? "#D4AF37" : "#666666",
                       fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                     }}>
@@ -1067,8 +1067,8 @@ export default function PublierPage() {
                       style={{
                         display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                         gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70,
-                        border: active ? "2px solid #D4AF37" : "1px solid #1e2a30",
-                        background: active ? "rgba(212,175,55,0.12)" : "#111a1f",
+                        border: active ? "2px solid #D4AF37" : "1px solid var(--color-border)",
+                        background: active ? "rgba(212,175,55,0.12)" : "var(--bl-surface)",
                         color: active ? "#D4AF37" : "#666666",
                         fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                       }}>
@@ -1087,7 +1087,7 @@ export default function PublierPage() {
                 value={form.floorNumber}
                 onChange={(e) => update("floorNumber", Number(e.target.value))}
                 className="w-full rounded-xl px-4 py-3 text-white font-medium focus:outline-none focus:ring-2 focus:ring-white/20 appearance-none"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}
               >
                 <option value={0}>RDC (rez-de-chaussée)</option>
                 <option value={1}>1er étage</option>
@@ -1124,7 +1124,7 @@ export default function PublierPage() {
                 value={form.neighborhood}
                 onChange={(e) => update("neighborhood", e.target.value)}
                 className="w-full rounded-xl pl-9 pr-4 py-3 text-white font-medium focus:outline-none focus:ring-2 focus:ring-white/20 appearance-none"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}
               >
                 <option value="">— Choisir un quartier —</option>
                 {COMMUNES.map((commune) => (
@@ -1182,7 +1182,7 @@ export default function PublierPage() {
                 placeholder="Ex : près du carrefour, derrière la mosquée…"
                 rows={3}
                 className="w-full rounded-xl px-4 py-3 pr-12 text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white/20 resize-none"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}
               />
               <button
                 onClick={() => toggleMic("location")}
@@ -1228,17 +1228,17 @@ export default function PublierPage() {
             </p>
             <div className="flex flex-wrap gap-2">
               {form.type && (
-                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}>
+                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
                   {typeEmoji} {typeLabel}
                 </span>
               )}
               {form.txType && (
-                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}>
+                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
                   {form.txType === "rent" ? "🔑 Location" : "💰 Vente"}
                 </span>
               )}
               {form.neighborhood && (
-                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}>
+                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
                   📍 {neighborhoodName}
                 </span>
               )}
@@ -1248,12 +1248,12 @@ export default function PublierPage() {
                 </span>
               )}
               {form.photos.length > 0 && (
-                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}>
+                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
                   📸 {form.photos.length} photo{form.photos.length > 1 ? "s" : ""}
                 </span>
               )}
               {form.rooms > 0 && form.type !== "land" && (
-                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}>
+                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
                   🛏️ {form.rooms === 5 ? "5+" : form.rooms} ch.
                 </span>
               )}
@@ -1275,7 +1275,7 @@ export default function PublierPage() {
                 onChange={(e) => update("phone", e.target.value)}
                 placeholder="+224 6XX XX XX XX"
                 className="w-full rounded-xl pl-9 pr-4 py-3 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/20"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.10)" }}
+                style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}
               />
             </div>
           </div>

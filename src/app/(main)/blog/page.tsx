@@ -141,7 +141,7 @@ export default function BlogPage() {
   const [featured, ...rest] = filtered;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0f1117]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[var(--bg-primary)]">
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#D4AF37] via-[#B8963A] to-[#c2540a] text-white">
         <div className="max-w-6xl mx-auto px-4 py-16 md:py-20 text-center">
@@ -181,7 +181,7 @@ export default function BlogPage() {
               className={
                 cat === activeCategory
                   ? "px-4 py-1.5 rounded-full text-sm font-semibold bg-[#D4AF37] text-white cursor-pointer"
-                  : "px-4 py-1.5 rounded-full text-sm font-semibold bg-[#2c2f36] text-slate-600 dark:text-slate-300 border border-[#1e2a30] hover:border-[#D4AF37] hover:text-[#D4AF37] cursor-pointer transition-colors"
+                  : "px-4 py-1.5 rounded-full text-sm font-semibold bg-[var(--bg-card-light)] text-slate-600 dark:text-slate-300 border border-[var(--color-border)] hover:border-[#D4AF37] hover:text-[#D4AF37] cursor-pointer transition-colors"
               }
             >
               {cat}
@@ -205,7 +205,7 @@ export default function BlogPage() {
                 Article à la une
               </p>
               <Link href={`/blog/${featured.slug}`} className="group block">
-                <div className="bg-[#2c2f36] rounded-3xl overflow-hidden border border-[#1e2a30] hover:shadow-2xl transition-shadow duration-300 md:flex">
+                <div className="bg-[var(--bg-card-light)] rounded-3xl overflow-hidden border border-[var(--color-border)] hover:shadow-2xl transition-shadow duration-300 md:flex">
                   <div className="relative md:w-1/2 aspect-[16/9] md:aspect-auto md:min-h-[360px]">
                     <Image
                       src={featured.image}
@@ -264,7 +264,7 @@ export default function BlogPage() {
                     <Link
                       key={article.slug}
                       href={`/blog/${article.slug}`}
-                      className="group bg-[#2c2f36] rounded-2xl overflow-hidden border border-[#1e2a30] hover:shadow-xl transition-shadow duration-200 flex flex-col"
+                      className="group bg-[var(--bg-card-light)] rounded-2xl overflow-hidden border border-[var(--color-border)] hover:shadow-xl transition-shadow duration-200 flex flex-col"
                     >
                       <div className="relative aspect-[16/9] overflow-hidden">
                         <Image

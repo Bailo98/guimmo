@@ -45,7 +45,7 @@ export default function NouveautesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0f1117]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[var(--bg-primary)]">
       {/* Orange hero banner */}
       <div className="bg-gradient-to-br from-[#D4AF37] via-[#B8963A] to-[#c2540a] text-white">
         <div className="max-w-6xl mx-auto px-4 py-10 md:py-14">

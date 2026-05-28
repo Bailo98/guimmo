@@ -71,7 +71,7 @@ export async function MaisonDuJour() {
           <div>
             <h2
               className="text-xl md:text-2xl font-black"
-              style={{ color: "#ffffff", fontFamily: "var(--font-display), sans-serif" }}
+              style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
             >
               Maison du jour
             </h2>
@@ -103,7 +103,7 @@ export async function MaisonDuJour() {
                   priority
                 />
               ) : (
-                <div className="w-full h-full bg-[#1a252b]" />
+                <div className="w-full h-full bg-[var(--bg-card-dark)]" />
               )}
               {/* Gradient overlay */}
               <div

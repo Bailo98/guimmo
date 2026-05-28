@@ -19,7 +19,7 @@ const AnnoncesMap = dynamic(
     ssr: false,
     loading: () => (
       <div style={{ height: "calc(100vh - 180px)", background: "#111820", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>Chargement de la carte…</span>
+        <span style={{ color: "var(--bl-cream-faint)", fontSize: 14 }}>Chargement de la carte…</span>
       </div>
     ),
   }
@@ -111,7 +111,7 @@ function TypeChip({ active, onClick, children }: {
         minHeight: "40px",
         ...(active
           ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "#D4AF37" }
-          : { background: "#1a252b", border: "1px solid #1e2a30", color: "#666666" }),
+          : { background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", color: "#666666" }),
       }}
     >
       {children}
@@ -130,7 +130,7 @@ function SmallChip({ active, onClick, children }: {
         minHeight: "36px",
         ...(active
           ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "#D4AF37" }
-          : { background: "#1a252b", border: "1px solid #1e2a30", color: "#666666" }),
+          : { background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", color: "#666666" }),
       }}
     >
       {children}
@@ -150,8 +150,8 @@ function AmenityChip({ active, onClick, emoji, label }: {
         gap: 6,
         padding: "8px 14px",
         borderRadius: 20,
-        border: active ? "1px solid rgba(212,175,55,0.50)" : "1px solid #1e2a30",
-        background: active ? "var(--accent-gold)" : "#1a252b",
+        border: active ? "1px solid rgba(212,175,55,0.50)" : "1px solid var(--color-border)",
+        background: active ? "var(--accent-gold)" : "var(--bl-surface-2)",
         color: active ? "#0A1216" : "rgba(255,255,255,0.55)",
         fontSize: 13,
         fontWeight: 600,
@@ -336,22 +336,22 @@ function AnnoncesContent() {
   ].filter(Boolean).length;
 
   return (
-    <div className="bg-[#0A1216] min-h-screen">
+    <div className="bg-[var(--bg-primary)] min-h-screen">
       {/* ── Sticky filter bar ── */}
       <div
         className="sticky top-16 z-30 -mx-0 px-4 pt-4 pb-3 space-y-3"
         style={{
-          background: "rgba(10,18,22,0.97)",
+          background: "var(--nav-bg)",
           backdropFilter: "blur(20px) saturate(180%)",
           WebkitBackdropFilter: "blur(20px) saturate(180%)",
-          borderBottom: "1px solid #1e2a30",
+          borderBottom: "1px solid var(--color-border)",
         }}
       >
         {/* Search pill + controls */}
         <div className="flex items-center gap-2">
           <div
             className="flex-1 flex items-center gap-3 rounded-full px-4"
-            style={{ minHeight: 48, background: "#1a252b", border: "1px solid #1e2a30" }}
+            style={{ minHeight: 48, background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
           >
             <Search className="w-4 h-4 text-white/40 flex-shrink-0" />
             <span className="flex-1 text-sm text-white/40">Rechercher un bien…</span>
@@ -373,7 +373,7 @@ function AnnoncesContent() {
             )}
             style={nearbyCoords
               ? { background: "rgba(212,175,55,0.12)", border: "1px solid rgba(212,175,55,0.35)" }
-              : { background: "#1a252b", border: "1px solid #1e2a30" }}
+              : { background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
           >
             {gpsLoading
               ? <span className="w-4 h-4 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />
@@ -386,7 +386,7 @@ function AnnoncesContent() {
             className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
             style={mapView
               ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "#D4AF37" }
-              : { background: "#1a252b", border: "1px solid #1e2a30", color: "rgba(255,255,255,0.55)" }}
+              : { background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", color: "var(--bl-cream-dim)" }}
             title={mapView ? "Vue liste" : "Vue carte"}
           >
             {mapView ? <List className="w-4 h-4" /> : <Map className="w-4 h-4" />}
@@ -400,7 +400,7 @@ function AnnoncesContent() {
               minHeight: 48,
               ...(filtersOpen || activeFilterCount > 0
                 ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "#D4AF37" }
-                : { background: "#1a252b", border: "1px solid #1e2a30", color: "#666666" }),
+                : { background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", color: "#666666" }),
             }}
           >
             <SlidersHorizontal className="w-4 h-4" />
@@ -482,7 +482,7 @@ function AnnoncesContent() {
                   minHeight: 36,
                   ...(diaspora
                     ? { background: "rgba(74,158,255,0.18)", border: "1px solid rgba(74,158,255,0.45)", color: "#4A9EFF" }
-                    : { background: "#1a252b", border: "1px solid #1e2a30", color: "#666" }),
+                    : { background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", color: "#666" }),
                 }}
               >
                 ✈️ Mode Diaspora
@@ -521,7 +521,7 @@ function AnnoncesContent() {
         {gpsMessage && (
           <div
             className="mb-4 rounded-xl px-4 py-3 text-sm font-semibold text-white/70"
-            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}
+            style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}
           >
             📍 {gpsMessage}
           </div>
@@ -579,7 +579,7 @@ function AnnoncesContent() {
           </div>
         ) : mapView ? (
           /* MAP VIEW */
-          <div style={{ borderRadius: 16, overflow: "hidden", border: "1px solid #1e2a30" }}>
+          <div style={{ borderRadius: 16, overflow: "hidden", border: "1px solid var(--color-border)" }}>
             <AnnoncesMap properties={filtered} />
           </div>
         ) : (
@@ -598,7 +598,7 @@ function AnnoncesContent() {
                   onClick={() => setPage(safePage - 1)}
                   disabled={safePage === 1}
                   className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#D4AF37] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                  style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
+                  style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
@@ -614,7 +614,7 @@ function AnnoncesContent() {
                         className="w-9 h-9 rounded-full text-sm font-semibold transition-colors"
                         style={n === safePage
                           ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "#D4AF37" }
-                          : { background: "#1a252b", border: "1px solid #1e2a30", color: "#666666" }}
+                          : { background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", color: "#666666" }}
                       >
                         {n}
                       </button>
@@ -625,7 +625,7 @@ function AnnoncesContent() {
                   onClick={() => setPage(safePage + 1)}
                   disabled={safePage === totalPages}
                   className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#D4AF37] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                  style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.10)" }}
+                  style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>

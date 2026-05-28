@@ -107,7 +107,7 @@ export default async function QuartierPage({ params }: Props) {
         {/* Stats */}
         <div className="flex flex-wrap gap-4 mt-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
-            style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.8)" }}>
+            style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.8)" }}>
             {properties.length} annonce{properties.length !== 1 ? "s" : ""}
           </div>
           {avgFormatted && (
@@ -122,7 +122,7 @@ export default async function QuartierPage({ params }: Props) {
       {/* Grid */}
       {properties.length === 0 ? (
         <div className="rounded-2xl p-12 text-center"
-          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.08)" }}>
           <p className="text-5xl mb-4">🏠</p>
           <h2 className="text-lg font-bold text-white mb-2">Aucune annonce disponible à {name}</h2>
           <p className="text-white/40 text-sm mb-6">Revenez bientôt ou explorez d'autres quartiers.</p>
@@ -150,7 +150,7 @@ export default async function QuartierPage({ params }: Props) {
               key={s}
               href={`/annonces/quartier/${s}`}
               className="px-4 py-2 rounded-full text-sm font-semibold transition-colors"
-              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", color: "rgba(255,255,255,0.6)" }}
+              style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", color: "rgba(255,255,255,0.6)" }}
             >
               {getNeighborhoodName(s)}
             </Link>

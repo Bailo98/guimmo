@@ -130,14 +130,14 @@ function PreviewCard({ property, index }: PreviewCardProps) {
         <div className="absolute inset-0 flex items-end p-3" style={{ background: primaryImg ? "linear-gradient(to top, rgba(0,0,0,0.55), transparent)" : "none" }}>
           <span
             className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-            style={{ background: "rgba(10,18,22,0.75)", color: "#ffffff" }}
+            style={{ background: "rgba(var(--nav-rgb,10,18,22),0.75)", color: "var(--bl-cream)" }}
           >
             {badge}
           </span>
         </div>
       </div>
       {/* Content */}
-      <div className="p-3.5" style={{ color: "#0A1216" }}>
+      <div className="p-3.5" style={{ color: "var(--bg-primary)" }}>
         <p className="font-bold text-sm leading-snug line-clamp-1">{property.title}</p>
         <div className="flex items-center gap-1 text-xs mt-1" style={{ color: "#666666" }}>
           <MapPin className="w-3 h-3 flex-shrink-0" />
@@ -224,7 +224,7 @@ export default async function HomePage() {
                   fontWeight: 800,
                   fontSize: "clamp(40px, 8vw, 96px)",
                   lineHeight: 0.95,
-                  color: "#ffffff",
+                  color: "var(--bl-cream)",
                   marginBottom: "1.5rem",
                   letterSpacing: "-0.02em",
                   textTransform: "uppercase",
@@ -289,7 +289,7 @@ export default async function HomePage() {
       {/* ══════════════════════════════════════════════════════════
           MAISON DU JOUR
       ══════════════════════════════════════════════════════════ */}
-      <div style={{ background: "#0A1216" }}>
+      <div style={{ background: "var(--bg-primary)" }}>
         <MaisonDuJour />
       </div>
 
@@ -297,13 +297,13 @@ export default async function HomePage() {
           ANNONCES VEDETTES — dark forest bg
       ══════════════════════════════════════════════════════════ */}
       {featured.length > 0 && (
-        <section style={{ background: "#0A1216" }} className="py-14">
+        <section style={{ background: "var(--bg-primary)" }} className="py-14">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2
                   className="text-2xl md:text-3xl font-black"
-                  style={{ color: "#ffffff", fontFamily: "var(--font-display), sans-serif" }}
+                  style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
                 >
                   Annonces vedettes
                 </h2>
@@ -332,13 +332,13 @@ export default async function HomePage() {
           ANNONCES RÉCENTES — dark forest bg
       ══════════════════════════════════════════════════════════ */}
       {recent.length > 0 && (
-        <section style={{ background: "#0A1216" }} className="py-14">
+        <section style={{ background: "var(--bg-primary)" }} className="py-14">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2
                   className="text-2xl md:text-3xl font-black"
-                  style={{ color: "#ffffff", fontFamily: "var(--font-display), sans-serif" }}
+                  style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
                 >
                   Annonces récentes
                 </h2>
@@ -364,19 +364,19 @@ export default async function HomePage() {
       )}
 
       {/* Recently viewed */}
-      <div style={{ background: "#0A1216" }}>
+      <div style={{ background: "var(--bg-primary)" }}>
         <RecentlyViewedSection />
       </div>
 
       {/* ══════════════════════════════════════════════════════════
           QUARTIERS POPULAIRES — cream background
       ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#2c2f36" }} className="py-16">
+      <section style={{ background: "var(--bg-card-light)" }} className="py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="mb-8">
             <h2
               className="text-2xl md:text-3xl font-black"
-              style={{ color: "#ffffff", fontFamily: "var(--font-display), sans-serif" }}
+              style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
             >
               Quartiers populaires
             </h2>
@@ -391,8 +391,8 @@ export default async function HomePage() {
                 href={`/annonces?neighborhood=${n.id}`}
                 className="group rounded-2xl p-5 transition-all hover:-translate-y-0.5"
                 style={{
-                  background: "#1a252b",
-                  border: "1px solid #1e2a30",
+                  background: "var(--bl-surface-2)",
+                  border: "1px solid var(--color-border)",
                 }}
               >
                 <div
@@ -403,7 +403,7 @@ export default async function HomePage() {
                 </div>
                 <p
                   className="font-bold text-sm"
-                  style={{ color: "#ffffff" }}
+                  style={{ color: "var(--bl-cream)" }}
                 >
                   {n.name}
                 </p>
@@ -428,12 +428,12 @@ export default async function HomePage() {
       {/* ══════════════════════════════════════════════════════════
           POURQUOI LogerBien — cream background
       ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "#2c2f36" }} className="py-16">
+      <section style={{ background: "var(--bg-card-light)" }} className="py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-10">
             <h2
               className="text-2xl md:text-3xl font-black"
-              style={{ color: "#ffffff", fontFamily: "var(--font-display), sans-serif" }}
+              style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
             >
               Pourquoi choisir LogerBien ?
             </h2>
@@ -449,12 +449,12 @@ export default async function HomePage() {
               <div
                 key={item.title}
                 className="rounded-2xl p-6"
-                style={{ background: "#1a252b", border: "1px solid #1e2a30" }}
+                style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
               >
                 <span className="text-3xl block mb-4">{item.icon}</span>
                 <h3
                   className="font-bold text-base mb-2"
-                  style={{ color: "#ffffff" }}
+                  style={{ color: "var(--bl-cream)" }}
                 >
                   {item.title}
                 </h3>
@@ -485,7 +485,7 @@ export default async function HomePage() {
           <p className="text-5xl mb-6">🏠</p>
           <h2
             className="text-2xl md:text-4xl font-black mb-4"
-            style={{ color: "#ffffff", fontFamily: "var(--font-display), sans-serif" }}
+            style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
           >
             Vous avez un logement à louer ou à vendre ?
           </h2>
@@ -499,7 +499,7 @@ export default async function HomePage() {
             <Link
               href="/publier"
               className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl transition-opacity hover:opacity-90 text-sm"
-              style={{ background: "#D4AF37", color: "#0A1216" }}
+              style={{ background: "#D4AF37", color: "var(--bg-primary)" }}
             >
               Publier gratuitement
             </Link>

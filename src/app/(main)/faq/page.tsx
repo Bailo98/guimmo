@@ -84,7 +84,7 @@ interface AccordionItemProps {
 
 function AccordionItem({ question, answer, isOpen, onToggle }: AccordionItemProps) {
   return (
-    <div className="border-b border-[#1e2a30] last:border-0">
+    <div className="border-b border-[var(--color-border)] last:border-0">
       <button
         onClick={onToggle}
         className="w-full flex items-center justify-between gap-4 py-4 text-left"
@@ -133,7 +133,7 @@ export default function FAQPage() {
   })).filter((section) => section.questions.length > 0);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0f1117]">
+    <div className="min-h-screen bg-slate-50 dark:bg-[var(--bg-primary)]">
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#D4AF37] via-[#B8963A] to-[#c2540a] text-white">
         <div className="max-w-3xl mx-auto px-4 py-16 md:py-20 text-center">
@@ -156,7 +156,7 @@ export default function FAQPage() {
               placeholder="Rechercher une question..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-[#2c2f36] text-slate-800 dark:text-white placeholder-slate-400 border border-transparent focus:outline-none focus:ring-2 focus:ring-white/50 text-sm shadow-lg"
+              className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-[var(--bg-card-light)] text-slate-800 dark:text-white placeholder-slate-400 border border-transparent focus:outline-none focus:ring-2 focus:ring-white/50 text-sm shadow-lg"
             />
           </div>
         </div>
@@ -185,7 +185,7 @@ export default function FAQPage() {
                   <span className="w-1.5 h-5 bg-[#D4AF37] rounded-full inline-block" />
                   {section.category}
                 </h2>
-                <div className="bg-[#2c2f36] rounded-2xl border border-[#1e2a30] px-5 md:px-6">
+                <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--color-border)] px-5 md:px-6">
                   {section.questions.map((q, qi) => {
                     const key = `${section.category}-${qi}`;
                     return (
@@ -205,7 +205,7 @@ export default function FAQPage() {
         )}
 
         {/* Contact CTA */}
-        <div className="mt-12 text-center p-8 bg-[#2c2f36] rounded-2xl border border-[#1e2a30]">
+        <div className="mt-12 text-center p-8 bg-[var(--bg-card-light)] rounded-2xl border border-[var(--color-border)]">
           <h3 className="font-bold text-slate-900 dark:text-white mb-2">
             Vous n&apos;avez pas trouvé votre réponse ?
           </h3>

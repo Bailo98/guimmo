@@ -6,10 +6,10 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
-const SURFACE  = "#111a1f";
-const BORDER   = "#1e2a30";
-const TEXT_PRI = "#ffffff";
-const TEXT_SEC = "rgba(255,255,255,0.55)";
+const SURFACE  = "var(--bl-surface)";
+const BORDER   = "var(--color-border)";
+const TEXT_PRI = "var(--bl-cream)";
+const TEXT_SEC = "var(--bl-cream-dim)";
 
 interface Report {
   id: string;
