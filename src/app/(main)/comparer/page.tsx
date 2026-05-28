@@ -28,7 +28,7 @@ function CompareRow({ label, values, highlight }: RowProps) {
           key={i}
           className={`py-3 px-3 text-sm text-center font-medium ${
             highlight === i
-              ? "text-green-600 dark:text-yellow-400 bg-green-50 dark:bg-green-900/10"
+              ? "text-green-600 dark:text-[#D4AF37] bg-green-50 dark:bg-green-900/10"
               : "text-slate-800 dark:text-slate-200"
           }`}
         >
@@ -153,7 +153,7 @@ export default function ComparerPage() {
             <CompareRow
               label="Meilleur prix"
               values={properties.map((_, i) => i === minPriceIndex ? (
-                <span className="inline-flex items-center gap-1 text-green-600 dark:text-yellow-400 text-xs font-bold bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
+                <span className="inline-flex items-center gap-1 text-green-600 dark:text-[#D4AF37] text-xs font-bold bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
                   <CheckCircle className="w-3 h-3" /> Meilleur prix
                 </span>
               ) : <span className="text-slate-300 dark:text-slate-600">—</span>)}
@@ -193,7 +193,7 @@ export default function ComparerPage() {
             <CompareRow
               label="Disponible"
               values={properties.map((p) => p?.available_now ? (
-                <span className="text-green-600 dark:text-yellow-400 text-xs font-semibold">Oui</span>
+                <span className="text-green-600 dark:text-[#D4AF37] text-xs font-semibold">Oui</span>
               ) : (
                 <span className="text-slate-400 text-xs">Non</span>
               ))}

@@ -300,7 +300,7 @@ export default function EstimateurPage() {
                     "mt-4 flex items-center gap-2 text-sm font-semibold rounded-xl px-3 py-2",
                     pctDiff > 0
                       ? "bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
-                      : "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-yellow-400"
+                      : "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-[#D4AF37]"
                   )}>
                     <TrendingUp className="w-4 h-4" />
                     {pctDiff > 0

@@ -84,7 +84,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
                     {property.transactionType === "rent" ? "Location" : "Vente"}
                   </span>
                   {property.availableNow && (
-                    <span className="text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-yellow-400 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-[#D4AF37] px-2 py-0.5 rounded-full flex items-center gap-1">
                       <CheckCircle className="w-3 h-3" /> Disponible
                     </span>
                   )}

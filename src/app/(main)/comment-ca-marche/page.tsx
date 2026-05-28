@@ -101,7 +101,7 @@ export default function CommentCaMarchePage() {
         <div className="flex flex-wrap gap-3 justify-center">
           {["Annonces vérifiées", "Propriétaires vérifiés", "Photos réelles", "Anti-arnaque", "Signalement 24h"].map((f) => (
             <span key={f} className="flex items-center gap-1.5 bg-white/10 text-white text-sm px-3 py-1.5 rounded-full">
-              <CheckCircle className="w-3.5 h-3.5 text-yellow-400" />{f}
+              <CheckCircle className="w-3.5 h-3.5 text-[#D4AF37]" />{f}
             </span>
           ))}
         </div>

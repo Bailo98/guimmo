@@ -332,7 +332,7 @@ function BlogEditor() {
               <p className="font-semibold text-slate-900 dark:text-white text-sm">{post.title || "Nouvel article"}</p>
               <div className="flex items-center gap-3 mt-1">
                 <span className="text-xs text-slate-400">{post.date}</span>
-                <span className={`text-xs font-semibold ${post.published ? "text-green-500" : "text-yellow-500"}`}>
+                <span className={`text-xs font-semibold ${post.published ? "text-green-500" : "text-[#D4AF37]"}`}>
                   {post.published ? "Publié" : "Brouillon"}
                 </span>
               </div>

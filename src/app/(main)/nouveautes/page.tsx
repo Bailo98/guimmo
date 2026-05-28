@@ -174,7 +174,7 @@ export default function NouveautesPage() {
               onClick={handleSubscribe}
               className={`flex-shrink-0 inline-flex items-center gap-2 font-bold text-sm px-5 py-2.5 rounded-xl transition-all ${
                 subscribed
-                  ? "bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-yellow-400"
+                  ? "bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-[#D4AF37]"
                   : "bg-[#E9E900] hover:bg-[#c4c400] text-white"
               }`}
             >

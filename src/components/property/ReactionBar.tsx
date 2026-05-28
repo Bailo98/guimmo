@@ -128,12 +128,12 @@ export function ReactionBar({ propertyId, compact = false }: ReactionBarProps) {
                 ? "1.5px solid rgba(200,169,126,0.70)"
                 : "1.5px solid rgba(255,255,255,0.10)",
               background: isActive
-                ? "rgba(200,169,126,0.18)"
+                ? "rgba(212,175,55,0.15)"
                 : "rgba(255,255,255,0.05)",
               cursor: "pointer",
               fontSize: compact ? 14 : 16,
               fontWeight: 600,
-              color: isActive ? "var(--accent-gold, #C8A97E)" : "rgba(255,255,255,0.65)",
+              color: isActive ? "var(--accent-gold)" : "rgba(255,255,255,0.65)",
               transform: isAnim ? "scale(1.4)" : "scale(1)",
               transition: "transform 0.15s ease, background 0.2s ease, border-color 0.2s ease",
               minHeight: "auto",

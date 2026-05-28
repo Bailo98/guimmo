@@ -34,7 +34,7 @@ export function AgentApplicationForm() {
   if (done) {
     return (
       <div className="text-center py-4 space-y-3">
-        <CheckCircle2 className="w-10 h-10 text-yellow-400 mx-auto" />
+        <CheckCircle2 className="w-10 h-10 text-[#D4AF37] mx-auto" />
         <p className="text-white font-bold">Demande envoyée !</p>
         <p className="text-white/50 text-sm">Notre équipe vous contactera sous 48h.</p>
       </div>

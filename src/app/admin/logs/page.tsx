@@ -16,7 +16,7 @@ const LOGS = [
 const ACTION_STYLES: Record<string, { bg: string; icon: React.ReactNode; label: string; dot: string }> = {
   approve: {
     bg: "bg-green-100 dark:bg-green-900/30",
-    icon: <CheckCircle className="w-4 h-4 text-green-600 dark:text-yellow-400" />,
+    icon: <CheckCircle className="w-4 h-4 text-green-600 dark:text-[#D4AF37]" />,
     label: "Approbation",
     dot: "bg-green-500",
   },
@@ -28,9 +28,9 @@ const ACTION_STYLES: Record<string, { bg: string; icon: React.ReactNode; label: 
   },
   warning: {
     bg: "bg-yellow-100 dark:bg-yellow-900/30",
-    icon: <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />,
+    icon: <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-[#D4AF37]" />,
     label: "Avertissement",
-    dot: "bg-yellow-500",
+    dot: "bg-[#D4AF37]",
   },
   info: {
     bg: "bg-blue-100 dark:bg-blue-900/30",

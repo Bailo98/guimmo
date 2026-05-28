@@ -151,7 +151,7 @@ function AmenityChip({ active, onClick, emoji, label }: {
         padding: "8px 14px",
         borderRadius: 20,
         border: active ? "1px solid rgba(200,169,126,0.50)" : "1px solid #1e2a30",
-        background: active ? "var(--accent-gold, #C8A97E)" : "#1a252b",
+        background: active ? "var(--accent-gold)" : "#1a252b",
         color: active ? "#0A1216" : "rgba(255,255,255,0.55)",
         fontSize: 13,
         fontWeight: 600,

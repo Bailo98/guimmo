@@ -24,9 +24,9 @@ const BADGE_CONFIG: Record<
   },
   premium: {
     label: "⭐ Premium",
-    bg: "rgba(200,169,126,0.20)",
-    color: "#C8A97E",
-    border: "1px solid rgba(200,169,126,0.40)",
+    bg: "rgba(212,175,55,0.15)",
+    color: "#D4AF37",
+    border: "1px solid rgba(212,175,55,0.40)",
   },
   diaspora: {
     label: "✈️ Diaspora",

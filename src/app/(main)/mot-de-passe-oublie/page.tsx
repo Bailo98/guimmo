@@ -119,7 +119,7 @@ export default function MotDePasseOubliePage() {
               <>
                 {sent ? (
                   <div className="text-center py-4">
-                    <CheckCircle className="w-14 h-14 text-yellow-400 mx-auto mb-4" />
+                    <CheckCircle className="w-14 h-14 text-[#D4AF37] mx-auto mb-4" />
                     <h2 className="text-xl font-black text-white mb-2">Email envoyé !</h2>
                     <p className="text-white/50 text-sm">Vérifiez votre boîte email et cliquez sur le lien de réinitialisation.</p>
                   </div>

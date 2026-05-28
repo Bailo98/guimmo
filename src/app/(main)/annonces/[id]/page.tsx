@@ -675,7 +675,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                         {(profileData as { full_name?: string | null }).full_name ?? "Propriétaire"}
                       </p>
                       {(profileData as { is_verified?: boolean }).is_verified && (
-                        <p className="text-yellow-400 text-xs">✓ Vérifié</p>
+                        <p className="text-[#D4AF37] text-xs">✓ Vérifié</p>
                       )}
                     </div>
                   </div>

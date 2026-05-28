@@ -118,9 +118,9 @@ export async function MaisonDuJour() {
                 <span
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black"
                   style={{
-                    background: "rgba(200,169,126,0.25)",
-                    color: "#C8A97E",
-                    border: "1px solid rgba(200,169,126,0.50)",
+                    background: "rgba(212,175,55,0.20)",
+                    color: "var(--accent-gold)",
+                    border: "1px solid rgba(212,175,55,0.40)",
                     backdropFilter: "blur(8px)",
                   }}
                 >
@@ -145,7 +145,7 @@ export async function MaisonDuJour() {
                 <p
                   className="text-3xl font-black mb-1"
                   style={{
-                    color: "#C8A97E",
+                    color: "var(--accent-gold)",
                     fontFamily: "var(--font-playfair), serif",
                     textShadow: "0 2px 8px rgba(0,0,0,0.5)",
                   }}

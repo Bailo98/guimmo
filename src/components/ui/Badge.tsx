@@ -15,11 +15,11 @@ const ICONS = {
 };
 
 const COLORS = {
-  green: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-yellow-400",
+  green: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-[#D4AF37]",
   blue: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
   orange: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
   purple: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-  gold: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800",
+  gold: "bg-[#D4AF37]/10 text-[#8B6914] dark:bg-[#D4AF37]/15 dark:text-[#D4AF37] border border-[#D4AF37]/30 dark:border-[#D4AF37]/40",
 };
 
 interface BadgeProps {

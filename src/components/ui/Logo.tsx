@@ -35,7 +35,7 @@ export function Logo({ size = "md", className, href = "/" }: LogoProps) {
       </div>
       <span style={{
         fontFamily: "var(--font-playfair), serif",
-        fontSize: text, fontWeight: 700, color: "var(--accent-gold, #C8A97E)",
+        fontSize: text, fontWeight: 700, color: "var(--accent-gold)",
         letterSpacing: "0.02em",
       }}>
         LogerBien

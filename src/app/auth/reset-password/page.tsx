@@ -57,7 +57,7 @@ export default function ResetPasswordPage() {
           style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.10)" }}>
           {done ? (
             <div className="text-center">
-              <CheckCircle className="w-14 h-14 text-yellow-400 mx-auto mb-4" />
+              <CheckCircle className="w-14 h-14 text-[#D4AF37] mx-auto mb-4" />
               <h2 className="text-xl font-black text-white mb-2">Mot de passe mis à jour !</h2>
               <p className="text-white/50 text-sm">Redirection vers votre compte…</p>
             </div>

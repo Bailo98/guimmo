@@ -66,7 +66,7 @@ export default function SelectionPage() {
             </div>
             <div className="flex items-start gap-3 bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
               <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Award className="w-4 h-4 text-yellow-400" />
+                <Award className="w-4 h-4 text-[#D4AF37]" />
               </div>
               <div>
                 <p className="font-semibold text-sm">Vérifiées sur place</p>

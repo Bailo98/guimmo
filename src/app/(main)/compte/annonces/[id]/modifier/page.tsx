@@ -160,7 +160,7 @@ export default function ModifierAnnoncePage() {
             className={cn(
               "w-full py-3 rounded-xl text-sm font-semibold border transition-colors",
               form.availableNow
-                ? "bg-green-50 dark:bg-green-900/20 border-green-500 text-green-600 dark:text-yellow-400"
+                ? "bg-green-50 dark:bg-green-900/20 border-green-500 text-green-600 dark:text-[#D4AF37]"
                 : "bg-[#2c2f36] border-slate-200 dark:border-[#2a3040] text-slate-500 dark:text-slate-400"
             )}
           >

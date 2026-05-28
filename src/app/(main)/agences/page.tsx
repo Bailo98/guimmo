@@ -179,7 +179,7 @@ export default function AgencesPage() {
                       {agency.name}
                     </h2>
                     {agency.verified && (
-                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-yellow-400 bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-full mt-1">
+                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-[#D4AF37] bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-full mt-1">
                         <CheckCircle2 className="w-3 h-3" />
                         Agence vérifiée
                       </span>

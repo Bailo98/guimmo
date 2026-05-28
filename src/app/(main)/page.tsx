@@ -504,10 +504,10 @@ export default async function HomePage() {
               Publier gratuitement
             </Link>
             <div className="flex items-center gap-2 text-sm" style={{ color: "#666666" }}>
-              <CheckCircle2 className="w-4 h-4 text-yellow-400" />
+              <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" />
               Sans carte bancaire
               <span className="mx-1">·</span>
-              <CheckCircle2 className="w-4 h-4 text-yellow-400" />
+              <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" />
               Résultat immédiat
             </div>
           </div>

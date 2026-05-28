@@ -102,7 +102,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-yellow-400" />
+            <Calendar className="w-5 h-5 text-[#D4AF37]" />
             <h2 className="text-white font-black text-base">Je veux visiter ce logement</h2>
           </div>
           <button
@@ -118,7 +118,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
 
         {done ? (
           <div className="text-center py-6 space-y-3">
-            <CheckCircle2 className="w-12 h-12 text-yellow-400 mx-auto" />
+            <CheckCircle2 className="w-12 h-12 text-[#D4AF37] mx-auto" />
             <p className="text-white font-bold text-lg">Demande envoyée !</p>
             <p className="text-white/50 text-sm">Le propriétaire vous contactera pour confirmer la visite.</p>
             <button

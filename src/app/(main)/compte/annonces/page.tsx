@@ -12,8 +12,8 @@ import { useAppStore } from "@/lib/store";
 
 const STATUS_CONFIG = {
   active: { label: "Active", color: "text-green-500", bg: "bg-green-100 dark:bg-green-900/20", icon: CheckCircle },
-  paused: { label: "En pause", color: "text-yellow-500", bg: "bg-yellow-100 dark:bg-yellow-900/20", icon: Clock },
-  pending: { label: "En attente", color: "text-yellow-500", bg: "bg-yellow-100 dark:bg-yellow-900/20", icon: Clock },
+  paused: { label: "En pause", color: "text-[#D4AF37]", bg: "bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15", icon: Clock },
+  pending: { label: "En attente", color: "text-[#D4AF37]", bg: "bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15", icon: Clock },
   rented: { label: "Louée", color: "text-blue-500", bg: "bg-blue-100 dark:bg-blue-900/20", icon: CheckCircle },
   suspended: { label: "Suspendue", color: "text-red-500", bg: "bg-red-100 dark:bg-red-900/20", icon: XCircle },
   sold: { label: "Vendue", color: "text-purple-500", bg: "bg-purple-100 dark:bg-purple-900/20", icon: CheckCircle },
@@ -145,7 +145,7 @@ export default function MesAnnoncesPage() {
                       className={`flex items-center justify-center gap-1 text-xs font-semibold py-1.5 px-3 rounded-lg border transition-colors ${
                         isPaused
                           ? "border-green-400 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20"
-                          : "border-slate-200 dark:border-[#2a3040] text-slate-500 dark:text-slate-400 hover:border-yellow-400 hover:text-yellow-500"
+                          : "border-slate-200 dark:border-[#2a3040] text-slate-500 dark:text-slate-400 hover:border-[#D4AF37] hover:text-[#D4AF37]"
                       }`}
                       title={isPaused ? "Réactiver" : "Mettre en pause"}
                     >

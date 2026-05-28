@@ -194,7 +194,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         justifyContent: "center", padding: "0 32px",
       }}>
         <p style={{ fontSize: 52, marginBottom: 16, animation: "spin 1s linear infinite" }}>🔄</p>
-        <p style={{ color: "#C8A97E", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
+        <p style={{ color: "#D4AF37", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
           On recommence depuis le début…
         </p>
         <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, textAlign: "center" }}>
@@ -399,7 +399,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               style={{ position: "absolute", top: 108, left: 24, pointerEvents: "none", opacity: 0 }}
             >
               <div style={{
-                border: "3px solid #C8A97E", borderRadius: 8,
+                border: "3px solid #D4AF37", borderRadius: 8,
                 padding: "8px 16px", color: "#fff",
                 fontSize: 32, fontWeight: 900, letterSpacing: 2,
                 textTransform: "uppercase", transform: "rotate(-15deg)",
@@ -433,7 +433,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             }}>
               {topCard.is_featured && (
                 <span style={{
-                  background: "rgba(200,169,126,0.25)", color: "#C8A97E",
+                  background: "rgba(212,175,55,0.20)", color: "#D4AF37",
                   border: "1px solid rgba(200,169,126,0.5)", borderRadius: 20,
                   padding: "3px 10px", fontSize: 11, fontWeight: 600,
                   backdropFilter: "blur(8px)",

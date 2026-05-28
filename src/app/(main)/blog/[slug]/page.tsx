@@ -107,9 +107,9 @@ function readTime(wordCount: number): number {
 
 const CATEGORY_COLORS: Record<string, string> = {
   Marché: "bg-blue-500/20 text-blue-400",
-  Conseils: "bg-green-500/20 text-yellow-400",
+  Conseils: "bg-green-500/20 text-[#D4AF37]",
   Quartiers: "bg-purple-500/20 text-purple-400",
-  Juridique: "bg-yellow-500/20 text-yellow-400",
+  Juridique: "bg-[#D4AF37]/20 text-[#D4AF37]",
   Actualités: "bg-rose-500/20 text-rose-400",
 };
 

@@ -224,7 +224,7 @@ function TestimonialCard({
 
       {/* Saved badge */}
       {testimonial.saved && (
-        <div className="inline-flex items-center gap-1.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-yellow-400 text-xs font-semibold px-3 py-1.5 rounded-full w-fit">
+        <div className="inline-flex items-center gap-1.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-[#D4AF37] text-xs font-semibold px-3 py-1.5 rounded-full w-fit">
           💰 Économisé {testimonial.saved}
         </div>
       )}

@@ -82,7 +82,7 @@ export function AvailabilityCalendar({ availableNow }: Props) {
 
   const statusClasses: Record<DayStatus, string> = {
     available:
-      "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-yellow-400 font-semibold",
+      "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-[#D4AF37] font-semibold",
     unavailable:
       "bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 line-through",
     past:

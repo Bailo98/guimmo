@@ -207,7 +207,7 @@ export function Onboarding() {
               width: i === step ? 24 : 8,
               height: 8,
               borderRadius: 4,
-              background: i === step ? "var(--accent-gold, #C8A97E)" : "rgba(255,255,255,0.20)",
+              background: i === step ? "var(--accent-gold)" : "rgba(255,255,255,0.20)",
               border: "none",
               cursor: "pointer",
               transition: "width 0.25s ease, background 0.25s ease",
@@ -223,7 +223,7 @@ export function Onboarding() {
       <button
         onClick={handleNext}
         style={{
-          background: "var(--accent-gold, #C8A97E)",
+          background: "var(--accent-gold)",
           color: "#0B0F19",
           fontWeight: 700,
           fontSize: 16,

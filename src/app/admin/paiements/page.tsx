@@ -12,7 +12,7 @@ const PAYMENTS = [
 const STATUS = {
   success: { label: "Réussi", icon: CheckCircle, color: "text-green-500" },
   failed: { label: "Échoué", icon: XCircle, color: "text-red-500" },
-  pending: { label: "En attente", icon: Clock, color: "text-yellow-500" },
+  pending: { label: "En attente", icon: Clock, color: "text-[#D4AF37]" },
 };
 
 export default function AdminPaiementsPage() {

@@ -84,7 +84,7 @@ export default async function ProprietaireProfilePage({ params }: Props) {
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
               <h1 className="text-2xl font-black text-slate-900 dark:text-white">{owner.name}</h1>
               {owner.verified && (
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-700 dark:text-yellow-400 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-700 dark:text-[#D4AF37] bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
                   <Shield className="w-3 h-3" /> Vérifié
                 </span>
               )}
@@ -114,7 +114,7 @@ export default async function ProprietaireProfilePage({ params }: Props) {
 
             {/* Response rate */}
             {owner.responseRate && (
-              <p className="text-green-500 dark:text-yellow-400 text-sm font-medium mt-2">
+              <p className="text-green-500 dark:text-[#D4AF37] text-sm font-medium mt-2">
                 {owner.responseRate}% taux de réponse
               </p>
             )}

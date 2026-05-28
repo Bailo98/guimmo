@@ -22,7 +22,7 @@ const NAV_ITEMS: NavItemDef[] = [
   { href: "/compte",    icon: User,    label: "Profil",    authRequired: false, unauthHref: "/connexion" },
 ];
 
-const GOLD  = "#C8A97E";
+const GOLD  = "#D4AF37";
 const MUTED = "#8A8FA8";
 
 export function BottomNav() {

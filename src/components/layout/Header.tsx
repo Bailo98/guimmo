@@ -93,7 +93,7 @@ export function Header() {
             <Link
               href="/publier"
               className="hidden md:flex items-center gap-1.5 text-sm font-bold px-4 py-2 rounded-xl"
-              style={{ background: "var(--accent-gold, #C8A97E)", color: "#0B0F19", transition: "opacity 0.2s ease" }}
+              style={{ background: "var(--accent-gold)", color: "#0B0F19", transition: "opacity 0.2s ease" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "0.85"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "1"; }}
             >
@@ -160,12 +160,12 @@ export function Header() {
                 href="/connexion"
                 className="text-sm font-medium px-4 py-2 rounded-xl"
                 style={{
-                  color: "var(--accent-gold, #C8A97E)",
-                  border: "1px solid var(--accent-gold, #C8A97E)",
+                  color: "var(--accent-gold)",
+                  border: "1px solid var(--accent-gold)",
                   transition: "all 0.25s ease",
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.background = "rgba(200,169,126,0.10)";
+                  (e.currentTarget as HTMLAnchorElement).style.background = "rgba(212,175,55,0.10)";
                 }}
                 onMouseLeave={(e) => {
                   (e.currentTarget as HTMLAnchorElement).style.background = "transparent";
@@ -177,7 +177,7 @@ export function Header() {
                 href="/inscription"
                 className="text-sm font-bold px-4 py-2 rounded-xl"
                 style={{
-                  background: "var(--accent-gold, #C8A97E)",
+                  background: "var(--accent-gold)",
                   color: "#0B0F19",
                   transition: "all 0.25s ease",
                 }}

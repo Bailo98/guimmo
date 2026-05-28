@@ -111,7 +111,7 @@ export default function StatsPage() {
           <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Zap className="w-4 h-4 text-[#E9E900]" /> Performances du boost
           </h2>
-          <span className="text-xs font-bold bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-yellow-400 px-2.5 py-1 rounded-full">
+          <span className="text-xs font-bold bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-[#D4AF37] px-2.5 py-1 rounded-full">
             +420% de visibilité
           </span>
         </div>

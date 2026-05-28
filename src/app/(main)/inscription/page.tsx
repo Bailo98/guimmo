@@ -380,7 +380,7 @@ function InscriptionForm() {
                   )}
                   {success && (
                     <div className="bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-3">
-                      <p className="text-yellow-400 text-sm">{success}</p>
+                      <p className="text-[#D4AF37] text-sm">{success}</p>
                     </div>
                   )}
 
