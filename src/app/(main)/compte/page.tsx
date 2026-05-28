@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -7,7 +7,8 @@ import {
   Plus, Eye, MapPin, LogOut, Pencil, Trash2, User,
   CheckCircle, XCircle, RotateCcw, AlertTriangle, Search,
   Bell, BellOff, Heart, MessageCircle, BarChart2, Home,
-  TrendingUp, Phone, Building2, ChevronRight, Download, Calendar,
+  TrendingUp, Phone, ChevronRight, Download, Calendar,
+  Star, CreditCard, Award,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 
@@ -61,6 +62,14 @@ interface VisitRequest {
   visitor_message: string | null; owner_note: string | null;
   status: string; created_at: string;
   properties?: { title: string; neighborhood: string } | null;
+}
+interface FavoriteProperty {
+  id: string; title: string; neighborhood: string;
+  price: number; price_period: string | null; primary_image: string | null;
+}
+interface Review {
+  id: string; reviewer_id: string; reviewed_id: string;
+  rating: number; comment: string | null; created_at: string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -326,7 +335,6 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
         .select("property_id,whatsapp_clicks"),
     ]);
 
-    // Build WA clicks map per property
     const waMap: Record<string, number> = {};
     for (const s of statsRes.data ?? []) {
       waMap[s.property_id] = (waMap[s.property_id] ?? 0) + (s.whatsapp_clicks ?? 0);
@@ -648,7 +656,6 @@ function VisitRequestsManager({ userId, onPendingCount }: {
 
   useEffect(() => { load(); }, [load]);
 
-  // Realtime — nouvelle visite apparaît instantanément dans le dashboard
   useEffect(() => {
     if (!supabase) return;
     if (channelRef.current) supabase.removeChannel(channelRef.current);
@@ -725,7 +732,6 @@ function VisitRequestsManager({ userId, onPendingCount }: {
               <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{dateLabel} · {TIME_LABEL[v.scheduled_time] ?? v.scheduled_time}</span>
             </div>
             {v.visitor_message && <p className="text-xs px-3 py-2 rounded-lg" style={{ background: "var(--border-subtle)", color: "var(--bl-cream-dim)" }}>{v.visitor_message}</p>}
-            {/* Owner note display */}
             {v.owner_note && noteId !== v.id && (
               <p className="text-xs px-3 py-2 rounded-lg flex items-start gap-1.5"
                 style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.15)", color: "var(--bl-cream-dim)" }}>
@@ -733,7 +739,6 @@ function VisitRequestsManager({ userId, onPendingCount }: {
                 {v.owner_note}
               </p>
             )}
-            {/* Inline note editor */}
             {noteId === v.id && (
               <div className="flex gap-2">
                 <input
@@ -788,116 +793,6 @@ function VisitRequestsManager({ userId, onPendingCount }: {
         );
       })}
     </div>
-  );
-}
-
-// ─── DASHBOARD PROPRIÉTAIRE ───────────────────────────────────────────────────
-
-function ProprietaireDashboard({ user, profile, signOut, refreshProfile }: {
-  user: { id: string; email?: string };
-  profile: ReturnType<typeof useAuth>["profile"];
-  signOut: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
-}) {
-  const [tab, setTab]             = useState("dashboard");
-  const [statsData, setStatsData] = useState<DayStat[]>([]);
-  const [statsLoading, setStatsLoading] = useState(true);
-  const [totalViews, setTotalViews] = useState(0);
-  const [totalWA, setTotalWA]     = useState(0);
-  const [activeCount, setActiveCount] = useState(0);
-  const [msgCount, setMsgCount]   = useState(0);
-  const [pendingVisits, setPendingVisits] = useState(0);
-
-  const displayName = profile?.full_name?.split(" ")[0] ?? "vous";
-
-  useEffect(() => {
-    Promise.all([
-      loadDayStats(user.id, 7),
-      loadMessagesCount(user.id),
-    ]).then(([{ data, active, totalViews: tv, totalWA: tw }, mc]) => {
-      setStatsData(data); setActiveCount(active); setTotalViews(tv); setTotalWA(tw);
-      setMsgCount(mc); setStatsLoading(false);
-    });
-  }, [user.id]);
-
-  const tabs: DashTab[] = [
-    { key: "dashboard", label: "Tableau de bord", icon: <BarChart2 className="w-4 h-4" /> },
-    { key: "annonces",  label: "Mes annonces",    icon: <Home className="w-4 h-4" /> },
-    { key: "visites",   label: "Visites",         icon: <Calendar className="w-4 h-4" />, badge: pendingVisits },
-    { key: "messages",  label: "Messages",        icon: <MessageCircle className="w-4 h-4" /> },
-    { key: "profil",    label: "Profil",          icon: <User className="w-4 h-4" /> },
-  ];
-
-  const initials = (profile?.full_name ?? user.email ?? "?").split(" ").map((w:string) => w[0]).join("").slice(0,2).toUpperCase();
-
-  return (
-    <DashboardLayout tabs={tabs} active={tab} onChange={setTab} signOut={signOut}
-      userName={profile?.full_name ?? user.email ?? "Utilisateur"} userInitials={initials}>
-      {tab === "dashboard" && (
-        <>
-          {/* Page header */}
-          <div className="mb-6">
-            <h1 style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-amber-light)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>
-              Bonjour, {displayName}
-            </h1>
-            <p className="text-sm mt-1" style={{ color: "var(--bl-cream-dim)", fontWeight: 300 }}>Votre activité cette semaine</p>
-            <p className="text-xs mt-0.5 capitalize" style={{ color: "var(--bl-cream-faint)" }}>{todayLabel()}</p>
-          </div>
-
-          {statsLoading ? (
-            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "var(--bl-surface-2)" }} />)}</div>
-          ) : (
-            <>
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <StatCard label="Vues 7 jours" value={totalViews} sub="toutes annonces" borderColor="#D4AF37" />
-                <StatCard label="Clics WhatsApp" value={totalWA} sub="7 derniers jours" borderColor="#D4AF37" />
-                <StatCard label="Messages reçus" value={msgCount} sub="cette semaine" borderColor="#D4AF37" />
-                <StatCard label="Annonces actives" value={activeCount} sub="sur 5 max" borderColor="#D4AF37" />
-              </div>
-
-              <DashboardChart
-                type="bar"
-                title="Vues par jour — 7 jours"
-                data={statsData.map((d) => ({ ...d, label: fmtDate(d.date) }))}
-                series={[{ dataKey: "views", name: "Vues", color: "#D4AF37" }]}
-              />
-
-              <SectionHeader title="Mes annonces" action={
-                <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
-                  <Plus className="w-3.5 h-3.5" /> Publier
-                </Link>
-              } />
-              <ListingsManager userId={user.id} limit={3} />
-
-              <MonthlyReportSection userId={user.id} />
-            </>
-          )}
-        </>
-      )}
-      {tab === "annonces" && (
-        <>
-          <SectionHeader title="Mes annonces" action={
-            <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
-              <Plus className="w-3.5 h-3.5" /> Publier
-            </Link>
-          } />
-          <ListingsManager userId={user.id} />
-        </>
-      )}
-      {tab === "visites" && (
-        <>
-          <SectionHeader title="Demandes de visite" subtitle="Reçues sur vos annonces" />
-          <VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />
-        </>
-      )}
-      {tab === "messages" && (
-        <Link href="/messages" className="flex items-center justify-between rounded-2xl p-5" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
-          <div className="flex items-center gap-3"><MessageCircle className="w-6 h-6 text-blue-400" /><div><p className="font-bold" style={{ color: "var(--bl-cream)" }}>Mes messages</p><p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Ouvrir la messagerie</p></div></div>
-          <ChevronRight className="w-5 h-5" style={{ color: "var(--bl-cream-faint)" }} />
-        </Link>
-      )}
-      {tab === "profil" && <><SectionHeader title="Mon profil" /><ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} /></>}
-    </DashboardLayout>
   );
 }
 
@@ -990,6 +885,581 @@ function VisitorVisitsSection({ userId }: { userId: string }) {
         );
       })}
     </div>
+  );
+}
+
+// ─── BUYER PROFILE ────────────────────────────────────────────────────────────
+
+function BuyerProfile({ user, profile, refreshProfile }: {
+  user: { id: string; email?: string };
+  profile: ReturnType<typeof useAuth>["profile"];
+  refreshProfile: () => Promise<void>;
+}) {
+  const [editing, setEditing]       = useState(false);
+  const [favorites, setFavorites]   = useState<FavoriteProperty[]>([]);
+  const [searches, setSearches]     = useState<SavedSearch[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
+  const [becomingPro, setBecomingPro] = useState(false);
+
+  useEffect(() => {
+    async function load() {
+      if (!supabase) { setLoadingData(false); return; }
+      const [favRes, searchRes] = await Promise.all([
+        supabase
+          .from("favorites")
+          .select("property_id, properties(id, title, neighborhood, price, price_period, property_images(url, is_primary, sort_order))")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(6),
+        supabase
+          .from("saved_searches")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(5),
+      ]);
+
+      const favs: FavoriteProperty[] = [];
+      for (const f of favRes.data ?? []) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const prop = (f as any).properties;
+        if (!prop) continue;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const imgs: any[] = prop.property_images ?? [];
+        const primary = imgs.find((i: { is_primary: boolean }) => i.is_primary)
+          ?? imgs.sort((a: { sort_order: number }, b: { sort_order: number }) => a.sort_order - b.sort_order)[0];
+        favs.push({
+          id: prop.id, title: prop.title, neighborhood: prop.neighborhood,
+          price: prop.price, price_period: prop.price_period ?? null,
+          primary_image: primary?.url ?? null,
+        });
+      }
+      setFavorites(favs);
+      setSearches((searchRes.data ?? []) as SavedSearch[]);
+      setLoadingData(false);
+    }
+    load();
+  }, [user.id]);
+
+  async function becomePro() {
+    if (!supabase) return;
+    setBecomingPro(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ role: "proprietaire", account_type: "proprietaire" })
+      .eq("id", user.id);
+    if (error) { toast("Erreur lors de la mise à jour", "error"); setBecomingPro(false); return; }
+    toast("✅ Compte annonceur activé !", "success");
+    window.location.reload();
+  }
+
+  const displayName = profile?.full_name ?? user.email?.split("@")[0] ?? "Utilisateur";
+
+  return (
+    <div>
+      {/* Header profil */}
+      <div className="px-4 pt-8 pb-6 text-center border-b" style={{ background: "var(--bg-secondary)", borderColor: "var(--bl-border)" }}>
+        <AvatarUpload
+          userId={user.id}
+          currentUrl={profile?.avatar_url}
+          name={profile?.full_name}
+          onSuccess={() => { void refreshProfile(); }}
+        />
+        <h1 className="mt-3 font-bold text-xl" style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}>
+          {displayName}
+        </h1>
+        <p className="text-sm mt-1" style={{ color: "var(--bl-cream-dim)" }}>{user.email}</p>
+        {profile?.phone && (
+          <p className="text-sm mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>{profile.phone}</p>
+        )}
+        <div className="flex items-center justify-center gap-2 mt-4">
+          <button
+            onClick={() => setEditing((v) => !v)}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all"
+            style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}
+          >
+            <Pencil className="w-3.5 h-3.5" />
+            {editing ? "Annuler" : "Modifier le profil"}
+          </button>
+          <button
+            onClick={async () => { if (supabase) await supabase.auth.signOut(); window.location.href = "/"; }}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold transition-all"
+            style={{ border: "1px solid rgba(240,68,68,0.30)", color: "#ef4444" }}
+            title="Se déconnecter"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Formulaire d'édition */}
+      {editing && (
+        <div className="px-4 py-6 border-b" style={{ borderColor: "var(--bl-border)" }}>
+          <ProfileForm
+            user={user}
+            profile={profile}
+            refreshProfile={async () => { await refreshProfile(); setEditing(false); }}
+          />
+        </div>
+      )}
+
+      {/* CTA Devenir annonceur */}
+      <div className="mx-4 mt-6 p-5 rounded-2xl" style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.25)" }}>
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(212,175,55,0.15)" }}>
+            <Award className="w-5 h-5" style={{ color: "var(--bl-amber)" }} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-sm" style={{ color: "var(--bl-cream)" }}>Vous avez un bien à louer ou vendre ?</p>
+            <p className="text-xs mt-1 mb-3" style={{ color: "var(--bl-cream-faint)" }}>
+              Publiez vos annonces gratuitement et touchez des milliers d&apos;acheteurs à Conakry.
+            </p>
+            <button
+              onClick={becomePro}
+              disabled={becomingPro}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all disabled:opacity-50"
+              style={{ background: "var(--bl-amber)", color: "#0B0F19" }}
+            >
+              {becomingPro
+                ? <span className="w-4 h-4 border-2 border-[#0B0F19] border-t-transparent rounded-full animate-spin inline-block" />
+                : <Plus className="w-4 h-4" />}
+              Devenir annonceur
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Favoris */}
+      <div className="px-4 mt-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-bold text-base" style={{ color: "var(--bl-cream)" }}>Mes favoris</h2>
+          <Link href="/favoris" className="text-xs font-bold" style={{ color: "var(--bl-amber)" }}>Voir tout →</Link>
+        </div>
+        {loadingData ? (
+          <div className="grid grid-cols-2 gap-3">
+            {[1,2].map((i) => <div key={i} className="h-36 rounded-2xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}
+          </div>
+        ) : favorites.length === 0 ? (
+          <div className="text-center py-10 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
+            <Heart className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--bl-cream-faint)" }} />
+            <p className="text-sm font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucun favori</p>
+            <p className="text-xs mb-4" style={{ color: "var(--bl-cream-faint)" }}>Sauvegardez des annonces pour les retrouver ici.</p>
+            <Link href="/annonces" className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl"
+              style={{ background: "rgba(212,175,55,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.25)" }}>
+              Explorer les annonces
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {favorites.map((fav) => (
+              <Link key={fav.id} href={`/annonces/${fav.id}`}
+                className="rounded-2xl overflow-hidden block"
+                style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+                <div className="relative h-28" style={{ background: "var(--bl-surface-2)" }}>
+                  {fav.primary_image
+                    ? <Image src={fav.primary_image} alt={fav.title} fill className="object-cover" sizes="50vw" />
+                    : <div className="w-full h-full flex items-center justify-center text-2xl">🏠</div>}
+                </div>
+                <div className="p-2.5">
+                  <p className="font-bold text-xs line-clamp-1" style={{ color: "var(--bl-cream)" }}>{fav.title}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>{NL[fav.neighborhood] ?? fav.neighborhood}</p>
+                  <p className="font-bold text-xs mt-1" style={{ color: "var(--bl-amber-light)" }}>
+                    {formatPrice(fav.price, "GNF", fav.price_period)}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Recherches récentes */}
+      {!loadingData && searches.length > 0 && (
+        <div className="px-4 mt-6">
+          <h2 className="font-bold text-base mb-3" style={{ color: "var(--bl-cream)" }}>Recherches récentes</h2>
+          <div className="space-y-2">
+            {searches.map((s) => {
+              const parts = [
+                s.neighborhood ? (NL[s.neighborhood] ?? s.neighborhood) : null,
+                s.type ? (TL[s.type] ?? s.type) : null,
+                s.transaction_type ? (s.transaction_type === "rent" ? "Location" : "Vente") : null,
+              ].filter(Boolean);
+              const params = new URLSearchParams();
+              if (s.neighborhood) params.set("neighborhood", s.neighborhood);
+              if (s.type) params.set("type", s.type);
+              if (s.transaction_type) params.set("transaction_type", s.transaction_type);
+              return (
+                <Link key={s.id} href={`/annonces?${params.toString()}`}
+                  className="flex items-center gap-3 rounded-xl px-4 py-3"
+                  style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+                  <Search className="w-4 h-4 flex-shrink-0" style={{ color: "var(--bl-cream-faint)" }} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold truncate" style={{ color: "var(--bl-cream)" }}>{s.label}</p>
+                    {parts.length > 0 && (
+                      <p className="text-xs truncate" style={{ color: "var(--bl-cream-faint)" }}>{parts.join(" · ")}</p>
+                    )}
+                  </div>
+                  <ChevronRight className="w-4 h-4 flex-shrink-0" style={{ color: "var(--bl-cream-faint)" }} />
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <div className="h-24" />
+    </div>
+  );
+}
+
+// ─── REVIEWS SECTION ──────────────────────────────────────────────────────────
+
+function ReviewsSection({ userId }: { userId: string }) {
+  const [reviews, setReviews]     = useState<Review[]>([]);
+  const [loading, setLoading]     = useState(true);
+  const [unavailable, setUnavailable] = useState(false);
+
+  useEffect(() => {
+    if (!supabase) { setLoading(false); return; }
+    supabase
+      .from("reviews")
+      .select("*")
+      .eq("reviewed_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(20)
+      .then(({ data, error }) => {
+        if (error) setUnavailable(true);
+        else setReviews((data ?? []) as Review[]);
+        setLoading(false);
+      });
+  }, [userId]);
+
+  if (loading) return (
+    <div className="space-y-2">
+      {[1,2,3].map((i) => <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}
+    </div>
+  );
+
+  if (unavailable || reviews.length === 0) return (
+    <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
+      <Star className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
+      <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>
+        {unavailable ? "Avis & évaluations" : "Aucun avis pour le moment"}
+      </p>
+      <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>
+        {unavailable
+          ? "Fonctionnalité bientôt disponible."
+          : "Les évaluations de vos clients apparaîtront ici."}
+      </p>
+    </div>
+  );
+
+  const avg = reviews.reduce((a, r) => a + r.rating, 0) / reviews.length;
+
+  return (
+    <div>
+      {/* Résumé */}
+      <div className="flex items-center gap-4 p-4 rounded-2xl mb-4" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+        <div className="text-center">
+          <p className="text-3xl font-bold" style={{ color: "var(--bl-amber-light)", fontFamily: "var(--font-display), sans-serif" }}>
+            {avg.toFixed(1)}
+          </p>
+          <div className="flex items-center gap-0.5 mt-1 justify-center">
+            {[1,2,3,4,5].map((s) => (
+              <Star key={s} className="w-3.5 h-3.5"
+                fill={s <= Math.round(avg) ? "#D4AF37" : "none"}
+                style={{ color: "#D4AF37" }} />
+            ))}
+          </div>
+          <p className="text-xs mt-1" style={{ color: "var(--bl-cream-faint)" }}>{reviews.length} avis</p>
+        </div>
+      </div>
+      {/* Avis individuels */}
+      <div className="space-y-3">
+        {reviews.map((r) => (
+          <div key={r.id} className="rounded-2xl p-4" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+            <div className="flex items-center gap-1 mb-2">
+              {[1,2,3,4,5].map((s) => (
+                <Star key={s} className="w-3.5 h-3.5"
+                  fill={s <= r.rating ? "#D4AF37" : "none"}
+                  style={{ color: "#D4AF37" }} />
+              ))}
+              <span className="text-xs ml-2" style={{ color: "var(--bl-cream-faint)" }}>
+                {new Date(r.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
+              </span>
+            </div>
+            {r.comment && <p className="text-sm" style={{ color: "var(--bl-cream-dim)" }}>{r.comment}</p>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── ABONNEMENT SECTION ───────────────────────────────────────────────────────
+
+function AbonnementSection({ profile }: { profile: ReturnType<typeof useAuth>["profile"] }) {
+  const isPro = profile?.is_verified_pro;
+  const features = isPro ? [
+    "Annonces illimitées",
+    "Badge annonceur vérifié ✓",
+    "Priorité dans les résultats de recherche",
+    "Statistiques détaillées",
+    "Rapports mensuels par WhatsApp",
+  ] : [
+    "Jusqu'à 5 annonces",
+    "Visibilité standard",
+    "Statistiques de base",
+  ];
+
+  return (
+    <div>
+      <div className="rounded-2xl p-5 mb-4" style={{ background: "var(--bl-surface)", border: isPro ? "1px solid rgba(212,175,55,0.30)" : "1px solid var(--bl-border)" }}>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-11 h-11 rounded-full flex items-center justify-center" style={{ background: isPro ? "rgba(212,175,55,0.15)" : "var(--bl-surface-2)" }}>
+            <CreditCard className="w-5 h-5" style={{ color: isPro ? "var(--bl-amber)" : "var(--bl-cream-faint)" }} />
+          </div>
+          <div className="flex-1">
+            <p className="font-bold text-base" style={{ color: "var(--bl-cream)" }}>{isPro ? "Plan Pro" : "Plan Gratuit"}</p>
+            <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>Plan actuel</p>
+          </div>
+          {isPro && (
+            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>
+              Actif
+            </span>
+          )}
+        </div>
+        <ul className="space-y-2 mb-5">
+          {features.map((f) => (
+            <li key={f} className="flex items-center gap-2 text-sm" style={{ color: "var(--bl-cream-dim)" }}>
+              <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: isPro ? "var(--bl-amber)" : "var(--bl-cream-faint)" }} />
+              {f}
+            </li>
+          ))}
+        </ul>
+        <Link href="/tarifs"
+          className="flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all"
+          style={isPro
+            ? { background: "var(--bl-surface-2)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }
+            : { background: "var(--bl-amber)", color: "#0B0F19" }
+          }>
+          {isPro ? "Gérer l'abonnement" : "Passer au Plan Pro →"}
+        </Link>
+      </div>
+
+      {!isPro && (
+        <div className="rounded-2xl p-4" style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.20)" }}>
+          <p className="font-bold text-sm mb-1" style={{ color: "var(--bl-amber-light)" }}>Pourquoi passer Pro ?</p>
+          <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>
+            Les annonceurs Pro obtiennent en moyenne 3x plus de contacts et bénéficient d&apos;une visibilité prioritaire dans les résultats.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── DASHBOARD ANNONCEUR (unified) ────────────────────────────────────────────
+
+function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
+  user: { id: string; email?: string };
+  profile: ReturnType<typeof useAuth>["profile"];
+  signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
+}) {
+  const [tab, setTab]               = useState("dashboard");
+  const [statsData, setStatsData]   = useState<DayStat[]>([]);
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [totalViews, setTotalViews] = useState(0);
+  const [totalWA, setTotalWA]       = useState(0);
+  const [activeCount, setActiveCount] = useState(0);
+  const [msgCount, setMsgCount]     = useState(0);
+  const [pendingVisits, setPendingVisits] = useState(0);
+
+  const role     = profile?.role ?? "proprietaire";
+  const isAgent  = role === "agent";
+  const isAgence = ["agence", "agency"].includes(role) || profile?.account_type === "agence";
+
+  const displayName = (isAgence ? profile?.agency_name : null) ?? profile?.full_name ?? "Annonceur";
+  const initials    = displayName.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
+
+  useEffect(() => {
+    Promise.all([
+      loadDayStats(user.id, 30),
+      loadMessagesCount(user.id),
+    ]).then(([{ data, active, totalViews: tv, totalWA: tw }, mc]) => {
+      setStatsData(data); setActiveCount(active); setTotalViews(tv); setTotalWA(tw);
+      setMsgCount(mc); setStatsLoading(false);
+    });
+  }, [user.id]);
+
+  const chartData    = statsData.map((d) => ({ ...d, label: fmtDate(d.date) }));
+  const chartSampled = chartData.filter((_, i) => i % 5 === 0);
+
+  const tabs: DashTab[] = [
+    { key: "dashboard",    label: "Tableau de bord",     icon: <BarChart2 className="w-4 h-4" /> },
+    { key: "annonces",     label: "Mes annonces",        icon: <Home className="w-4 h-4" /> },
+    { key: "visites",      label: "Visites & demandes",  icon: <Calendar className="w-4 h-4" />, badge: pendingVisits },
+    { key: "messages",     label: "Messages",            icon: <MessageCircle className="w-4 h-4" /> },
+    { key: "statistiques", label: "Statistiques",        icon: <TrendingUp className="w-4 h-4" /> },
+    { key: "avis",         label: "Avis & évaluations", icon: <Star className="w-4 h-4" /> },
+    { key: "profil",       label: "Profil",              icon: <User className="w-4 h-4" /> },
+    { key: "abonnement",   label: "Abonnement",          icon: <CreditCard className="w-4 h-4" /> },
+  ];
+
+  return (
+    <DashboardLayout tabs={tabs} active={tab} onChange={setTab} signOut={signOut}
+      userName={displayName} userInitials={initials}
+      userBadge={profile?.is_verified_pro ? (isAgence ? "Agence Premium" : isAgent ? "Agent Pro" : "Pro") : undefined}>
+
+      {/* ── TABLEAU DE BORD ── */}
+      {tab === "dashboard" && (
+        <>
+          <div className="mb-6">
+            <h1 style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-amber-light)", fontSize: 28, fontWeight: 700, lineHeight: 1.2 }}>
+              Bonjour{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}
+            </h1>
+            <p className="text-sm mt-1" style={{ color: "var(--bl-cream-dim)", fontWeight: 300 }}>Performance sur 30 jours</p>
+            <p className="text-xs mt-0.5 capitalize" style={{ color: "var(--bl-cream-faint)" }}>{todayLabel()}</p>
+          </div>
+
+          {statsLoading ? (
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              {[1,2,3,4].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "var(--bl-surface-2)" }} />)}
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <StatCard label="Vues (30 jours)"   value={totalViews}  sub="toutes annonces"   borderColor="#D4AF37" />
+                <StatCard label="Clics WhatsApp"     value={totalWA}     sub="30 derniers jours" borderColor="#D4AF37" />
+                <StatCard label="Messages reçus"     value={msgCount}    sub="cette semaine"     borderColor="#D4AF37" />
+                <StatCard label="Annonces actives"   value={activeCount} sub={profile?.is_verified_pro ? "illimitées" : "sur 5 max"} borderColor="#D4AF37" />
+              </div>
+
+              <DashboardChart
+                type="bar"
+                title="Vues par jour — 30 jours"
+                data={chartData}
+                series={[{ dataKey: "views", name: "Vues", color: "#D4AF37" }]}
+                ticks={chartSampled.map((d) => d.label)}
+              />
+
+              <SectionHeader title="Dernières annonces" action={
+                <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
+                  <Plus className="w-3.5 h-3.5" /> Publier
+                </Link>
+              } />
+              <ListingsManager userId={user.id} limit={3} />
+
+              <MonthlyReportSection userId={user.id} />
+            </>
+          )}
+        </>
+      )}
+
+      {/* ── MES ANNONCES ── */}
+      {tab === "annonces" && (
+        <>
+          <SectionHeader title="Mes annonces" action={
+            <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
+              <Plus className="w-3.5 h-3.5" /> Publier
+            </Link>
+          } />
+          <ListingsManager userId={user.id} />
+        </>
+      )}
+
+      {/* ── VISITES & DEMANDES ── */}
+      {tab === "visites" && (
+        <>
+          <SectionHeader title="Visites & demandes" subtitle="Reçues sur vos annonces" />
+          <VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />
+        </>
+      )}
+
+      {/* ── MESSAGES ── */}
+      {tab === "messages" && (
+        <div>
+          <SectionHeader title="Messages" />
+          <Link href="/messages" className="flex items-center justify-between rounded-2xl p-5" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+            <div className="flex items-center gap-3">
+              <MessageCircle className="w-6 h-6 text-blue-400" />
+              <div>
+                <p className="font-bold" style={{ color: "var(--bl-cream)" }}>Mes messages</p>
+                <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Ouvrir la messagerie complète</p>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5" style={{ color: "var(--bl-cream-faint)" }} />
+          </Link>
+        </div>
+      )}
+
+      {/* ── STATISTIQUES ── */}
+      {tab === "statistiques" && (
+        <>
+          <SectionHeader title="Statistiques" subtitle="30 derniers jours" />
+          {statsLoading ? (
+            <div className="h-48 rounded-2xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <StatCard label="Vues totales"       value={totalViews}  borderColor="#D4AF37" />
+                <StatCard label="Contacts WhatsApp"  value={totalWA}     borderColor="#D4AF37" />
+                <StatCard label="Messages reçus"     value={msgCount}    borderColor="#D4AF37" />
+                <StatCard label="Annonces actives"   value={activeCount} borderColor="#D4AF37" />
+              </div>
+              <DashboardChart
+                type="line"
+                title="Vues + WhatsApp — 30 jours"
+                data={chartData}
+                height={200}
+                series={[
+                  { dataKey: "views",           name: "Vues",     color: "#D4AF37" },
+                  { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
+                ]}
+                ticks={chartSampled.map((d) => d.label)}
+                showDots
+              />
+            </>
+          )}
+        </>
+      )}
+
+      {/* ── AVIS & ÉVALUATIONS ── */}
+      {tab === "avis" && (
+        <>
+          <SectionHeader title="Avis & évaluations" subtitle="Les avis laissés par vos clients" />
+          <ReviewsSection userId={user.id} />
+        </>
+      )}
+
+      {/* ── PROFIL ── */}
+      {tab === "profil" && (
+        <>
+          <SectionHeader title="Mon profil" />
+          {(isAgent || isAgence) && (
+            <Link
+              href={isAgence ? `/agences/${user.id}` : `/agents/${user.id}`}
+              className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4"
+              style={{ background: "rgba(212,175,55,0.07)", border: "1px solid rgba(212,175,55,0.20)" }}>
+              <span className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>
+                Voir mon profil public
+              </span>
+              <ChevronRight className="w-4 h-4" style={{ color: "var(--bl-amber)" }} />
+            </Link>
+          )}
+          <ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} />
+        </>
+      )}
+
+      {/* ── ABONNEMENT ── */}
+      {tab === "abonnement" && (
+        <>
+          <SectionHeader title="Abonnement" subtitle="Gérez votre plan" />
+          <AbonnementSection profile={profile} />
+        </>
+      )}
+    </DashboardLayout>
   );
 }
 
@@ -1175,418 +1645,6 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
   );
 }
 
-// ─── DASHBOARD AGENT ──────────────────────────────────────────────────────────
-
-function AgentDashboard({ user, profile, signOut, refreshProfile }: {
-  user: { id: string; email?: string };
-  profile: ReturnType<typeof useAuth>["profile"];
-  signOut: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
-}) {
-  const [tab, setTab]             = useState("dashboard");
-  const [statsData, setStatsData] = useState<DayStat[]>([]);
-  const [statsLoading, setStatsLoading] = useState(true);
-  const [totalViews, setTotalViews] = useState(0);
-  const [totalWA, setTotalWA]     = useState(0);
-  const [activeCount, setActiveCount] = useState(0);
-  const [msgCount, setMsgCount]   = useState(0);
-  const [leads, setLeads]         = useState<Lead[]>([]);
-  const [leadsLoading, setLeadsLoading] = useState(true);
-  const [pendingVisits, setPendingVisits] = useState(0);
-
-  useEffect(() => {
-    Promise.all([
-      loadDayStats(user.id, 30),
-      loadMessagesCount(user.id),
-    ]).then(([{ data, active, totalViews: tv, totalWA: tw }, mc]) => {
-      setStatsData(data); setActiveCount(active); setTotalViews(tv); setTotalWA(tw);
-      setMsgCount(mc); setStatsLoading(false);
-    });
-    loadRecentLeads(user.id).then((l) => { setLeads(l); setLeadsLoading(false); });
-  }, [user.id]);
-
-  const tabs: DashTab[] = [
-    { key: "dashboard",    label: "Dashboard",    icon: <BarChart2 className="w-4 h-4" /> },
-    { key: "annonces",     label: "Annonces",     icon: <Home className="w-4 h-4" /> },
-    { key: "visites",      label: "Visites",      icon: <Calendar className="w-4 h-4" />, badge: pendingVisits },
-    { key: "leads",        label: "Leads",        icon: <Phone className="w-4 h-4" /> },
-    { key: "statistiques", label: "Statistiques", icon: <TrendingUp className="w-4 h-4" /> },
-    { key: "profil",       label: "Profil",       icon: <User className="w-4 h-4" /> },
-  ];
-
-  const initials = (profile?.full_name ?? user.email ?? "?").split(" ").map((w:string) => w[0]).join("").slice(0,2).toUpperCase();
-  const chartLine = statsData.map((d) => ({ ...d, label: fmtDate(d.date) }));
-  const chartSampled = chartLine.filter((_, i) => i % 3 === 0);
-
-  return (
-    <DashboardLayout tabs={tabs} active={tab} onChange={setTab} signOut={signOut}
-      userName={profile?.full_name ?? user.email ?? "Utilisateur"} userInitials={initials}
-      userBadge={profile?.is_verified_pro ? "Agent Pro" : undefined}>
-      {tab === "dashboard" && (
-        <>
-          <div className="mb-6">
-            <h1 style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-amber-light)", fontSize: 26, fontWeight: 700 }}>
-              Tableau de bord Agent
-            </h1>
-            <p className="text-sm mt-1" style={{ color: "var(--bl-cream-dim)", fontWeight: 300 }}>Performance sur 30 jours</p>
-          </div>
-
-          {statsLoading ? (
-            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4,5].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "var(--bl-surface-2)" }} />)}</div>
-          ) : (
-            <>
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <StatCard label="Vues ce mois"  value={totalViews}  borderColor="#D4AF37" />
-                <StatCard label="Clics WhatsApp" value={totalWA}    borderColor="#D4AF37" />
-                <StatCard label="Messages reçus" value={msgCount}   borderColor="#D4AF37" />
-                <StatCard label="Annonces actives" value={activeCount} borderColor="#D4AF37" />
-                <StatCard label="Statut" value={profile?.is_verified_pro ? "✓ Pro" : "Agent"} sub={profile?.is_verified_pro ? "Vérifié" : "Standard"} borderColor="#D4AF37" />
-              </div>
-
-              <DashboardChart
-                type="line"
-                title="Vues sur 30 jours"
-                data={chartLine}
-                height={160}
-                series={[{ dataKey: "views", name: "Vues", color: "#D4AF37" }]}
-                ticks={chartSampled.map((d) => d.label)}
-                showDots
-              />
-
-              <SectionHeader title="Derniers leads" subtitle="5 contacts les plus récents" action={
-                <Link href="/messages" className="text-xs font-bold" style={{ color: "var(--bl-amber)" }}>Tout voir →</Link>
-              } />
-              {leadsLoading ? (
-                <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}</div>
-              ) : leads.length === 0 ? (
-                <div className="text-center py-10 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
-                  <Phone className="w-7 h-7 mx-auto mb-2" style={{ color: "var(--bl-cream-faint)" }} />
-                  <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Aucun lead pour l&apos;instant.</p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {leads.map((lead) => {
-                    const name = lead.sender_name ?? "Inconnu";
-                    const ini  = name.split(" ").map((w:string) => w[0]).join("").slice(0,2).toUpperCase();
-                    const wa   = lead.sender_phone?.replace(/\D/g, "");
-                    return (
-                      <div key={lead.id} className="flex items-center gap-3 rounded-xl p-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
-                        <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                          style={{ background: "rgba(212,175,55,0.20)", color: "var(--bl-amber-light)" }}>{ini}</div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold truncate" style={{ color: "var(--bl-cream)" }}>{name}</p>
-                          <p className="text-xs truncate" style={{ color: "var(--bl-cream-faint)" }}>{lead.message}</p>
-                        </div>
-                        <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                          <p className="text-[10px]" style={{ color: "var(--bl-cream-faint)" }}>{fmtTime(lead.created_at)}</p>
-                          {wa && (
-                            <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
-                              className="text-[11px] font-bold px-2 py-1 rounded-lg"
-                              style={{ background: "rgba(37,211,102,0.12)", color: "#25D366", border: "1px solid rgba(37,211,102,0.20)" }}>
-                              WA
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </>
-          )}
-        </>
-      )}
-      {tab === "annonces" && <><SectionHeader title="Mes annonces" /><ListingsManager userId={user.id} /></>}
-      {tab === "visites" && (
-        <>
-          <SectionHeader title="Demandes de visite" subtitle="Reçues sur vos annonces" />
-          <VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />
-        </>
-      )}
-      {tab === "leads" && (
-        <>
-          <SectionHeader title="Leads" subtitle="Tous vos contacts reçus" />
-          {leadsLoading ? (
-            <div className="space-y-2">{[1,2,3,4,5].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}</div>
-          ) : leads.length === 0 ? (
-            <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
-              <Phone className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
-              <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Historique des leads</p>
-              <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Les contacts apparaîtront ici.</p>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {leads.map((lead) => {
-                const name = lead.sender_name ?? "Inconnu";
-                const ini  = name.split(" ").map((w:string) => w[0]).join("").slice(0,2).toUpperCase();
-                const wa   = lead.sender_phone?.replace(/\D/g, "");
-                return (
-                  <div key={lead.id} className="flex items-center gap-3 rounded-xl p-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                      style={{ background: "rgba(212,175,55,0.20)", color: "var(--bl-amber-light)" }}>{ini}</div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold truncate" style={{ color: "var(--bl-cream)" }}>{name}</p>
-                      <p className="text-xs truncate" style={{ color: "var(--bl-cream-faint)" }}>{lead.message}</p>
-                    </div>
-                    {wa && (
-                      <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
-                        className="text-xs font-bold px-3 py-1.5 rounded-lg flex-shrink-0"
-                        style={{ background: "#25D366", color: "var(--bl-cream)" }}>
-                        Contacter
-                      </a>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </>
-      )}
-      {tab === "statistiques" && (
-        <>
-          <SectionHeader title="Statistiques" subtitle="30 derniers jours" />
-          <DashboardChart
-            type="line"
-            title="Vues + Contacts WhatsApp"
-            data={chartLine}
-            height={200}
-            series={[
-              { dataKey: "views", name: "Vues", color: "#D4AF37" },
-              { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
-            ]}
-            ticks={chartSampled.map((d) => d.label)}
-          />
-        </>
-      )}
-      {tab === "profil" && (
-        <>
-          <SectionHeader title="Mon profil" />
-          {profile?.is_verified_pro && (
-            <div className="flex items-center gap-2 mb-4 px-3 py-2.5 rounded-xl" style={{ background: "rgba(212,175,55,0.10)", border: "1px solid rgba(212,175,55,0.25)" }}>
-              <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: "var(--bl-amber)" }} />
-              <p className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>Agent professionnel vérifié</p>
-            </div>
-          )}
-          <Link href={`/agents/${user.id}`} className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4" style={{ background: "rgba(212,175,55,0.07)", border: "1px solid rgba(212,175,55,0.20)" }}>
-            <span className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>Voir mon profil public</span>
-            <ChevronRight className="w-4 h-4" style={{ color: "var(--bl-amber)" }} />
-          </Link>
-          <ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} />
-        </>
-      )}
-    </DashboardLayout>
-  );
-}
-
-// ─── DASHBOARD AGENCE ─────────────────────────────────────────────────────────
-
-function AgenceDashboard({ user, profile, signOut, refreshProfile }: {
-  user: { id: string; email?: string };
-  profile: ReturnType<typeof useAuth>["profile"];
-  signOut: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
-}) {
-  const [tab, setTab]             = useState("dashboard");
-  const [statsData, setStatsData] = useState<DayStat[]>([]);
-  const [statsLoading, setStatsLoading] = useState(true);
-  const [totalViews, setTotalViews] = useState(0);
-  const [totalWA, setTotalWA]     = useState(0);
-  const [activeCount, setActiveCount] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
-  const [msgCount, setMsgCount]   = useState(0);
-  const [leads, setLeads]         = useState<Lead[]>([]);
-  const [pendingVisits, setPendingVisits] = useState(0);
-
-  useEffect(() => {
-    Promise.all([
-      loadDayStats(user.id, 30),
-      loadMessagesCount(user.id),
-      loadRecentLeads(user.id),
-    ]).then(([{ data, active, total, totalViews: tv, totalWA: tw }, mc, ls]) => {
-      setStatsData(data); setActiveCount(active); setTotalCount(total);
-      setTotalViews(tv); setTotalWA(tw); setMsgCount(mc); setLeads(ls); setStatsLoading(false);
-    });
-  }, [user.id]);
-
-  const tabs: DashTab[] = [
-    { key: "dashboard", label: "Dashboard",     icon: <BarChart2 className="w-4 h-4" /> },
-    { key: "annonces",  label: "Annonces",      icon: <Home className="w-4 h-4" /> },
-    { key: "visites",   label: "Visites",       icon: <Calendar className="w-4 h-4" />, badge: pendingVisits },
-    { key: "equipe",    label: "Équipe",        icon: <Building2 className="w-4 h-4" /> },
-    { key: "leads",     label: "Leads",         icon: <Phone className="w-4 h-4" /> },
-    { key: "stats",     label: "Statistiques",  icon: <TrendingUp className="w-4 h-4" /> },
-    { key: "profil",    label: "Profil agence", icon: <User className="w-4 h-4" /> },
-  ];
-
-  const agencyName = profile?.agency_name ?? profile?.full_name ?? "Agence";
-  const initials = agencyName.slice(0,2).toUpperCase();
-  const chartData = statsData.map((d) => ({ ...d, label: fmtDate(d.date) }));
-  const chartSampled = chartData.filter((_, i) => i % 5 === 0);
-
-  function exportCSV() {
-    const rows = leads.map((l) => [
-      l.sender_name ?? "Inconnu",
-      l.sender_phone ?? "",
-      l.message.replace(/,/g, " "),
-      new Date(l.created_at).toLocaleDateString("fr-FR"),
-    ]);
-    const csv = ["Nom,Téléphone,Message,Date", ...rows.map((r) => r.join(","))].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement("a");
-    a.href = url; a.download = "leads-LogerBien.csv"; a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  return (
-    <DashboardLayout tabs={tabs} active={tab} onChange={setTab} signOut={signOut}
-      userName={agencyName} userInitials={initials}
-      userBadge={profile?.is_verified_pro ? "Agence Premium" : undefined}>
-      {tab === "dashboard" && (
-        <>
-          <div className="mb-6">
-            <h1 style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-amber-light)", fontSize: 26, fontWeight: 700 }}>
-              Dashboard agence
-            </h1>
-            <p className="text-sm mt-1" style={{ color: "var(--bl-cream-dim)", fontWeight: 300 }}>Performance sur 30 jours</p>
-          </div>
-
-          {statsLoading ? (
-            <div className="grid grid-cols-2 gap-3 mb-6">{[1,2,3,4,5,6].map((i) => <div key={i} className="h-24 animate-pulse" style={{ borderLeft: "3px solid rgba(212,175,55,0.20)", borderRadius: "0 12px 12px 0", background: "var(--bl-surface-2)" }} />)}</div>
-          ) : (
-            <>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-                <StatCard label="Vues totales (30j)"   value={totalViews}  borderColor="#D4AF37" />
-                <StatCard label="Annonces actives"     value={activeCount} sub={`${totalCount} au total`} borderColor="#D4AF37" />
-                <StatCard label="Contacts WhatsApp"    value={totalWA}     sub="30 derniers jours" borderColor="#D4AF37" />
-                <StatCard label="Messages reçus"       value={msgCount}    sub="ce mois" borderColor="#D4AF37" />
-                <StatCard label="Leads"                value={leads.length} sub={<Link href="/messages" style={{ color: "var(--bl-amber)" }}>Voir messages →</Link>} borderColor="#D4AF37" />
-                <StatCard label="Statut"               value={profile?.is_verified_pro ? "Premium ✓" : "Agence"} sub="Plan actuel" borderColor="#D4AF37" />
-              </div>
-
-              <DashboardChart
-                type="bar"
-                title="Performance 30 jours"
-                data={chartData}
-                height={160}
-                series={[
-                  { dataKey: "views", name: "Vues", color: "#D4AF37" },
-                  { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
-                ]}
-                ticks={chartSampled.map((d) => d.label)}
-              />
-
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="bl-section-title">Top annonces</h2>
-                <button onClick={exportCSV} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
-                  style={{ background: "rgba(212,175,55,0.10)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.25)" }}>
-                  <Download className="w-3.5 h-3.5" /> Exporter CSV
-                </button>
-              </div>
-              <ListingsManager userId={user.id} limit={3} />
-            </>
-          )}
-        </>
-      )}
-      {tab === "annonces" && <><SectionHeader title="Toutes les annonces" /><ListingsManager userId={user.id} /></>}
-      {tab === "visites" && (
-        <>
-          <SectionHeader title="Demandes de visite" subtitle="Reçues sur vos annonces" />
-          <VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />
-        </>
-      )}
-      {tab === "equipe" && (
-        <>
-          <SectionHeader title="Performance équipe" subtitle="Bientôt disponible" />
-          <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--bl-border)" }}>
-            <div className="grid grid-cols-4 text-[11px] font-bold px-4 py-2.5" style={{ background: "var(--bl-surface-2)", color: "var(--bl-cream-faint)", letterSpacing: "1px", textTransform: "uppercase" }}>
-              <span>Agent</span><span className="text-right">Annonces</span><span className="text-right">Vues</span><span className="text-right">Leads</span>
-            </div>
-            <div className="py-10 text-center" style={{ background: "var(--bl-surface)" }}>
-              <Building2 className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
-              <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Gestion multi-agents disponible prochainement.</p>
-            </div>
-          </div>
-        </>
-      )}
-      {tab === "leads" && (
-        <>
-          <SectionHeader title="Leads de l'agence" subtitle="Contacts reçus récemment" action={
-            leads.length > 0 ? (
-              <button onClick={exportCSV} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg"
-                style={{ background: "rgba(212,175,55,0.10)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.25)" }}>
-                <Download className="w-3.5 h-3.5" /> CSV
-              </button>
-            ) : undefined
-          } />
-          {leads.length === 0 ? (
-            <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
-              <Phone className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
-              <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucun lead</p>
-              <p className="text-sm mb-4" style={{ color: "var(--bl-cream-faint)" }}>Tous vos contacts reçus apparaîtront ici.</p>
-              <Link href="/messages" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm" style={{ background: "rgba(212,175,55,0.15)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.30)" }}>Voir les messages</Link>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {leads.map((lead) => {
-                const name = lead.sender_name ?? "Inconnu";
-                const ini  = name.split(" ").map((w:string) => w[0]).join("").slice(0,2).toUpperCase();
-                const wa   = lead.sender_phone?.replace(/\D/g, "");
-                return (
-                  <div key={lead.id} className="flex items-center gap-3 rounded-xl p-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
-                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                      style={{ background: "rgba(212,175,55,0.20)", color: "var(--bl-amber-light)" }}>{ini}</div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold truncate" style={{ color: "var(--bl-cream)" }}>{name}</p>
-                      <p className="text-xs truncate" style={{ color: "var(--bl-cream-faint)" }}>{lead.message}</p>
-                    </div>
-                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                      <p className="text-[10px]" style={{ color: "var(--bl-cream-faint)" }}>{fmtTime(lead.created_at)}</p>
-                      {wa && (
-                        <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
-                          className="text-xs font-bold px-2.5 py-1 rounded-lg"
-                          style={{ background: "#25D366", color: "var(--bl-cream)" }}>
-                          WA
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </>
-      )}
-      {tab === "stats" && (
-        <>
-          <SectionHeader title="Statistiques agence" subtitle="30 derniers jours" />
-          <DashboardChart
-            type="bar"
-            title="Vues + WhatsApp sur 30 jours"
-            data={chartData}
-            height={200}
-            series={[
-              { dataKey: "views", name: "Vues", color: "#D4AF37" },
-              { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
-            ]}
-            ticks={chartSampled.map((d) => d.label)}
-          />
-        </>
-      )}
-      {tab === "profil" && (
-        <>
-          <SectionHeader title="Profil de l'agence" />
-          <Link href={`/agences/${user.id}`} className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4" style={{ background: "rgba(212,175,55,0.07)", border: "1px solid rgba(212,175,55,0.20)" }}>
-            <span className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>Voir le profil public de l&apos;agence</span>
-            <ChevronRight className="w-4 h-4" style={{ color: "var(--bl-amber)" }} />
-          </Link>
-          <ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} />
-        </>
-      )}
-    </DashboardLayout>
-  );
-}
-
 // ─── PAGE PRINCIPALE ──────────────────────────────────────────────────────────
 
 export default function ComptePage() {
@@ -1600,7 +1658,6 @@ export default function ComptePage() {
     if (!authLoading && profile?.role === "admin") router.replace("/admin");
   }, [authLoading, profile, router]);
 
-  // Auth still resolving — show spinner
   if (authLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -1609,25 +1666,38 @@ export default function ComptePage() {
     );
   }
 
-  // Auth resolved, no user — useEffect above fires the redirect; render nothing to avoid infinite spinner
   if (!user) return null;
 
-  const role = profile?.role ?? "buyer";
-  const accountType = profile?.account_type ?? (
-    ["proprietaire","owner"].includes(role) ? "proprietaire" :
-    role === "agent" ? "agent" :
-    ["agence","agency"].includes(role) ? "agence" : "chercheur"
-  );
-
+  const role      = profile?.role ?? "buyer";
   const dashProps = { user, profile, signOut, refreshProfile };
 
+  // ── Acheteur simple ──────────────────────────────────────────────────────────
+  if (role === "buyer") {
+    return (
+      <div className="max-w-xl mx-auto">
+        <div className="lg:rounded-2xl lg:overflow-hidden" style={{ border: "1px solid var(--bl-border)" }}>
+          <BuyerProfile user={user} profile={profile} refreshProfile={refreshProfile} />
+        </div>
+      </div>
+    );
+  }
+
+  // ── Chercheur ────────────────────────────────────────────────────────────────
+  if (role === "chercheur") {
+    return (
+      <div className="max-w-3xl lg:max-w-5xl mx-auto lg:px-0">
+        <div className="lg:rounded-2xl lg:overflow-hidden" style={{ border: "1px solid var(--bl-border)" }}>
+          <ChercheurDashboard {...dashProps} />
+        </div>
+      </div>
+    );
+  }
+
+  // ── Annonceur (proprietaire / owner / agent / agence / agency) ───────────────
   return (
     <div className="max-w-3xl lg:max-w-5xl mx-auto lg:px-0">
       <div className="lg:rounded-2xl lg:overflow-hidden" style={{ border: "1px solid var(--bl-border)" }}>
-        {accountType === "chercheur"    && <ChercheurDashboard    {...dashProps} />}
-        {accountType === "proprietaire" && <ProprietaireDashboard {...dashProps} />}
-        {accountType === "agent"        && <AgentDashboard        {...dashProps} />}
-        {accountType === "agence"       && <AgenceDashboard       {...dashProps} />}
+        <AnnonceurDashboard {...dashProps} />
       </div>
     </div>
   );
