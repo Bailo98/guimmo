@@ -1,7 +1,9 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Compass, Heart, Home, User } from "lucide-react";
+import { useTheme } from "next-themes";
 import { useAuth } from "@/lib/auth-context";
 
 // 4 items fixes : Découvrir | Favoris | Annonces | Profil
@@ -22,12 +24,19 @@ const NAV_ITEMS: NavItemDef[] = [
   { href: "/compte",    icon: User,    label: "Profil",    authRequired: false, unauthHref: "/connexion" },
 ];
 
-const GOLD  = "#D4AF37";
-const MUTED = "#8A8FA8";
+const GOLD = "#D4AF37";
 
 export function BottomNav() {
   const pathname = usePathname();
   const { user }  = useAuth();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  const isLight = mounted && resolvedTheme === "light";
+  const MUTED   = isLight ? "#5A4A2A" : "#8A8FA8";
+  const pillBg  = isLight ? "rgba(245,235,215,0.95)" : "rgba(22,27,38,0.96)";
+  const pillBorder = isLight ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.08)";
 
   // Hidden on /decouvrir (full-screen swipe), /admin and /auth routes
   if (pathname === "/decouvrir") return null;
@@ -57,11 +66,13 @@ export function BottomNav() {
         borderRadius: 40,
 
         /* Glass surface */
-        background: "rgba(22,27,38,0.96)",
+        background: pillBg,
         backdropFilter: "blur(20px) saturate(180%)",
         WebkitBackdropFilter: "blur(20px) saturate(180%)",
-        border: "1px solid rgba(255,255,255,0.08)",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.20)",
+        border: `1px solid ${pillBorder}`,
+        boxShadow: isLight
+          ? "0 4px 20px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08)"
+          : "0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.20)",
 
         /* Layout */
         display: "flex",

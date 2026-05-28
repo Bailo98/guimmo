@@ -175,13 +175,7 @@ export default async function HomePage() {
           HERO — full viewport, custom gradient
       ══════════════════════════════════════════════════════════ */}
       <section
-        className="relative min-h-[100svh] flex flex-col overflow-hidden"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 50% at 85% 40%, rgba(212,175,55,0.07) 0%, transparent 60%), " +
-            "radial-gradient(ellipse 50% 45% at 15% 80%, rgba(30,42,48,0.6) 0%, transparent 55%), " +
-            "#0A1216",
-        }}
+        className="hero-section relative min-h-[100svh] flex flex-col overflow-hidden"
       >
         {/* Grain/noise texture overlay */}
         <div
@@ -475,17 +469,13 @@ export default async function HomePage() {
       ══════════════════════════════════════════════════════════ */}
       <section
         className="py-20"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 60% at 50% 100%, rgba(212,175,55,0.12) 0%, transparent 60%), " +
-            "#0A1216",
-        }}
+        style={{ background: "var(--bg-secondary)" }}
       >
         <div className="max-w-3xl mx-auto px-4 text-center">
           <p className="text-5xl mb-6">🏠</p>
           <h2
             className="text-2xl md:text-4xl font-black mb-4"
-            style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
+            style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
           >
             Vous avez un logement à louer ou à vendre ?
           </h2>
