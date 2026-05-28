@@ -1,18 +1,26 @@
 "use client";
+
+/**
+ * ZustandThemeSync
+ * ─────────────────
+ * next-themes owns the actual <html class="dark|light"> management.
+ * This component just keeps the Zustand store in sync so that any
+ * legacy code reading useAppStore().theme still gets the right value.
+ */
+
 import { useEffect } from "react";
+import { useTheme } from "next-themes";
 import { useAppStore } from "@/lib/store";
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const theme = useAppStore((s) => s.theme);
+export function ZustandThemeSync() {
+  const { resolvedTheme } = useTheme();
+  const setTheme = useAppStore((s) => s.setTheme);
 
   useEffect(() => {
-    const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
+    if (resolvedTheme === "dark" || resolvedTheme === "light") {
+      setTheme(resolvedTheme);
     }
-  }, [theme]);
+  }, [resolvedTheme, setTheme]);
 
-  return <>{children}</>;
+  return null;
 }

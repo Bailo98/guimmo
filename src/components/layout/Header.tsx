@@ -3,14 +3,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Moon, Sun, Menu, X, Plus, LogOut, User, ChevronDown, Shield } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { useAppStore } from "@/lib/store";
+import { useTheme } from "next-themes";
 import { useAuth } from "@/lib/auth-context";
 import { Logo } from "@/components/ui/Logo";
 import { Avatar } from "@/components/ui/Avatar";
 import { cn } from "@/lib/utils";
 
 export function Header() {
-  const { theme, toggleTheme } = useAppStore();
+  const { resolvedTheme, setTheme } = useTheme();
+  const toggleTheme = () => setTheme(resolvedTheme === "dark" ? "light" : "dark");
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -86,7 +87,7 @@ export function Header() {
             style={{ color: "var(--nav-text)" }}
             aria-label="Changer le thème"
           >
-            {(!mounted || theme === "dark") ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            {(!mounted || resolvedTheme === "dark") ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
 
           {isProprietaire && (

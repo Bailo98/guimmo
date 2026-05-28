@@ -1,7 +1,8 @@
 ﻿import type { Metadata, Viewport } from "next";
 import { Inter, Nunito, Playfair_Display, DM_Sans, Space_Grotesk, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { ThemeProvider } from "next-themes";
+import { ZustandThemeSync } from "@/components/providers/ThemeProvider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { Toaster } from "@/components/ui/Toaster";
 import { AuthProvider } from "@/lib/auth-context";
@@ -93,24 +94,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" suppressHydrationWarning className={`${spaceGrotesk.variable} ${barlowCondensed.variable}`}>
       <head>
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=JSON.parse(localStorage.getItem('LogerBien-store')||localStorage.getItem('logerbien-store')||'{}');var t=s&&s.state&&s.state.theme?s.state.theme:'dark';if(t!=='light')document.documentElement.classList.add('dark');}catch(e){document.documentElement.classList.add('dark');}})();`,
-          }}
-        />
         <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="preconnect" href="https://kqshknfrtlbjaufkdeeg.supabase.co" />
       </head>
       <body className={`${inter.variable} ${nunito.variable} ${playfair.variable} ${dmSans.variable} ${spaceGrotesk.variable} ${barlowCondensed.variable} font-sans min-h-screen`} style={{ backgroundColor: "var(--bg-primary)", color: "var(--color-text-white)" }}>
-        <QueryProvider>
-          <AuthProvider>
-            <ThemeProvider>{children}</ThemeProvider>
-            <Toaster />
-            <PWAInstallBanner />
-            <ServiceWorkerRegister />
-          </AuthProvider>
-        </QueryProvider>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange={false}>
+          <QueryProvider>
+            <AuthProvider>
+              <ZustandThemeSync />
+              {children}
+              <Toaster />
+              <PWAInstallBanner />
+              <ServiceWorkerRegister />
+            </AuthProvider>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
