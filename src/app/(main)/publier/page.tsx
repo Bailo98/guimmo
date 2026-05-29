@@ -98,6 +98,7 @@ export default function PublierPage() {
   const [videoPreview, setVideoPreview]   = useState<string | null>(null);
   const [videoUploading, setVideoUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [photoProgress, setPhotoProgress] = useState<number | null>(null); // 0-100 during compress
   const tourInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
@@ -134,7 +135,51 @@ export default function PublierPage() {
     });
   }
 
-  function addPhotos(files: FileList | null) {
+  /** Compress a File to a JPEG Blob — max 1200px wide, quality 0.82, max 800 KB */
+  function compressImage(file: File): Promise<File> {
+    return new Promise((resolve) => {
+      const MAX_PX = 1200;
+      const QUALITY = 0.82;
+      const MAX_BYTES = 800 * 1024;
+
+      const img = new window.Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let { width, height } = img;
+        if (width > MAX_PX) {
+          height = Math.round((height * MAX_PX) / width);
+          width = MAX_PX;
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { resolve(file); return; }
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            if (!blob || blob.size > MAX_BYTES) {
+              // If still too large, re-compress with lower quality
+              canvas.toBlob(
+                (blob2) => resolve(blob2 ? new File([blob2], file.name, { type: "image/jpeg" }) : file),
+                "image/jpeg",
+                0.65
+              );
+            } else {
+              resolve(new File([blob], file.name, { type: "image/jpeg" }));
+            }
+          },
+          "image/jpeg",
+          QUALITY
+        );
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+      img.src = url;
+    });
+  }
+
+  async function addPhotos(files: FileList | null) {
     if (!files) return;
     const BLOCKED = ["image/avif", "image/heic", "image/heif"];
     const all = Array.from(files).filter((f) => f.type.startsWith("image/"));
@@ -147,8 +192,28 @@ export default function PublierPage() {
     }
     const accepted = all.filter((f) => !BLOCKED.includes(f.type));
     if (!accepted.length) return;
-    const previews = accepted.map((f) => URL.createObjectURL(f));
-    setForm((f) => ({ ...f, photos: [...f.photos, ...accepted] }));
+
+    // Enforce max 10 total
+    const currentCount = form.photos.length;
+    const slots = Math.max(0, 10 - currentCount);
+    const toProcess = accepted.slice(0, slots);
+    if (accepted.length > slots) {
+      toast(`Maximum 10 photos — ${accepted.length - slots} photo(s) ignorée(s).`, "error");
+    }
+    if (!toProcess.length) return;
+
+    // Compress each file
+    setPhotoProgress(0);
+    const compressed: File[] = [];
+    for (let i = 0; i < toProcess.length; i++) {
+      const c = await compressImage(toProcess[i]);
+      compressed.push(c);
+      setPhotoProgress(Math.round(((i + 1) / toProcess.length) * 100));
+    }
+    setPhotoProgress(null);
+
+    const previews = compressed.map((f) => URL.createObjectURL(f));
+    setForm((f) => ({ ...f, photos: [...f.photos, ...compressed] }));
     setPhotoPreviews((p) => [...p, ...previews]);
   }
 
@@ -268,8 +333,8 @@ export default function PublierPage() {
       return;
     }
 
-    if (form.photos.length === 0) {
-      toast("Veuillez ajouter au moins une photo", "error");
+    if (form.photos.length < 3) {
+      toast("Veuillez ajouter au moins 3 photos", "error");
       return;
     }
     if (form.type === "studio" && form.rooms > 1) {
@@ -480,7 +545,7 @@ export default function PublierPage() {
 
   const canAdvance =
     step === 1 ? !!form.type && !!form.txType :
-    step === 2 ? form.photos.length >= 1 && !!form.price :
+    step === 2 ? form.photos.length >= 3 && !!form.price :
     step === 3 ? !!form.neighborhood :
     !!form.phone;
 
@@ -626,7 +691,7 @@ export default function PublierPage() {
               Photos &amp; prix
             </h1>
             <p className="text-white/50 text-sm">
-              Minimum 1 photo obligatoire pour continuer
+              Minimum 3 photos — max 10 · les photos sont compressées automatiquement
             </p>
           </div>
 
@@ -650,6 +715,28 @@ export default function PublierPage() {
                 </div>
               ))}
             </div>
+          )}
+
+          {/* Compression progress */}
+          {photoProgress !== null && (
+            <div style={{ background: "rgba(212,175,55,0.10)", border: "1px solid rgba(212,175,55,0.25)", borderRadius: 10, padding: "10px 14px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                <div style={{ width: 14, height: 14, border: "2px solid #D4AF37", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
+                <span style={{ fontSize: 13, color: "#D4AF37", fontWeight: 600 }}>Compression en cours… {photoProgress}%</span>
+              </div>
+              <div style={{ height: 4, background: "rgba(212,175,55,0.15)", borderRadius: 4, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${photoProgress}%`, background: "#D4AF37", borderRadius: 4, transition: "width 0.2s" }} />
+              </div>
+            </div>
+          )}
+
+          {/* Photo count indicator */}
+          {form.photos.length > 0 && (
+            <p className="text-xs" style={{ color: form.photos.length >= 3 ? "#D4AF37" : "#f87171", fontWeight: 600 }}>
+              {form.photos.length < 3
+                ? `${form.photos.length}/3 photos — encore ${3 - form.photos.length} requise(s)`
+                : `${form.photos.length}/10 photos ✓`}
+            </p>
           )}
 
           {/* Upload buttons */}

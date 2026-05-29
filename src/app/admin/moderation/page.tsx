@@ -6,6 +6,7 @@ import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabase";
 import { getNeighborhoodName } from "@/data/neighborhoods";
 import { formatPrice } from "@/lib/utils";
+import { createNotification } from "@/lib/notifications";
 
 const TYPE_LABELS: Record<string, string> = {
   apartment: "Appartement", studio: "Studio", villa: "Villa",
@@ -51,11 +52,13 @@ function fmtDate(s: string) {
 }
 
 export default function AdminModerationPage() {
-  const [pending, setPending]       = useState<PendingProperty[]>([]);
-  const [reports, setReports]       = useState<Report[]>([]);
-  const [loading, setLoading]       = useState(true);
-  const [actionId, setActionId]     = useState<string | null>(null);
-  const [tab, setTab]               = useState<"pending" | "reports">("pending");
+  const [pending, setPending]         = useState<PendingProperty[]>([]);
+  const [reports, setReports]         = useState<Report[]>([]);
+  const [loading, setLoading]         = useState(true);
+  const [actionId, setActionId]       = useState<string | null>(null);
+  const [tab, setTab]                 = useState<"pending" | "reports">("pending");
+  const [rejectId, setRejectId]       = useState<string | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
 
   const load = useCallback(async () => {
     if (!supabase) return;
@@ -92,21 +95,44 @@ export default function AdminModerationPage() {
     else {
       setPending((p) => p.filter((x) => x.id !== prop.id));
       toast("✅ Annonce approuvée et publiée", "success");
+      // Notify owner
+      if (prop.owner_id) {
+        await createNotification({
+          userId: prop.owner_id,
+          type: "listing_approved",
+          title: "✅ Annonce approuvée",
+          body: `Votre annonce "${prop.title}" est maintenant publiée.`,
+          data: { property_id: prop.id },
+        });
+      }
     }
     setActionId(null);
   }
 
-  async function reject(prop: PendingProperty, reason?: string) {
+  async function reject(prop: PendingProperty) {
+    const reason = rejectReason.trim() || "Non conforme à nos conditions d'utilisation";
     if (!supabase) return;
     setActionId(prop.id);
     const { error } = await supabase
       .from("properties")
-      .update({ status: "archived", rejection_reason: reason ?? "Non conforme à nos conditions" })
+      .update({ status: "archived", rejection_reason: reason })
       .eq("id", prop.id);
     if (error) { toast(`Erreur : ${error.message}`, "error"); }
     else {
       setPending((p) => p.filter((x) => x.id !== prop.id));
+      setRejectId(null);
+      setRejectReason("");
       toast("Annonce rejetée", "info");
+      // Notify owner
+      if (prop.owner_id) {
+        await createNotification({
+          userId: prop.owner_id,
+          type: "listing_rejected",
+          title: "❌ Annonce rejetée",
+          body: `Votre annonce "${prop.title}" n'a pas été approuvée. Raison : ${reason}`,
+          data: { property_id: prop.id, reason },
+        });
+      }
     }
     setActionId(null);
   }
@@ -221,13 +247,13 @@ export default function AdminModerationPage() {
                     <button
                       disabled={busy}
                       onClick={() => approve(prop)}
-                      style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 14px", borderRadius: 10, border: "none", background: "#D4AF37", color: "var(--bl-cream)", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer" }}
+                      style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 14px", borderRadius: 10, border: "none", background: "#D4AF37", color: "#0A1216", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer" }}
                     >
                       <CheckCircle size={15} /> Approuver
                     </button>
                     <button
                       disabled={busy}
-                      onClick={() => reject(prop)}
+                      onClick={() => { setRejectId(prop.id); setRejectReason(""); }}
                       style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 14px", borderRadius: 10, background: "rgba(239,68,68,0.12)", color: "#f87171", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer", border: "1px solid rgba(239,68,68,0.25)" } as React.CSSProperties}
                     >
                       <XCircle size={15} /> Rejeter
@@ -236,11 +262,38 @@ export default function AdminModerationPage() {
                       href={`/annonces/${prop.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ padding: "9px 14px", borderRadius: 10, border: "1px solid var(--color-border)", color: "#1e2a30", fontWeight: 600, fontSize: 12, textDecoration: "none", whiteSpace: "nowrap" }}
+                      style={{ padding: "9px 14px", borderRadius: 10, border: "1px solid var(--color-border)", color: "var(--bl-cream-dim)", fontWeight: 600, fontSize: 12, textDecoration: "none", whiteSpace: "nowrap" }}
                     >
                       Voir →
                     </a>
                   </div>
+                  {/* Inline rejection reason */}
+                  {rejectId === prop.id && (
+                    <div style={{ marginTop: 10, padding: "12px", background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.20)", borderRadius: 10 }}>
+                      <p style={{ color: "#f87171", fontSize: 12, fontWeight: 700, marginBottom: 6 }}>Raison du rejet</p>
+                      <textarea
+                        value={rejectReason}
+                        onChange={(e) => setRejectReason(e.target.value)}
+                        placeholder="Ex : photos insuffisantes, prix anormal, description trop courte…"
+                        rows={2}
+                        style={{ width: "100%", background: "rgba(0,0,0,0.3)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 8, padding: "8px 10px", color: "var(--bl-cream)", fontSize: 12, resize: "none", outline: "none", boxSizing: "border-box" }}
+                      />
+                      <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                        <button
+                          onClick={() => reject(prop)}
+                          style={{ flex: 1, padding: "7px 12px", borderRadius: 8, border: "none", background: "#ef4444", color: "#fff", fontWeight: 700, fontSize: 12, cursor: "pointer" }}
+                        >
+                          Confirmer le rejet
+                        </button>
+                        <button
+                          onClick={() => { setRejectId(null); setRejectReason(""); }}
+                          style={{ padding: "7px 12px", borderRadius: 8, border: "1px solid var(--color-border)", background: "transparent", color: "var(--bl-cream-dim)", fontWeight: 600, fontSize: 12, cursor: "pointer" }}
+                        >
+                          Annuler
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}

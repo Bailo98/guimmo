@@ -120,7 +120,12 @@ function InscriptionForm() {
     }
 
     setLoading(false);
-    router.push(redirectTo);
+    // After signup, redirect to onboarding unless a specific redirect was requested
+    if (redirectTo === "/compte") {
+      router.push("/onboarding");
+    } else {
+      router.push(redirectTo);
+    }
   }
 
   const selectedRole = USER_ROLES.find((r) => r.value === role);

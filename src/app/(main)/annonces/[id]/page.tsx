@@ -22,6 +22,7 @@ import type { Metadata } from "next";
 import { formatPrice } from "@/lib/utils";
 import type { Property } from "@/types";
 import PropertyMapWrapper from "@/components/property/PropertyMapWrapper";
+import { PropertyViewTracker } from "@/components/property/PropertyViewTracker";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -265,6 +266,8 @@ export default async function PropertyDetailPage({ params }: Props) {
 
   return (
     <div className="bg-[var(--bg-primary)] pb-32 md:pb-12">
+      {/* Silent view tracker (client component) */}
+      <PropertyViewTracker propertyId={property.id} />
 
       {/* Back nav */}
       <div className="absolute top-[64px] left-0 right-0 z-20 flex items-center gap-3 px-4 pt-4">

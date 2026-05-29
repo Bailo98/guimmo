@@ -17,6 +17,7 @@ export interface Profile {
   bio: string | null;
   website: string | null;
   total_listings: number;
+  onboarding_completed: boolean;
 }
 
 interface AuthContextType {

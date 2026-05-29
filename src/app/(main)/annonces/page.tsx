@@ -187,7 +187,15 @@ function AnnoncesContent() {
   const tx = searchParams.get("tx") ?? "";
   const priceMin = Number(searchParams.get("price_min") ?? 0);
   const priceMax = Number(searchParams.get("price_max") ?? Infinity);
+  const surfaceMin = Number(searchParams.get("surface_min") ?? 0);
+  const furnished = searchParams.get("furnished") === "1";
+  const sortOrder = (searchParams.get("sort") ?? "default") as "default" | "price_asc" | "price_desc" | "newest";
   const page = Number(searchParams.get("page") ?? "1");
+
+  // Local state for price inputs (typed values before committing)
+  const [priceMinInput, setPriceMinInput] = useState(priceMin > 0 ? String(priceMin) : "");
+  const [priceMaxInput, setPriceMaxInput] = useState(priceMax < Infinity ? String(priceMax) : "");
+  const [surfaceMinInput, setSurfaceMinInput] = useState(surfaceMin > 0 ? String(surfaceMin) : "");
 
   function handleVoiceResult(text: string) {
     const lower = text.toLowerCase();
@@ -279,7 +287,7 @@ function AnnoncesContent() {
 
   const diaspora = searchParams.get("diaspora") === "1";
   const hasPriceFilter = priceMin > 0 || priceMax < Infinity;
-  const hasFilters = !!neighborhood || !!type || !!tx || hasPriceFilter || diaspora || amenities.size > 0;
+  const hasFilters = !!neighborhood || !!type || !!tx || hasPriceFilter || diaspora || amenities.size > 0 || surfaceMin > 0 || furnished || sortOrder !== "default";
 
   function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
     const R = 6371;
@@ -298,12 +306,15 @@ function AnnoncesContent() {
       if (priceMin > 0 && p.price < priceMin) return false;
       if (priceMax < Infinity && p.price > priceMax) return false;
       if (diaspora && !p.is_diaspora) return false;
+      if (surfaceMin > 0 && (p.surface ?? 0) < surfaceMin) return false;
+      if (furnished && !p.is_furnished && !p.furnished) return false;
       // Amenity filters
       for (const key of amenities) {
         if (!p[key]) return false;
       }
       return true;
     });
+    // Sort
     if (nearbyCoords) {
       list = list
         .filter((p) => p.latitude != null && p.longitude != null)
@@ -311,9 +322,15 @@ function AnnoncesContent() {
           haversineKm(nearbyCoords.lat, nearbyCoords.lng, a.latitude!, a.longitude!) -
           haversineKm(nearbyCoords.lat, nearbyCoords.lng, b.latitude!, b.longitude!)
         );
+    } else if (sortOrder === "price_asc") {
+      list = [...list].sort((a, b) => a.price - b.price);
+    } else if (sortOrder === "price_desc") {
+      list = [...list].sort((a, b) => b.price - a.price);
+    } else if (sortOrder === "newest") {
+      list = [...list].sort((a, b) => new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime());
     }
     return list;
-  }, [allProperties, neighborhood, type, tx, priceMin, priceMax, nearbyCoords, amenities]);
+  }, [allProperties, neighborhood, type, tx, priceMin, priceMax, nearbyCoords, amenities, surfaceMin, furnished, sortOrder]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const safePage = Math.min(Math.max(1, page), totalPages);
@@ -321,6 +338,9 @@ function AnnoncesContent() {
 
   function clearFilters() {
     setAmenities(new Set());
+    setPriceMinInput("");
+    setPriceMaxInput("");
+    setSurfaceMinInput("");
     router.replace("/annonces", { scroll: false });
   }
 
@@ -333,6 +353,9 @@ function AnnoncesContent() {
     hasPriceFilter ? "price" : "",
     diaspora ? "diaspora" : "",
     amenities.size > 0 ? "amenities" : "",
+    surfaceMin > 0 ? "surface" : "",
+    furnished ? "furnished" : "",
+    sortOrder !== "default" ? "sort" : "",
   ].filter(Boolean).length;
 
   return (
@@ -469,6 +492,98 @@ function AnnoncesContent() {
                     </SmallChip>
                   );
                 })}
+              </div>
+            </div>
+
+            {/* Price min/max custom inputs */}
+            <div>
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Prix exact (GNF)</p>
+              <div className="flex gap-2 items-center">
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="Min"
+                  value={priceMinInput}
+                  onChange={(e) => setPriceMinInput(e.target.value)}
+                  onBlur={() => {
+                    const v = Number(priceMinInput.replace(/\D/g, ""));
+                    const params = new URLSearchParams(searchParams.toString());
+                    if (v > 0) params.set("price_min", String(v)); else params.delete("price_min");
+                    params.delete("page");
+                    router.replace(`?${params.toString()}`, { scroll: false });
+                  }}
+                  style={{ flex: 1, background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", borderRadius: 10, padding: "8px 12px", color: "var(--bl-cream)", fontSize: 13, outline: "none", minWidth: 0 }}
+                />
+                <span style={{ color: "var(--text-secondary)", fontSize: 12 }}>–</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="Max"
+                  value={priceMaxInput}
+                  onChange={(e) => setPriceMaxInput(e.target.value)}
+                  onBlur={() => {
+                    const v = Number(priceMaxInput.replace(/\D/g, ""));
+                    const params = new URLSearchParams(searchParams.toString());
+                    if (v > 0) params.set("price_max", String(v)); else params.delete("price_max");
+                    params.delete("page");
+                    router.replace(`?${params.toString()}`, { scroll: false });
+                  }}
+                  style={{ flex: 1, background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", borderRadius: 10, padding: "8px 12px", color: "var(--bl-cream)", fontSize: 13, outline: "none", minWidth: 0 }}
+                />
+              </div>
+            </div>
+
+            {/* Surface min */}
+            <div>
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Surface minimum (m²)</p>
+              <input
+                type="number"
+                inputMode="numeric"
+                placeholder="Ex: 50"
+                value={surfaceMinInput}
+                onChange={(e) => setSurfaceMinInput(e.target.value)}
+                onBlur={() => {
+                  const v = Number(surfaceMinInput);
+                  const params = new URLSearchParams(searchParams.toString());
+                  if (v > 0) params.set("surface_min", String(v)); else params.delete("surface_min");
+                  params.delete("page");
+                  router.replace(`?${params.toString()}`, { scroll: false });
+                }}
+                style={{ width: "100%", background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", borderRadius: 10, padding: "8px 12px", color: "var(--bl-cream)", fontSize: 13, outline: "none", boxSizing: "border-box" }}
+              />
+            </div>
+
+            {/* Furnished toggle */}
+            <div>
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Meublé</p>
+              <button
+                onClick={() => setParam("furnished", furnished ? "" : "1")}
+                className="flex items-center gap-2 px-4 rounded-full text-sm font-bold transition-all"
+                style={{
+                  minHeight: 36,
+                  ...(furnished
+                    ? { background: "rgba(212,175,55,0.18)", border: "1px solid rgba(212,175,55,0.45)", color: "#D4AF37" }
+                    : { background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", color: "#666" }),
+                }}
+              >
+                🪑 Meublé uniquement
+              </button>
+            </div>
+
+            {/* Sort order */}
+            <div>
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Trier par</p>
+              <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+                {[
+                  { id: "default",    label: "Défaut" },
+                  { id: "price_asc",  label: "Prix ↑" },
+                  { id: "price_desc", label: "Prix ↓" },
+                  { id: "newest",     label: "Plus récent" },
+                ].map((c) => (
+                  <SmallChip key={c.id} active={sortOrder === c.id} onClick={() => setParam("sort", c.id === "default" ? "" : c.id)}>
+                    {c.label}
+                  </SmallChip>
+                ))}
               </div>
             </div>
 

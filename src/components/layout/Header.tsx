@@ -1,13 +1,15 @@
 ﻿"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Moon, Sun, Menu, X, Plus, LogOut, User, ChevronDown, Shield } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { Moon, Sun, Menu, X, Plus, LogOut, User, ChevronDown, Shield, Bell } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/lib/auth-context";
 import { Logo } from "@/components/ui/Logo";
 import { Avatar } from "@/components/ui/Avatar";
 import { cn } from "@/lib/utils";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { markAllRead, type Notification } from "@/lib/notifications";
 
 export function Header() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -15,13 +17,53 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [bellOpen, setBellOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const bellRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
+  const { user, profile, signOut } = useAuth();
 
   useEffect(() => { setMounted(true); }, []);
 
-  const userMenuRef = useRef<HTMLDivElement>(null);
-  const { user, profile, signOut } = useAuth();
+  // Fetch notifications
+  const loadNotifications = useCallback(async () => {
+    if (!user || !isSupabaseConfigured || !supabase) return;
+    const { data } = await supabase
+      .from("notifications")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    if (data) {
+      setNotifications(data as Notification[]);
+      setUnreadCount(data.filter((n: Notification) => !n.read).length);
+    }
+  }, [user]);
+
+  useEffect(() => { loadNotifications(); }, [loadNotifications]);
+
+  // Close bell dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (bellRef.current && !bellRef.current.contains(e.target as Node)) {
+        setBellOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  async function handleBellOpen() {
+    setBellOpen((v) => !v);
+    if (!bellOpen && user && unreadCount > 0) {
+      await markAllRead(user.id);
+      setUnreadCount(0);
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    }
+  }
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -89,6 +131,63 @@ export function Header() {
           >
             {(!mounted || resolvedTheme === "dark") ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
+
+          {/* ── Notification bell ── */}
+          {user && (
+            <div ref={bellRef} className="relative hidden md:block">
+              <button
+                onClick={handleBellOpen}
+                className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors hover:bg-black/5"
+                style={{ color: "var(--nav-text)" }}
+                aria-label="Notifications"
+              >
+                <Bell className="w-4 h-4" />
+                {unreadCount > 0 && (
+                  <span
+                    className="absolute -top-0.5 -right-0.5 w-4 h-4 flex items-center justify-center rounded-full text-[9px] font-black text-white"
+                    style={{ background: "#ef4444" }}
+                  >
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {bellOpen && (
+                <div
+                  className="absolute right-0 top-full mt-2 w-80 rounded-2xl overflow-hidden z-50 border"
+                  style={{ background: "var(--nav-dropdown-bg)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderColor: "var(--nav-border)" }}
+                >
+                  <div className="px-4 py-3 border-b" style={{ borderColor: "var(--nav-border)" }}>
+                    <p className="text-sm font-bold" style={{ color: "var(--nav-text-active)" }}>Notifications</p>
+                  </div>
+                  {notifications.length === 0 ? (
+                    <div className="px-4 py-6 text-center">
+                      <p className="text-sm" style={{ color: "var(--nav-text)" }}>Aucune notification</p>
+                    </div>
+                  ) : (
+                    <div className="max-h-72 overflow-y-auto">
+                      {notifications.map((n) => (
+                        <div
+                          key={n.id}
+                          className="px-4 py-3 border-b last:border-b-0"
+                          style={{
+                            borderColor: "var(--nav-border)",
+                            background: n.read ? "transparent" : "rgba(212,175,55,0.05)",
+                          }}
+                        >
+                          <p className="text-sm font-semibold" style={{ color: "var(--nav-text-active)" }}>{n.title}</p>
+                          {n.body && <p className="text-xs mt-0.5" style={{ color: "var(--nav-text)" }}>{n.body}</p>}
+                          <p className="text-[10px] mt-1" style={{ color: "var(--nav-text)" }}>
+                            {new Date(n.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {isProprietaire && (
             <Link
