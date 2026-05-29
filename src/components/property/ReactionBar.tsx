@@ -126,14 +126,14 @@ export function ReactionBar({ propertyId, compact = false }: ReactionBarProps) {
               borderRadius: 999,
               border: isActive
                 ? "1.5px solid rgba(212,175,55,0.70)"
-                : "1.5px solid rgba(255,255,255,0.10)",
+                : "1.5px solid var(--color-border)",
               background: isActive
                 ? "rgba(212,175,55,0.15)"
-                : "rgba(255,255,255,0.05)",
+                : "var(--bg-card)",
               cursor: "pointer",
               fontSize: compact ? 14 : 16,
               fontWeight: 600,
-              color: isActive ? "var(--accent-gold)" : "rgba(255,255,255,0.65)",
+              color: isActive ? "var(--accent-gold)" : "var(--bl-cream)",
               transform: isAnim ? "scale(1.4)" : "scale(1)",
               transition: "transform 0.15s ease, background 0.2s ease, border-color 0.2s ease",
               minHeight: "auto",

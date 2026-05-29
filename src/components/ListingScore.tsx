@@ -84,13 +84,13 @@ export function ListingScore(props: Props) {
           .filter((c) => !c.skip)
           .map((c) => (
             <div key={c.label} style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <span style={{ fontSize: 11, color: c.ok ? "#D4AF37" : "rgba(255,255,255,0.30)" }}>
+              <span style={{ fontSize: 11, color: c.ok ? "#D4AF37" : "var(--bl-cream-faint)" }}>
                 {c.ok ? "✓" : "○"}
               </span>
-              <span style={{ fontSize: 11, color: c.ok ? "rgba(255,255,255,0.70)" : "rgba(255,255,255,0.30)" }}>
+              <span style={{ fontSize: 11, color: c.ok ? "var(--bl-cream-dim)" : "var(--bl-cream-faint)" }}>
                 {c.label}
               </span>
-              <span style={{ fontSize: 10, color: c.ok ? color : "rgba(255,255,255,0.20)", fontWeight: 700 }}>
+              <span style={{ fontSize: 10, color: c.ok ? color : "var(--bl-cream-faint)", fontWeight: 700 }}>
                 {c.pts}
               </span>
             </div>

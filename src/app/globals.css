@@ -659,3 +659,20 @@ html:not(.dark) [style*="background-color: #1"] { background-color: var(--bg-car
 html:not(.dark) [style*="background: #D4AF37"] { background: #D4AF37 !important; }
 html:not(.dark) [style*="background: #ef4444"] { background: #ef4444 !important; }
 html:not(.dark) [style*="background: #25D366"] { background: #25D366 !important; }
+
+/* ── Supplemental catch-all light-mode rules ────────────────────────────────
+   These supplement (not replace) the specific rules above.
+   Because they are placed AFTER the specific rules, they act as a final
+   safety net for variants not individually handled.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* All text-white/X fractional Tailwind utilities → readable dark in light mode */
+html:not(.dark) [class*="text-white/"] { color: rgba(18,18,18,0.6) !important; }
+
+/* Unstyled buttons (no bg class, no inline background): inherit readable text */
+html:not(.dark) button:not([class*="bg-"]):not([style*="background"]) {
+  color: var(--text-primary);
+}
+
+/* White borders on arbitrary Tailwind classes → theme border colour */
+html:not(.dark) [class*="border-white/"] { border-color: rgba(0,0,0,0.15) !important; }

@@ -55,9 +55,9 @@ export const revalidate = 60;
 
 // Shared pill style for the amenity section
 const EQUIP_PILL: React.CSSProperties = {
-  background: "var(--bl-surface-2)",
+  background: "var(--bg-card)",
   border: "1px solid var(--color-border)",
-  color: "rgba(255,255,255,0.75)",
+  color: "var(--bl-cream-dim)",
   borderRadius: 999,
   padding: "6px 14px",
   fontSize: 12,
@@ -431,27 +431,27 @@ export default async function PropertyDetailPage({ params }: Props) {
               {/* Specs row */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {(property.rooms ?? 0) > 0 && (
-                  <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}>
+                  <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}>
                     <Bed className="w-6 h-6 text-white/60 mx-auto mb-1" />
                     <p className="font-bold text-white text-lg">{property.rooms}</p>
                     <p className="text-white/50 text-xs">Chambre{(property.rooms ?? 0) > 1 ? "s" : ""}</p>
                   </div>
                 )}
                 {(property.bathrooms ?? 0) > 0 && (
-                  <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}>
+                  <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}>
                     <Bath className="w-6 h-6 text-blue-500 mx-auto mb-1" />
                     <p className="font-bold text-white text-lg">{property.bathrooms}</p>
                     <p className="text-white/50 text-xs">Salle{(property.bathrooms ?? 0) > 1 ? "s" : ""} de bain</p>
                   </div>
                 )}
                 {(property.surface ?? 0) > 0 && (
-                  <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}>
+                  <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}>
                     <Square className="w-6 h-6 text-green-500 mx-auto mb-1" />
                     <p className="font-bold text-white text-lg">{property.surface}</p>
                     <p className="text-white/50 text-xs">m²</p>
                   </div>
                 )}
-                <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}>
+                <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}>
                   <span className="text-2xl block mb-1">{property.furnished ? "🛋️" : "🪑"}</span>
                   <p className="font-bold text-white text-sm">
                     {property.furnished ? "Meublé" : "Non meublé"}
@@ -503,7 +503,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                     {otherEquip.map((eq) => (
                       <span key={eq.label} style={{
-                        background: "var(--bl-surface-2)", border: "1px solid var(--color-border)",
+                        background: "var(--bg-card)", border: "1px solid var(--color-border)",
                         color: "var(--bl-cream-dim)", borderRadius: 999,
                         padding: "6px 14px", fontSize: 12,
                       }}>
@@ -523,7 +523,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   {/* Electricity */}
                   {(property.has_edg || property.has_generator || property.has_solar) && (
                     <div style={{ marginBottom: 14 }}>
-                      <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.40)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
+                      <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
                         ⚡ Électricité
                       </p>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -536,7 +536,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   {/* Water */}
                   {(property.has_tap_water || property.has_borehole || property.has_running_water) && (
                     <div style={{ marginBottom: 14 }}>
-                      <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.40)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
+                      <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
                         💧 Eau
                       </p>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -549,7 +549,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   {/* Comfort */}
                   {(property.is_furnished || property.has_pool) && (
                     <div>
-                      <p style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.40)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
+                      <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
                         🏠 Confort
                       </p>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -569,7 +569,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* Description */}
               {(property.description || (property.features?.length ?? 0) > 0) && (
-                <div className="rounded-2xl p-5" style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}>
+                <div className="rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}>
                   {property.description && (
                     <>
                       <h2 className="font-bold text-white mb-3">Description</h2>
@@ -583,7 +583,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                       <h3 className="font-semibold text-white text-sm mb-3">Équipements</h3>
                       <div className="flex flex-wrap gap-2">
                         {(property.features ?? []).map((f: string) => (
-                          <span key={f} className="text-white/60 text-xs font-medium px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}>
+                          <span key={f} className="text-white/60 text-xs font-medium px-3 py-1.5 rounded-lg" style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}>
                             {f}
                           </span>
                         ))}
@@ -610,7 +610,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* Trust badges */}
               {((profileData as {is_verified?: boolean} | null)?.is_verified || (property.property_images?.length ?? 0) > 0 || property.contact_phone) && (
-                <div className="rounded-2xl p-4 space-y-3" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <div className="rounded-2xl p-4 space-y-3" style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}>
                   {(profileData as {is_verified?: boolean} | null)?.is_verified && (
                     <p className="text-white font-bold text-sm mb-2">Pourquoi faire confiance à cette annonce</p>
                   )}
@@ -662,7 +662,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
             {/* ── Sidebar (desktop) ── */}
             <div className="hidden lg:block lg:col-span-1">
-              <div className="sticky top-20 rounded-2xl p-5 space-y-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--color-border)" }}>
+              <div className="sticky top-20 rounded-2xl p-5 space-y-3" style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}>
                 {profileData && (
                   <div className="flex items-center gap-3 pb-3 border-b border-white/8">
                     <Avatar
@@ -693,7 +693,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <Link
                     href={`/compte/annonces/${property.id}/modifier`}
                     className="flex items-center justify-center gap-2 w-full font-bold py-4 px-4 rounded-2xl transition-all text-sm"
-                    style={{ background: "#D4AF37", color: "var(--bg-primary)" }}
+                    style={{ background: "#D4AF37", color: "#0A1216" }}
                   >
                     ✏️ Gérer cette annonce
                   </Link>
@@ -703,14 +703,14 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <Link
                       href={`/connexion?redirect=/annonces/${property.id}`}
                       className="flex items-center justify-center gap-2 w-full font-bold py-4 px-4 rounded-2xl transition-all text-sm"
-                      style={{ background: "#D4AF37", color: "var(--bg-primary)" }}
+                      style={{ background: "#D4AF37", color: "#0A1216" }}
                     >
                       🔑 Se connecter
                     </Link>
                     <Link
                       href={`/inscription?redirect=/annonces/${property.id}`}
                       className="flex items-center justify-center gap-2 w-full font-semibold py-3 px-4 rounded-xl transition-colors text-sm"
-                      style={{ background: "var(--border-subtle)", border: "1px solid var(--color-border)", color: "var(--bl-cream)" }}
+                      style={{ background: "var(--bg-secondary)", border: "1px solid var(--color-border)", color: "var(--text-primary)" }}
                     >
                       Créer un compte
                     </Link>
@@ -734,7 +734,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     {/* Phone */}
                     <a href={phoneUrl}
                       className="flex items-center justify-center gap-2 w-full text-white font-semibold py-3 px-4 rounded-xl transition-colors text-sm hover:bg-white/5"
-                      style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}>
+                      style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}>
                       <Phone className="w-4 h-4" />
                       📞 Appeler le propriétaire
                     </a>
@@ -763,7 +763,7 @@ export default async function PropertyDetailPage({ params }: Props) {
           <Link
             href={`/compte/annonces/${property.id}/modifier`}
             className="flex items-center justify-center gap-2 w-full font-bold rounded-2xl text-sm"
-            style={{ background: "#D4AF37", color: "var(--bg-primary)", minHeight: "52px" }}
+            style={{ background: "#D4AF37", color: "#0A1216", minHeight: "52px" }}
           >
             ✏️ Gérer cette annonce
           </Link>
@@ -772,14 +772,14 @@ export default async function PropertyDetailPage({ params }: Props) {
             <Link
               href={`/connexion?redirect=/annonces/${property.id}`}
               className="flex-1 flex items-center justify-center gap-2 font-bold rounded-2xl text-sm"
-              style={{ background: "#D4AF37", color: "var(--bg-primary)", minHeight: "52px" }}
+              style={{ background: "#D4AF37", color: "#0A1216", minHeight: "52px" }}
             >
               🔑 Se connecter
             </Link>
             <Link
               href={`/inscription?redirect=/annonces/${property.id}`}
               className="flex-1 flex items-center justify-center gap-2 font-semibold rounded-xl text-sm"
-              style={{ background: "var(--border-subtle)", border: "1px solid var(--color-border)", color: "var(--bl-cream)", minHeight: "52px" }}
+              style={{ background: "var(--bg-secondary)", border: "1px solid var(--color-border)", color: "var(--text-primary)", minHeight: "52px" }}
             >
               S&apos;inscrire
             </Link>
@@ -800,7 +800,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               />
               <a href={phoneUrl}
                 className="flex-1 flex items-center justify-center gap-2 text-white font-semibold rounded-xl text-sm"
-                style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", minHeight: "48px" }}>
+                style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)", minHeight: "48px" }}>
                 <Phone className="w-4 h-4" /> Appeler
               </a>
             </div>

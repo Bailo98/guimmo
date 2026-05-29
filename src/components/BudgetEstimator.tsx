@@ -101,32 +101,32 @@ export default function BudgetEstimator() {
             right: 16,
             zIndex: 50,
             width: "min(320px, calc(100vw - 32px))",
-            background: "var(--bl-surface-2)",
+            background: "var(--bg-card)",
             borderRadius: 20,
-            boxShadow: "0 8px 40px rgba(0,0,0,0.55)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            boxShadow: "0 8px 40px rgba(0,0,0,0.25)",
+            border: "1px solid var(--color-border)",
             overflow: "hidden",
           }}
         >
           {/* Header */}
           <div style={{
             display: "flex", alignItems: "center", justifyContent: "space-between",
-            padding: "14px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)",
+            padding: "14px 16px", borderBottom: "1px solid var(--color-border)",
           }}>
             <div>
               <p style={{ fontSize: 14, fontWeight: 700, color: "var(--bl-cream)", lineHeight: 1 }}>
                 💰 Estimateur de budget
               </p>
-              <p style={{ fontSize: 11, color: "var(--text-secondary-new)", marginTop: 3 }}>
+              <p style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 3 }}>
                 Trouvez des logements dans votre budget
               </p>
             </div>
             <button
               onClick={() => setOpen(false)}
               style={{
-                background: "var(--border-subtle)", border: "none", borderRadius: "50%",
+                background: "var(--bg-secondary)", border: "1px solid var(--color-border)", borderRadius: "50%",
                 width: 30, height: 30, display: "flex", alignItems: "center",
-                justifyContent: "center", cursor: "pointer", color: "rgba(255,255,255,0.6)",
+                justifyContent: "center", cursor: "pointer", color: "var(--text-primary)",
                 minHeight: "auto",
               }}
               aria-label="Fermer"
@@ -139,7 +139,7 @@ export default function BudgetEstimator() {
           <div style={{ padding: "16px" }}>
             {/* Currency toggle */}
             <div style={{
-              display: "flex", background: "var(--border-subtle)",
+              display: "flex", background: "var(--bg-secondary)",
               borderRadius: 999, padding: 3, marginBottom: 16, width: "fit-content",
             }}>
               {(["GNF", "USD"] as const).map((cur) => (
@@ -148,7 +148,7 @@ export default function BudgetEstimator() {
                   onClick={() => setCurrency(cur)}
                   style={{
                     background: currency === cur ? "#D4AF37" : "transparent",
-                    color: currency === cur ? "#0A1216" : "rgba(255,255,255,0.55)",
+                    color: currency === cur ? "#0A1216" : "var(--text-secondary)",
                     border: "none", borderRadius: 999, padding: "5px 18px",
                     fontSize: 12, fontWeight: 700, cursor: "pointer",
                     transition: "background 0.2s, color 0.2s", minHeight: "auto",
@@ -191,8 +191,8 @@ export default function BudgetEstimator() {
                     key={p.label}
                     onClick={() => setBudget(gnfVal)}
                     style={{
-                      background: active ? "#D4AF37" : "rgba(255,255,255,0.07)",
-                      color: active ? "#0A1216" : "rgba(255,255,255,0.7)",
+                      background: active ? "#D4AF37" : "var(--bl-surface)",
+                      color: active ? "#0A1216" : "var(--text-primary)",
                       border: "none", borderRadius: 999, padding: "5px 12px",
                       fontSize: 12, fontWeight: 600, cursor: "pointer",
                       transition: "background 0.2s, color 0.2s", minHeight: "auto",
