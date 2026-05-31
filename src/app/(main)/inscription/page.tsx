@@ -1,10 +1,9 @@
-﻿"use client";
+"use client";
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Phone, Lock, Mail, User, Building, ArrowRight, CheckCircle } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
-import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { erreurFrancais } from "@/lib/errors";
@@ -26,18 +25,54 @@ function roleToAccountType(role: string): string {
   }
 }
 
+/* ─────────────────────────────────────────────
+   Shared input style — rgba-based so it stays
+   white-on-dark in both themes.
+───────────────────────────────────────────── */
+const INPUT: React.CSSProperties = {
+  width: "100%",
+  paddingLeft: 40,
+  paddingRight: 16,
+  paddingTop: 12,
+  paddingBottom: 12,
+  background: "rgba(255,255,255,0.08)",
+  border: "1px solid rgba(255,255,255,0.15)",
+  borderRadius: 12,
+  color: "rgba(255,255,255,1)",
+  fontSize: 15,
+  outline: "none",
+  boxSizing: "border-box",
+  fontFamily: "inherit",
+};
+
+const LABEL: React.CSSProperties = {
+  display: "block",
+  fontSize: 13,
+  fontWeight: 600,
+  color: "rgba(255,255,255,0.70)",
+  marginBottom: 8,
+};
+
+/* Left-column stats */
+const STATS = [
+  { val: "500+",  label: "Annonces actives"  },
+  { val: "10",    label: "Quartiers couverts" },
+  { val: "100%",  label: "Direct proprio"    },
+];
+
 function InscriptionForm() {
-  const router = useRouter();
+  const router       = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") ?? "/compte";
-  const [step, setStep] = useState(1);
-  const [mode, setMode] = useState<"phone" | "email">("phone");
-  const [role, setRole] = useState("");
+  const redirectTo   = searchParams.get("redirect") ?? "/compte";
+
+  const [step, setStep]               = useState(1);
+  const [mode, setMode]               = useState<"phone" | "email">("phone");
+  const [role, setRole]               = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [form, setForm] = useState({
+  const [loading, setLoading]         = useState(false);
+  const [error, setError]             = useState<string | null>(null);
+  const [success, setSuccess]         = useState<string | null>(null);
+  const [form, setForm]               = useState({
     name: "", phone: "", email: "", password: "",
     bio: "", agencyName: "",
   });
@@ -49,6 +84,7 @@ function InscriptionForm() {
   }
 
   const isAgentOrAgency = role === "agent" || role === "agency";
+  const selectedRole    = USER_ROLES.find((r) => r.value === role);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -58,14 +94,14 @@ function InscriptionForm() {
     setError(null);
 
     if (isSupabaseConfigured && supabase) {
-      const rawPhone = form.phone.replace(/[\s+\-()]/g, "");
+      const rawPhone   = form.phone.replace(/[\s+\-()]/g, "");
       const normalized = rawPhone.startsWith("224") ? rawPhone : `224${rawPhone}`;
       // ⚠️  DO NOT rename @bienloger.gn → @logerbien.gn without a Supabase SQL migration.
       // This fake domain is stored permanently in auth.users. Changing it without migrating the DB
       // will lock out every existing phone-registered user (their email won't match anymore).
       const email = mode === "phone" ? `${normalized}@bienloger.gn` : form.email;
 
-      // Vérification doublon téléphone
+      /* Vérification doublon téléphone */
       if (mode === "phone") {
         const { data: existing } = await supabase
           .from("profiles")
@@ -84,12 +120,12 @@ function InscriptionForm() {
         password: form.password,
         options: {
           data: {
-            name: form.name,
-            phone: mode === "phone" ? form.phone : "",
+            name:         form.name,
+            phone:        mode === "phone" ? form.phone : "",
             role,
             account_type: roleToAccountType(role),
-            bio: form.bio || null,
-            agency_name: isAgentOrAgency ? (form.agencyName || null) : null,
+            bio:          form.bio || null,
+            agency_name:  isAgentOrAgency ? (form.agencyName || null) : null,
           },
         },
       });
@@ -100,7 +136,7 @@ function InscriptionForm() {
         return;
       }
 
-      // Forcer la connexion immédiate (bypass confirmation email)
+      /* Forcer la connexion immédiate (bypass confirmation email) */
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password: form.password,
@@ -120,7 +156,7 @@ function InscriptionForm() {
     }
 
     setLoading(false);
-    // After signup, redirect to onboarding unless a specific redirect was requested
+    /* After signup, redirect to onboarding unless a specific redirect was requested */
     if (redirectTo === "/compte") {
       router.push("/onboarding");
     } else {
@@ -128,157 +164,241 @@ function InscriptionForm() {
     }
   }
 
-  const selectedRole = USER_ROLES.find((r) => r.value === role);
-
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col">
-      <div className="p-4 flex items-center justify-between">
-        <Logo size="lg" />
-        <Link href="/connexion" className="text-sm text-[#666666] hover:text-white transition-colors">
-          Déjà un compte ? Se connecter
-        </Link>
-      </div>
+    <div style={{ display: "flex", minHeight: "calc(100svh - 72px)" }}>
 
-      <div className="flex-1 flex items-center justify-center px-4 py-8">
-        <div className="w-full max-w-sm">
-          {/* Progress */}
-          <div className="flex items-center gap-2 mb-8 justify-center">
-            {[1, 2].map((s) => (
-              <div
-                key={s}
-                className={cn(
-                  "h-1.5 rounded-full transition-all duration-300",
-                  s < step  ? "bg-[#D4AF37] w-12"
-                  : s === step ? "bg-[#D4AF37] w-16"
-                  : "bg-[#2a3040] w-8"
-                )}
-              />
+      {/* ══════════════════════════════════════════════
+          LEFT COLUMN — photo + branding (desktop only)
+      ══════════════════════════════════════════════ */}
+      <div
+        className="hidden lg:flex lg:w-1/2 flex-col justify-end"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=900&q=80')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          position: "relative",
+        }}
+      >
+        {/* Dark gradient overlay */}
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(to bottom, rgba(10,18,22,0.25) 0%, rgba(10,18,22,0.92) 100%)",
+        }} />
+        {/* Branding */}
+        <div style={{ position: "relative", zIndex: 1, padding: 48 }}>
+          <Logo size="lg" />
+          <h2 style={{
+            fontSize: 30, fontWeight: 900, lineHeight: 1.25, marginTop: 28, marginBottom: 10,
+            color: "rgba(255,255,255,1)",
+          }}>
+            Rejoignez des milliers<br />de Guinéens qui louent<br />sans intermédiaire
+          </h2>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.58)", marginBottom: 32 }}>
+            Créez votre compte gratuitement en 2 minutes.
+          </p>
+          <div style={{ display: "flex", gap: 32 }}>
+            {STATS.map((s) => (
+              <div key={s.val}>
+                <div style={{ fontSize: 22, fontWeight: 900, color: "#D4AF37" }}>{s.val}</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.52)" }}>{s.label}</div>
+              </div>
             ))}
           </div>
+        </div>
+      </div>
 
-          <div className="rounded-3xl p-8" style={{ background: "var(--bl-surface)", border: "1px solid var(--color-border)", borderRadius: 24 }}>
+      {/* ══════════════════════════════════════════════
+          RIGHT COLUMN — form (full width on mobile)
+      ══════════════════════════════════════════════ */}
+      <div
+        className="flex-1 lg:w-1/2 flex flex-col items-center justify-center px-4 py-10"
+        style={{ background: "linear-gradient(160deg, #0A1216 0%, #1a2535 100%)" }}
+      >
+        {/* Mobile: logo */}
+        <div className="lg:hidden mb-6 text-center">
+          <Logo size="lg" />
+          <p style={{ color: "rgba(255,255,255,0.42)", fontSize: 13, marginTop: 8 }}>
+            Créez votre compte gratuit
+          </p>
+        </div>
 
-            {/* ── STEP 1 — Profil ── */}
+        {/* Step progress */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20, justifyContent: "center" }}>
+          {[1, 2].map((s) => (
+            <div
+              key={s}
+              style={{
+                height: 6,
+                borderRadius: 99,
+                transition: "all 0.3s",
+                background: s <= step ? "#D4AF37" : "rgba(255,255,255,0.18)",
+                width: s === step ? 40 : s < step ? 32 : 24,
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="w-full max-w-[440px]">
+
+          {/* ─── Form card ─── */}
+          <div style={{
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.09)",
+            borderRadius: 24,
+            padding: 32,
+          }}>
+
+            {/* ══ STEP 1 — Choisir le profil ══ */}
             {step === 1 && (
               <>
-                <div className="text-center mb-6">
-                  <h1 className="text-2xl font-black text-white">Créer un compte</h1>
-                  <p className="text-[#666666] text-sm mt-1">Quel est votre profil ?</p>
+                <div style={{ textAlign: "center", marginBottom: 24 }}>
+                  <h1 style={{ fontSize: 22, fontWeight: 900, color: "rgba(255,255,255,1)" }}>
+                    Créer un compte
+                  </h1>
+                  <p style={{ color: "rgba(255,255,255,0.48)", fontSize: 14, marginTop: 4 }}>
+                    Quel est votre profil ?
+                  </p>
                 </div>
 
-                <div className="space-y-3">
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {USER_ROLES.map((r) => (
                     <button
                       key={r.value}
                       type="button"
                       onClick={() => setRole(r.value)}
-                      className={cn(
-                        "w-full flex items-center gap-3 p-4 rounded-2xl border transition-all text-left",
-                        role === r.value
-                          ? "border-[#D4AF37] bg-[rgba(212,175,55,0.10)]"
-                          : "hover:border-white/20"
-                      )}
                       style={{
-                        minHeight: 80,
-                        borderColor: role === r.value ? "#D4AF37" : "#1e2a30",
-                        background: role === r.value ? "rgba(212,175,55,0.10)" : "var(--bl-surface)",
+                        display: "flex", alignItems: "center", gap: 14,
+                        padding: "14px 16px",
+                        borderRadius: 16,
+                        border: `1px solid ${role === r.value ? "#D4AF37" : "rgba(255,255,255,0.10)"}`,
+                        background: role === r.value ? "rgba(212,175,55,0.10)" : "rgba(255,255,255,0.03)",
+                        cursor: "pointer", textAlign: "left", transition: "all 0.2s",
+                        minHeight: 72,
                       }}
                     >
-                      <span style={{ fontSize: 32, lineHeight: 1, flexShrink: 0 }}>{r.icon}</span>
-                      <div className="flex-1">
-                        <p className={cn("font-semibold text-sm", role === r.value ? "text-[#D4AF37]" : "text-white")}>
+                      <span style={{ fontSize: 28, lineHeight: 1, flexShrink: 0 }}>{r.icon}</span>
+                      <div style={{ flex: 1 }}>
+                        <p style={{
+                          fontWeight: 700, fontSize: 14, margin: 0,
+                          color: role === r.value ? "#D4AF37" : "rgba(255,255,255,1)",
+                        }}>
                           {r.label}
                         </p>
-                        <p className="text-[#666666] text-xs mt-0.5">{r.desc}</p>
+                        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", margin: "2px 0 0" }}>
+                          {r.desc}
+                        </p>
                       </div>
-                      {role === r.value && <CheckCircle className="w-4 h-4 text-[#D4AF37] flex-shrink-0" />}
+                      {role === r.value && (
+                        <CheckCircle style={{ width: 18, height: 18, color: "#D4AF37", flexShrink: 0 }} />
+                      )}
                     </button>
                   ))}
                 </div>
 
-                <Button
-                  onClick={() => role && setStep(2)}
+                <button
+                  type="button"
                   disabled={!role}
-                  variant="brand"
-                  size="lg"
-                  className="w-full mt-6"
+                  onClick={() => role && setStep(2)}
+                  style={{
+                    marginTop: 20, width: "100%", padding: "14px 0",
+                    background: "#D4AF37", color: "#0A1216",
+                    fontWeight: 800, fontSize: 15, borderRadius: 14, border: "none",
+                    cursor: role ? "pointer" : "not-allowed",
+                    opacity: role ? 1 : 0.45,
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                    transition: "opacity 0.2s", minHeight: 48,
+                  }}
                 >
-                  Continuer <ArrowRight className="w-4 h-4" />
-                </Button>
+                  Continuer <ArrowRight style={{ width: 16, height: 16 }} />
+                </button>
               </>
             )}
 
-            {/* ── STEP 2 — Formulaire ── */}
+            {/* ══ STEP 2 — Formulaire ══ */}
             {step === 2 && (
               <>
-                <div className="text-center mb-6">
+                <div style={{ textAlign: "center", marginBottom: 20 }}>
                   <button
+                    type="button"
                     onClick={() => { setStep(1); setError(null); }}
-                    className="text-[#666666] hover:text-white text-sm mb-2 flex items-center gap-1 mx-auto"
+                    style={{
+                      display: "inline-flex", alignItems: "center", gap: 4,
+                      fontSize: 13, color: "rgba(255,255,255,0.45)",
+                      background: "none", border: "none", cursor: "pointer", marginBottom: 8,
+                    }}
                   >
                     ← Retour
                   </button>
-                  <div className="flex items-center justify-center gap-2 mb-1">
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 4 }}>
                     <span style={{ fontSize: 20 }}>{selectedRole?.icon}</span>
-                    <h1 className="text-xl font-black text-white">{selectedRole?.label}</h1>
+                    <h1 style={{ fontSize: 20, fontWeight: 900, color: "rgba(255,255,255,1)", margin: 0 }}>
+                      {selectedRole?.label}
+                    </h1>
                   </div>
-                  <p className="text-[#666666] text-sm">Vos informations</p>
+                  <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 13 }}>Vos informations</p>
                 </div>
 
-                {/* Phone / Email toggle */}
-                <div className="grid grid-cols-2 p-1 mb-4 rounded-xl" style={{ background: "var(--bg-primary)" }}>
+                {/* Phone / Email mode toggle */}
+                <div style={{
+                  display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4,
+                  padding: 4, background: "rgba(0,0,0,0.30)", borderRadius: 12, marginBottom: 16,
+                }}>
                   {(["phone", "email"] as const).map((m) => (
                     <button
                       key={m}
                       type="button"
                       onClick={() => switchMode(m)}
-                      className="py-2.5 text-sm font-bold rounded-lg transition-colors"
-                      style={mode === m ? { background: "#D4AF37", color: "var(--bg-primary)" } : { color: "#666666" }}
+                      style={{
+                        padding: "10px 0", borderRadius: 10, fontSize: 14, fontWeight: 700,
+                        border: "none", cursor: "pointer", transition: "all 0.2s",
+                        ...(mode === m
+                          ? { background: "#D4AF37", color: "#0A1216" }
+                          : { background: "transparent", color: "rgba(255,255,255,0.48)" }),
+                      }}
                     >
                       {m === "phone" ? "📱 Téléphone" : "✉️ Email"}
                     </button>
                   ))}
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+
                   {/* Nom */}
                   <div>
-                    <label className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
+                    <label style={LABEL}>
                       {role === "agency" ? "Nom de l'agence" : "Votre nom complet"}
                     </label>
-                    <div className="relative">
+                    <div style={{ position: "relative" }}>
                       {role === "agency"
-                        ? <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
-                        : <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />}
+                        ? <Building style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, color: "rgba(255,255,255,0.32)", pointerEvents: "none" }} />
+                        : <User    style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, color: "rgba(255,255,255,0.32)", pointerEvents: "none" }} />}
                       <input
                         type="text"
                         placeholder={role === "agency" ? "Conakry Premium Immo" : "Mamadou Diallo"}
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
-                        style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
-                        required
-                        autoComplete="name"
+                        required autoComplete="name"
+                        style={INPUT}
                       />
                     </div>
                   </div>
 
-                  {/* Nom de l'agence si agent */}
+                  {/* Nom agence si agent/agence */}
                   {isAgentOrAgency && (
                     <div>
-                      <label className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
+                      <label style={LABEL}>
                         {role === "agency" ? "Raison sociale" : "Agence de rattachement"}
-                        <span className="text-white/30 font-normal ml-1">(optionnel)</span>
+                        <span style={{ color: "rgba(255,255,255,0.28)", fontWeight: 400, marginLeft: 4 }}>(optionnel)</span>
                       </label>
-                      <div className="relative">
-                        <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
+                      <div style={{ position: "relative" }}>
+                        <Building style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, color: "rgba(255,255,255,0.32)", pointerEvents: "none" }} />
                         <input
                           type="text"
                           placeholder="Ex: Immo Guinée SARL"
                           value={form.agencyName}
                           onChange={(e) => setForm({ ...form, agencyName: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
-                          style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
+                          style={INPUT}
                         />
                       </div>
                     </div>
@@ -287,9 +407,9 @@ function InscriptionForm() {
                   {/* Bio si agent/agence */}
                   {isAgentOrAgency && (
                     <div>
-                      <label className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
+                      <label style={LABEL}>
                         Bio courte
-                        <span className="text-white/30 font-normal ml-1">(optionnel)</span>
+                        <span style={{ color: "rgba(255,255,255,0.28)", fontWeight: 400, marginLeft: 4 }}>(optionnel)</span>
                       </label>
                       <textarea
                         rows={2}
@@ -297,54 +417,52 @@ function InscriptionForm() {
                         value={form.bio}
                         onChange={(e) => setForm({ ...form, bio: e.target.value })}
                         maxLength={200}
-                        className="w-full rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm resize-none"
-                        style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
+                        style={{
+                          ...INPUT,
+                          paddingLeft: 16,
+                          resize: "none",
+                          height: "auto",
+                        }}
                       />
                     </div>
                   )}
 
-                  {/* Téléphone ou email */}
+                  {/* Téléphone ou Email */}
                   {mode === "phone" ? (
                     <div>
-                      <label className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
-                        Numéro de téléphone
-                      </label>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
+                      <label style={LABEL}>Numéro de téléphone</label>
+                      <div style={{ position: "relative" }}>
+                        <Phone style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, color: "rgba(255,255,255,0.32)", pointerEvents: "none" }} />
                         <input
                           type="tel"
                           placeholder="Ex : 628 000 000"
                           value={form.phone}
                           onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
-                          style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
-                          required
-                          autoComplete="tel"
+                          required autoComplete="tel"
+                          style={INPUT}
                         />
                       </div>
-                      <button type="button" onClick={() => switchMode("email")} className="text-xs text-[#D4AF37] hover:underline mt-1.5 block">
+                      <button type="button" onClick={() => switchMode("email")}
+                        style={{ fontSize: 12, color: "#D4AF37", background: "none", border: "none", cursor: "pointer", marginTop: 6, padding: 0 }}>
                         Utiliser mon email à la place →
                       </button>
                     </div>
                   ) : (
                     <div>
-                      <label className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
-                        Adresse email
-                      </label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
+                      <label style={LABEL}>Adresse email</label>
+                      <div style={{ position: "relative" }}>
+                        <Mail style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, color: "rgba(255,255,255,0.32)", pointerEvents: "none" }} />
                         <input
                           type="email"
                           placeholder="vous@email.com"
                           value={form.email}
                           onChange={(e) => setForm({ ...form, email: e.target.value })}
-                          className="w-full rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
-                          style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
-                          required
-                          autoComplete="email"
+                          required autoComplete="email"
+                          style={INPUT}
                         />
                       </div>
-                      <button type="button" onClick={() => switchMode("phone")} className="text-xs text-[#D4AF37] hover:underline mt-1.5 block">
+                      <button type="button" onClick={() => switchMode("phone")}
+                        style={{ fontSize: 12, color: "#D4AF37", background: "none", border: "none", cursor: "pointer", marginTop: 6, padding: 0 }}>
                         ← Utiliser mon numéro de téléphone
                       </button>
                     </div>
@@ -352,57 +470,76 @@ function InscriptionForm() {
 
                   {/* Mot de passe */}
                   <div>
-                    <label className="block text-sm font-semibold text-[rgba(255,255,255,0.75)] mb-2">
-                      Mot de passe
-                    </label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] pointer-events-none" />
+                    <label style={LABEL}>Mot de passe</label>
+                    <div style={{ position: "relative" }}>
+                      <Lock style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", width: 16, height: 16, color: "rgba(255,255,255,0.32)", pointerEvents: "none" }} />
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder="•••••••• (min. 8 caractères)"
                         value={form.password}
                         onChange={(e) => setForm({ ...form, password: e.target.value })}
-                        className="w-full rounded-xl pl-10 pr-11 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-                        style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16 }}
-                        required
-                        minLength={8}
-                        autoComplete="new-password"
+                        required minLength={8} autoComplete="new-password"
+                        style={{ ...INPUT, paddingRight: 44 }}
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666666] hover:text-white"
+                        style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "rgba(255,255,255,0.38)", padding: 0, display: "flex" }}
                       >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        {showPassword ? <EyeOff style={{ width: 16, height: 16 }} /> : <Eye style={{ width: 16, height: 16 }} />}
                       </button>
                     </div>
                   </div>
 
+                  {/* Error / success */}
                   {error && (
-                    <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3">
-                      <p className="text-red-400 text-sm">{error}</p>
+                    <div style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.28)", borderRadius: 12, padding: "12px 16px" }}>
+                      <p style={{ color: "#f87171", fontSize: 13, margin: 0 }}>{error}</p>
                     </div>
                   )}
                   {success && (
-                    <div className="bg-green-500/10 border border-green-500/30 rounded-xl px-4 py-3">
-                      <p className="text-[#D4AF37] text-sm">{success}</p>
+                    <div style={{ background: "rgba(34,197,94,0.10)", border: "1px solid rgba(34,197,94,0.28)", borderRadius: 12, padding: "12px 16px" }}>
+                      <p style={{ color: "#4ade80", fontSize: 13, margin: 0 }}>{success}</p>
                     </div>
                   )}
 
-                  <Button type="submit" variant="brand" size="lg" loading={loading} className="w-full">
-                    Créer mon compte <ArrowRight className="w-4 h-4" />
-                  </Button>
+                  {/* CTA */}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    style={{
+                      width: "100%", padding: "14px 0",
+                      background: "#D4AF37", color: "#0A1216",
+                      fontWeight: 800, fontSize: 15, borderRadius: 14, border: "none",
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.75 : 1,
+                      display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                      transition: "opacity 0.2s", minHeight: 48,
+                    }}
+                  >
+                    {loading
+                      ? "Création du compte…"
+                      : <><span>Créer mon compte</span><ArrowRight style={{ width: 16, height: 16 }} /></>}
+                  </button>
                 </form>
 
-                <p className="text-[#666666] text-xs text-center mt-4">
+                <p style={{ textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 14 }}>
                   En créant un compte, vous acceptez nos{" "}
-                  <Link href="/cgv" className="text-[#D4AF37] hover:underline">
+                  <Link href="/cgv" style={{ color: "#D4AF37", textDecoration: "none" }}>
                     conditions d&apos;utilisation
                   </Link>
                 </p>
               </>
             )}
           </div>
+
+          {/* Sign-in link */}
+          <p style={{ textAlign: "center", fontSize: 14, color: "rgba(255,255,255,0.42)", marginTop: 20 }}>
+            Déjà un compte ?{" "}
+            <Link href="/connexion" style={{ color: "#D4AF37", fontWeight: 700, textDecoration: "none" }}>
+              Se connecter
+            </Link>
+          </p>
         </div>
       </div>
     </div>
@@ -411,7 +548,14 @@ function InscriptionForm() {
 
 export default function InscriptionPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[var(--bg-primary)]" />}>
+    <Suspense
+      fallback={
+        <div style={{
+          minHeight: "calc(100svh - 72px)",
+          background: "linear-gradient(160deg, #0A1216 0%, #1a2535 100%)",
+        }} />
+      }
+    >
       <InscriptionForm />
     </Suspense>
   );

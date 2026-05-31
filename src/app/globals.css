@@ -416,7 +416,7 @@ html:not(.dark) input,
 html:not(.dark) select,
 html:not(.dark) textarea {
   background: #FFFFFF !important;
-  border-color: rgba(0,0,0,0.15) !important;
+  border: 1px solid rgba(0,0,0,0.20) !important;
   color: #121212 !important;
 }
 input:focus, select:focus, textarea:focus {
@@ -695,3 +695,51 @@ html:not(.dark) button:not([class*="bg-"]):not([style*="background"]) {
 
 /* White borders on arbitrary Tailwind classes → theme border colour */
 html:not(.dark) [class*="border-white/"] { border-color: rgba(0,0,0,0.15) !important; }
+
+/* ── No-scrollbar utility ── */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* ══════════════════════════════════════════════════════════════
+   LIGHT MODE — DÉFINITIVE FIXES: inputs, pills, labels, cards
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Labels above inputs and filter sections ── */
+html:not(.dark) label {
+  color: #121212 !important;
+}
+
+/* ── Filter pills / chips (rounded-full buttons & links) ──
+   Inactive → white bg + dark text + subtle border.
+   Active gold pills preserved by the existing exception higher up. */
+html:not(.dark) button.rounded-full:not([style*="background: #D4AF37"]),
+html:not(.dark) a.rounded-full:not([style*="background: #D4AF37"]) {
+  background: #FFFFFF !important;
+  color: #121212 !important;
+  border: 1px solid rgba(0,0,0,0.15) !important;
+}
+
+/* Active / selected gold pills */
+html:not(.dark) button.rounded-full[style*="background: #D4AF37"],
+html:not(.dark) a.rounded-full[style*="background: #D4AF37"] {
+  background: #D4AF37 !important;
+  color: #0A1216 !important;
+  border-color: transparent !important;
+}
+
+/* ── Cards: add a soft shadow in light mode ── */
+html:not(.dark) .bl-card,
+html:not(.dark) [class*="rounded-2xl"][class*="border-"],
+html:not(.dark) [class*="rounded-3xl"][class*="border-"] {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* ── Filter bar / sticky search section ── */
+html:not(.dark) .filter-bar,
+html:not(.dark) .annonces-filter-bar {
+  background: #F5F0E8 !important;
+  border-bottom: 1px solid rgba(0,0,0,0.08) !important;
+}
