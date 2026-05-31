@@ -98,7 +98,7 @@ export default function AdminLoginPage() {
                 borderRadius: "0.75rem",
                 padding: "0.75rem 1rem",
                 fontSize: "0.875rem",
-                color: "var(--bl-cream)",
+                color: "var(--text-primary)",
                 outline: "none",
                 boxSizing: "border-box",
                 transition: "border-color 0.2s",
@@ -138,7 +138,7 @@ export default function AdminLoginPage() {
             style={{
               width: "100%",
               background: loading ? "#7c3b0c" : "#D4AF37",
-              color: "var(--bl-cream)",
+              color: "var(--text-primary)",
               fontWeight: 700,
               fontSize: "0.875rem",
               padding: "0.875rem",

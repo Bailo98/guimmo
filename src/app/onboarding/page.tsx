@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, ChevronRight, User, Home, Search } from "lucide-react";
@@ -87,7 +87,7 @@ export default function OnboardingPage() {
                   {step > i + 1 ? <CheckCircle2 className="w-3.5 h-3.5" /> : i + 1}
                 </div>
                 {i < STEPS.length - 1 && (
-                  <div className="flex-1 h-0.5 mx-1" style={{ background: step > i + 1 ? "#D4AF37" : "var(--color-border)" }} />
+                  <div className="flex-1 h-0.5 mx-1" style={{ background: step > i + 1 ? "#D4AF37" : "var(--border)" }} />
                 )}
               </div>
             ))}
@@ -142,7 +142,7 @@ export default function OnboardingPage() {
                       width: "100%", textAlign: "left", padding: "16px 18px",
                       borderRadius: 16, cursor: "pointer", transition: "all 0.15s",
                       background: role === r.id ? "rgba(212,175,55,0.10)" : "var(--bg-card)",
-                      border: role === r.id ? "2px solid #D4AF37" : "1px solid var(--color-border)",
+                      border: role === r.id ? "2px solid #D4AF37" : "1px solid var(--border)",
                     }}
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -205,7 +205,7 @@ export default function OnboardingPage() {
                   placeholder="Ex: Mamadou Diallo"
                   style={{
                     width: "100%", padding: "12px 16px", borderRadius: 12, outline: "none",
-                    background: "var(--bg-card)", border: "1px solid var(--color-border)",
+                    background: "var(--bg-card)", border: "1px solid var(--border)",
                     color: "var(--text-primary)", fontSize: 15, boxSizing: "border-box",
                   }}
                 />
@@ -221,7 +221,7 @@ export default function OnboardingPage() {
                   placeholder="+224 6XX XX XX XX"
                   style={{
                     width: "100%", padding: "12px 16px", borderRadius: 12, outline: "none",
-                    background: "var(--bg-card)", border: "1px solid var(--color-border)",
+                    background: "var(--bg-card)", border: "1px solid var(--border)",
                     color: "var(--text-primary)", fontSize: 15, boxSizing: "border-box",
                   }}
                 />
@@ -232,7 +232,7 @@ export default function OnboardingPage() {
               <button
                 onClick={() => setStep(1)}
                 style={{
-                  padding: "14px 20px", borderRadius: 14, border: "1px solid var(--color-border)",
+                  padding: "14px 20px", borderRadius: 14, border: "1px solid var(--border)",
                   background: "transparent", color: "var(--text-secondary)", fontWeight: 600, fontSize: 14, cursor: "pointer",
                 }}
               >
@@ -301,7 +301,7 @@ export default function OnboardingPage() {
                 onClick={() => handleFinish("/")}
                 style={{
                   width: "100%", padding: "14px", borderRadius: 14,
-                  border: "1px solid var(--color-border)", background: "transparent",
+                  border: "1px solid var(--border)", background: "transparent",
                   color: "var(--text-secondary)", fontWeight: 600, fontSize: 14, cursor: "pointer",
                 }}
               >

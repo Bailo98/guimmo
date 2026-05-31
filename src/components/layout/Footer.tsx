@@ -4,7 +4,7 @@ import { MessageCircle } from "lucide-react";
 
 export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
   return (
-    <footer style={{ background: "var(--bl-sidebar)", borderTop: "1px solid var(--color-border)" }} className="mt-16">
+    <footer style={{ background: "var(--bg-secondary)", borderTop: "1px solid var(--border)" }} className="mt-16">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
@@ -89,7 +89,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
           </div>
         </div>
 
-        <div className="pt-6 text-center" style={{ borderTop: "1px solid var(--color-border)" }}>
+        <div className="pt-6 text-center" style={{ borderTop: "1px solid var(--border)" }}>
           <p className="text-xs" style={{ color: "#666666" }}>
             🏠 LogerBien — Conakry, Guinée &nbsp;|&nbsp; © 2025 Tous droits réservés
           </p>

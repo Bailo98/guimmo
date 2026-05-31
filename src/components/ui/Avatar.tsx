@@ -66,7 +66,7 @@ export function Avatar({ url, name, size = "md", className, style }: AvatarProps
 
   return (
     <div style={{ ...base, background: bg }} className={className}>
-      <span style={{ color: "var(--bl-cream)", fontWeight: 800, fontSize, lineHeight: 1, fontFamily: "inherit" }}>
+      <span style={{ color: "var(--text-primary)", fontWeight: 800, fontSize, lineHeight: 1, fontFamily: "inherit" }}>
         {ini}
       </span>
     </div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -186,7 +186,7 @@ export function PropertyCard({
     return (
       <div
         className={cn("group flex gap-3 rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5", className)}
-        style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
       >
         <Link href={`/annonces/${property.id}`} className="relative w-28 flex-shrink-0">
           <div className="relative w-full h-full min-h-[100px]">
@@ -262,8 +262,8 @@ export function PropertyCard({
           display: "flex", flexDirection: "column", alignItems: "center",
           justifyContent: "center", gap: 8, background: "var(--bg-secondary)",
         }}>
-          <Home style={{ width: 40, height: 40, color: "var(--bl-cream-faint)", strokeWidth: 1.2 }} />
-          <span style={{ color: "var(--bl-cream-faint)", fontSize: 11 }}>Aucune photo</span>
+          <Home style={{ width: 40, height: 40, color: "var(--text-primary-faint)", strokeWidth: 1.2 }} />
+          <span style={{ color: "var(--text-primary-faint)", fontSize: 11 }}>Aucune photo</span>
         </div>
       )}
 

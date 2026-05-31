@@ -52,7 +52,7 @@ export function ReportButton({ propertyId }: Props) {
           style={{ backdropFilter: "blur(6px)", backgroundColor: "rgba(0,0,0,0.5)" }}
           onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
         >
-          <div className="w-full max-w-sm bg-[var(--bg-card-light)] rounded-2xl p-6 border border-[var(--color-border)] shadow-2xl">
+          <div className="w-full max-w-sm bg-[var(--bg-card-light)] rounded-2xl p-6 border border-[var(--border)] shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Flag className="w-4 h-4 text-red-500" /> Signaler cette annonce
@@ -70,7 +70,7 @@ export function ReportButton({ propertyId }: Props) {
                   className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition-all border ${
                     reason === r
                       ? "border-red-400 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
-                      : "border-slate-200 dark:border-[var(--color-border)] text-slate-600 dark:text-slate-300 hover:border-slate-300"
+                      : "border-slate-200 dark:border-[var(--border)] text-slate-600 dark:text-slate-300 hover:border-slate-300"
                   }`}
                 >
                   {r}

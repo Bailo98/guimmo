@@ -61,7 +61,7 @@ export default function MesAnnoncesPage() {
       </div>
 
       {publishedListings.length === 0 && (
-        <div className="bg-[var(--bg-card-light)] rounded-2xl p-10 border border-[var(--color-border)] text-center">
+        <div className="bg-[var(--bg-card-light)] rounded-2xl p-10 border border-[var(--border)] text-center">
           <p className="text-slate-400 text-sm mb-4">Vous n&apos;avez pas encore d&apos;annonce publiée.</p>
           <Link
             href="/publier"
@@ -82,7 +82,7 @@ export default function MesAnnoncesPage() {
           return (
             <div
               key={p.id}
-              className={`bg-[var(--bg-card-light)] rounded-2xl p-4 border border-[var(--color-border)] transition-opacity ${isPaused ? "opacity-60" : ""}`}
+              className={`bg-[var(--bg-card-light)] rounded-2xl p-4 border border-[var(--border)] transition-opacity ${isPaused ? "opacity-60" : ""}`}
             >
               <div className="flex items-start gap-3">
                 {/* Thumbnail */}
@@ -127,14 +127,14 @@ export default function MesAnnoncesPage() {
                   <div className="flex flex-wrap gap-2 mt-3">
                     <Link
                       href={`/annonces/${p.id}`}
-                      className="flex-1 text-center text-xs font-semibold py-1.5 rounded-lg border border-[var(--color-border)] text-slate-600 dark:text-slate-300 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
+                      className="flex-1 text-center text-xs font-semibold py-1.5 rounded-lg border border-[var(--border)] text-slate-600 dark:text-slate-300 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
                     >
                       Voir
                     </Link>
 
                     <button
                       onClick={() => router.push(`/compte/annonces/${p.id}/modifier`)}
-                      className="flex-1 flex items-center justify-center gap-1 text-xs font-semibold py-1.5 rounded-lg border border-[var(--color-border)] text-slate-600 dark:text-slate-300 hover:border-blue-500 hover:text-blue-500 transition-colors"
+                      className="flex-1 flex items-center justify-center gap-1 text-xs font-semibold py-1.5 rounded-lg border border-[var(--border)] text-slate-600 dark:text-slate-300 hover:border-blue-500 hover:text-blue-500 transition-colors"
                     >
                       <Edit className="w-3 h-3" /> Modifier
                     </button>
@@ -145,7 +145,7 @@ export default function MesAnnoncesPage() {
                       className={`flex items-center justify-center gap-1 text-xs font-semibold py-1.5 px-3 rounded-lg border transition-colors ${
                         isPaused
                           ? "border-green-400 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20"
-                          : "border-slate-200 dark:border-[var(--color-border)] text-slate-500 dark:text-slate-400 hover:border-[#D4AF37] hover:text-[#D4AF37]"
+                          : "border-slate-200 dark:border-[var(--border)] text-slate-500 dark:text-slate-400 hover:border-[#D4AF37] hover:text-[#D4AF37]"
                       }`}
                       title={isPaused ? "Réactiver" : "Mettre en pause"}
                     >
@@ -155,7 +155,7 @@ export default function MesAnnoncesPage() {
                     {/* Duplicate */}
                     <button
                       onClick={() => duplicateListing(p.id)}
-                      className="flex items-center justify-center gap-1 text-xs font-semibold py-1.5 px-3 rounded-lg border border-[var(--color-border)] text-slate-600 dark:text-slate-300 hover:border-blue-400 hover:text-blue-400 transition-colors"
+                      className="flex items-center justify-center gap-1 text-xs font-semibold py-1.5 px-3 rounded-lg border border-[var(--border)] text-slate-600 dark:text-slate-300 hover:border-blue-400 hover:text-blue-400 transition-colors"
                       title="Dupliquer"
                     >
                       <Copy className="w-3 h-3" />
@@ -164,7 +164,7 @@ export default function MesAnnoncesPage() {
                     {/* Delete */}
                     <button
                       onClick={() => setConfirmDelete({ id: p.id, title: p.title })}
-                      className="flex items-center justify-center gap-1 text-xs font-semibold py-1.5 px-3 rounded-lg border border-[var(--color-border)] text-red-400 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                      className="flex items-center justify-center gap-1 text-xs font-semibold py-1.5 px-3 rounded-lg border border-[var(--border)] text-red-400 hover:border-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                     >
                       <Trash2 className="w-3 h-3" />
                     </button>
@@ -200,7 +200,7 @@ export default function MesAnnoncesPage() {
       {/* Delete confirmation modal */}
       {confirmDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-[var(--color-border)]">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-[var(--border)]">
             <div className="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Trash2 className="w-6 h-6 text-red-500" />
             </div>
@@ -212,7 +212,7 @@ export default function MesAnnoncesPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmDelete(null)}
-                className="flex-1 py-2.5 rounded-xl border border-[var(--color-border)] text-slate-600 dark:text-slate-300 text-sm font-semibold hover:border-slate-400 transition-colors"
+                className="flex-1 py-2.5 rounded-xl border border-[var(--border)] text-slate-600 dark:text-slate-300 text-sm font-semibold hover:border-slate-400 transition-colors"
               >
                 Annuler
               </button>

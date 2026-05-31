@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -17,7 +17,7 @@ const DashboardChart = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div style={{ height: 140, background: "var(--bl-surface)", borderRadius: "0 12px 12px 0", borderLeft: "3px solid rgba(212,175,55,0.20)", marginBottom: 24 }} />
+      <div style={{ height: 140, background: "var(--bg-card)", borderRadius: "0 12px 12px 0", borderLeft: "3px solid rgba(212,175,55,0.20)", marginBottom: 24 }} />
     ),
   }
 );
@@ -106,19 +106,19 @@ function todayLabel() {
 function DeleteDialog({ title, onConfirm, onCancel }: { title: string; onConfirm: () => void; onCancel: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border-md)" }}>
+      <div className="rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(240,68,68,0.15)" }}>
             <AlertTriangle className="w-5 h-5 text-red-400" />
           </div>
           <div>
-            <p className="font-bold text-sm" style={{ color: "var(--bl-cream)" }}>Supprimer l&apos;annonce</p>
-            <p className="text-xs mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>Cette action est irréversible.</p>
+            <p className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>Supprimer l&apos;annonce</p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--text-primary-faint)" }}>Cette action est irréversible.</p>
           </div>
         </div>
-        <p className="text-sm mb-5 line-clamp-2" style={{ color: "var(--bl-cream-dim)" }}>&ldquo;{title}&rdquo;</p>
+        <p className="text-sm mb-5 line-clamp-2" style={{ color: "var(--text-primary-dim)" }}>&ldquo;{title}&rdquo;</p>
         <div className="flex gap-3">
-          <button onClick={onCancel} className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-colors hover:bg-white/5" style={{ border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}>
+          <button onClick={onCancel} className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-colors hover:bg-white/5" style={{ border: "1px solid var(--border)", color: "var(--text-primary-dim)" }}>
             Annuler
           </button>
           <button onClick={onConfirm} className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold text-sm transition-colors">
@@ -134,26 +134,26 @@ function DeleteAccountDialog({ onConfirm, onCancel }: { onConfirm: () => void; o
   const [confirm, setConfirm] = useState("");
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ background: "var(--bl-surface)", border: "1px solid rgba(240,68,68,0.30)" }}>
+      <div className="rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ background: "var(--bg-card)", border: "1px solid rgba(240,68,68,0.30)" }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(240,68,68,0.15)" }}>
             <AlertTriangle className="w-5 h-5 text-red-400" />
           </div>
           <div>
             <p className="font-bold text-sm text-red-400">Supprimer le compte</p>
-            <p className="text-xs mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>Action permanente et irréversible.</p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--text-primary-faint)" }}>Action permanente et irréversible.</p>
           </div>
         </div>
-        <p className="text-sm mb-4" style={{ color: "var(--bl-cream-dim)" }}>
-          Toutes vos annonces, messages et données seront supprimés. Tapez <strong style={{ color: "var(--bl-cream)" }}>SUPPRIMER</strong> pour confirmer.
+        <p className="text-sm mb-4" style={{ color: "var(--text-primary-dim)" }}>
+          Toutes vos annonces, messages et données seront supprimés. Tapez <strong style={{ color: "var(--text-primary)" }}>SUPPRIMER</strong> pour confirmer.
         </p>
         <input
           type="text" value={confirm} onChange={(e) => setConfirm(e.target.value)}
           placeholder="SUPPRIMER"
-          style={{ background: "var(--bl-surface-2)", border: "1px solid rgba(240,68,68,0.30)", borderRadius: 10, padding: "10px 14px", color: "var(--bl-cream)", fontSize: 14, width: "100%", outline: "none", marginBottom: 16 }}
+          style={{ background: "var(--bg-secondary)", border: "1px solid rgba(240,68,68,0.30)", borderRadius: 10, padding: "10px 14px", color: "var(--text-primary)", fontSize: 14, width: "100%", outline: "none", marginBottom: 16 }}
         />
         <div className="flex gap-3">
-          <button onClick={onCancel} className="flex-1 py-2.5 rounded-xl text-sm font-semibold" style={{ border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}>Annuler</button>
+          <button onClick={onCancel} className="flex-1 py-2.5 rounded-xl text-sm font-semibold" style={{ border: "1px solid var(--border)", color: "var(--text-primary-dim)" }}>Annuler</button>
           <button onClick={onConfirm} disabled={confirm !== "SUPPRIMER"} className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 disabled:opacity-40 text-white font-bold text-sm transition-colors">
             Supprimer
           </button>
@@ -201,13 +201,13 @@ function ProfileForm({ user, profile, refreshProfile }: {
   }
 
   const inputCss: React.CSSProperties = {
-    background: "var(--bl-surface-2)", border: "1px solid var(--bl-border-md)",
-    borderRadius: 10, padding: "0 14px", color: "var(--bl-cream)",
+    background: "var(--bg-secondary)", border: "1px solid var(--border)",
+    borderRadius: 10, padding: "0 14px", color: "var(--text-primary)",
     fontSize: 16, width: "100%", outline: "none", height: 50,
     transition: "border-color 0.15s",
   };
   const labelCss: React.CSSProperties = {
-    fontSize: 9, letterSpacing: "1.5px", color: "var(--bl-cream-faint)",
+    fontSize: 9, letterSpacing: "1.5px", color: "var(--text-primary-faint)",
     textTransform: "uppercase", fontWeight: 500, marginBottom: 6, display: "block",
   };
 
@@ -216,8 +216,8 @@ function ProfileForm({ user, profile, refreshProfile }: {
       <input
         {...props}
         style={inputCss}
-        onFocus={(e) => (e.currentTarget.style.borderColor = "var(--bl-amber)")}
-        onBlur={(e) => (e.currentTarget.style.borderColor = "var(--color-border)")}
+        onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent-gold)")}
+        onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
       />
     );
   }
@@ -241,9 +241,9 @@ function ProfileForm({ user, profile, refreshProfile }: {
         </div>
         <div>
           <label style={labelCss}>Email</label>
-          <div className="flex items-center justify-between px-3.5 rounded-xl" style={{ height: 50, background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
-            <span style={{ color: "var(--bl-cream-dim)", fontSize: 14 }} className="truncate">{user.email}</span>
-            <span className="text-[11px] px-2.5 py-1 rounded-full ml-2 flex-shrink-0" style={{ background: "var(--border-subtle)", color: "var(--bl-cream-faint)" }}>Non modifiable</span>
+          <div className="flex items-center justify-between px-3.5 rounded-xl" style={{ height: 50, background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+            <span style={{ color: "var(--text-primary-dim)", fontSize: 14 }} className="truncate">{user.email}</span>
+            <span className="text-[11px] px-2.5 py-1 rounded-full ml-2 flex-shrink-0" style={{ background: "var(--border-subtle)", color: "var(--text-primary-faint)" }}>Non modifiable</span>
           </div>
         </div>
         <div>
@@ -257,8 +257,8 @@ function ProfileForm({ user, profile, refreshProfile }: {
               rows={3} value={bio} onChange={(e) => setBio(e.target.value)}
               placeholder="Décrivez votre expertise..."
               style={{ ...inputCss, height: "auto", padding: "12px 14px", resize: "none" }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--bl-amber)")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "var(--color-border)")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent-gold)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
             />
           </div>
         )}
@@ -273,22 +273,22 @@ function ProfileForm({ user, profile, refreshProfile }: {
       <button
         onClick={save} disabled={saving || !fullName.trim()}
         className="w-full py-3 rounded-xl font-bold text-sm transition-colors disabled:opacity-50 mb-6"
-        style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}
+        style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}
       >
         {saving ? <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : "Sauvegarder le profil"}
       </button>
 
       {/* Mon plan */}
-      <div className="rounded-r-2xl p-4 mb-6" style={{ background: "var(--bl-surface)", borderLeft: "3px solid var(--bl-amber-light)" }}>
+      <div className="rounded-r-2xl p-4 mb-6" style={{ background: "var(--bg-card)", borderLeft: "3px solid var(--accent-gold-light)" }}>
         <p className="bl-section-label mb-2">Mon plan</p>
-        <p className="font-bold" style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}>
+        <p className="font-bold" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
           {profile?.is_verified_pro ? "Plan Pro" : "Plan Gratuit"}
         </p>
-        <p className="text-xs mt-1 mb-3" style={{ color: "var(--bl-cream-faint)" }}>
+        <p className="text-xs mt-1 mb-3" style={{ color: "var(--text-primary-faint)" }}>
           {profile?.is_verified_pro ? "Annonces illimitées · Badge vérifié · Priorité dans les résultats" : "Jusqu'à 5 annonces · Visibilité standard"}
         </p>
         <Link href="/tarifs" className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
-          style={{ background: "rgba(212,175,55,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.25)" }}>
+          style={{ background: "rgba(212,175,55,0.12)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.25)" }}>
           {profile?.is_verified_pro ? "Gérer l'abonnement" : "Passer Pro"} →
         </Link>
       </div>
@@ -305,7 +305,7 @@ function ProfileForm({ user, profile, refreshProfile }: {
         </button>
         <button
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-colors"
-          style={{ border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-faint)" }}
+          style={{ border: "1px solid var(--border)", color: "var(--text-primary-faint)" }}
           onClick={() => setShowDeleteAccount(true)}
         >
           <Trash2 className="w-4 h-4" /> Supprimer mon compte
@@ -389,16 +389,16 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
 
   if (loading) return (
     <div className="space-y-3">
-      {[1,2].map((i) => <div key={i} className="h-28 rounded-2xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}
+      {[1,2].map((i) => <div key={i} className="h-28 rounded-2xl animate-pulse" style={{ background: "var(--bg-secondary)" }} />)}
     </div>
   );
 
   if (listings.length === 0) return (
-    <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
+    <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--border)" }}>
       <div className="text-4xl mb-3">🏠</div>
-      <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucune annonce</p>
-      <p className="text-sm mb-4" style={{ color: "var(--bl-cream-faint)" }}>Publiez votre premier bien en quelques minutes.</p>
-      <Link href="/publier" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
+      <p className="font-bold mb-1" style={{ color: "var(--text-primary)" }}>Aucune annonce</p>
+      <p className="text-sm mb-4" style={{ color: "var(--text-primary-faint)" }}>Publiez votre premier bien en quelques minutes.</p>
+      <Link href="/publier" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors" style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}>
         <Plus className="w-4 h-4" /> Publier maintenant →
       </Link>
     </div>
@@ -408,8 +408,8 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
     <>
       {limit && (
         <div className="flex items-center justify-between mb-3">
-          <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>{listings.length} annonce{listings.length > 1 ? "s" : ""} au total</p>
-          <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold hover:underline" style={{ color: "var(--bl-amber)" }}>
+          <p className="text-xs" style={{ color: "var(--text-primary-faint)" }}>{listings.length} annonce{listings.length > 1 ? "s" : ""} au total</p>
+          <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold hover:underline" style={{ color: "var(--accent-gold)" }}>
             <Plus className="w-3.5 h-3.5" /> Publier
           </Link>
         </div>
@@ -420,19 +420,19 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
           const isDeleteBusy = actionLoading === listing.id + "-delete";
           const busy = isAvailBusy || isDeleteBusy;
           return (
-            <div key={listing.id} className={cn("rounded-2xl overflow-hidden transition-opacity", busy && "opacity-60 pointer-events-none")} style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+            <div key={listing.id} className={cn("rounded-2xl overflow-hidden transition-opacity", busy && "opacity-60 pointer-events-none")} style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
               <div className="flex gap-3 p-3">
-                <Link href={`/annonces/${listing.id}`} className="relative w-24 h-20 flex-shrink-0 rounded-xl overflow-hidden" style={{ background: "var(--bl-surface-2)" }}>
+                <Link href={`/annonces/${listing.id}`} className="relative w-24 h-20 flex-shrink-0 rounded-xl overflow-hidden" style={{ background: "var(--bg-secondary)" }}>
                   {listing.primary_image
                     ? <Image src={listing.primary_image} alt={listing.title} fill className="object-cover" sizes="96px" />
                     : <div className="w-full h-full flex items-center justify-center text-2xl">🏠</div>}
                 </Link>
                 <div className="flex-1 min-w-0">
-                  <Link href={`/annonces/${listing.id}`}><p className="font-bold text-sm leading-snug line-clamp-2" style={{ color: "var(--bl-cream)" }}>{listing.title}</p></Link>
-                  <div className="flex items-center gap-1 text-xs mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>
+                  <Link href={`/annonces/${listing.id}`}><p className="font-bold text-sm leading-snug line-clamp-2" style={{ color: "var(--text-primary)" }}>{listing.title}</p></Link>
+                  <div className="flex items-center gap-1 text-xs mt-0.5" style={{ color: "var(--text-primary-faint)" }}>
                     <MapPin className="w-3 h-3 flex-shrink-0" />{NL[listing.neighborhood] ?? listing.neighborhood}
                   </div>
-                  <p className="font-bold text-sm mt-1" style={{ color: "var(--bl-amber-light)" }}>{formatPrice(listing.price, "GNF", listing.price_period)}</p>
+                  <p className="font-bold text-sm mt-1" style={{ color: "var(--accent-gold-light)" }}>{formatPrice(listing.price, "GNF", listing.price_period)}</p>
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                     {listing.status === "pending" ? (
                       <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>
@@ -441,7 +441,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
                     ) : (
                       <StatusBadge status={listing.available_now ? "active" : "sold"} />
                     )}
-                    <span className="flex items-center gap-1 text-[11px]" style={{ color: "var(--bl-cream-faint)" }}>
+                    <span className="flex items-center gap-1 text-[11px]" style={{ color: "var(--text-primary-faint)" }}>
                       <Eye className="w-3 h-3" /> {listing.views} · <Phone className="w-3 h-3" /> {listing.whatsapp_clicks}
                     </span>
                     {listing.expires_at && listing.status === "active" && (() => {
@@ -489,10 +489,10 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
                     : listing.available_now ? <><XCircle className="w-3.5 h-3.5" /> Marquer loué</>
                     : <><RotateCcw className="w-3.5 h-3.5" /> Remettre dispo</>}
                 </button>
-                <Link href={`/publier?edit=${listing.id}`} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-colors" style={{ border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}>
+                <Link href={`/publier?edit=${listing.id}`} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-colors" style={{ border: "1px solid var(--border)", color: "var(--text-primary-dim)" }}>
                   <Pencil className="w-3.5 h-3.5" /> Modifier
                 </Link>
-                <button onClick={() => setDeleteTarget(listing)} disabled={busy} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-red-400 transition-colors hover:bg-red-900/10" style={{ border: "1px solid var(--bl-border)" }}>
+                <button onClick={() => setDeleteTarget(listing)} disabled={busy} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-red-400 transition-colors hover:bg-red-900/10" style={{ border: "1px solid var(--border)" }}>
                   {isDeleteBusy ? <div className="w-3.5 h-3.5 border border-red-400 border-t-transparent rounded-full animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                 </button>
               </div>
@@ -500,7 +500,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
           );
         })}
         {!limit && (
-          <Link href="/publier" className="flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-colors" style={{ border: "1px dashed rgba(212,175,55,0.40)", color: "var(--bl-amber)" }}>
+          <Link href="/publier" className="flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-colors" style={{ border: "1px dashed rgba(212,175,55,0.40)", color: "var(--accent-gold)" }}>
             <Plus className="w-4 h-4" /> Publier une annonce
           </Link>
         )}
@@ -649,18 +649,18 @@ function MonthlyReportSection({ userId }: { userId: string }) {
     <div className="mt-6">
       <SectionHeader title="Rapports mensuels" subtitle="Activité envoyée par WhatsApp" />
       {loading ? (
-        <div className="h-20 rounded-2xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />
+        <div className="h-20 rounded-2xl animate-pulse" style={{ background: "var(--bg-secondary)" }} />
       ) : (
         <div className="space-y-2">
           {reports.map((r) => (
-            <div key={r.id} className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+            <div key={r.id} className="flex items-center justify-between rounded-xl px-4 py-3" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
               <div>
-                <p className="text-sm font-bold capitalize" style={{ color: "var(--bl-cream)" }}>{r.month}</p>
-                <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>
+                <p className="text-sm font-bold capitalize" style={{ color: "var(--text-primary)" }}>{r.month}</p>
+                <p className="text-xs" style={{ color: "var(--text-primary-faint)" }}>
                   {r.views_total} vues · {r.whatsapp_clicks_total} clics WA · {r.active_listings} annonces actives
                 </p>
               </div>
-              <p className="text-[11px]" style={{ color: "var(--bl-cream-faint)" }}>
+              <p className="text-[11px]" style={{ color: "var(--text-primary-faint)" }}>
                 {new Date(r.sent_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
               </p>
             </div>
@@ -748,13 +748,13 @@ function VisitRequestsManager({ userId, onPendingCount }: {
     return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>⏳ En attente</span>;
   };
 
-  if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}</div>;
+  if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: "var(--bg-secondary)" }} />)}</div>;
 
   if (visits.length === 0) return (
-    <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
-      <Calendar className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
-      <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucune demande de visite</p>
-      <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Les demandes apparaîtront ici en temps réel.</p>
+    <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--border)" }}>
+      <Calendar className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--text-primary-faint)" }} />
+      <p className="font-bold mb-1" style={{ color: "var(--text-primary)" }}>Aucune demande de visite</p>
+      <p className="text-sm" style={{ color: "var(--text-primary-faint)" }}>Les demandes apparaîtront ici en temps réel.</p>
     </div>
   );
 
@@ -765,26 +765,26 @@ function VisitRequestsManager({ userId, onPendingCount }: {
         const wa  = v.visitor_phone.replace(/\D/g, "");
         const dateLabel = new Date(v.scheduled_date + "T00:00:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
         return (
-          <div key={v.id} className="rounded-2xl p-4 space-y-3" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+          <div key={v.id} className="rounded-2xl p-4 space-y-3" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
                   style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>{ini}</div>
                 <div>
-                  <p className="text-sm font-bold" style={{ color: "var(--bl-cream)" }}>{v.visitor_name}</p>
-                  <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>{v.properties?.title ?? v.property_id}</p>
+                  <p className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>{v.visitor_name}</p>
+                  <p className="text-xs" style={{ color: "var(--text-primary-faint)" }}>{v.properties?.title ?? v.property_id}</p>
                 </div>
               </div>
               {statusBadge(v.status)}
             </div>
-            <div className="flex items-center gap-4 text-xs" style={{ color: "var(--bl-cream-dim)" }}>
+            <div className="flex items-center gap-4 text-xs" style={{ color: "var(--text-primary-dim)" }}>
               <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{dateLabel} · {TIME_LABEL[v.scheduled_time] ?? v.scheduled_time}</span>
             </div>
-            {v.visitor_message && <p className="text-xs px-3 py-2 rounded-lg" style={{ background: "var(--border-subtle)", color: "var(--bl-cream-dim)" }}>{v.visitor_message}</p>}
+            {v.visitor_message && <p className="text-xs px-3 py-2 rounded-lg" style={{ background: "var(--border-subtle)", color: "var(--text-primary-dim)" }}>{v.visitor_message}</p>}
             {v.owner_note && noteId !== v.id && (
               <p className="text-xs px-3 py-2 rounded-lg flex items-start gap-1.5"
-                style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.15)", color: "var(--bl-cream-dim)" }}>
-                <Pencil className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: "var(--bl-amber)" }} />
+                style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.15)", color: "var(--text-primary-dim)" }}>
+                <Pencil className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: "var(--accent-gold)" }} />
                 {v.owner_note}
               </p>
             )}
@@ -794,25 +794,25 @@ function VisitRequestsManager({ userId, onPendingCount }: {
                   type="text" value={noteText}
                   onChange={(e) => setNoteText(e.target.value)}
                   placeholder="Note privée…"
-                  style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "6px 10px", color: "var(--bl-cream)", fontSize: 13, flex: 1, outline: "none" }}
+                  style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "6px 10px", color: "var(--text-primary)", fontSize: 13, flex: 1, outline: "none" }}
                 />
-                <button onClick={() => saveNote(v.id)} className="px-3 py-1.5 rounded-lg text-xs font-bold" style={{ background: "var(--bl-amber)", color: "var(--bg-primary)" }}>OK</button>
-                <button onClick={() => setNoteId(null)} className="px-3 py-1.5 rounded-lg text-xs" style={{ background: "var(--border-subtle)", color: "var(--bl-cream-faint)" }}>✕</button>
+                <button onClick={() => saveNote(v.id)} className="px-3 py-1.5 rounded-lg text-xs font-bold" style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}>OK</button>
+                <button onClick={() => setNoteId(null)} className="px-3 py-1.5 rounded-lg text-xs" style={{ background: "var(--border-subtle)", color: "var(--text-primary-faint)" }}>✕</button>
               </div>
             )}
             <div className="flex items-center gap-2 flex-wrap">
               <a href={`tel:${v.visitor_phone}`}
                 className="flex items-center justify-center gap-1.5 text-xs font-bold py-2 px-3 rounded-lg"
-                style={{ background: "var(--border-subtle)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}>
+                style={{ background: "var(--border-subtle)", border: "1px solid var(--border)", color: "var(--text-primary-dim)" }}>
                 <Phone className="w-3.5 h-3.5" /> {v.visitor_phone}
               </a>
               <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center px-3 py-2 rounded-lg text-xs font-bold"
-                style={{ background: "#25D366", color: "var(--bl-cream)" }}>WA</a>
+                style={{ background: "#25D366", color: "var(--text-primary)" }}>WA</a>
               {noteId !== v.id && (
                 <button onClick={() => { setNoteId(v.id); setNoteText(v.owner_note ?? ""); }}
                   className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-bold"
-                  style={{ background: "var(--border-subtle)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-faint)" }}>
+                  style={{ background: "var(--border-subtle)", border: "1px solid var(--border)", color: "var(--text-primary-faint)" }}>
                   <Pencil className="w-3 h-3" /> Note
                 </button>
               )}
@@ -888,15 +888,15 @@ function VisitorVisitsSection({ userId }: { userId: string }) {
     return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>⏳ En attente</span>;
   };
 
-  if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}</div>;
+  if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "var(--bg-secondary)" }} />)}</div>;
 
   if (visits.length === 0) return (
-    <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
-      <Calendar className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
-      <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucune visite planifiée</p>
-      <p className="text-sm mb-4" style={{ color: "var(--bl-cream-faint)" }}>Vos demandes de visite apparaîtront ici.</p>
+    <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--border)" }}>
+      <Calendar className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--text-primary-faint)" }} />
+      <p className="font-bold mb-1" style={{ color: "var(--text-primary)" }}>Aucune visite planifiée</p>
+      <p className="text-sm mb-4" style={{ color: "var(--text-primary-faint)" }}>Vos demandes de visite apparaîtront ici.</p>
       <Link href="/annonces" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm"
-        style={{ background: "rgba(212,175,55,0.15)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.30)" }}>
+        style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.30)" }}>
         Explorer les annonces
       </Link>
     </div>
@@ -907,26 +907,26 @@ function VisitorVisitsSection({ userId }: { userId: string }) {
       {visits.map((v) => {
         const dateLabel = new Date(v.scheduled_date + "T00:00:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "long" });
         return (
-          <div key={v.id} className="rounded-2xl p-4 space-y-2" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+          <div key={v.id} className="rounded-2xl p-4 space-y-2" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
             <div className="flex items-start justify-between gap-2">
               <div>
-                <p className="text-sm font-bold" style={{ color: "var(--bl-cream)" }}>{v.properties?.title ?? "Annonce"}</p>
+                <p className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>{v.properties?.title ?? "Annonce"}</p>
                 {v.properties?.neighborhood && (
-                  <p className="text-xs flex items-center gap-1 mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>
+                  <p className="text-xs flex items-center gap-1 mt-0.5" style={{ color: "var(--text-primary-faint)" }}>
                     <MapPin className="w-3 h-3" />{v.properties.neighborhood}
                   </p>
                 )}
               </div>
               {statusBadge(v.status)}
             </div>
-            <div className="flex items-center gap-2 text-xs" style={{ color: "var(--bl-cream-dim)" }}>
+            <div className="flex items-center gap-2 text-xs" style={{ color: "var(--text-primary-dim)" }}>
               <Calendar className="w-3 h-3" />
               <span>{dateLabel} · {TIME_LABEL[v.scheduled_time] ?? v.scheduled_time}</span>
             </div>
             {v.owner_note && (
               <p className="text-xs px-3 py-2 rounded-lg flex items-start gap-1.5"
-                style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.15)", color: "var(--bl-cream-dim)" }}>
-                <Pencil className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: "var(--bl-amber)" }} />
+                style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.15)", color: "var(--text-primary-dim)" }}>
+                <Pencil className="w-3 h-3 flex-shrink-0 mt-0.5" style={{ color: "var(--accent-gold)" }} />
                 {v.owner_note}
               </p>
             )}
@@ -1007,25 +1007,25 @@ function BuyerProfile({ user, profile, refreshProfile }: {
   return (
     <div>
       {/* Header profil */}
-      <div className="px-4 pt-8 pb-6 text-center border-b" style={{ background: "var(--bg-secondary)", borderColor: "var(--bl-border)" }}>
+      <div className="px-4 pt-8 pb-6 text-center border-b" style={{ background: "var(--bg-secondary)", borderColor: "var(--border)" }}>
         <AvatarUpload
           userId={user.id}
           currentUrl={profile?.avatar_url}
           name={profile?.full_name}
           onSuccess={() => { void refreshProfile(); }}
         />
-        <h1 className="mt-3 font-bold text-xl" style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}>
+        <h1 className="mt-3 font-bold text-xl" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
           {displayName}
         </h1>
-        <p className="text-sm mt-1" style={{ color: "var(--bl-cream-dim)" }}>{user.email}</p>
+        <p className="text-sm mt-1" style={{ color: "var(--text-primary-dim)" }}>{user.email}</p>
         {profile?.phone && (
-          <p className="text-sm mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>{profile.phone}</p>
+          <p className="text-sm mt-0.5" style={{ color: "var(--text-primary-faint)" }}>{profile.phone}</p>
         )}
         <div className="flex items-center justify-center gap-2 mt-4">
           <button
             onClick={() => setEditing((v) => !v)}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all"
-            style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}
+            style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary-dim)" }}
           >
             <Pencil className="w-3.5 h-3.5" />
             {editing ? "Annuler" : "Modifier le profil"}
@@ -1043,7 +1043,7 @@ function BuyerProfile({ user, profile, refreshProfile }: {
 
       {/* Formulaire d'édition */}
       {editing && (
-        <div className="px-4 py-6 border-b" style={{ borderColor: "var(--bl-border)" }}>
+        <div className="px-4 py-6 border-b" style={{ borderColor: "var(--border)" }}>
           <ProfileForm
             user={user}
             profile={profile}
@@ -1056,18 +1056,18 @@ function BuyerProfile({ user, profile, refreshProfile }: {
       <div className="mx-4 mt-6 p-5 rounded-2xl" style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.25)" }}>
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(212,175,55,0.15)" }}>
-            <Award className="w-5 h-5" style={{ color: "var(--bl-amber)" }} />
+            <Award className="w-5 h-5" style={{ color: "var(--accent-gold)" }} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-bold text-sm" style={{ color: "var(--bl-cream)" }}>Vous avez un bien à louer ou vendre ?</p>
-            <p className="text-xs mt-1 mb-3" style={{ color: "var(--bl-cream-faint)" }}>
+            <p className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>Vous avez un bien à louer ou vendre ?</p>
+            <p className="text-xs mt-1 mb-3" style={{ color: "var(--text-primary-faint)" }}>
               Publiez vos annonces gratuitement et touchez des milliers d&apos;acheteurs à Conakry.
             </p>
             <button
               onClick={becomePro}
               disabled={becomingPro}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all disabled:opacity-50"
-              style={{ background: "var(--bl-amber)", color: "#0B0F19" }}
+              style={{ background: "var(--accent-gold)", color: "#0B0F19" }}
             >
               {becomingPro
                 ? <span className="w-4 h-4 border-2 border-[#0B0F19] border-t-transparent rounded-full animate-spin inline-block" />
@@ -1081,20 +1081,20 @@ function BuyerProfile({ user, profile, refreshProfile }: {
       {/* Favoris */}
       <div className="px-4 mt-6">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-bold text-base" style={{ color: "var(--bl-cream)" }}>Mes favoris</h2>
-          <Link href="/favoris" className="text-xs font-bold" style={{ color: "var(--bl-amber)" }}>Voir tout →</Link>
+          <h2 className="font-bold text-base" style={{ color: "var(--text-primary)" }}>Mes favoris</h2>
+          <Link href="/favoris" className="text-xs font-bold" style={{ color: "var(--accent-gold)" }}>Voir tout →</Link>
         </div>
         {loadingData ? (
           <div className="grid grid-cols-2 gap-3">
-            {[1,2].map((i) => <div key={i} className="h-36 rounded-2xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}
+            {[1,2].map((i) => <div key={i} className="h-36 rounded-2xl animate-pulse" style={{ background: "var(--bg-secondary)" }} />)}
           </div>
         ) : favorites.length === 0 ? (
-          <div className="text-center py-10 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
-            <Heart className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--bl-cream-faint)" }} />
-            <p className="text-sm font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucun favori</p>
-            <p className="text-xs mb-4" style={{ color: "var(--bl-cream-faint)" }}>Sauvegardez des annonces pour les retrouver ici.</p>
+          <div className="text-center py-10 rounded-2xl" style={{ border: "2px dashed var(--border)" }}>
+            <Heart className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--text-primary-faint)" }} />
+            <p className="text-sm font-bold mb-1" style={{ color: "var(--text-primary)" }}>Aucun favori</p>
+            <p className="text-xs mb-4" style={{ color: "var(--text-primary-faint)" }}>Sauvegardez des annonces pour les retrouver ici.</p>
             <Link href="/annonces" className="inline-flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl"
-              style={{ background: "rgba(212,175,55,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.25)" }}>
+              style={{ background: "rgba(212,175,55,0.12)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.25)" }}>
               Explorer les annonces
             </Link>
           </div>
@@ -1103,16 +1103,16 @@ function BuyerProfile({ user, profile, refreshProfile }: {
             {favorites.map((fav) => (
               <Link key={fav.id} href={`/annonces/${fav.id}`}
                 className="rounded-2xl overflow-hidden block"
-                style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
-                <div className="relative h-28" style={{ background: "var(--bl-surface-2)" }}>
+                style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+                <div className="relative h-28" style={{ background: "var(--bg-secondary)" }}>
                   {fav.primary_image
                     ? <Image src={fav.primary_image} alt={fav.title} fill className="object-cover" sizes="50vw" />
                     : <div className="w-full h-full flex items-center justify-center text-2xl">🏠</div>}
                 </div>
                 <div className="p-2.5">
-                  <p className="font-bold text-xs line-clamp-1" style={{ color: "var(--bl-cream)" }}>{fav.title}</p>
-                  <p className="text-[11px] mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>{NL[fav.neighborhood] ?? fav.neighborhood}</p>
-                  <p className="font-bold text-xs mt-1" style={{ color: "var(--bl-amber-light)" }}>
+                  <p className="font-bold text-xs line-clamp-1" style={{ color: "var(--text-primary)" }}>{fav.title}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: "var(--text-primary-faint)" }}>{NL[fav.neighborhood] ?? fav.neighborhood}</p>
+                  <p className="font-bold text-xs mt-1" style={{ color: "var(--accent-gold-light)" }}>
                     {formatPrice(fav.price, "GNF", fav.price_period)}
                   </p>
                 </div>
@@ -1125,7 +1125,7 @@ function BuyerProfile({ user, profile, refreshProfile }: {
       {/* Recherches récentes */}
       {!loadingData && searches.length > 0 && (
         <div className="px-4 mt-6">
-          <h2 className="font-bold text-base mb-3" style={{ color: "var(--bl-cream)" }}>Recherches récentes</h2>
+          <h2 className="font-bold text-base mb-3" style={{ color: "var(--text-primary)" }}>Recherches récentes</h2>
           <div className="space-y-2">
             {searches.map((s) => {
               const parts = [
@@ -1140,15 +1140,15 @@ function BuyerProfile({ user, profile, refreshProfile }: {
               return (
                 <Link key={s.id} href={`/annonces?${params.toString()}`}
                   className="flex items-center gap-3 rounded-xl px-4 py-3"
-                  style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
-                  <Search className="w-4 h-4 flex-shrink-0" style={{ color: "var(--bl-cream-faint)" }} />
+                  style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+                  <Search className="w-4 h-4 flex-shrink-0" style={{ color: "var(--text-primary-faint)" }} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate" style={{ color: "var(--bl-cream)" }}>{s.label}</p>
+                    <p className="text-sm font-semibold truncate" style={{ color: "var(--text-primary)" }}>{s.label}</p>
                     {parts.length > 0 && (
-                      <p className="text-xs truncate" style={{ color: "var(--bl-cream-faint)" }}>{parts.join(" · ")}</p>
+                      <p className="text-xs truncate" style={{ color: "var(--text-primary-faint)" }}>{parts.join(" · ")}</p>
                     )}
                   </div>
-                  <ChevronRight className="w-4 h-4 flex-shrink-0" style={{ color: "var(--bl-cream-faint)" }} />
+                  <ChevronRight className="w-4 h-4 flex-shrink-0" style={{ color: "var(--text-primary-faint)" }} />
                 </Link>
               );
             })}
@@ -1192,17 +1192,17 @@ function ReviewsSection({ userId }: { userId: string }) {
 
   if (loading) return (
     <div className="space-y-2">
-      {[1,2,3].map((i) => <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}
+      {[1,2,3].map((i) => <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: "var(--bg-secondary)" }} />)}
     </div>
   );
 
   if (unavailable || reviews.length === 0) return (
-    <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
-      <Star className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
-      <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>
+    <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--border)" }}>
+      <Star className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--text-primary-faint)" }} />
+      <p className="font-bold mb-1" style={{ color: "var(--text-primary)" }}>
         {unavailable ? "Avis & évaluations" : "Aucun avis pour le moment"}
       </p>
-      <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>
+      <p className="text-sm" style={{ color: "var(--text-primary-faint)" }}>
         {unavailable
           ? "Fonctionnalité bientôt disponible."
           : "Les évaluations de vos clients apparaîtront ici."}
@@ -1215,9 +1215,9 @@ function ReviewsSection({ userId }: { userId: string }) {
   return (
     <div>
       {/* Résumé */}
-      <div className="flex items-center gap-4 p-4 rounded-2xl mb-4" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+      <div className="flex items-center gap-4 p-4 rounded-2xl mb-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
         <div className="text-center">
-          <p className="text-3xl font-bold" style={{ color: "var(--bl-amber-light)", fontFamily: "var(--font-display), sans-serif" }}>
+          <p className="text-3xl font-bold" style={{ color: "var(--accent-gold-light)", fontFamily: "var(--font-display), sans-serif" }}>
             {avg.toFixed(1)}
           </p>
           <div className="flex items-center gap-0.5 mt-1 justify-center">
@@ -1227,24 +1227,24 @@ function ReviewsSection({ userId }: { userId: string }) {
                 style={{ color: "#D4AF37" }} />
             ))}
           </div>
-          <p className="text-xs mt-1" style={{ color: "var(--bl-cream-faint)" }}>{reviews.length} avis</p>
+          <p className="text-xs mt-1" style={{ color: "var(--text-primary-faint)" }}>{reviews.length} avis</p>
         </div>
       </div>
       {/* Avis individuels */}
       <div className="space-y-3">
         {reviews.map((r) => (
-          <div key={r.id} className="rounded-2xl p-4" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+          <div key={r.id} className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
             <div className="flex items-center gap-1 mb-2">
               {[1,2,3,4,5].map((s) => (
                 <Star key={s} className="w-3.5 h-3.5"
                   fill={s <= r.rating ? "#D4AF37" : "none"}
                   style={{ color: "#D4AF37" }} />
               ))}
-              <span className="text-xs ml-2" style={{ color: "var(--bl-cream-faint)" }}>
+              <span className="text-xs ml-2" style={{ color: "var(--text-primary-faint)" }}>
                 {new Date(r.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
               </span>
             </div>
-            {r.comment && <p className="text-sm" style={{ color: "var(--bl-cream-dim)" }}>{r.comment}</p>}
+            {r.comment && <p className="text-sm" style={{ color: "var(--text-primary-dim)" }}>{r.comment}</p>}
           </div>
         ))}
       </div>
@@ -1270,14 +1270,14 @@ function AbonnementSection({ profile }: { profile: ReturnType<typeof useAuth>["p
 
   return (
     <div>
-      <div className="rounded-2xl p-5 mb-4" style={{ background: "var(--bl-surface)", border: isPro ? "1px solid rgba(212,175,55,0.30)" : "1px solid var(--bl-border)" }}>
+      <div className="rounded-2xl p-5 mb-4" style={{ background: "var(--bg-card)", border: isPro ? "1px solid rgba(212,175,55,0.30)" : "1px solid var(--border)" }}>
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-11 h-11 rounded-full flex items-center justify-center" style={{ background: isPro ? "rgba(212,175,55,0.15)" : "var(--bl-surface-2)" }}>
-            <CreditCard className="w-5 h-5" style={{ color: isPro ? "var(--bl-amber)" : "var(--bl-cream-faint)" }} />
+          <div className="w-11 h-11 rounded-full flex items-center justify-center" style={{ background: isPro ? "rgba(212,175,55,0.15)" : "var(--bg-secondary)" }}>
+            <CreditCard className="w-5 h-5" style={{ color: isPro ? "var(--accent-gold)" : "var(--text-primary-faint)" }} />
           </div>
           <div className="flex-1">
-            <p className="font-bold text-base" style={{ color: "var(--bl-cream)" }}>{isPro ? "Plan Pro" : "Plan Gratuit"}</p>
-            <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>Plan actuel</p>
+            <p className="font-bold text-base" style={{ color: "var(--text-primary)" }}>{isPro ? "Plan Pro" : "Plan Gratuit"}</p>
+            <p className="text-xs" style={{ color: "var(--text-primary-faint)" }}>Plan actuel</p>
           </div>
           {isPro && (
             <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>
@@ -1287,8 +1287,8 @@ function AbonnementSection({ profile }: { profile: ReturnType<typeof useAuth>["p
         </div>
         <ul className="space-y-2 mb-5">
           {features.map((f) => (
-            <li key={f} className="flex items-center gap-2 text-sm" style={{ color: "var(--bl-cream-dim)" }}>
-              <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: isPro ? "var(--bl-amber)" : "var(--bl-cream-faint)" }} />
+            <li key={f} className="flex items-center gap-2 text-sm" style={{ color: "var(--text-primary-dim)" }}>
+              <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: isPro ? "var(--accent-gold)" : "var(--text-primary-faint)" }} />
               {f}
             </li>
           ))}
@@ -1296,8 +1296,8 @@ function AbonnementSection({ profile }: { profile: ReturnType<typeof useAuth>["p
         <Link href="/tarifs"
           className="flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all"
           style={isPro
-            ? { background: "var(--bl-surface-2)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }
-            : { background: "var(--bl-amber)", color: "#0B0F19" }
+            ? { background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary-dim)" }
+            : { background: "var(--accent-gold)", color: "#0B0F19" }
           }>
           {isPro ? "Gérer l'abonnement" : "Passer au Plan Pro →"}
         </Link>
@@ -1305,8 +1305,8 @@ function AbonnementSection({ profile }: { profile: ReturnType<typeof useAuth>["p
 
       {!isPro && (
         <div className="rounded-2xl p-4" style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.20)" }}>
-          <p className="font-bold text-sm mb-1" style={{ color: "var(--bl-amber-light)" }}>Pourquoi passer Pro ?</p>
-          <p className="text-xs" style={{ color: "var(--bl-cream-faint)" }}>
+          <p className="font-bold text-sm mb-1" style={{ color: "var(--accent-gold-light)" }}>Pourquoi passer Pro ?</p>
+          <p className="text-xs" style={{ color: "var(--text-primary-faint)" }}>
             Les annonceurs Pro obtiennent en moyenne 3x plus de contacts et bénéficient d&apos;une visibilité prioritaire dans les résultats.
           </p>
         </div>
@@ -1337,11 +1337,11 @@ function DashboardListingCard({ listing }: { listing: Listing }) {
     : { label: "Publié", bg: "rgba(34,197,94,0.90)", color: "#fff" };
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+    <div className="rounded-2xl overflow-hidden" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
       <div className="relative" style={{ aspectRatio: "16/10" }}>
         {listing.primary_image
           ? <Image src={listing.primary_image} alt={listing.title} fill className="object-cover" sizes="(max-width:768px) 50vw,25vw" />
-          : <div className="w-full h-full flex items-center justify-center text-3xl" style={{ background: "var(--bl-surface-2)" }}>🏠</div>}
+          : <div className="w-full h-full flex items-center justify-center text-3xl" style={{ background: "var(--bg-secondary)" }}>🏠</div>}
         <span className="absolute top-2 left-2 text-[11px] font-bold px-2 py-0.5 rounded-full"
           style={{ background: statusInfo.bg, color: statusInfo.color }}>{statusInfo.label}</span>
         <div ref={menuRef} className="absolute top-2 right-2">
@@ -1353,15 +1353,15 @@ function DashboardListingCard({ listing }: { listing: Listing }) {
           </button>
           {menuOpen && (
             <div className="absolute right-0 top-9 rounded-xl overflow-hidden shadow-xl z-20 w-40"
-              style={{ background: "var(--nav-dropdown-bg)", border: "1px solid var(--bl-border-md)", backdropFilter: "blur(12px)" }}>
+              style={{ background: "var(--nav-dropdown-bg)", border: "1px solid var(--border)", backdropFilter: "blur(12px)" }}>
               <Link href={`/annonces/${listing.id}`}
                 className="flex items-center gap-2 px-3 py-2.5 text-xs font-medium hover:bg-white/5"
-                style={{ color: "var(--bl-cream-dim)" }}>
+                style={{ color: "var(--text-primary-dim)" }}>
                 <Eye className="w-3.5 h-3.5" /> Voir l&apos;annonce
               </Link>
               <Link href={`/publier?edit=${listing.id}`}
                 className="flex items-center gap-2 px-3 py-2.5 text-xs font-medium hover:bg-white/5"
-                style={{ color: "var(--bl-cream-dim)" }}>
+                style={{ color: "var(--text-primary-dim)" }}>
                 <Pencil className="w-3.5 h-3.5" /> Modifier
               </Link>
             </div>
@@ -1369,13 +1369,13 @@ function DashboardListingCard({ listing }: { listing: Listing }) {
         </div>
       </div>
       <div className="p-3">
-        <p className="font-bold text-xs line-clamp-2 leading-snug mb-1" style={{ color: "var(--bl-cream)" }}>{listing.title}</p>
-        <p className="font-bold text-sm mb-1.5" style={{ color: "var(--bl-amber)" }}>{formatPrice(listing.price, "GNF", listing.price_period)}</p>
-        <div className="flex items-center gap-1 text-[11px] mb-1.5" style={{ color: "var(--bl-cream-faint)" }}>
+        <p className="font-bold text-xs line-clamp-2 leading-snug mb-1" style={{ color: "var(--text-primary)" }}>{listing.title}</p>
+        <p className="font-bold text-sm mb-1.5" style={{ color: "var(--accent-gold)" }}>{formatPrice(listing.price, "GNF", listing.price_period)}</p>
+        <div className="flex items-center gap-1 text-[11px] mb-1.5" style={{ color: "var(--text-primary-faint)" }}>
           <MapPin className="w-3 h-3 flex-shrink-0" />
           <span className="truncate">{NL[listing.neighborhood] ?? listing.neighborhood}</span>
         </div>
-        <div className="flex items-center gap-3 text-[11px]" style={{ color: "var(--bl-cream-faint)" }}>
+        <div className="flex items-center gap-3 text-[11px]" style={{ color: "var(--text-primary-faint)" }}>
           <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {listing.views} vues</span>
           <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> {listing.whatsapp_clicks} contacts</span>
         </div>
@@ -1665,17 +1665,17 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
             {tab === "dashboard" && (
               <>
                 <div className="mb-5">
-                  <h2 style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-amber-light)", fontSize: 22, fontWeight: 700 }}>
+                  <h2 style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--accent-gold-light)", fontSize: 22, fontWeight: 700 }}>
                     Bonjour{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}
                   </h2>
-                  <p className="text-sm mt-0.5 capitalize" style={{ color: "var(--bl-cream-faint)", fontWeight: 300 }}>
+                  <p className="text-sm mt-0.5 capitalize" style={{ color: "var(--text-primary-faint)", fontWeight: 300 }}>
                     Performance sur 30 jours · {todayLabel()}
                   </p>
                 </div>
 
                 {statsLoading ? (
                   <div className="grid grid-cols-2 gap-3 mb-6">
-                    {[1,2,3,4].map((i) => <div key={i} className="h-24 animate-pulse rounded-xl" style={{ background: "var(--bl-surface-2)" }} />)}
+                    {[1,2,3,4].map((i) => <div key={i} className="h-24 animate-pulse rounded-xl" style={{ background: "var(--bg-secondary)" }} />)}
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-3 mb-6">
@@ -1697,23 +1697,23 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                 )}
 
                 <div className="flex items-center justify-between mb-3 mt-6">
-                  <h3 className="font-bold text-sm" style={{ color: "var(--bl-cream)" }}>Annonces récentes</h3>
+                  <h3 className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>Annonces récentes</h3>
                   <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg"
-                    style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
+                    style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}>
                     <Plus className="w-3.5 h-3.5" /> Publier
                   </Link>
                 </div>
 
                 {dashListingsLoading ? (
                   <div className="grid grid-cols-2 gap-3">
-                    {[1,2].map((i) => <div key={i} className="rounded-2xl animate-pulse" style={{ aspectRatio: "16/10", background: "var(--bl-surface-2)" }} />)}
+                    {[1,2].map((i) => <div key={i} className="rounded-2xl animate-pulse" style={{ aspectRatio: "16/10", background: "var(--bg-secondary)" }} />)}
                   </div>
                 ) : dashListings.length === 0 ? (
-                  <div className="text-center py-10 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
+                  <div className="text-center py-10 rounded-2xl" style={{ border: "2px dashed var(--border)" }}>
                     <p className="text-3xl mb-2">🏠</p>
-                    <p className="font-bold mb-3" style={{ color: "var(--bl-cream)" }}>Aucune annonce</p>
+                    <p className="font-bold mb-3" style={{ color: "var(--text-primary)" }}>Aucune annonce</p>
                     <Link href="/publier" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm"
-                      style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
+                      style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}>
                       <Plus className="w-4 h-4" /> Publier maintenant →
                     </Link>
                   </div>
@@ -1724,7 +1724,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                     </div>
                     <button onClick={() => setTab("annonces")}
                       className="w-full mt-4 py-2.5 rounded-xl text-sm font-bold transition-colors"
-                      style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.25)", color: "var(--bl-amber)" }}>
+                      style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.25)", color: "var(--accent-gold)" }}>
                       Voir toutes les annonces →
                     </button>
                   </>
@@ -1738,7 +1738,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
             {tab === "annonces" && (
               <>
                 <SectionHeader title="Mes annonces" action={
-                  <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
+                  <Link href="/publier" className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}>
                     <Plus className="w-3.5 h-3.5" /> Publier
                   </Link>
                 } />
@@ -1759,15 +1759,15 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
               <div>
                 <SectionHeader title="Messages" />
                 <Link href="/messages" className="flex items-center justify-between rounded-2xl p-5"
-                  style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+                  style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                   <div className="flex items-center gap-3">
                     <MessageCircle className="w-6 h-6 text-blue-400" />
                     <div>
-                      <p className="font-bold" style={{ color: "var(--bl-cream)" }}>Mes messages</p>
-                      <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Ouvrir la messagerie complète</p>
+                      <p className="font-bold" style={{ color: "var(--text-primary)" }}>Mes messages</p>
+                      <p className="text-sm" style={{ color: "var(--text-primary-faint)" }}>Ouvrir la messagerie complète</p>
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5" style={{ color: "var(--bl-cream-faint)" }} />
+                  <ChevronRight className="w-5 h-5" style={{ color: "var(--text-primary-faint)" }} />
                 </Link>
               </div>
             )}
@@ -1777,7 +1777,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
               <>
                 <SectionHeader title="Statistiques" subtitle="30 derniers jours" />
                 {statsLoading ? (
-                  <div className="h-48 rounded-2xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />
+                  <div className="h-48 rounded-2xl animate-pulse" style={{ background: "var(--bg-secondary)" }} />
                 ) : (
                   <>
                     <div className="grid grid-cols-2 gap-3 mb-6">
@@ -1819,8 +1819,8 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                   <Link href={isAgence ? `/agences/${user.id}` : `/agents/${user.id}`}
                     className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4"
                     style={{ background: "rgba(212,175,55,0.07)", border: "1px solid rgba(212,175,55,0.20)" }}>
-                    <span className="text-sm font-semibold" style={{ color: "var(--bl-amber-light)" }}>Voir mon profil public</span>
-                    <ChevronRight className="w-4 h-4" style={{ color: "var(--bl-amber)" }} />
+                    <span className="text-sm font-semibold" style={{ color: "var(--accent-gold-light)" }}>Voir mon profil public</span>
+                    <ChevronRight className="w-4 h-4" style={{ color: "var(--accent-gold)" }} />
                   </Link>
                 )}
                 <ProfileForm user={user} profile={profile} refreshProfile={refreshProfile} />
@@ -1838,10 +1838,10 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
 
           {/* ── Right panel (xl+) ── */}
           <aside className="hidden xl:flex flex-col gap-4"
-            style={{ width: 280, flexShrink: 0, padding: "24px", borderLeft: "1px solid var(--color-border)", position: "sticky", top: 0, alignSelf: "flex-start" }}>
+            style={{ width: 280, flexShrink: 0, padding: "24px", borderLeft: "1px solid var(--border)", position: "sticky", top: 0, alignSelf: "flex-start" }}>
 
             {/* Statut du profil */}
-            <div className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}>
+            <div className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
               <p className="text-[11px] font-bold uppercase mb-3" style={{ color: "var(--text-secondary)", letterSpacing: "0.12em" }}>Statut du profil</p>
               {profile?.is_verified ? (
                 <div className="flex items-center gap-3">
@@ -1868,10 +1868,10 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
 
             {/* Plan actuel */}
             <div className="rounded-2xl p-4"
-              style={{ background: "var(--bg-card)", border: profile?.is_verified_pro ? "1px solid rgba(212,175,55,0.40)" : "1px solid var(--color-border)" }}>
+              style={{ background: "var(--bg-card)", border: profile?.is_verified_pro ? "1px solid rgba(212,175,55,0.40)" : "1px solid var(--border)" }}>
               <p className="text-[11px] font-bold uppercase mb-3" style={{ color: "var(--text-secondary)", letterSpacing: "0.12em" }}>Plan actuel</p>
               <div className="flex items-center gap-2 mb-3">
-                <CreditCard className="w-5 h-5" style={{ color: profile?.is_verified_pro ? "var(--bl-amber)" : "var(--bl-cream-faint)" }} />
+                <CreditCard className="w-5 h-5" style={{ color: profile?.is_verified_pro ? "var(--accent-gold)" : "var(--text-primary-faint)" }} />
                 <p className="font-bold" style={{ color: "var(--text-primary)" }}>{profile?.is_verified_pro ? "Plan Pro" : "Plan Gratuit"}</p>
                 {profile?.is_verified_pro && (
                   <span className="ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>Actif</span>
@@ -1879,14 +1879,14 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
               </div>
               <Link href="/tarifs" className="flex items-center justify-center py-2 rounded-xl text-xs font-bold transition-all"
                 style={profile?.is_verified_pro
-                  ? { background: "var(--bl-surface-2)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }
-                  : { background: "var(--bl-amber)", color: "#0B0F19" }}>
+                  ? { background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary-dim)" }
+                  : { background: "var(--accent-gold)", color: "#0B0F19" }}>
                 {profile?.is_verified_pro ? "Gérer l'abonnement" : "Passer Pro →"}
               </Link>
             </div>
 
             {/* Avis récents */}
-            <div className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}>
+            <div className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
               <p className="text-[11px] font-bold uppercase mb-3" style={{ color: "var(--text-secondary)", letterSpacing: "0.12em" }}>Avis des utilisateurs</p>
               {recentReviews.length === 0 ? (
                 <div className="text-center py-4">
@@ -1897,8 +1897,8 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                 <div className="space-y-3">
                   {/* Avg rating summary */}
                   {annStats && annStats.reviewCount > 0 && (
-                    <div className="flex items-center gap-3 pb-3 border-b" style={{ borderColor: "var(--bl-border)" }}>
-                      <p className="text-2xl font-bold" style={{ color: "var(--bl-amber)", fontFamily: "var(--font-display), sans-serif" }}>
+                    <div className="flex items-center gap-3 pb-3 border-b" style={{ borderColor: "var(--border)" }}>
+                      <p className="text-2xl font-bold" style={{ color: "var(--accent-gold)", fontFamily: "var(--font-display), sans-serif" }}>
                         {annStats.avgRating.toFixed(1)}
                       </p>
                       <div>
@@ -1909,7 +1909,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                               style={{ color: "#D4AF37" }} />
                           ))}
                         </div>
-                        <p className="text-[10px] mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>{annStats.reviewCount} avis</p>
+                        <p className="text-[10px] mt-0.5" style={{ color: "var(--text-primary-faint)" }}>{annStats.reviewCount} avis</p>
                       </div>
                     </div>
                   )}
@@ -1929,8 +1929,8 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                               <Star key={s} className="w-2.5 h-2.5" fill={s <= r.rating ? "#D4AF37" : "none"} style={{ color: "#D4AF37" }} />
                             ))}
                           </div>
-                          {r.comment && <p className="text-xs line-clamp-2" style={{ color: "var(--bl-cream-dim)" }}>{r.comment}</p>}
-                          <p className="text-[10px] mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>
+                          {r.comment && <p className="text-xs line-clamp-2" style={{ color: "var(--text-primary-dim)" }}>{r.comment}</p>}
+                          <p className="text-[10px] mt-0.5" style={{ color: "var(--text-primary-faint)" }}>
                             {r.reviewer_name ?? "Anonyme"} · {new Date(r.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                           </p>
                         </div>
@@ -1939,7 +1939,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                   })}
                   <button onClick={() => setTab("avis")}
                     className="w-full mt-1 py-2 rounded-xl text-xs font-bold"
-                    style={{ background: "rgba(212,175,55,0.08)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.20)" }}>
+                    style={{ background: "rgba(212,175,55,0.08)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.20)" }}>
                     Voir tous les avis →
                   </button>
                 </div>
@@ -2008,8 +2008,8 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
   }
 
   const inputStyle: React.CSSProperties = {
-    background: "var(--bl-surface-2)", border: "1px solid var(--bl-border-md)",
-    borderRadius: 12, padding: "10px 14px", color: "var(--bl-cream)", fontSize: 14, width: "100%", outline: "none",
+    background: "var(--bg-secondary)", border: "1px solid var(--border)",
+    borderRadius: 12, padding: "10px 14px", color: "var(--text-primary)", fontSize: 14, width: "100%", outline: "none",
   };
 
   const tabs: DashTab[] = [
@@ -2028,67 +2028,67 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
       {tab === "recherches" && (
         <div>
           <SectionHeader title="Votre espace recherche" subtitle="Gérez vos critères et alertes" action={
-            <button onClick={() => setShowNew(true)} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
+            <button onClick={() => setShowNew(true)} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}>
               <Plus className="w-3.5 h-3.5" /> Nouvelle
             </button>
           } />
           {showNew && (
-            <div className="rounded-2xl p-4 mb-4" style={{ background: "var(--bl-surface)", border: "1px solid rgba(212,175,55,0.30)" }}>
-              <p className="font-bold text-sm mb-3" style={{ color: "var(--bl-cream)" }}>Nouvelle recherche</p>
+            <div className="rounded-2xl p-4 mb-4" style={{ background: "var(--bg-card)", border: "1px solid rgba(212,175,55,0.30)" }}>
+              <p className="font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>Nouvelle recherche</p>
               <div className="space-y-2">
                 <input type="text" placeholder="Nom de la recherche *" value={newLabel} onChange={(e) => setNewLabel(e.target.value)} style={inputStyle} />
                 <div className="grid grid-cols-2 gap-2">
-                  <select value={newNeighborhood} onChange={(e) => setNewNeighborhood(e.target.value)} style={{ ...inputStyle, background: "var(--bl-surface-2)" }}>
+                  <select value={newNeighborhood} onChange={(e) => setNewNeighborhood(e.target.value)} style={{ ...inputStyle, background: "var(--bg-secondary)" }}>
                     <option value="">Tous quartiers</option>
                     {Object.entries(NL).map(([k,v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
-                  <select value={newType} onChange={(e) => setNewType(e.target.value)} style={{ ...inputStyle, background: "var(--bl-surface-2)" }}>
+                  <select value={newType} onChange={(e) => setNewType(e.target.value)} style={{ ...inputStyle, background: "var(--bg-secondary)" }}>
                     <option value="">Tous types</option>
                     {Object.entries(TL).map(([k,v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
                 </div>
-                <select value={newTx} onChange={(e) => setNewTx(e.target.value)} style={{ ...inputStyle, background: "var(--bl-surface-2)" }}>
+                <select value={newTx} onChange={(e) => setNewTx(e.target.value)} style={{ ...inputStyle, background: "var(--bg-secondary)" }}>
                   <option value="">Location + vente</option>
                   <option value="rent">Location</option>
                   <option value="sale">Vente</option>
                 </select>
               </div>
               <div className="flex gap-2 mt-3">
-                <button onClick={() => setShowNew(false)} className="flex-1 py-2.5 rounded-xl text-sm font-semibold" style={{ border: "1px solid var(--bl-border-md)", color: "var(--bl-cream-dim)" }}>Annuler</button>
-                <button onClick={saveNewSearch} disabled={saving || !newLabel.trim()} className="flex-1 py-2.5 rounded-xl text-sm font-bold disabled:opacity-50" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>Sauvegarder</button>
+                <button onClick={() => setShowNew(false)} className="flex-1 py-2.5 rounded-xl text-sm font-semibold" style={{ border: "1px solid var(--border)", color: "var(--text-primary-dim)" }}>Annuler</button>
+                <button onClick={saveNewSearch} disabled={saving || !newLabel.trim()} className="flex-1 py-2.5 rounded-xl text-sm font-bold disabled:opacity-50" style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}>Sauvegarder</button>
               </div>
             </div>
           )}
           {searchesLoading ? (
-            <div className="space-y-3">{[1,2].map((i) => <div key={i} className="h-20 rounded-2xl animate-pulse" style={{ background: "var(--bl-surface-2)" }} />)}</div>
+            <div className="space-y-3">{[1,2].map((i) => <div key={i} className="h-20 rounded-2xl animate-pulse" style={{ background: "var(--bg-secondary)" }} />)}</div>
           ) : searches.length === 0 ? (
-            <div className="text-center py-12 rounded-2xl" style={{ border: "2px dashed var(--bl-border-md)" }}>
-              <Search className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--bl-cream-faint)" }} />
-              <p className="font-bold mb-1" style={{ color: "var(--bl-cream)" }}>Aucune recherche sauvegardée</p>
-              <p className="text-sm mb-4" style={{ color: "var(--bl-cream-faint)" }}>Sauvegardez vos critères pour recevoir des alertes.</p>
-              <button onClick={() => setShowNew(true)} className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm" style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
+            <div className="text-center py-12 rounded-2xl" style={{ border: "2px dashed var(--border)" }}>
+              <Search className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--text-primary-faint)" }} />
+              <p className="font-bold mb-1" style={{ color: "var(--text-primary)" }}>Aucune recherche sauvegardée</p>
+              <p className="text-sm mb-4" style={{ color: "var(--text-primary-faint)" }}>Sauvegardez vos critères pour recevoir des alertes.</p>
+              <button onClick={() => setShowNew(true)} className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm" style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}>
                 <Plus className="w-4 h-4" /> Créer une recherche
               </button>
             </div>
           ) : (
             <div className="space-y-3">
               {searches.map((s) => (
-                <div key={s.id} className="rounded-2xl p-4" style={{ background: "var(--bl-surface)", borderLeft: "3px solid var(--bl-amber)", borderRadius: "0 16px 16px 0" }}>
+                <div key={s.id} className="rounded-2xl p-4" style={{ background: "var(--bg-card)", borderLeft: "3px solid var(--accent-gold)", borderRadius: "0 16px 16px 0" }}>
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <p className="font-bold text-sm" style={{ color: "var(--bl-cream)" }}>{s.label}</p>
-                    <button onClick={() => deleteSearch(s.id)} style={{ color: "var(--bl-cream-faint)" }} className="hover:text-red-400 transition-colors flex-shrink-0"><Trash2 className="w-4 h-4" /></button>
+                    <p className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>{s.label}</p>
+                    <button onClick={() => deleteSearch(s.id)} style={{ color: "var(--text-primary-faint)" }} className="hover:text-red-400 transition-colors flex-shrink-0"><Trash2 className="w-4 h-4" /></button>
                   </div>
                   <div className="flex flex-wrap gap-1.5 mb-3">
-                    {s.neighborhood && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "var(--border-subtle)", color: "var(--bl-cream-dim)" }}>{NL[s.neighborhood] ?? s.neighborhood}</span>}
-                    {s.type && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "var(--border-subtle)", color: "var(--bl-cream-dim)" }}>{TL[s.type] ?? s.type}</span>}
-                    {s.transaction_type && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "var(--border-subtle)", color: "var(--bl-cream-dim)" }}>{s.transaction_type === "rent" ? "Location" : "Vente"}</span>}
+                    {s.neighborhood && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "var(--border-subtle)", color: "var(--text-primary-dim)" }}>{NL[s.neighborhood] ?? s.neighborhood}</span>}
+                    {s.type && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "var(--border-subtle)", color: "var(--text-primary-dim)" }}>{TL[s.type] ?? s.type}</span>}
+                    {s.transaction_type && <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "var(--border-subtle)", color: "var(--text-primary-dim)" }}>{s.transaction_type === "rent" ? "Location" : "Vente"}</span>}
                   </div>
                   <div className="flex items-center gap-2">
-                    <Link href={buildUrl(s)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold" style={{ background: "rgba(212,175,55,0.12)", color: "var(--bl-amber)", border: "1px solid rgba(212,175,55,0.25)" }}>
+                    <Link href={buildUrl(s)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold" style={{ background: "rgba(212,175,55,0.12)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.25)" }}>
                       Voir les annonces <ChevronRight className="w-3.5 h-3.5" />
                     </Link>
                     <button onClick={() => toggleNotify(s)} className="flex items-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold"
-                      style={s.notify_whatsapp ? { background: "rgba(212,175,55,0.12)", color: "#D4AF37", border: "1px solid rgba(212,175,55,0.25)" } : { background: "var(--bl-surface-2)", color: "var(--bl-cream-faint)", border: "1px solid var(--bl-border)" }}>
+                      style={s.notify_whatsapp ? { background: "rgba(212,175,55,0.12)", color: "#D4AF37", border: "1px solid rgba(212,175,55,0.25)" } : { background: "var(--bg-secondary)", color: "var(--text-primary-faint)", border: "1px solid var(--border)" }}>
                       {s.notify_whatsapp ? <Bell className="w-3.5 h-3.5" /> : <BellOff className="w-3.5 h-3.5" />} Alerte
                     </button>
                   </div>
@@ -2102,12 +2102,12 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
       {tab === "favoris" && (
         <div>
           <SectionHeader title="Mes favoris" />
-          <Link href="/favoris" className="flex items-center justify-between rounded-2xl p-5" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
+          <Link href="/favoris" className="flex items-center justify-between rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
             <div className="flex items-center gap-3">
               <Heart className="w-6 h-6 text-red-400" />
-              <div><p className="font-bold" style={{ color: "var(--bl-cream)" }}>Mes annonces sauvegardées</p><p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Voir tous mes favoris</p></div>
+              <div><p className="font-bold" style={{ color: "var(--text-primary)" }}>Mes annonces sauvegardées</p><p className="text-sm" style={{ color: "var(--text-primary-faint)" }}>Voir tous mes favoris</p></div>
             </div>
-            <ChevronRight className="w-5 h-5" style={{ color: "var(--bl-cream-faint)" }} />
+            <ChevronRight className="w-5 h-5" style={{ color: "var(--text-primary-faint)" }} />
           </Link>
         </div>
       )}
@@ -2122,9 +2122,9 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
       {tab === "messages" && (
         <div>
           <SectionHeader title="Messages" />
-          <Link href="/messages" className="flex items-center justify-between rounded-2xl p-5" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}>
-            <div className="flex items-center gap-3"><MessageCircle className="w-6 h-6 text-blue-400" /><div><p className="font-bold" style={{ color: "var(--bl-cream)" }}>Mes messages</p><p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Ouvrir la messagerie</p></div></div>
-            <ChevronRight className="w-5 h-5" style={{ color: "var(--bl-cream-faint)" }} />
+          <Link href="/messages" className="flex items-center justify-between rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+            <div className="flex items-center gap-3"><MessageCircle className="w-6 h-6 text-blue-400" /><div><p className="font-bold" style={{ color: "var(--text-primary)" }}>Mes messages</p><p className="text-sm" style={{ color: "var(--text-primary-faint)" }}>Ouvrir la messagerie</p></div></div>
+            <ChevronRight className="w-5 h-5" style={{ color: "var(--text-primary-faint)" }} />
           </Link>
         </div>
       )}
@@ -2150,7 +2150,7 @@ export default function ComptePage() {
   if (authLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "var(--bl-amber)", borderTopColor: "transparent" }} />
+        <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "var(--accent-gold)", borderTopColor: "transparent" }} />
       </div>
     );
   }
@@ -2160,7 +2160,7 @@ export default function ComptePage() {
     // Show a neutral loading screen so neither dark nor light mode shows a blank page.
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "var(--bl-amber)", borderTopColor: "transparent" }} />
+        <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "var(--accent-gold)", borderTopColor: "transparent" }} />
         <p className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>Redirection en cours…</p>
       </div>
     );
@@ -2173,7 +2173,7 @@ export default function ComptePage() {
   if (role === "buyer") {
     return (
       <div className="max-w-xl mx-auto">
-        <div className="lg:rounded-2xl lg:overflow-hidden" style={{ border: "1px solid var(--bl-border)" }}>
+        <div className="lg:rounded-2xl lg:overflow-hidden" style={{ border: "1px solid var(--border)" }}>
           <BuyerProfile user={user} profile={profile} refreshProfile={refreshProfile} />
         </div>
       </div>
@@ -2184,7 +2184,7 @@ export default function ComptePage() {
   if (role === "chercheur") {
     return (
       <div className="max-w-3xl lg:max-w-5xl mx-auto lg:px-0">
-        <div className="lg:rounded-2xl lg:overflow-hidden" style={{ border: "1px solid var(--bl-border)" }}>
+        <div className="lg:rounded-2xl lg:overflow-hidden" style={{ border: "1px solid var(--border)" }}>
           <ChercheurDashboard {...dashProps} />
         </div>
       </div>
@@ -2194,7 +2194,7 @@ export default function ComptePage() {
   // ── Annonceur (proprietaire / owner / agent / agence / agency) ───────────────
   return (
     <div className="max-w-3xl lg:max-w-6xl mx-auto lg:px-0">
-      <div style={{ border: "1px solid var(--bl-border)", borderRadius: "0 0 16px 16px", overflow: "hidden" }}>
+      <div style={{ border: "1px solid var(--border)", borderRadius: "0 0 16px 16px", overflow: "hidden" }}>
         <AnnonceurDashboard {...dashProps} />
       </div>
     </div>

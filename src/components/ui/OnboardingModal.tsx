@@ -91,7 +91,7 @@ export function OnboardingModal() {
                 <button
                   key={label}
                   onClick={() => setStep(1)}
-                  className="flex items-center gap-3 w-full px-5 py-4 rounded-xl border-2 border-[var(--color-border)] bg-[var(--bg-card-light)] text-white font-semibold text-sm hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors text-left"
+                  className="flex items-center gap-3 w-full px-5 py-4 rounded-xl border-2 border-[var(--border)] bg-[var(--bg-card-light)] text-white font-semibold text-sm hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors text-left"
                 >
                   <span className="text-xl">{emoji}</span>
                   {label}
@@ -107,7 +107,7 @@ export function OnboardingModal() {
                 <button
                   key={option}
                   onClick={() => setStep(2)}
-                  className="px-4 py-4 rounded-xl border-2 border-[var(--color-border)] bg-[var(--bg-card-light)] text-white font-semibold text-sm hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors text-center"
+                  className="px-4 py-4 rounded-xl border-2 border-[var(--border)] bg-[var(--bg-card-light)] text-white font-semibold text-sm hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors text-center"
                 >
                   {option}
                 </button>
@@ -122,7 +122,7 @@ export function OnboardingModal() {
                 <button
                   key={name}
                   onClick={() => finish()}
-                  className="px-3 py-3 rounded-xl border-2 border-[var(--color-border)] bg-[var(--bg-card-light)] text-white font-semibold text-sm hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors text-center"
+                  className="px-3 py-3 rounded-xl border-2 border-[var(--border)] bg-[var(--bg-card-light)] text-white font-semibold text-sm hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors text-center"
                 >
                   {name}
                 </button>

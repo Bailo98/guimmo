@@ -28,8 +28,8 @@ const TYPES = [
 ];
 
 const SELECT_BASE: React.CSSProperties = {
-  background: "var(--bl-surface-2)",
-  border: "1px solid var(--color-border)",
+  background: "var(--bg-secondary)",
+  border: "1px solid var(--border)",
   color: "#666666",
   borderRadius: "12px",
   padding: "0 14px",
@@ -71,8 +71,8 @@ export function HeroSearch() {
     <div
       className="rounded-2xl p-3 sm:p-4 w-full max-w-[640px] lg:max-w-[680px] mx-auto"
       style={{
-        background: "var(--bl-surface)",
-        border: "1px solid var(--color-border)",
+        background: "var(--bg-card)",
+        border: "1px solid var(--border)",
       }}
     >
       {/* Tabs — pleine largeur, 50/50 */}

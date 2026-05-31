@@ -84,7 +84,7 @@ export default function ModifierAnnoncePage() {
       <div className="flex items-center gap-3 mb-6">
         <Link
           href="/compte/annonces"
-          className="w-9 h-9 rounded-xl border border-[var(--color-border)] flex items-center justify-center text-slate-600 dark:text-slate-300 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
+          className="w-9 h-9 rounded-xl border border-[var(--border)] flex items-center justify-center text-slate-600 dark:text-slate-300 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
         </Link>
@@ -94,7 +94,7 @@ export default function ModifierAnnoncePage() {
         </div>
       </div>
 
-      <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 border border-[var(--color-border)] space-y-5">
+      <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 border border-[var(--border)] space-y-5">
         {/* Title */}
         <div>
           <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">
@@ -107,7 +107,7 @@ export default function ModifierAnnoncePage() {
             maxLength={80}
             className={cn(
               "w-full bg-[var(--bg-card-light)] border rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm",
-              errors.title ? "border-red-500" : "border-slate-200 dark:border-[var(--color-border)]"
+              errors.title ? "border-red-500" : "border-slate-200 dark:border-[var(--border)]"
             )}
           />
           {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
@@ -120,7 +120,7 @@ export default function ModifierAnnoncePage() {
             rows={5}
             value={form.description}
             onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-            className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm resize-none"
+            className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm resize-none"
           />
         </div>
 
@@ -135,7 +135,7 @@ export default function ModifierAnnoncePage() {
                 onChange={(e) => { setForm((f) => ({ ...f, price: e.target.value })); setErrors((er) => ({ ...er, price: undefined })); }}
                 className={cn(
                   "w-full bg-[var(--bg-card-light)] border rounded-xl px-4 py-3 text-slate-900 dark:text-white text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#D4AF37]",
-                  errors.price ? "border-red-500" : "border-slate-200 dark:border-[var(--color-border)]"
+                  errors.price ? "border-red-500" : "border-slate-200 dark:border-[var(--border)]"
                 )}
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-semibold">GNF</span>
@@ -143,7 +143,7 @@ export default function ModifierAnnoncePage() {
             <select
               value={form.pricePeriod}
               onChange={(e) => setForm((f) => ({ ...f, pricePeriod: e.target.value as "month" | "year" | "total" }))}
-              className="bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-3 py-3 text-slate-700 dark:text-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+              className="bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-3 py-3 text-slate-700 dark:text-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
             >
               {PRICE_PERIODS.map((p) => (
                 <option key={p.value} value={p.value}>{p.label}</option>
@@ -161,7 +161,7 @@ export default function ModifierAnnoncePage() {
               "w-full py-3 rounded-xl text-sm font-semibold border transition-colors",
               form.availableNow
                 ? "bg-green-50 dark:bg-green-900/20 border-green-500 text-green-600 dark:text-[#D4AF37]"
-                : "bg-[var(--bg-card-light)] border-slate-200 dark:border-[var(--color-border)] text-slate-500 dark:text-slate-400"
+                : "bg-[var(--bg-card-light)] border-slate-200 dark:border-[var(--border)] text-slate-500 dark:text-slate-400"
             )}
           >
             {form.availableNow ? "✅ Disponible maintenant" : "Non disponible"}
@@ -178,7 +178,7 @@ export default function ModifierAnnoncePage() {
             placeholder="+224 620 000 000"
             className={cn(
               "w-full bg-[var(--bg-card-light)] border rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm",
-              errors.phone ? "border-red-500" : "border-slate-200 dark:border-[var(--color-border)]"
+              errors.phone ? "border-red-500" : "border-slate-200 dark:border-[var(--border)]"
             )}
           />
           {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
@@ -194,7 +194,7 @@ export default function ModifierAnnoncePage() {
             value={form.whatsapp}
             onChange={(e) => setForm((f) => ({ ...f, whatsapp: e.target.value }))}
             placeholder="+224 620 000 000"
-            className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
+            className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-sm"
           />
         </div>
       </div>
@@ -203,7 +203,7 @@ export default function ModifierAnnoncePage() {
       <div className="mt-4 flex gap-3">
         <Link
           href="/compte/annonces"
-          className="flex items-center gap-1.5 px-4 py-3 rounded-xl border border-[var(--color-border)] text-slate-600 dark:text-slate-300 text-sm font-semibold hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
+          className="flex items-center gap-1.5 px-4 py-3 rounded-xl border border-[var(--border)] text-slate-600 dark:text-slate-300 text-sm font-semibold hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
         >
           <ChevronLeft className="w-4 h-4" /> Annuler
         </Link>

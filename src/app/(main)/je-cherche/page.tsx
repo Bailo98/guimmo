@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Search, Plus, X, MapPin, Home, DollarSign } from "lucide-react";
@@ -111,15 +111,15 @@ export default function JeCharchePage() {
   }
 
   const inputStyle: React.CSSProperties = {
-    width: "100%", background: "var(--bl-surface-2)",
-    border: "1px solid var(--color-border)",
+    width: "100%", background: "var(--bg-secondary)",
+    border: "1px solid var(--border)",
     borderRadius: 12, padding: "12px 14px",
-    color: "var(--bl-cream)", fontSize: 14,
+    color: "var(--text-primary)", fontSize: 14,
     outline: "none", boxSizing: "border-box",
   };
   const labelStyle: React.CSSProperties = {
     display: "block", fontSize: 12, fontWeight: 600,
-    color: "var(--bl-cream-dim)", marginBottom: 6,
+    color: "var(--text-primary-dim)", marginBottom: 6,
   };
 
   return (
@@ -129,12 +129,12 @@ export default function JeCharchePage() {
         {/* Header */}
         <div style={{ marginBottom: 28 }}>
           <h1 style={{
-            fontSize: 28, fontWeight: 800, color: "var(--bl-cream)",
+            fontSize: 28, fontWeight: 800, color: "var(--text-primary)",
             fontFamily: "var(--font-display), sans-serif", marginBottom: 8,
           }}>
             Je cherche 🔍
           </h1>
-          <p style={{ color: "var(--bl-cream-faint)", fontSize: 15 }}>
+          <p style={{ color: "var(--text-primary-faint)", fontSize: 15 }}>
             Décrivez ce que vous cherchez. Les propriétaires qui ont le bien vous contacteront directement.
           </p>
         </div>
@@ -163,14 +163,14 @@ export default function JeCharchePage() {
         {showForm && (
           <form onSubmit={handleSubmit}
             style={{
-              background: "var(--bg-card)", border: "1px solid var(--color-border)",
+              background: "var(--bg-card)", border: "1px solid var(--border)",
               borderRadius: 20, padding: 20, marginBottom: 28,
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: "var(--bl-cream)" }}>Nouvelle recherche</h2>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>Nouvelle recherche</h2>
               <button type="button" onClick={() => setShowForm(false)}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "var(--bl-cream-faint)" }}>
+                style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-primary-faint)" }}>
                 <X style={{ width: 18, height: 18 }} />
               </button>
             </div>
@@ -200,7 +200,7 @@ export default function JeCharchePage() {
                         fontSize: 13, fontWeight: 600, cursor: "pointer",
                         ...(form.property_type === t.id
                           ? { background: "rgba(212,175,55,0.15)", borderColor: "rgba(212,175,55,0.50)", color: "#D4AF37" }
-                          : { background: "var(--bl-surface-2)", borderColor: "var(--color-border)", color: "var(--bl-cream-faint)" }),
+                          : { background: "var(--bg-secondary)", borderColor: "var(--border)", color: "var(--text-primary-faint)" }),
                       }}>
                       {t.emoji} {t.label}
                     </button>
@@ -235,7 +235,7 @@ export default function JeCharchePage() {
                         fontSize: 13, fontWeight: 600, cursor: "pointer",
                         ...(form.rooms === r
                           ? { background: "rgba(212,175,55,0.15)", borderColor: "rgba(212,175,55,0.50)", color: "#D4AF37" }
-                          : { background: "var(--bl-surface-2)", borderColor: "var(--color-border)", color: "var(--bl-cream-faint)" }),
+                          : { background: "var(--bg-secondary)", borderColor: "var(--border)", color: "var(--text-primary-faint)" }),
                       }}>
                       {r === "" ? "Peu importe" : r}
                     </button>
@@ -291,21 +291,21 @@ export default function JeCharchePage() {
         ) : requests.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px 0" }}>
             <p style={{ fontSize: 40, marginBottom: 12 }}>🔍</p>
-            <p style={{ color: "var(--bl-cream)", fontWeight: 700, fontSize: 18, marginBottom: 8 }}>
+            <p style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: 18, marginBottom: 8 }}>
               Aucune demande active
             </p>
-            <p style={{ color: "var(--bl-cream-faint)", fontSize: 14 }}>
+            <p style={{ color: "var(--text-primary-faint)", fontSize: 14 }}>
               Soyez le premier à publier votre recherche !
             </p>
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <p style={{ color: "var(--bl-cream-faint)", fontSize: 13, marginBottom: 4 }}>
+            <p style={{ color: "var(--text-primary-faint)", fontSize: 13, marginBottom: 4 }}>
               {requests.length} demande{requests.length > 1 ? "s" : ""} active{requests.length > 1 ? "s" : ""}
             </p>
             {requests.map((req) => (
               <div key={req.id} style={{
-                background: "var(--bg-card)", border: "1px solid var(--color-border)",
+                background: "var(--bg-card)", border: "1px solid var(--border)",
                 borderRadius: 16, padding: "16px",
               }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
@@ -335,9 +335,9 @@ export default function JeCharchePage() {
                       )}
                       {req.rooms && (
                         <span style={{
-                          background: "var(--bl-surface-2)", color: "var(--bl-cream-dim)",
+                          background: "var(--bg-secondary)", color: "var(--text-primary-dim)",
                           fontSize: 12, fontWeight: 600, padding: "3px 10px", borderRadius: 20,
-                          border: "1px solid var(--color-border)",
+                          border: "1px solid var(--border)",
                         }}>
                           🛏 {req.rooms} ch.
                         </span>
@@ -346,20 +346,20 @@ export default function JeCharchePage() {
 
                     {/* Budget */}
                     {req.budget_max && (
-                      <p style={{ fontSize: 20, fontWeight: 800, color: "var(--bl-cream)", marginBottom: 4 }}>
+                      <p style={{ fontSize: 20, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4 }}>
                         Max {formatPrice(req.budget_max)}
-                        <span style={{ fontSize: 12, fontWeight: 500, color: "var(--bl-cream-faint)", marginLeft: 4 }}>/mois</span>
+                        <span style={{ fontSize: 12, fontWeight: 500, color: "var(--text-primary-faint)", marginLeft: 4 }}>/mois</span>
                       </p>
                     )}
 
                     {/* Description */}
                     {req.description && (
-                      <p style={{ fontSize: 13, color: "var(--bl-cream-dim)", lineHeight: 1.5, marginBottom: 6 }}>
+                      <p style={{ fontSize: 13, color: "var(--text-primary-dim)", lineHeight: 1.5, marginBottom: 6 }}>
                         {req.description}
                       </p>
                     )}
 
-                    <p style={{ fontSize: 11, color: "var(--bl-cream-faint)" }}>
+                    <p style={{ fontSize: 11, color: "var(--text-primary-faint)" }}>
                       {req.profiles?.full_name ?? "Anonyme"} · {timeAgo(req.created_at)}
                     </p>
                   </div>

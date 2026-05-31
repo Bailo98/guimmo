@@ -19,7 +19,7 @@ const VALUES = [
 
 export default function AProposPage() {
   return (
-    <div style={{ background: "var(--LogerBien-bg)" }}>
+    <div style={{ background: "var(--bg-primary)" }}>
       <PageHero
         title="L'immobilier guinéen, enfin accessible"
         subtitle="LogerBien est née d'un constat simple : trouver un logement à Conakry était trop difficile, trop opaque et trop risqué. Nous avons changé ça."
@@ -68,7 +68,7 @@ export default function AProposPage() {
       </div>
 
       {/* CTA */}
-      <div className="rounded-2xl p-8 text-center text-white" style={{ background: "linear-gradient(135deg, var(--LogerBien-amber), #8a5e10)" }}>
+      <div className="rounded-2xl p-8 text-center text-white" style={{ background: "linear-gradient(135deg, var(--accent-gold), #8a5e10)" }}>
         <h2 className="text-xl font-black mb-2">Rejoignez la communauté LogerBien</h2>
         <p className="text-white/80 mb-6 text-sm">Publiez votre bien ou trouvez votre logement dès maintenant.</p>
         <div className="flex flex-wrap gap-3 justify-center">

@@ -95,7 +95,7 @@ export function ReviewsSection({ ownerId, ownerName }: ReviewsSectionProps) {
           Avis sur {ownerName}
         </h2>
         {reviews.length > 0 && (
-          <div className="flex items-center gap-3 bg-[var(--bg-card-light)] rounded-xl px-4 py-2 border border-[var(--color-border)]">
+          <div className="flex items-center gap-3 bg-[var(--bg-card-light)] rounded-xl px-4 py-2 border border-[var(--border)]">
             <span className="text-3xl font-black text-[#D4AF37]">{avgRating.toFixed(1)}</span>
             <div>
               <StarDisplay rating={Math.round(avgRating)} />
@@ -111,7 +111,7 @@ export function ReviewsSection({ ownerId, ownerName }: ReviewsSectionProps) {
           {reviews.map((review) => (
             <div
               key={review.id}
-              className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)]"
+              className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)]"
             >
               <div className="flex items-start justify-between gap-3 mb-2">
                 <div className="flex items-center gap-3">
@@ -139,14 +139,14 @@ export function ReviewsSection({ ownerId, ownerName }: ReviewsSectionProps) {
           ))}
         </div>
       ) : (
-        <div className="bg-[var(--bg-card-light)] rounded-2xl p-8 border border-[var(--color-border)] text-center">
+        <div className="bg-[var(--bg-card-light)] rounded-2xl p-8 border border-[var(--border)] text-center">
           <Star className="w-10 h-10 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
           <p className="text-slate-400 text-sm">Aucun avis pour le moment. Soyez le premier !</p>
         </div>
       )}
 
       {/* Add review form */}
-      <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 border border-[var(--color-border)]">
+      <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 border border-[var(--border)]">
         <h3 className="font-bold text-slate-900 dark:text-white mb-4">Laisser un avis</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name */}
@@ -159,7 +159,7 @@ export function ReviewsSection({ ownerId, ownerName }: ReviewsSectionProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ex : Aminata Balde"
-              className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+              className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
             />
           </div>
 
@@ -181,7 +181,7 @@ export function ReviewsSection({ ownerId, ownerName }: ReviewsSectionProps) {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Partagez votre expérience avec ce propriétaire..."
-              className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none"
+              className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] resize-none"
             />
           </div>
 

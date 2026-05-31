@@ -68,7 +68,7 @@ export default function PaiementsPage() {
             const s = STATUS[p.status as keyof typeof STATUS];
             const Icon = s.icon;
             return (
-              <div key={i} className="bg-[var(--bg-card-light)] rounded-2xl p-4 border border-[var(--color-border)] flex items-center gap-3">
+              <div key={i} className="bg-[var(--bg-card-light)] rounded-2xl p-4 border border-[var(--border)] flex items-center gap-3">
                 <div className="w-10 h-10 bg-[var(--bg-card-light)] rounded-xl flex items-center justify-center flex-shrink-0">
                   <CreditCard className="w-5 h-5 text-slate-400" />
                 </div>

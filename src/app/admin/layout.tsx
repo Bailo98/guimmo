@@ -11,12 +11,12 @@ import { supabase } from "@/lib/supabase";
 import { Avatar } from "@/components/ui/Avatar";
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
-const BG_SIDEBAR  = "var(--bl-bg)";
-const BORDER      = "var(--color-border)";
-const TEXT_PRI    = "var(--bl-cream)";
-const TEXT_SEC    = "var(--bl-cream-dim)";
+const BG_SIDEBAR  = "var(--bg-primary)";
+const BORDER      = "var(--border)";
+const TEXT_PRI    = "var(--text-primary)";
+const TEXT_SEC    = "var(--text-primary-dim)";
 const ACCENT      = "#D4AF37";
-const SEPARATOR   = "var(--color-border)";
+const SEPARATOR   = "var(--border)";
 
 // ─── Nav items ────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
@@ -296,7 +296,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div style={{ position: "absolute", top: 12, right: 12 }}>
           <button
             onClick={() => setDrawerOpen(false)}
-            style={{ padding: 6, borderRadius: 8, border: "none", background: "var(--color-border)", color: TEXT_SEC, cursor: "pointer" }}
+            style={{ padding: 6, borderRadius: 8, border: "none", background: "var(--border)", color: TEXT_SEC, cursor: "pointer" }}
           >
             <X size={18} />
           </button>

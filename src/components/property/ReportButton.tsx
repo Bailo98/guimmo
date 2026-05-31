@@ -95,7 +95,7 @@ export function ReportButton({ propertyId, propertyTitle = "", isLoggedIn = fals
         className="space-y-5"
         style={{
           position: "relative",
-          background: "var(--bl-surface-2)",
+          background: "var(--bg-secondary)",
           borderRadius: 20,
           padding: 24,
           width: "100%",

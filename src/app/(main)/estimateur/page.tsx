@@ -103,7 +103,7 @@ export default function EstimateurPage() {
       <div className="max-w-5xl mx-auto px-4 py-10">
         <div className="grid lg:grid-cols-[1fr_400px] gap-8 items-start">
           {/* Form */}
-          <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--color-border)] p-6 md:p-8">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--border)] p-6 md:p-8">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6">
               Décrivez votre bien
             </h2>
@@ -117,7 +117,7 @@ export default function EstimateurPage() {
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[var(--bg-primary)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
+                  className="w-full bg-slate-50 dark:bg-[var(--bg-primary)] border border-[var(--border)] rounded-xl px-4 py-3 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
                 >
                   {PROPERTY_TYPES.map((t) => (
                     <option key={t.value} value={t.value}>
@@ -135,7 +135,7 @@ export default function EstimateurPage() {
                 <select
                   value={neighborhood}
                   onChange={(e) => setNeighborhood(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[var(--bg-primary)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
+                  className="w-full bg-slate-50 dark:bg-[var(--bg-primary)] border border-[var(--border)] rounded-xl px-4 py-3 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
                 >
                   {NEIGHBORHOODS.map((n) => (
                     <option key={n.id} value={n.id}>
@@ -169,7 +169,7 @@ export default function EstimateurPage() {
                   max={400}
                   value={surface}
                   onChange={(e) => setSurface(Math.max(15, Math.min(400, Number(e.target.value))))}
-                  className="mt-2 w-32 bg-slate-50 dark:bg-[var(--bg-primary)] border border-[var(--color-border)] rounded-xl px-3 py-2 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
+                  className="mt-2 w-32 bg-slate-50 dark:bg-[var(--bg-primary)] border border-[var(--border)] rounded-xl px-3 py-2 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
                 />
               </div>
 
@@ -187,7 +187,7 @@ export default function EstimateurPage() {
                         "w-11 h-11 rounded-xl font-bold text-sm border transition-all",
                         rooms === n
                           ? "bg-[#D4AF37] text-white border-[#D4AF37]"
-                          : "bg-slate-50 dark:bg-[var(--bg-primary)] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[var(--color-border)] hover:border-[#D4AF37] hover:text-[#D4AF37]"
+                          : "bg-slate-50 dark:bg-[var(--bg-primary)] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[var(--border)] hover:border-[#D4AF37] hover:text-[#D4AF37]"
                       )}
                     >
                       {n}
@@ -239,7 +239,7 @@ export default function EstimateurPage() {
           <div className="space-y-5">
             {result ? (
               <>
-                <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--color-border)] p-6">
+                <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--border)] p-6">
                   <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">
                     Résultat de l&apos;estimation
                   </h3>
@@ -320,7 +320,7 @@ export default function EstimateurPage() {
                 </div>
 
                 {/* CTA */}
-                <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--color-border)] p-5">
+                <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--border)] p-5">
                   <p className="font-semibold text-slate-900 dark:text-white mb-2 text-sm">
                     Vous êtes propriétaire ?
                   </p>
@@ -337,7 +337,7 @@ export default function EstimateurPage() {
                 </div>
               </>
             ) : (
-              <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--color-border)] p-8 text-center">
+              <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--border)] p-8 text-center">
                 <div className="w-16 h-16 rounded-full bg-[#D4AF37]/10 flex items-center justify-center mx-auto mb-4">
                   <Calculator className="w-8 h-8 text-[#D4AF37]" />
                 </div>

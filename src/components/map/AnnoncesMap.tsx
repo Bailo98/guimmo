@@ -238,7 +238,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
             </p>
             <p
               style={{
-                color: "var(--bl-cream)",
+                color: "var(--text-primary)",
                 fontWeight: 600,
                 fontSize: 13,
                 whiteSpace: "nowrap",
@@ -249,7 +249,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
             >
               {selected.title}
             </p>
-            <p style={{ color: "var(--bl-cream-faint)", fontSize: 11 }}>
+            <p style={{ color: "var(--text-primary-faint)", fontSize: 11 }}>
               📍 {neighbourhoodLabel(selected.neighborhood)}
             </p>
           </div>

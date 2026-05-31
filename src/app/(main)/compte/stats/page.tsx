@@ -120,7 +120,7 @@ export default function StatsPage() {
         ].map((s) => {
           const Icon = s.icon;
           return (
-            <div key={s.label} className="bg-[var(--bg-card)] rounded-2xl p-4 border border-[var(--color-border)]">
+            <div key={s.label} className="bg-[var(--bg-card)] rounded-2xl p-4 border border-[var(--border)]">
               <div className={`w-9 h-9 ${s.bg} rounded-xl flex items-center justify-center mb-2`}>
                 <Icon className={`w-4 h-4 ${s.color}`} />
               </div>
@@ -132,7 +132,7 @@ export default function StatsPage() {
       </div>
 
       {/* Weekly chart */}
-      <div className="bg-[var(--bg-card)] rounded-2xl p-5 border border-[var(--color-border)]">
+      <div className="bg-[var(--bg-card)] rounded-2xl p-5 border border-[var(--border)]">
         <h2 className="font-bold mb-4 flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
           <BarChart3 className="w-4 h-4 text-[#D4AF37]" /> Vues cette semaine
         </h2>
@@ -148,7 +148,7 @@ export default function StatsPage() {
       </div>
 
       {/* Top properties */}
-      <div className="bg-[var(--bg-card)] rounded-2xl p-5 border border-[var(--color-border)]">
+      <div className="bg-[var(--bg-card)] rounded-2xl p-5 border border-[var(--border)]">
         <h2 className="font-bold mb-4" style={{ color: "var(--text-primary)" }}>Top annonces</h2>
         {properties.length === 0 ? (
           <p className="text-sm text-center py-4" style={{ color: "var(--text-secondary)" }}>
@@ -180,7 +180,7 @@ export default function StatsPage() {
       </div>
 
       {/* Boost CTA */}
-      <div className="bg-[var(--bg-card)] rounded-2xl p-5 border border-[var(--color-border)]">
+      <div className="bg-[var(--bg-card)] rounded-2xl p-5 border border-[var(--border)]">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-bold flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
             <Zap className="w-4 h-4 text-[#D4AF37]" /> Boostez vos annonces
@@ -225,7 +225,7 @@ export default function StatsPage() {
                   value={selectedAnnonce}
                   onChange={(e) => setSelectedAnnonce(e.target.value)}
                   className="w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-                  style={{ background: "var(--bg-card)", borderColor: "var(--color-border)", color: "var(--text-primary)" }}
+                  style={{ background: "var(--bg-card)", borderColor: "var(--border)", color: "var(--text-primary)" }}
                 >
                   {properties.map((a) => (
                     <option key={a.id} value={a.id}>{a.title}</option>
@@ -251,7 +251,7 @@ export default function StatsPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-                  style={{ background: "var(--bg-card)", borderColor: "var(--color-border)", color: "var(--text-primary)" }}
+                  style={{ background: "var(--bg-card)", borderColor: "var(--border)", color: "var(--text-primary)" }}
                 />
               </div>
 

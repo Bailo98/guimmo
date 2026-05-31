@@ -292,10 +292,10 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
                 placeholder="Posez votre question…"
                 style={{
                   flex: 1,
-                  background: "var(--bl-surface)",
+                  background: "var(--bg-card)",
                   border: "1px solid rgba(255,255,255,0.1)",
                   borderRadius: 999,
-                  color: "var(--bl-cream)",
+                  color: "var(--text-primary)",
                   fontSize: 13,
                   padding: "9px 14px",
                   outline: "none",

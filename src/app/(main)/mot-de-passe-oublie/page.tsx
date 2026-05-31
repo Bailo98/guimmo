@@ -80,7 +80,7 @@ export default function MotDePasseOubliePage() {
             {tab === "phone" && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-4 text-sm leading-relaxed"
-                  style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", color: "rgba(255,255,255,0.75)" }}>
+                  style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "rgba(255,255,255,0.75)" }}>
                   Pour réinitialiser votre mot de passe par téléphone, contactez notre équipe sur WhatsApp.
                   Nous vous aiderons en quelques minutes.
                 </div>
@@ -94,7 +94,7 @@ export default function MotDePasseOubliePage() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+224 6XX XXX XXX"
-                    style={{ ...INPUT, width: "100%", borderRadius: 12, padding: "12px 16px", color: "var(--bl-cream)" }}
+                    style={{ ...INPUT, width: "100%", borderRadius: 12, padding: "12px 16px", color: "var(--text-primary)" }}
                     className="focus:outline-none focus:ring-2 focus:ring-[#D4AF37] placeholder:text-white/30"
                   />
                 </div>

@@ -51,7 +51,7 @@ export function SearchBar() {
           <select
             value={neighborhood}
             onChange={(e) => setNeighborhood(e.target.value)}
-            className="w-full appearance-none bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl pl-9 pr-8 py-3 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+            className="w-full appearance-none bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl pl-9 pr-8 py-3 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
           >
             <option value="">Tous les quartiers</option>
             {POPULAR_NEIGHBORHOODS.map((n) => (
@@ -66,7 +66,7 @@ export function SearchBar() {
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full appearance-none bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl pl-4 pr-8 py-3 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+            className="w-full appearance-none bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl pl-4 pr-8 py-3 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
           >
             <option value="">Tout type</option>
             {PROPERTY_TYPES.map((t) => (

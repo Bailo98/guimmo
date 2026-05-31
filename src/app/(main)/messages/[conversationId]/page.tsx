@@ -242,7 +242,7 @@ export default function ConversationPage() {
     >
       {/* ── Header ── */}
       <div
-        className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-[var(--color-border)]"
+        className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-[var(--border)]"
         style={{ background: "var(--bg-primary)" }}
       >
         <button
@@ -293,7 +293,7 @@ export default function ConversationPage() {
                   className={`px-4 py-2.5 text-sm leading-relaxed ${
                     isMe
                       ? "bg-[#D4AF37] text-white"
-                      : "bg-[var(--bl-surface)] text-[#ffffff] border border-[var(--color-border)]"
+                      : "bg-[var(--bg-card)] text-[#ffffff] border border-[var(--border)]"
                   }`}
                   style={{
                     borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
@@ -319,7 +319,7 @@ export default function ConversationPage() {
       {/* ── Input ── */}
       <form
         onSubmit={handleSend}
-        className="flex-shrink-0 px-4 py-3 border-t border-[var(--color-border)]"
+        className="flex-shrink-0 px-4 py-3 border-t border-[var(--border)]"
         style={{
           background: "var(--bg-primary)",
           paddingBottom: "max(12px, env(safe-area-inset-bottom))",
@@ -334,7 +334,7 @@ export default function ConversationPage() {
             placeholder="Écrire un message…"
             rows={1}
             style={{ fontSize: 16 }}
-            className="flex-1 resize-none bg-[var(--bl-surface)] border border-[var(--color-border)] text-[#ffffff] placeholder:text-white/30 rounded-3xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 max-h-32 overflow-y-auto"
+            className="flex-1 resize-none bg-[var(--bg-card)] border border-[var(--border)] text-[#ffffff] placeholder:text-white/30 rounded-3xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 max-h-32 overflow-y-auto"
           />
           <button
             type="submit"

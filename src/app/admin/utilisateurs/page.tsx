@@ -6,10 +6,10 @@ import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabase";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
-const SURFACE  = "var(--bl-surface)";
-const BORDER   = "var(--color-border)";
-const TEXT_PRI = "var(--bl-cream)";
-const TEXT_SEC = "var(--bl-cream-dim)";
+const SURFACE  = "var(--bg-card)";
+const BORDER   = "var(--border)";
+const TEXT_PRI = "var(--text-primary)";
+const TEXT_SEC = "var(--text-primary-dim)";
 const ACCENT   = "#D4AF37";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -218,7 +218,7 @@ export default function AdminUtilisateursPage() {
           onClick={() => setConfirmDelete(null)}
         >
           <div
-            style={{ background: "var(--bl-surface)", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
+            style={{ background: "var(--bg-card)", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 16, padding: 24, maxWidth: 360, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.5)" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>

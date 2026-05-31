@@ -85,7 +85,7 @@ export function PWAInstallBanner() {
         className="md:hidden fixed top-0 left-0 right-0 z-[60] flex items-center gap-3 px-4 shadow-2xl"
         style={{
           height: 60,
-          background: "var(--bl-surface)",
+          background: "var(--bg-card)",
           borderBottom: "1px solid rgba(255,255,255,0.10)",
         }}
       >
@@ -137,7 +137,7 @@ export function PWAInstallBanner() {
           <div
             className="w-full"
             style={{
-              background: "var(--bl-surface-2)",
+              background: "var(--bg-secondary)",
               borderRadius: "20px 20px 0 0",
               padding: "24px 20px 32px",
             }}

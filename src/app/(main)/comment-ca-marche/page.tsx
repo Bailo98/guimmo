@@ -37,7 +37,7 @@ export default function CommentCaMarchePage() {
           {STEPS_SEARCH.map((s) => {
             const Icon = s.icon;
             return (
-              <div key={s.n} className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)] flex gap-4">
+              <div key={s.n} className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)] flex gap-4">
                 <div className="flex-shrink-0">
                   <div className="w-10 h-10 bg-[#D4AF37] rounded-2xl flex items-center justify-center text-white font-black">{s.n}</div>
                 </div>
@@ -69,7 +69,7 @@ export default function CommentCaMarchePage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {STEPS_PUBLISH.map((s) => (
-            <div key={s.n} className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)] flex gap-4">
+            <div key={s.n} className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)] flex gap-4">
               <div className="w-10 h-10 bg-green-500 rounded-2xl flex items-center justify-center text-white font-black flex-shrink-0">{s.n}</div>
               <div>
                 <h3 className="font-bold text-slate-900 dark:text-white mb-1">{s.title}</h3>

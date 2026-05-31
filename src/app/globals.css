@@ -1,225 +1,238 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
-/* Enable class-based dark mode in Tailwind v4 */
+/* ── Class-based dark mode for Tailwind v4 ── */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ─────────────────────────────────────────────────────────────────
+   @theme — Tailwind design tokens
+───────────────────────────────────────────────────────────────── */
 @theme {
-  /* Brand */
-  --color-brand: #D4AF37;
-  --color-brand-dark: #B8963A;
-  --color-brand-light: #E8C84A;
+  --color-brand:       #C9A84C;
+  --color-brand-dark:  #B8922A;
+  --color-brand-light: #D4B660;
 
-  /* Surfaces */
-  --color-surface-dark: #111a1f;
-  --color-surface-dark-2: #1a252b;
-  --color-surface-dark-3: #0A1216;
-  --color-surface-dark-border: #1e2a30;
-  --color-surface-dark-border-2: #2a3a42;
+  --color-surface-dark:        #1E1E1E;
+  --color-surface-dark-2:      #2A2A2A;
+  --color-surface-dark-3:      #141414;
+  --color-surface-dark-border: #3A3A3A;
 
-  /* Typography */
   --font-sans: var(--font-space-grotesk), var(--font-inter), system-ui, -apple-system, sans-serif;
 
-  /* Animations */
-  --animate-fade-in: fadeIn 0.3s ease-out;
-  --animate-slide-up: slideUp 0.3s ease-out;
-  --animate-scale-in: scaleIn 0.2s ease-out;
-  --animate-shimmer: shimmer 1.5s infinite;
+  --animate-fade-in:  fadeIn   0.3s ease-out;
+  --animate-slide-up: slideUp  0.3s ease-out;
+  --animate-scale-in: scaleIn  0.2s ease-out;
+  --animate-shimmer:  shimmer  1.5s infinite;
+  --animate-toast-in: toastIn  0.25s ease-out;
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  @keyframes slideUp {
-    from { transform: translateY(16px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-  @keyframes scaleIn {
-    from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-  @keyframes shimmer {
-    from { background-position: -200% 0; }
-    to { background-position: 200% 0; }
-  }
-  @keyframes toastIn {
-    from { transform: translateY(12px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-  --animate-toast-in: toastIn 0.25s ease-out;
-
-  @keyframes slideInLeft {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(0); }
-  }
+  @keyframes fadeIn      { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes slideUp     { from { transform: translateY(16px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+  @keyframes scaleIn     { from { transform: scale(0.95); opacity: 0 } to { transform: scale(1); opacity: 1 } }
+  @keyframes shimmer     { from { background-position: -200% 0 } to { background-position: 200% 0 } }
+  @keyframes toastIn     { from { transform: translateY(12px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+  @keyframes slideInLeft { from { transform: translateX(-100%) } to { transform: translateX(0) } }
 }
 
-/* ── Design System tokens ── */
+/* ═══════════════════════════════════════════════════════════
+   DESIGN TOKENS — Light mode (default / :root)
+   ═══════════════════════════════════════════════════════════ */
 :root {
-  --bg-primary:    #121212;
-  --bg-secondary:  #2A2A2A;
-  --bg-card:       #1E1E1E;
-  --bg-card-dark:  #1a252b;
-  --bg-card-light: #2c2f36;
-  --color-accent:  #D4AF37;
-  --color-accent-dark: #B8963A;
-  --accent-gold:        #D4AF37;
-  --accent-gold-light:  #E8C84A;
-  --text-primary:       #FFFFFF;
-  --text-secondary:     #B0A080;
-  --text-tertiary:      #707070;
-  --text-secondary-new: #C8C8D0;
-  --success:       #4CAF50;
-  --danger:        #FF4D4D;
-  --border-subtle: rgba(255,255,255,0.06);
-  --shadow-card:   0 4px 24px rgba(0,0,0,0.5);
-  --color-text-white: #ffffff;
-  --color-text-black: #0A1216;
-  --color-text-muted: #666666;
-  --color-border:  #1e2a30;
-  --radius-card:   20px;
-  --radius-btn:    12px;
-  --radius-chip:   20px;
+  /* Backgrounds */
+  --bg-primary:    #FDFAF5;
+  --bg-secondary:  #F3ECD8;
+  --bg-card:       #E8DFC4;
+  --surface-white: #FFFFFF;
+  --bg-card-dark:  #DDD0B0;
+  --bg-card-light: #F3ECD8;
 
-  /* Legacy aliases — still used by pages, keep in sync with design tokens above */
-  --bl-sidebar:     #060d10;
-  --bl-bg:          #0A1216;
-  --bl-surface:     #111a1f;
-  --bl-surface-2:   #1a252b;
-  --bl-amber:       #D4AF37;
-  --bl-amber-light: #E8C84A;
-  --bl-green:       #D4AF37;
-  --bl-cream:       #ffffff;
-  --bl-cream-dim:   rgba(255,255,255,0.65);
-  --bl-cream-faint: rgba(255,255,255,0.45);
-  --bl-border:      #1e2a30;
+  /* Gold accent */
+  --accent-gold:       #C9A84C;
+  --accent-gold-dark:  #B8922A;
+  --accent-gold-light: #D4B660;
 
-  /* Photo-overlay text — always white, never overridden in html:not(.dark).
-     Use these for ANY text sitting on top of a dark photo gradient scrim. */
+  /* Text */
+  --text-primary:   #1A1A1A;
+  --text-secondary: #4A4A4A;
+
+  /* Status */
+  --cta-whatsapp: #22C55E;
+  --favorite:     #EF4444;
+
+  /* Borders & shadows */
+  --border:        #D4C5A0;
+  --border-subtle: rgba(0,0,0,0.06);
+  --shadow-card:   0 4px 24px rgba(0,0,0,0.10);
+
+  /* Photo-overlay text — always white, never overridden */
   --photo-text:       #ffffff;
   --photo-text-dim:   rgba(255,255,255,0.65);
   --photo-text-muted: rgba(255,255,255,0.50);
-  --bl-border-md:   #1e2a30;
-
-  --LogerBien-bg:          #0A1216;
-  --LogerBien-bg-alt:      #060d10;
-  --LogerBien-surface:     #111a1f;
-  --LogerBien-amber:       #D4AF37;
-  --LogerBien-amber-light: #E8C84A;
-  --LogerBien-cream:       #ffffff;
-  --LogerBien-cream-dim:   rgba(255,255,255,0.65);
-  --LogerBien-cream-faint: rgba(255,255,255,0.45);
-  --LogerBien-border:      rgba(30,42,48,0.8);
-  --LogerBien-border-md:   #1e2a30;
-  --LogerBien-green:       #D4AF37;
-  --LogerBien-sidebar:     #060d10;
 
   /* Navigation */
-  --nav-bg:           rgba(10,18,22,0.97);
-  --nav-bg-solid:     #0a1216;
-  --nav-border:       #1e2a30;
-  --nav-text:         rgba(255,255,255,0.70);
-  --nav-text-active:  #ffffff;
-  --nav-dropdown-bg:  rgba(15,15,22,0.95);
+  --nav-bg:          rgba(253,250,245,0.97);
+  --nav-bg-solid:    #FDFAF5;
+  --nav-border:      #D4C5A0;
+  --nav-text:        rgba(26,26,26,0.70);
+  --nav-text-active: #1A1A1A;
+  --nav-dropdown-bg: rgba(248,244,235,0.97);
 
-  color-scheme: dark;
-}
+  /* Backward-compat aliases — keep until mass-replace is complete */
+  --color-accent:     #C9A84C;
+  --color-border:     #D4C5A0;
+  --color-text-muted: #6B6B6B;
+  --color-text-white: #1A1A1A;
+  --radius-card:      20px;
+  --radius-btn:       12px;
+  --radius-chip:      20px;
 
-/* ── Light mode token overrides ── */
-html:not(.dark) {
-  --bg-primary:       #F5EBD7;
-  --bg-secondary:     #EDE0C8;
-  --bg-card:          #FFFFFF;
-  --bg-card-dark:     #e2e2dd;
-  --bg-card-light:    #d8d8d3;
-  --accent-gold:      #C49A20;
-  --accent-gold-light: #D4AF37;
-  --text-primary:     #121212;
-  --text-secondary:   #5A4A2A;
-  --text-tertiary:    #8A7A5A;
-  --border-subtle:    rgba(0,0,0,0.08);
-  --shadow-card:      0 4px 24px rgba(0,0,0,0.1);
-  --color-text-white: #0A1216;
-  --color-text-muted: #555555;
-  --color-border:     #c8c8c3;
+  --bl-cream:       #1A1A1A;
+  --bl-cream-dim:   rgba(26,26,26,0.65);
+  --bl-cream-faint: rgba(26,26,26,0.45);
+  --bl-surface:     #E8DFC4;
+  --bl-surface-2:   #F3ECD8;
+  --bl-amber:       #C9A84C;
+  --bl-amber-light: #D4B660;
+  --bl-border:      #D4C5A0;
+  --bl-border-md:   #D4C5A0;
+  --bl-sidebar:     #F3ECD8;
+  --bl-bg:          #FDFAF5;
 
-  --bl-sidebar:     #e0e0db;
-  --bl-bg:          #f4f4ef;
-  --bl-surface:     #eaeae5;
-  --bl-surface-2:   #e2e2dd;
-  --bl-cream:       #0A1216;
-  --bl-cream-dim:   rgba(10,18,22,0.65);
-  --bl-cream-faint: rgba(10,18,22,0.45);
-  --bl-border:      #c8c8c3;
-  --bl-border-md:   #c8c8c3;
-
-  --LogerBien-bg:          #f4f4ef;
-  --LogerBien-bg-alt:      #eaeae5;
-  --LogerBien-surface:     #eaeae5;
-  --LogerBien-cream:       #0A1216;
-  --LogerBien-cream-dim:   rgba(10,18,22,0.65);
-  --LogerBien-cream-faint: rgba(10,18,22,0.45);
-  --LogerBien-border:      rgba(180,180,175,0.8);
-  --LogerBien-border-md:   #c8c8c3;
-
-  /* Navigation */
-  --nav-bg:           rgba(244,244,239,0.97);
-  --nav-bg-solid:     #f4f4ef;
-  --nav-border:       #c8c8c3;
-  --nav-text:         rgba(10,18,22,0.70);
-  --nav-text-active:  #0A1216;
-  --nav-dropdown-bg:  rgba(238,238,233,0.97);
+  --LogerBien-bg:          #FDFAF5;
+  --LogerBien-bg-alt:      #F3ECD8;
+  --LogerBien-surface:     #E8DFC4;
+  --LogerBien-amber:       #C9A84C;
+  --LogerBien-amber-light: #D4B660;
+  --LogerBien-cream:       #1A1A1A;
+  --LogerBien-cream-dim:   rgba(26,26,26,0.65);
+  --LogerBien-cream-faint: rgba(26,26,26,0.45);
+  --LogerBien-border:      #D4C5A0;
+  --LogerBien-border-md:   #D4C5A0;
+  --LogerBien-green:       #C9A84C;
+  --LogerBien-sidebar:     #F3ECD8;
 
   color-scheme: light;
 }
 
-/* ── Reusable UI classes ── */
+/* ═══════════════════════════════════════════════════════════
+   DESIGN TOKENS — Dark mode (.dark class)
+   ═══════════════════════════════════════════════════════════ */
+.dark {
+  /* Backgrounds */
+  --bg-primary:    #141414;
+  --bg-secondary:  #1E1E1E;
+  --bg-card:       #2A2A2A;
+  --surface-white: #252525;
+  --bg-card-dark:  #1E1E1E;
+  --bg-card-light: #333333;
+
+  /* Gold accent — same as light */
+  --accent-gold:       #C9A84C;
+  --accent-gold-dark:  #B8922A;
+  --accent-gold-light: #D4B660;
+
+  /* Text */
+  --text-primary:   #F5F0E8;
+  --text-secondary: #A8A090;
+
+  /* Status — same as light */
+  --cta-whatsapp: #22C55E;
+  --favorite:     #EF4444;
+
+  /* Borders & shadows */
+  --border:        #3A3A3A;
+  --border-subtle: rgba(255,255,255,0.06);
+  --shadow-card:   0 4px 24px rgba(0,0,0,0.50);
+
+  /* Navigation */
+  --nav-bg:          rgba(20,20,20,0.97);
+  --nav-bg-solid:    #141414;
+  --nav-border:      #3A3A3A;
+  --nav-text:        rgba(245,240,232,0.70);
+  --nav-text-active: #F5F0E8;
+  --nav-dropdown-bg: rgba(26,26,26,0.97);
+
+  /* Backward-compat aliases */
+  --color-accent:     #C9A84C;
+  --color-border:     #3A3A3A;
+  --color-text-muted: #888888;
+  --color-text-white: #F5F0E8;
+
+  --bl-cream:       #F5F0E8;
+  --bl-cream-dim:   rgba(245,240,232,0.65);
+  --bl-cream-faint: rgba(245,240,232,0.45);
+  --bl-surface:     #2A2A2A;
+  --bl-surface-2:   #1E1E1E;
+  --bl-amber:       #C9A84C;
+  --bl-amber-light: #D4B660;
+  --bl-border:      #3A3A3A;
+  --bl-border-md:   #3A3A3A;
+  --bl-sidebar:     #0F0F0F;
+  --bl-bg:          #141414;
+
+  --LogerBien-bg:          #141414;
+  --LogerBien-bg-alt:      #1E1E1E;
+  --LogerBien-surface:     #2A2A2A;
+  --LogerBien-amber:       #C9A84C;
+  --LogerBien-amber-light: #D4B660;
+  --LogerBien-cream:       #F5F0E8;
+  --LogerBien-cream-dim:   rgba(245,240,232,0.65);
+  --LogerBien-cream-faint: rgba(245,240,232,0.45);
+  --LogerBien-border:      #3A3A3A;
+  --LogerBien-border-md:   #3A3A3A;
+  --LogerBien-sidebar:     #0F0F0F;
+
+  color-scheme: dark;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Reusable UI component classes
+───────────────────────────────────────────────────────────────── */
 .bl-stat-card {
-  background: var(--bl-surface);
-  border-left: 3px solid var(--color-accent);
+  background: var(--bg-card);
+  border-left: 3px solid var(--accent-gold);
   border-radius: 0 12px 12px 0;
   padding: 14px 16px;
 }
 .bl-stat-label {
   font-size: 9px;
   letter-spacing: 1.5px;
-  color: var(--color-text-muted);
+  color: var(--text-secondary);
   text-transform: uppercase;
   font-weight: 500;
   margin-bottom: 4px;
   display: block;
 }
 .bl-stat-value {
-  color: var(--color-accent);
+  color: var(--accent-gold);
   font-size: clamp(22px, 5vw, 28px);
   font-weight: 700;
   line-height: 1;
   display: block;
 }
 .bl-section-title {
-  color: var(--bl-cream);
+  color: var(--text-primary);
   font-size: 20px;
   font-weight: 700;
 }
 .bl-section-label {
   font-size: 9px;
   letter-spacing: 1.5px;
-  color: var(--color-text-muted);
+  color: var(--text-secondary);
   text-transform: uppercase;
   font-weight: 500;
 }
 .bl-badge-active {
-  background: rgba(212,175,55,0.12);
-  color: #D4AF37;
-  border: 1px solid rgba(212,175,55,0.25);
+  background: rgba(201,168,76,0.12);
+  color: var(--accent-gold);
+  border: 1px solid rgba(201,168,76,0.25);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 11px;
   font-weight: 500;
 }
 .bl-badge-rented {
-  background: rgba(240,68,68,0.10);
-  color: #ef4444;
-  border: 1px solid rgba(240,68,68,0.20);
+  background: rgba(239,68,68,0.10);
+  color: var(--favorite);
+  border: 1px solid rgba(239,68,68,0.20);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 11px;
@@ -227,7 +240,7 @@ html:not(.dark) {
 }
 .bl-badge-paused {
   background: var(--border-subtle);
-  color: #aaaaaa;
+  color: var(--text-secondary);
   border: 1px solid var(--border-subtle);
   border-radius: 999px;
   padding: 4px 12px;
@@ -235,9 +248,9 @@ html:not(.dark) {
   font-weight: 500;
 }
 .bl-badge-pro {
-  background: rgba(212,175,55,0.12);
-  color: #D4AF37;
-  border: 1px solid rgba(212,175,55,0.30);
+  background: rgba(201,168,76,0.12);
+  color: var(--accent-gold);
+  border: 1px solid rgba(201,168,76,0.30);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 11px;
@@ -252,81 +265,57 @@ html:not(.dark) {
   font-weight: 500;
   padding: 10px 16px;
   transition: all 0.15s;
-  color: var(--color-text-muted);
+  color: var(--text-secondary);
   border-left: 3px solid transparent;
 }
 .bl-nav-item:hover {
-  background: rgba(212,175,55,0.04);
-  color: var(--bl-cream);
+  background: rgba(201,168,76,0.06);
+  color: var(--text-primary);
 }
 .bl-nav-item.active {
-  border-left-color: var(--color-accent);
-  background: rgba(212,175,55,0.07);
-  color: var(--color-accent);
+  border-left-color: var(--accent-gold);
+  background: rgba(201,168,76,0.08);
+  color: var(--accent-gold);
   border-radius: 0 10px 10px 0;
 }
-.dark {
-  color-scheme: dark;
-}
 
+/* ─────────────────────────────────────────────────────────────────
+   Base reset & typography
+───────────────────────────────────────────────────────────────── */
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
   font-family: var(--font-space-grotesk), var(--font-inter), sans-serif;
 }
-
-/* Barlow Condensed forcé sur les classes utilitaires de grande taille */
 .text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl {
   font-family: var(--font-display), sans-serif !important;
 }
-
-/* Playfair Display sur les titres sémantiques sans override inline */
 h1, h2, h3, h4 {
   font-family: var(--font-playfair), serif;
   font-weight: 700;
 }
-
-/* Classe utilitaire display */
 .font-display {
   font-family: var(--font-display), sans-serif !important;
   font-weight: 800 !important;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
-
-/* Labels uniformes uppercase */
 label {
   font-family: var(--font-space-grotesk), sans-serif;
-  font-size: 12px;       /* min 12px pour lisibilité */
+  font-size: 12px;
   line-height: 1.5;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 500;
 }
-
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   overflow-x: hidden;
 }
-
-/* Prevent iOS input zoom */
 @media (max-width: 768px) {
-  input, select, textarea {
-    font-size: 16px !important;
-  }
+  input, select, textarea { font-size: 16px !important; }
 }
-
-/* ── Scrollbar hide utility ── */
-.no-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-/* ── Feature 9: Android low-end optimization — reduce motion ── */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -335,11 +324,10 @@ html {
     scroll-behavior: auto !important;
   }
 }
-
 body {
   font-family: var(--font-dm-sans), var(--font-space-grotesk), var(--font-inter), -apple-system, sans-serif;
   font-weight: 400;
-  font-size: 16px;       /* minimum mobile */
+  font-size: 16px;
   line-height: 1.7;
   letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
@@ -350,396 +338,261 @@ body {
   transition: background-color 0.3s cubic-bezier(0.25,0.46,0.45,0.94),
               color 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
 }
-/* Global transition for interactive elements */
 button, a, [role="button"] {
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-/* Body size scales smoothly — 16px base is already good for all screens */
 @media (min-width: 1024px) { body { font-size: 16px; } }
 
 h1 {
-  font-family: var(--font-playfair), serif;
-  font-weight: 700;
-  font-size: clamp(32px, 6vw, 72px);
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  font-family: var(--font-playfair), serif; font-weight: 700;
+  font-size: clamp(32px, 6vw, 72px); line-height: 1.1; letter-spacing: -0.01em;
 }
-
 h2 {
-  font-family: var(--font-playfair), serif;
-  font-weight: 700;
-  font-size: clamp(22px, 3.5vw, 42px);
-  line-height: 1.15;
-  letter-spacing: -0.01em;
+  font-family: var(--font-playfair), serif; font-weight: 700;
+  font-size: clamp(22px, 3.5vw, 42px); line-height: 1.15; letter-spacing: -0.01em;
 }
-
 h3 {
-  font-family: var(--font-playfair), serif;
-  font-weight: 600;
-  font-size: clamp(18px, 2.5vw, 28px);
-  line-height: 1.2;
-  letter-spacing: 0;
+  font-family: var(--font-playfair), serif; font-weight: 600;
+  font-size: clamp(18px, 2.5vw, 28px); line-height: 1.2; letter-spacing: 0;
 }
-
 p {
   font-family: var(--font-space-grotesk), sans-serif;
-  font-weight: 300;
-  line-height: 1.7;
-  letter-spacing: 0.01em;
+  font-weight: 300; line-height: 1.7; letter-spacing: 0.01em;
 }
-
 button, .btn {
   font-family: var(--font-space-grotesk), sans-serif;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  min-height: 48px;
+  font-weight: 600; letter-spacing: 0.05em; min-height: 48px;
 }
-
 .label-uppercase {
   font-family: var(--font-space-grotesk), sans-serif;
-  font-weight: 300;
-  font-size: 13px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--color-text-muted, #666);
+  font-weight: 300; font-size: 13px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--text-secondary);
 }
 
-/* Global input styles */
+/* ─────────────────────────────────────────────────────────────────
+   Global input / form styles
+───────────────────────────────────────────────────────────────── */
 input, select, textarea {
-  background: var(--bl-surface-2) !important;
-  border: 1px solid var(--color-border) !important;
-  color: var(--bl-cream) !important;
+  background: var(--surface-white) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-primary) !important;
   border-radius: 12px;
   font-family: var(--font-space-grotesk), sans-serif;
 }
-html:not(.dark) input,
-html:not(.dark) select,
-html:not(.dark) textarea {
-  background: #FFFFFF !important;
-  border: 1px solid rgba(0,0,0,0.20) !important;
-  color: #121212 !important;
-}
 input:focus, select:focus, textarea:focus {
   border-color: var(--accent-gold) !important;
-  box-shadow: 0 0 0 2px rgba(212,175,55,0.15) !important;
+  box-shadow: 0 0 0 2px rgba(201,168,76,0.18) !important;
   outline: none;
 }
-input::placeholder, textarea::placeholder { color: var(--bl-cream-faint) !important; opacity: 1; }
-html:not(.dark) input::placeholder,
-html:not(.dark) textarea::placeholder { color: rgba(18,18,18,0.45) !important; }
-
-/* Admin buttons */
-.admin-add-btn,
-.admin-add-btn * {
-  color: #0A1216 !important;
-}
-.admin-add-btn {
-  background: #D4AF37 !important;
-  border: none !important;
-}
-.admin-btn-dark {
-  color: #0A1216 !important;
-  -webkit-text-fill-color: #0A1216 !important;
+input::placeholder, textarea::placeholder {
+  color: var(--bl-cream-faint) !important;
+  opacity: 1;
 }
 
-/* Scrollbar */
+/* ─────────────────────────────────────────────────────────────────
+   Admin button helpers
+───────────────────────────────────────────────────────────────── */
+.admin-add-btn, .admin-add-btn * { color: #1A1A1A !important; }
+.admin-add-btn { background: var(--accent-gold) !important; border: none !important; }
+.admin-btn-dark { color: #1A1A1A !important; -webkit-text-fill-color: #1A1A1A !important; }
+
+/* ─────────────────────────────────────────────────────────────────
+   Scrollbar
+───────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background: var(--accent-gold); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #B8963A; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-gold-dark); }
 
-/* Utility classes */
+/* ─────────────────────────────────────────────────────────────────
+   Utility classes
+───────────────────────────────────────────────────────────────── */
 .text-gradient {
-  background: linear-gradient(135deg, #D4AF37, #B8963A);
+  background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
 .glass {
-  background: rgba(17, 26, 31, 0.85);
+  background: rgba(253,250,245,0.85);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
 }
-html:not(.dark) .glass {
-  background: rgba(244, 244, 239, 0.85);
-}
+.dark .glass { background: rgba(20,20,20,0.85); }
 
 .glass-dark {
-  background: rgba(6, 13, 16, 0.95);
+  background: rgba(248,244,235,0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
 }
-html:not(.dark) .glass-dark {
-  background: rgba(230, 225, 215, 0.95);
-}
+.dark .glass-dark { background: rgba(10,10,10,0.95); }
 
 .skeleton {
+  background: linear-gradient(90deg, rgba(0,0,0,0.04) 25%, rgba(0,0,0,0.09) 50%, rgba(0,0,0,0.04) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+.dark .skeleton {
   background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
 }
-html:not(.dark) .skeleton {
-  background: linear-gradient(90deg, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.10) 50%, rgba(0,0,0,0.05) 75%);
-}
-
 .skeleton-light {
-  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.03) 75%);
+  background: linear-gradient(90deg, rgba(0,0,0,0.03) 25%, rgba(0,0,0,0.07) 50%, rgba(0,0,0,0.03) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
-html:not(.dark) .skeleton-light {
-  background: linear-gradient(90deg, rgba(0,0,0,0.04) 25%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.04) 75%);
+.dark .skeleton-light {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.03) 75%);
 }
 
-.scrollbar-none {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-none::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
 
-/* ── Responsive typography — content pages ── */
-
-/* Page title (content, not hero) */
-.page-title {
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-}
-
-/* Section headings */
-.section-title {
-  font-size: clamp(1.25rem, 3vw, 2rem);
-  font-weight: 700;
-  line-height: 1.3;
-}
-
-/* Property detail title */
-.detail-title {
-  font-size: clamp(1.25rem, 3.5vw, 1.875rem);
-  font-weight: 800;
-  line-height: 1.2;
-}
-
-/* Card title — minimum 15px mobile, 17px desktop */
+/* ─────────────────────────────────────────────────────────────────
+   Responsive typography
+───────────────────────────────────────────────────────────────── */
+.page-title   { font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; }
+.section-title { font-size: clamp(1.25rem, 3vw, 2rem); font-weight: 700; line-height: 1.3; }
+.detail-title  { font-size: clamp(1.25rem, 3.5vw, 1.875rem); font-weight: 800; line-height: 1.2; }
 .card-title {
-  font-size: clamp(0.9375rem, 1.5vw, 1.0625rem);
-  font-weight: 700;
-  line-height: 1.3;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: clamp(0.9375rem, 1.5vw, 1.0625rem); font-weight: 700; line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.card-price  { font-size: clamp(1rem, 2vw, 1.125rem); font-weight: 700; line-height: 1.2; }
+.card-meta   { font-size: 12px; line-height: 1.5; color: var(--text-secondary); }
+.on-brand    { color: #1A1A1A !important; }
+.text-secondary { color: var(--text-secondary); }
+
+/* ─────────────────────────────────────────────────────────────────
+   PropertyCard responsive height
+───────────────────────────────────────────────────────────────── */
+.property-card-default { height: clamp(340px, 85vw, 420px); }
+@media (min-width: 768px)  { .property-card-default { height: 380px; } }
+@media (min-width: 1024px) { .property-card-default { height: 400px; } }
+
+.reduce-motion * { animation: none !important; transition: none !important; }
+
+.tc-swipe { position: absolute !important; inset: 0; z-index: 10; touch-action: none; }
+
+/* ─────────────────────────────────────────────────────────────────
+   Hero section
+───────────────────────────────────────────────────────────────── */
+.hero-section {
+  background:
+    radial-gradient(ellipse 70% 50% at 85% 40%, rgba(201,168,76,0.10) 0%, transparent 60%),
+    var(--bg-primary);
+}
+.dark .hero-section {
+  background:
+    radial-gradient(ellipse 60% 50% at 85% 40%, rgba(201,168,76,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 45% at 15% 80%, rgba(30,30,30,0.6) 0%, transparent 55%),
+    #141414;
 }
 
-/* Card price — minimum 16px, bold */
-.card-price {
-  font-size: clamp(1rem, 2vw, 1.125rem);
-  font-weight: 700;
-  line-height: 1.2;
-}
+/* ══════════════════════════════════════════════════════════════════
+   LIGHT MODE OVERRIDES (html:not(.dark))
+   Default :root is light — these rules handle dark-first component
+   code that uses text-white / hardcoded dark hex values.
+   ══════════════════════════════════════════════════════════════════ */
 
-/* Card meta (quartier, surface, chambres) — minimum 12px */
-.card-meta {
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--text-secondary);
-}
+/* text-white → primary text color */
+html:not(.dark) .text-white        { color: var(--text-primary) !important; }
+html:not(.dark) .text-white\/90    { color: rgba(26,26,26,0.90) !important; }
+html:not(.dark) .text-white\/80    { color: rgba(26,26,26,0.80) !important; }
+html:not(.dark) .text-white\/70    { color: rgba(26,26,26,0.70) !important; }
+html:not(.dark) .text-white\/60    { color: rgba(26,26,26,0.60) !important; }
+html:not(.dark) .text-white\/50    { color: rgba(26,26,26,0.50) !important; }
+html:not(.dark) .text-white\/40    { color: rgba(26,26,26,0.40) !important; }
+html:not(.dark) [class*="text-white/"]         { color: rgba(26,26,26,0.60) !important; }
+html:not(.dark) [class*="text-[rgba(255,255,255"] { color: var(--text-primary) !important; }
 
-/* Text on brand yellow — always black for contrast */
-.on-brand { color: #000000 !important; }
-
-/* Secondary text — ensure readable contrast in both modes */
-.text-secondary {
-  color: rgba(255,255,255,0.65);
-}
-html:not(.dark) .text-secondary {
-  color: rgba(10,18,22,0.65);
-}
-
-/* ── PropertyCard responsive height ── */
-.property-card-default {
-  height: clamp(340px, 85vw, 420px);
-}
-@media (min-width: 768px) {
-  .property-card-default {
-    height: 380px;
-  }
-}
-@media (min-width: 1024px) {
-  .property-card-default {
-    height: 400px;
-  }
-}
-
-/* ── Low-connection mode — disables all animations ── */
-.reduce-motion * {
-  animation: none !important;
-  transition: none !important;
-}
-
-/* ── react-tinder-card layout ── */
-/* TinderCard renders an animated.div; we stretch it to fill the fixed
-   swipe container so the card area matches the inner pressable div exactly.
-   touch-action:none ensures the browser never claims the gesture for scroll
-   or zoom — every touch event reaches react-tinder-card's handlers. */
-.tc-swipe {
-  position: absolute !important;
-  inset: 0;
-  z-index: 10;
-  touch-action: none;
-}
-
-/* ══════════════════════════════════════════════════════════════
-   LIGHT MODE GLOBAL OVERRIDES
-   These rules ensure Tailwind utility classes and any remaining
-   hardcoded white text become readable in html:not(.dark) context.
-   ══════════════════════════════════════════════════════════════ */
-
-/* text-white → dark in light mode (var(--bl-cream) = #0A1216 light) */
-html:not(.dark) .text-white { color: var(--bl-cream) !important; }
-html:not(.dark) .text-white\/90 { color: rgba(10,18,22,0.90) !important; }
-html:not(.dark) .text-white\/80 { color: rgba(10,18,22,0.80) !important; }
-html:not(.dark) .text-white\/70 { color: rgba(10,18,22,0.70) !important; }
-html:not(.dark) .text-white\/60 { color: rgba(10,18,22,0.60) !important; }
-html:not(.dark) .text-white\/50 { color: rgba(10,18,22,0.50) !important; }
-html:not(.dark) .text-white\/40 { color: rgba(10,18,22,0.40) !important; }
-
-/* Exceptions: keep white text on colored (non-dark) backgrounds */
-html:not(.dark) [style*="background: \"#D4AF37\""] .text-white,
-html:not(.dark) [style*="background: \"#25D366\""] .text-white,
-html:not(.dark) [style*="background: \"#ef4444\""] .text-white,
-html:not(.dark) [style*="var(--bl-amber)"] .text-white { color: #ffffff !important; }
-
-/* Border colors that use transparent whites */
-html:not(.dark) [class*="border-white"] { border-color: var(--color-border) !important; }
-
-/* Animate shimmer fix for light mode */
+html:not(.dark) [class*="border-white"]  { border-color: var(--border) !important; }
+html:not(.dark) [class*="border-white/"] { border-color: rgba(0,0,0,0.15) !important; }
 html:not(.dark) [class*="animate-pulse"] { background-color: var(--bg-secondary) !important; }
-
-/* Ensure dark Tailwind bg classes from slate palette adapt */
 html:not(.dark) .bg-slate-900 { background-color: #f1f5f9 !important; }
 html:not(.dark) .bg-slate-800 { background-color: #f8fafc !important; }
 
-/* ── Admin sidebar / layout overrides in light mode ── */
-html:not(.dark) .dark\:bg-\[var\(--bg-primary\)\] { background-color: var(--bg-primary); }
-html:not(.dark) .dark\:bg-\[var\(--bg-card-light\)\] { background-color: var(--bg-card-light); }
+html:not(.dark) .placeholder\:text-white\/30::placeholder { color: rgba(26,26,26,0.30) !important; }
+html:not(.dark) .placeholder\:text-white\/40::placeholder { color: rgba(26,26,26,0.40) !important; }
+html:not(.dark) .placeholder\:text-white\/50::placeholder { color: rgba(26,26,26,0.50) !important; }
+html:not(.dark) .hover\:text-white:hover { color: var(--text-primary) !important; }
+html:not(.dark) button:not([class*="bg-"]):not([style*="background"]) { color: var(--text-primary); }
+html:not(.dark) label { color: var(--text-primary) !important; }
 
-/* Catch-all for Tailwind arbitrary white text like text-[rgba(255,255,255,...)] */
-html:not(.dark) [class*="text-[rgba(255,255,255"] { color: var(--bl-cream) !important; }
+/* Inline color overrides */
+html:not(.dark) [style*="color: #fff"]     { color: var(--text-primary) !important; }
+html:not(.dark) [style*="color: white"]    { color: var(--text-primary) !important; }
+html:not(.dark) [style*="color: #FFFFFF"]  { color: var(--text-primary) !important; }
+html:not(.dark) [style*="color: #ffffff"]  { color: var(--text-primary) !important; }
 
-/* NOTE: We intentionally do NOT add a catch-all for inline
-   rgba(255,255,255,...) color styles here. Those values are used by photo
-   overlay texts (price, title, neighbourhood on PropertyCard) that must
-   stay white even in light mode. Use var(--photo-text) / var(--photo-text-dim)
-   for overlay text and Tailwind text-white classes (handled above) for
-   card body text. */
-
-/* Fix placeholder colors for inputs with Tailwind placeholder: classes */
-html:not(.dark) .placeholder\:text-white\/30::placeholder { color: rgba(10,18,22,0.30) !important; }
-html:not(.dark) .placeholder\:text-white\/40::placeholder { color: rgba(10,18,22,0.40) !important; }
-html:not(.dark) .placeholder\:text-white\/50::placeholder { color: rgba(10,18,22,0.50) !important; }
-
-/* Fix hover:text-white in light mode */
-html:not(.dark) .hover\:text-white:hover { color: var(--bl-cream) !important; }
-
-/* ── Hero section — theme-aware gradient background ── */
-.hero-section {
-  background:
-    radial-gradient(ellipse 60% 50% at 85% 40%, rgba(212,175,55,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 45% at 15% 80%, rgba(30,42,48,0.6) 0%, transparent 55%),
-    #121212;
-}
-html:not(.dark) .hero-section {
-  background:
-    radial-gradient(ellipse 70% 50% at 85% 40%, rgba(212,175,55,0.10) 0%, transparent 60%),
-    var(--bg-primary);
-}
-
-/* ── Catch-all: inline hardcoded white/dark colors ── */
-/* White text → dark in light mode */
-html:not(.dark) [style*="color: #fff"] { color: #121212 !important; }
-html:not(.dark) [style*="color: white"] { color: #121212 !important; }
-html:not(.dark) [style*="color: #FFFFFF"] { color: #121212 !important; }
-html:not(.dark) [style*="color: #ffffff"] { color: #121212 !important; }
-
-/* Dark pure-hex backgrounds → card/secondary bg in light mode.
-   Note: rgba(...), linear-gradient and radial-gradient values do NOT
-   contain the "background: #" substring, so they are never matched
-   and photo scrims / overlay buttons are left untouched. */
-html:not(.dark) [style*="background: #0"] { background: var(--bg-card) !important; }
+/* Dark hex backgrounds → card bg in light mode */
+html:not(.dark) [style*="background: #0"]       { background: var(--bg-card) !important; }
 html:not(.dark) [style*="background-color: #0"] { background-color: var(--bg-card) !important; }
-html:not(.dark) [style*="background: #1"] { background: var(--bg-card) !important; }
+html:not(.dark) [style*="background: #1"]       { background: var(--bg-card) !important; }
 html:not(.dark) [style*="background-color: #1"] { background-color: var(--bg-card) !important; }
 
-/* Preserve accent / status colors that start with matching hex digits */
-html:not(.dark) [style*="background: #D4AF37"] { background: #D4AF37 !important; }
-html:not(.dark) [style*="background: #ef4444"] { background: #ef4444 !important; }
-html:not(.dark) [style*="background: #25D366"] { background: #25D366 !important; }
+/* Preserve accent / status colors */
+html:not(.dark) [style*="background: #D4AF37"]  { background: var(--accent-gold) !important; }
+html:not(.dark) [style*="background: #C9A84C"]  { background: var(--accent-gold) !important; }
+html:not(.dark) [style*="background: #ef4444"]  { background: var(--favorite) !important; }
+html:not(.dark) [style*="background: #EF4444"]  { background: var(--favorite) !important; }
+html:not(.dark) [style*="background: #25D366"]  { background: var(--cta-whatsapp) !important; }
+html:not(.dark) [style*="background: #22C55E"]  { background: var(--cta-whatsapp) !important; }
+html:not(.dark) [style*="background: #22c55e"]  { background: var(--cta-whatsapp) !important; }
 
-/* ── Supplemental catch-all light-mode rules ────────────────────────────────
-   These supplement (not replace) the specific rules above.
-   Because they are placed AFTER the specific rules, they act as a final
-   safety net for variants not individually handled.
-   ─────────────────────────────────────────────────────────────────────────── */
-
-/* All text-white/X fractional Tailwind utilities → readable dark in light mode */
-html:not(.dark) [class*="text-white/"] { color: rgba(18,18,18,0.6) !important; }
-
-/* Unstyled buttons (no bg class, no inline background): inherit readable text */
-html:not(.dark) button:not([class*="bg-"]):not([style*="background"]) {
-  color: var(--text-primary);
-}
-
-/* White borders on arbitrary Tailwind classes → theme border colour */
-html:not(.dark) [class*="border-white/"] { border-color: rgba(0,0,0,0.15) !important; }
-
-/* ── No-scrollbar utility ── */
-.no-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.no-scrollbar::-webkit-scrollbar { display: none; }
-
-/* ══════════════════════════════════════════════════════════════
-   LIGHT MODE — DÉFINITIVE FIXES: inputs, pills, labels, cards
-   ══════════════════════════════════════════════════════════════ */
-
-/* ── Labels above inputs and filter sections ── */
-html:not(.dark) label {
-  color: #121212 !important;
-}
-
-/* ── Filter pills / chips (rounded-full buttons & links) ──
-   Inactive → white bg + dark text + subtle border.
-   Active gold pills preserved by the existing exception higher up. */
-html:not(.dark) button.rounded-full:not([style*="background: #D4AF37"]),
-html:not(.dark) a.rounded-full:not([style*="background: #D4AF37"]) {
-  background: #FFFFFF !important;
-  color: #121212 !important;
+/* Filter pills */
+html:not(.dark) button.rounded-full:not([style*="background: #D4AF37"]):not([style*="background: #C9A84C"]),
+html:not(.dark) a.rounded-full:not([style*="background: #D4AF37"]):not([style*="background: #C9A84C"]) {
+  background: var(--surface-white) !important;
+  color: var(--text-primary) !important;
   border: 1px solid rgba(0,0,0,0.15) !important;
 }
-
-/* Active / selected gold pills */
 html:not(.dark) button.rounded-full[style*="background: #D4AF37"],
-html:not(.dark) a.rounded-full[style*="background: #D4AF37"] {
-  background: #D4AF37 !important;
-  color: #0A1216 !important;
+html:not(.dark) button.rounded-full[style*="background: #C9A84C"],
+html:not(.dark) a.rounded-full[style*="background: #D4AF37"],
+html:not(.dark) a.rounded-full[style*="background: #C9A84C"] {
+  background: var(--accent-gold) !important;
+  color: #1A1A1A !important;
   border-color: transparent !important;
 }
 
-/* ── Cards: add a soft shadow in light mode ── */
+/* Card shadow */
 html:not(.dark) .bl-card,
 html:not(.dark) [class*="rounded-2xl"][class*="border-"],
 html:not(.dark) [class*="rounded-3xl"][class*="border-"] {
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
-/* ── Filter bar / sticky search section ── */
+/* Filter bars */
 html:not(.dark) .filter-bar,
 html:not(.dark) .annonces-filter-bar {
-  background: #F5F0E8 !important;
-  border-bottom: 1px solid rgba(0,0,0,0.08) !important;
+  background: var(--bg-secondary) !important;
+  border-bottom: 1px solid var(--border) !important;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   DARK MODE OVERRIDES (.dark)
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Light hex inline backgrounds → dark card in dark mode */
+.dark [style*="background: #FDF"]    { background: var(--bg-card) !important; }
+.dark [style*="background: #F5E"]    { background: var(--bg-card) !important; }
+.dark [style*="background: #F3E"]    { background: var(--bg-card) !important; }
+.dark [style*="background: #E8D"]    { background: var(--bg-card) !important; }
+.dark [style*="background: #FFF"]    { background: var(--bg-card) !important; }
+.dark [style*="background: #fff"]    { background: var(--bg-card) !important; }
+.dark [style*="background: white"]   { background: var(--bg-card) !important; }
+.dark [style*="background: #FFFFFF"] { background: var(--bg-card) !important; }
+.dark [style*="background: #ffffff"] { background: var(--bg-card) !important; }
+
+/* Preserve accent colors in dark mode */
+.dark [style*="background: #D4AF37"] { background: var(--accent-gold) !important; }
+.dark [style*="background: #C9A84C"] { background: var(--accent-gold) !important; }
+.dark [style*="background: #ef4444"] { background: var(--favorite) !important; }
+.dark [style*="background: #EF4444"] { background: var(--favorite) !important; }
+.dark [style*="background: #25D366"] { background: var(--cta-whatsapp) !important; }
+.dark [style*="background: #22C55E"] { background: var(--cta-whatsapp) !important; }
+.dark [style*="background: #22c55e"] { background: var(--cta-whatsapp) !important; }

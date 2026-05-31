@@ -33,7 +33,7 @@ function generatePriceData(currentPrice: number) {
 function CustomTooltip({ active, payload, label }: any) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#1e2430] border border-[var(--color-border)] rounded-lg px-3 py-2 shadow-xl">
+      <div className="bg-[#1e2430] border border-[var(--border)] rounded-lg px-3 py-2 shadow-xl">
         <p className="text-slate-400 text-xs mb-0.5">{label}</p>
         <p className="text-white font-bold text-sm">{formatPrice(payload[0].value)}</p>
       </div>
@@ -46,7 +46,7 @@ export function PriceHistoryChart({ price }: Props) {
   const data = generatePriceData(price);
 
   return (
-    <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)]">
+    <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)]">
       <h2 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
         <TrendingUp className="w-4 h-4 text-[#D4AF37]" />
         Historique des prix

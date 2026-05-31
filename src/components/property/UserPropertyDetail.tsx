@@ -73,7 +73,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
           )}
 
           {/* Info card */}
-          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)]">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)]">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
@@ -104,7 +104,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3 mt-5 pt-5 border-t border-slate-100 dark:border-[var(--color-border)]">
+            <div className="grid grid-cols-3 gap-3 mt-5 pt-5 border-t border-slate-100 dark:border-[var(--border)]">
               {property.rooms && (
                 <div className="text-center">
                   <div className="w-10 h-10 bg-orange-50 dark:bg-orange-900/20 rounded-xl flex items-center justify-center mx-auto mb-1">
@@ -137,7 +137,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
 
           {/* Description */}
           {property.description && (
-            <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)]">
+            <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)]">
               <h2 className="font-bold text-slate-900 dark:text-white mb-3">Description</h2>
               <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed whitespace-pre-line">
                 {property.description}
@@ -147,11 +147,11 @@ export function UserPropertyDetail({ id }: { id: string }) {
 
           {/* Features */}
           {property.features && property.features.length > 0 && (
-            <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)]">
+            <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)]">
               <h2 className="font-bold text-slate-900 dark:text-white mb-3">Équipements</h2>
               <div className="flex flex-wrap gap-2">
                 {property.features.map((f) => (
-                  <span key={f} className="flex items-center gap-1.5 text-xs font-medium bg-[var(--bg-card-light)] border border-[var(--color-border)] px-3 py-1.5 rounded-full text-slate-700 dark:text-slate-300">
+                  <span key={f} className="flex items-center gap-1.5 text-xs font-medium bg-[var(--bg-card-light)] border border-[var(--border)] px-3 py-1.5 rounded-full text-slate-700 dark:text-slate-300">
                     <CheckCircle className="w-3.5 h-3.5 text-green-500" /> {f}
                   </span>
                 ))}
@@ -160,7 +160,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
           )}
 
           {/* Visite virtuelle placeholder */}
-          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)]">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)]">
             <h2 className="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
               <Video className="w-4 h-4 text-[#D4AF37]" /> Visite virtuelle
             </h2>
@@ -179,7 +179,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
           </div>
 
           {/* QR Code */}
-          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)]">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)]">
             <h2 className="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
               <QrCode className="w-4 h-4 text-[#D4AF37]" /> QR Code de l&apos;annonce
             </h2>
@@ -209,7 +209,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
 
         {/* Sidebar */}
         <div className="lg:col-span-1">
-          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)] sticky top-20 space-y-3">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)] sticky top-20 space-y-3">
             <h2 className="font-bold text-slate-900 dark:text-white mb-1 text-sm">Contacter l&apos;annonceur</h2>
             <div className="flex items-center gap-3 mb-2">
               <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#B8963A] rounded-2xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
@@ -231,7 +231,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
             </a>
             <a
               href={phoneUrl}
-              className="flex items-center justify-center gap-2 w-full bg-[var(--bg-card-light)] text-slate-700 dark:text-slate-200 font-semibold py-3 px-4 rounded-xl border border-[var(--color-border)] transition-all text-sm"
+              className="flex items-center justify-center gap-2 w-full bg-[var(--bg-card-light)] text-slate-700 dark:text-slate-200 font-semibold py-3 px-4 rounded-xl border border-[var(--border)] transition-all text-sm"
             >
               <Phone className="w-4 h-4" />
               {property.owner.phone}
@@ -245,7 +245,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
               <Calendar className="w-4 h-4" /> Réserver une visite
             </button>
 
-            <div className="pt-2 border-t border-slate-100 dark:border-[var(--color-border)]">
+            <div className="pt-2 border-t border-slate-100 dark:border-[var(--border)]">
               <div className="flex items-start gap-2">
                 <Shield className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
                 <p className="text-slate-400 text-xs leading-relaxed">
@@ -258,9 +258,9 @@ export function UserPropertyDetail({ id }: { id: string }) {
       </div>
 
       {/* Mobile CTA */}
-      <div className="md:hidden fixed bottom-16 left-0 right-0 z-40 p-4 bg-white/95 dark:bg-[#111418]/95 backdrop-blur border-t border-slate-100 dark:border-[var(--color-border)]">
+      <div className="md:hidden fixed bottom-16 left-0 right-0 z-40 p-4 bg-white/95 dark:bg-[#111418]/95 backdrop-blur border-t border-slate-100 dark:border-[var(--border)]">
         <div className="flex gap-3">
-          <a href={phoneUrl} className="flex-1 flex items-center justify-center gap-2 bg-slate-100 dark:bg-[#1e2430] text-slate-700 dark:text-slate-200 font-semibold py-3.5 rounded-xl border border-[var(--color-border)] text-sm">
+          <a href={phoneUrl} className="flex-1 flex items-center justify-center gap-2 bg-slate-100 dark:bg-[#1e2430] text-slate-700 dark:text-slate-200 font-semibold py-3.5 rounded-xl border border-[var(--border)] text-sm">
             <Phone className="w-4 h-4" /> Appeler
           </a>
           <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white font-bold py-3.5 rounded-xl text-sm">
@@ -286,18 +286,18 @@ export function UserPropertyDetail({ id }: { id: string }) {
               <form onSubmit={handleVisitSubmit} className="space-y-3">
                 <div>
                   <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Votre nom</label>
-                  <input required value={visitName} onChange={(e) => setVisitName(e.target.value)} className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]" />
+                  <input required value={visitName} onChange={(e) => setVisitName(e.target.value)} className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]" />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Téléphone</label>
-                  <input required type="tel" value={visitPhone} onChange={(e) => setVisitPhone(e.target.value)} className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]" />
+                  <input required type="tel" value={visitPhone} onChange={(e) => setVisitPhone(e.target.value)} className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]" />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Date souhaitée</label>
-                  <input required type="date" value={visitDate} onChange={(e) => setVisitDate(e.target.value)} min={new Date().toISOString().split("T")[0]} className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]" />
+                  <input required type="date" value={visitDate} onChange={(e) => setVisitDate(e.target.value)} min={new Date().toISOString().split("T")[0]} className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]" />
                 </div>
                 <div className="flex gap-3 pt-2">
-                  <button type="button" onClick={() => setShowVisitModal(false)} className="flex-1 py-2.5 rounded-xl border border-[var(--color-border)] text-sm font-semibold text-slate-600 dark:text-slate-300">Annuler</button>
+                  <button type="button" onClick={() => setShowVisitModal(false)} className="flex-1 py-2.5 rounded-xl border border-[var(--border)] text-sm font-semibold text-slate-600 dark:text-slate-300">Annuler</button>
                   <button type="submit" className="flex-1 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#B8963A] text-white text-sm font-bold">Envoyer</button>
                 </div>
               </form>

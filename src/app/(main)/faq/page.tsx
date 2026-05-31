@@ -84,7 +84,7 @@ interface AccordionItemProps {
 
 function AccordionItem({ question, answer, isOpen, onToggle }: AccordionItemProps) {
   return (
-    <div className="border-b border-[var(--color-border)] last:border-0">
+    <div className="border-b border-[var(--border)] last:border-0">
       <button
         onClick={onToggle}
         className="w-full flex items-center justify-between gap-4 py-4 text-left"
@@ -185,7 +185,7 @@ export default function FAQPage() {
                   <span className="w-1.5 h-5 bg-[#D4AF37] rounded-full inline-block" />
                   {section.category}
                 </h2>
-                <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--color-border)] px-5 md:px-6">
+                <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--border)] px-5 md:px-6">
                   {section.questions.map((q, qi) => {
                     const key = `${section.category}-${qi}`;
                     return (
@@ -205,7 +205,7 @@ export default function FAQPage() {
         )}
 
         {/* Contact CTA */}
-        <div className="mt-12 text-center p-8 bg-[var(--bg-card-light)] rounded-2xl border border-[var(--color-border)]">
+        <div className="mt-12 text-center p-8 bg-[var(--bg-card-light)] rounded-2xl border border-[var(--border)]">
           <h3 className="font-bold text-slate-900 dark:text-white mb-2">
             Vous n&apos;avez pas trouvé votre réponse ?
           </h3>

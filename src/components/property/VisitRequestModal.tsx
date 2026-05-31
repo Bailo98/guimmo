@@ -72,7 +72,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
     border: "1px solid rgba(255,255,255,0.10)",
     borderRadius: 12,
     padding: "0 14px",
-    color: "var(--bl-cream)",
+    color: "var(--text-primary)",
     fontSize: 14,
     width: "100%",
     outline: "none",
@@ -94,7 +94,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
       <div
         className="space-y-4"
         style={{
-          position: "relative", background: "var(--bl-surface-2)", borderRadius: 20,
+          position: "relative", background: "var(--bg-secondary)", borderRadius: 20,
           padding: 24, width: "100%", maxWidth: 480,
           maxHeight: "88vh", overflowY: "auto",
         }}

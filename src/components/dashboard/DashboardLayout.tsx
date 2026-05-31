@@ -35,7 +35,7 @@ function NavLinks({ tabs, active, onChange, onSelect }: {
 
 function SidebarBottom({ signOut }: { signOut: () => Promise<void> }) {
   return (
-    <div className="p-3 space-y-1" style={{ borderTop: "1px solid var(--bl-border)" }}>
+    <div className="p-3 space-y-1" style={{ borderTop: "1px solid var(--border)" }}>
       <button
         onClick={async () => { await signOut(); window.location.href = "/"; }}
         className="flex items-center gap-2.5 w-full text-sm py-2.5 px-3 rounded-xl transition-colors"
@@ -52,7 +52,7 @@ function SidebarBottom({ signOut }: { signOut: () => Promise<void> }) {
 
 function SidebarLogo() {
   return (
-    <div className="flex items-center gap-2.5 px-5 py-5" style={{ borderBottom: "1px solid var(--bl-border)" }}>
+    <div className="flex items-center gap-2.5 px-5 py-5" style={{ borderBottom: "1px solid var(--border)" }}>
       <div style={{
         width: 36, height: 36, background: "#D4AF37", borderRadius: 8,
         display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
@@ -62,7 +62,7 @@ function SidebarLogo() {
           <polyline points="9 22 9 12 15 12 15 22" />
         </svg>
       </div>
-      <span style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-cream)", fontSize: 18, fontWeight: 700, letterSpacing: "-0.3px" }}>
+      <span style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--text-primary)", fontSize: 18, fontWeight: 700, letterSpacing: "-0.3px" }}>
         LogerBien
       </span>
     </div>
@@ -71,13 +71,13 @@ function SidebarLogo() {
 
 function SidebarProfile({ name, initials, badge }: { name: string; initials: string; badge?: string }) {
   return (
-    <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: "1px solid var(--bl-border)" }}>
+    <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: "1px solid var(--border)" }}>
       <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0"
-        style={{ background: "var(--bl-amber)", color: "var(--bl-cream)" }}>
+        style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}>
         {initials}
       </div>
       <div className="min-w-0">
-        <p className="text-sm font-semibold truncate" style={{ color: "var(--bl-cream)" }}>{name}</p>
+        <p className="text-sm font-semibold truncate" style={{ color: "var(--text-primary)" }}>{name}</p>
         {badge && (
           <span className="bl-badge-pro" style={{ fontSize: 10, padding: "2px 8px" }}>{badge}</span>
         )}
@@ -105,8 +105,8 @@ export function DashboardLayout({ tabs, active, onChange, signOut, userName, use
         className="hidden lg:flex flex-col flex-shrink-0"
         style={{
           width: 240,
-          background: "var(--bl-sidebar)",
-          borderRight: "1px solid var(--bl-border)",
+          background: "var(--bg-secondary)",
+          borderRight: "1px solid var(--border)",
           position: "sticky",
           top: 0,
           height: "100vh",
@@ -123,25 +123,25 @@ export function DashboardLayout({ tabs, active, onChange, signOut, userName, use
       {/* ── Mobile: fixed header ── */}
       <header
         className="lg:hidden fixed top-0 inset-x-0 z-40 flex items-center justify-between px-4"
-        style={{ height: 60, background: "var(--bl-sidebar)", borderBottom: "1px solid var(--bl-border)" }}
+        style={{ height: 60, background: "var(--bg-secondary)", borderBottom: "1px solid var(--border)" }}
       >
         <button
           onClick={() => setDrawerOpen(true)}
           aria-label="Ouvrir le menu de navigation"
           className="w-10 h-10 flex items-center justify-center rounded-xl transition-colors"
-          style={{ color: "var(--bl-cream-dim)" }}
+          style={{ color: "var(--text-primary-dim)" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.07)")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
         >
           <Menu className="w-5 h-5" />
         </button>
 
-        <span style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-amber)", fontSize: 17, fontWeight: 700 }}>
+        <span style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--accent-gold)", fontSize: 17, fontWeight: 700 }}>
           LogerBien
         </span>
 
         <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0"
-          style={{ background: "rgba(212,175,55,0.20)", color: "var(--bl-amber-light)" }}>
+          style={{ background: "rgba(212,175,55,0.20)", color: "var(--accent-gold-light)" }}>
           {userInitials}
         </div>
       </header>
@@ -157,14 +157,14 @@ export function DashboardLayout({ tabs, active, onChange, signOut, userName, use
             className="absolute left-0 top-0 bottom-0 flex flex-col overflow-y-auto"
             style={{
               width: 260,
-              background: "var(--bl-sidebar)",
-              borderRight: "1px solid var(--bl-border)",
+              background: "var(--bg-secondary)",
+              borderRight: "1px solid var(--border)",
               scrollbarWidth: "none",
               animation: "slideInLeft 0.22s ease-out",
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between px-4 py-4" style={{ borderBottom: "1px solid var(--bl-border)" }}>
+            <div className="flex items-center justify-between px-4 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
               <div className="flex items-center gap-2.5">
                 <div style={{
                   width: 32, height: 32, background: "#D4AF37", borderRadius: 8,
@@ -175,13 +175,13 @@ export function DashboardLayout({ tabs, active, onChange, signOut, userName, use
                     <polyline points="9 22 9 12 15 12 15 22" />
                   </svg>
                 </div>
-                <span style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--bl-cream)", fontSize: 17, fontWeight: 700, letterSpacing: "-0.3px" }}>LogerBien</span>
+                <span style={{ fontFamily: "var(--font-display), sans-serif", color: "var(--text-primary)", fontSize: 17, fontWeight: 700, letterSpacing: "-0.3px" }}>LogerBien</span>
               </div>
               <button
                 onClick={() => setDrawerOpen(false)}
                 aria-label="Fermer le menu de navigation"
                 className="w-8 h-8 flex items-center justify-center rounded-lg"
-                style={{ color: "var(--bl-cream-faint)" }}
+                style={{ color: "var(--text-primary-faint)" }}
               >
                 <X className="w-4 h-4" />
               </button>

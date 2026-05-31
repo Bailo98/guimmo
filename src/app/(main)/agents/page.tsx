@@ -62,7 +62,7 @@ export default async function AgentsPage() {
       <div className="mb-8">
         <div
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-3"
-          style={{ background: "rgba(212,175,55,0.15)", color: "var(--LogerBien-amber-light)", border: "1px solid rgba(212,175,55,0.25)" }}
+          style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold-light)", border: "1px solid rgba(212,175,55,0.25)" }}
         >
           <UserCheck className="w-3.5 h-3.5" /> Agents certifiés
         </div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import TinderCard from "react-tinder-card";
 import Image from "next/image";
@@ -254,7 +254,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         <p style={{ color: "#D4AF37", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
           On recommence depuis le début…
         </p>
-        <p style={{ color: "var(--bl-cream-faint)", fontSize: 13, textAlign: "center" }}>
+        <p style={{ color: "var(--text-primary-faint)", fontSize: 13, textAlign: "center" }}>
           Chargement des nouvelles annonces…
         </p>
         <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
@@ -274,7 +274,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         <p style={{ color: "#D4AF37", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
           Aucune annonce disponible
         </p>
-        <p style={{ color: "var(--bl-cream-faint)", fontSize: 13, textAlign: "center", marginBottom: 24 }}>
+        <p style={{ color: "var(--text-primary-faint)", fontSize: 13, textAlign: "center", marginBottom: 24 }}>
           Il n&apos;y a pas d&apos;annonces à afficher pour le moment.
         </p>
         <button
@@ -316,7 +316,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         <p style={{ color: "#D4AF37", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
           On recommence depuis le début…
         </p>
-        <p style={{ color: "var(--bl-cream-faint)", fontSize: 13, textAlign: "center" }}>
+        <p style={{ color: "var(--text-primary-faint)", fontSize: 13, textAlign: "center" }}>
           Chargement des nouvelles annonces…
         </p>
         <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>

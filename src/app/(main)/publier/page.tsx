@@ -911,7 +911,7 @@ export default function PublierPage() {
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <span style={{ fontSize: 20 }}>🏠</span>
                   <div>
-                    <p style={{ color: "var(--bl-cream)", fontWeight: 700, fontSize: 13, marginBottom: 1 }}>Visite virtuelle</p>
+                    <p style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: 13, marginBottom: 1 }}>Visite virtuelle</p>
                     <p style={{ color: "#666666", fontSize: 11 }}>Photos par pièce · max 10 pièces</p>
                   </div>
                 </div>
@@ -937,7 +937,7 @@ export default function PublierPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {form.tourRooms.map((room, i) => (
                     <div key={room.id} style={{
-                      background: "var(--bl-surface-2)", border: "1px solid var(--color-border)",
+                      background: "var(--bg-secondary)", border: "1px solid var(--border)",
                       borderRadius: 10, padding: "10px 12px",
                       display: "flex", alignItems: "center", gap: 10,
                     }}>
@@ -977,7 +977,7 @@ export default function PublierPage() {
                         style={{
                           flex: 1, background: "var(--border-subtle)",
                           border: "1px solid rgba(255,255,255,0.10)", borderRadius: 8,
-                          padding: "8px 10px", color: "var(--bl-cream)", fontSize: 13,
+                          padding: "8px 10px", color: "var(--text-primary)", fontSize: 13,
                           outline: "none",
                         }}
                       />
@@ -1155,8 +1155,8 @@ export default function PublierPage() {
                     style={{
                       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                       gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70, minWidth: 70,
-                      border: form.waterSource === opt.id ? "2px solid #D4AF37" : "1px solid var(--color-border)",
-                      background: form.waterSource === opt.id ? "rgba(212,175,55,0.12)" : "var(--bl-surface)",
+                      border: form.waterSource === opt.id ? "2px solid #D4AF37" : "1px solid var(--border)",
+                      background: form.waterSource === opt.id ? "rgba(212,175,55,0.12)" : "var(--bg-card)",
                       color: form.waterSource === opt.id ? "#D4AF37" : "#666666",
                       fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                     }}>
@@ -1181,8 +1181,8 @@ export default function PublierPage() {
                     style={{
                       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                       gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70, minWidth: 70,
-                      border: form.electricity === opt.id ? "2px solid #D4AF37" : "1px solid var(--color-border)",
-                      background: form.electricity === opt.id ? "rgba(212,175,55,0.12)" : "var(--bl-surface)",
+                      border: form.electricity === opt.id ? "2px solid #D4AF37" : "1px solid var(--border)",
+                      background: form.electricity === opt.id ? "rgba(212,175,55,0.12)" : "var(--bg-card)",
                       color: form.electricity === opt.id ? "#D4AF37" : "#666666",
                       fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                     }}>
@@ -1205,8 +1205,8 @@ export default function PublierPage() {
                     style={{
                       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                       gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70,
-                      border: form.internet === opt.id ? "2px solid #D4AF37" : "1px solid var(--color-border)",
-                      background: form.internet === opt.id ? "rgba(212,175,55,0.12)" : "var(--bl-surface)",
+                      border: form.internet === opt.id ? "2px solid #D4AF37" : "1px solid var(--border)",
+                      background: form.internet === opt.id ? "rgba(212,175,55,0.12)" : "var(--bg-card)",
                       color: form.internet === opt.id ? "#D4AF37" : "#666666",
                       fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                     }}>
@@ -1234,8 +1234,8 @@ export default function PublierPage() {
                       style={{
                         display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                         gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70,
-                        border: active ? "2px solid #D4AF37" : "1px solid var(--color-border)",
-                        background: active ? "rgba(212,175,55,0.12)" : "var(--bl-surface)",
+                        border: active ? "2px solid #D4AF37" : "1px solid var(--border)",
+                        background: active ? "rgba(212,175,55,0.12)" : "var(--bg-card)",
                         color: active ? "#D4AF37" : "#666666",
                         fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                       }}>

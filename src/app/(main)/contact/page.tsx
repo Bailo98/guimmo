@@ -30,7 +30,7 @@ export default function ContactPage() {
       <div className="grid md:grid-cols-2 gap-8">
         {/* Contact info */}
         <div className="space-y-4">
-          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)] flex items-start gap-4">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)] flex items-start gap-4">
             <div className="w-10 h-10 bg-[#25D366]/10 rounded-xl flex items-center justify-center flex-shrink-0">
               <MessageCircle className="w-5 h-5 text-[#25D366]" />
             </div>
@@ -48,7 +48,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)] flex items-start gap-4">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)] flex items-start gap-4">
             <div className="w-10 h-10 bg-[#009460]/10 rounded-xl flex items-center justify-center flex-shrink-0">
               <Phone className="w-5 h-5 text-[#009460]" />
             </div>
@@ -61,7 +61,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)] flex items-start gap-4">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)] flex items-start gap-4">
             <div className="w-10 h-10 bg-[#009460]/10 rounded-xl flex items-center justify-center flex-shrink-0">
               <Mail className="w-5 h-5 text-[#009460]" />
             </div>
@@ -74,7 +74,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)] flex items-start gap-4">
+          <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)] flex items-start gap-4">
             <div className="w-10 h-10 bg-[#009460]/10 rounded-xl flex items-center justify-center flex-shrink-0">
               <MapPin className="w-5 h-5 text-[#009460]" />
             </div>
@@ -86,7 +86,7 @@ export default function ContactPage() {
         </div>
 
         {/* Form */}
-        <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 border border-[var(--color-border)]">
+        <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 border border-[var(--border)]">
           {sent ? (
             <div className="flex flex-col items-center justify-center h-full py-10 text-center">
               <div className="w-16 h-16 bg-[#009460]/10 rounded-2xl flex items-center justify-center mb-4">
@@ -117,7 +117,7 @@ export default function ContactPage() {
                     placeholder={f.placeholder}
                     value={form[f.key as keyof typeof form]}
                     onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                    className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#009460] placeholder:text-slate-400"
+                    className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#009460] placeholder:text-slate-400"
                   />
                 </div>
               ))}
@@ -129,7 +129,7 @@ export default function ContactPage() {
                   placeholder="Décrivez votre demande..."
                   value={form.message}
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  className="w-full bg-[var(--bg-card-light)] border border-[var(--color-border)] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#009460] placeholder:text-slate-400 resize-none"
+                  className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#009460] placeholder:text-slate-400 resize-none"
                 />
               </div>
               <button

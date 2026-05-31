@@ -71,7 +71,7 @@ export async function MaisonDuJour() {
           <div>
             <h2
               className="text-xl md:text-2xl font-black"
-              style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
+              style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
             >
               Maison du jour
             </h2>

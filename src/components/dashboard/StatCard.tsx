@@ -1,4 +1,4 @@
-export function StatCard({ label, value, sub, borderColor = "var(--bl-amber)" }: {
+﻿export function StatCard({ label, value, sub, borderColor = "var(--accent-gold)" }: {
   label: string;
   value: string | number;
   sub?: React.ReactNode;
@@ -7,7 +7,7 @@ export function StatCard({ label, value, sub, borderColor = "var(--bl-amber)" }:
   return (
     <div style={{
       background: "var(--bg-card)",
-      border: "1px solid var(--color-border)",
+      border: "1px solid var(--border)",
       borderLeft: `3px solid ${borderColor}`,
       borderRadius: "0 12px 12px 0",
       padding: "14px 16px",

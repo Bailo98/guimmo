@@ -69,7 +69,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
         style={{ animation: "modalScaleIn 0.2s ease-out both" }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[var(--color-border)]">
+        <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[var(--border)]">
           <div className="flex items-center gap-2">
             <CalendarCheck className="w-5 h-5 text-[#D4AF37]" />
             <h2 className="font-bold text-slate-900 dark:text-white text-lg">Réserver une visite</h2>
@@ -131,7 +131,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
                   min={today}
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--bg-card-light)] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37] transition"
+                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card-light)] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37] transition"
                 />
               </div>
 
@@ -167,7 +167,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
                   placeholder="Prénom et nom"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--bg-card-light)] text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37] transition"
+                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card-light)] text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37] transition"
                 />
               </div>
 
@@ -181,7 +181,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
                   placeholder="+224 6XX XXX XXX"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--bg-card-light)] text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37] transition"
+                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card-light)] text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37] transition"
                 />
               </div>
 

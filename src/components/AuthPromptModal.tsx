@@ -30,7 +30,7 @@ export function AuthPromptModal({ onClose, redirectUrl, action }: Props) {
     >
       <div
         className="relative w-full max-w-[360px] rounded-[20px] p-8 text-center"
-        style={{ background: "var(--bl-surface)", border: "1px solid var(--color-border)" }}
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close */}
@@ -46,7 +46,7 @@ export function AuthPromptModal({ onClose, redirectUrl, action }: Props) {
         <div className="text-4xl mb-4">🏠</div>
 
         {/* Title */}
-        <h2 className="font-black text-[20px] mb-2" style={{ color: "var(--bl-cream)", fontFamily: "Georgia, serif" }}>
+        <h2 className="font-black text-[20px] mb-2" style={{ color: "var(--text-primary)", fontFamily: "Georgia, serif" }}>
           Créez votre compte gratuit
         </h2>
 

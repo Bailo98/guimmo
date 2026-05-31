@@ -12,7 +12,7 @@ const PropertyMap = dynamic(() => import("./PropertyMap"), {
       style={{
         height: 200,
         borderRadius: 16,
-        background: "var(--bl-surface-2)",
+        background: "var(--bg-secondary)",
         border: "1px solid rgba(255,255,255,0.08)",
         display: "flex",
         alignItems: "center",

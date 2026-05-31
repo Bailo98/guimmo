@@ -18,7 +18,7 @@ interface Props {
 
 export function PropertyDetailMapSection({ neighborhood }: Props) {
   return (
-    <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)]">
+    <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)]">
       <h2 className="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2 text-sm">
         <MapPin className="w-4 h-4 text-[#D4AF37]" />
         Voir sur la carte

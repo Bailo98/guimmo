@@ -24,10 +24,10 @@ interface DashboardChartProps {
 const TICK = { fill: "#666666", fontSize: 10 };
 const TOOLTIP_STYLE = {
   contentStyle: {
-    background: "var(--bl-surface)",
-    border: "1px solid var(--color-border)",
+    background: "var(--bg-card)",
+    border: "1px solid var(--border)",
     borderRadius: 8,
-    color: "var(--bl-cream)",
+    color: "var(--text-primary)",
     fontSize: 12,
   },
   cursor: { fill: "rgba(212,175,55,0.08)" },
@@ -47,8 +47,8 @@ export default function DashboardChart({
     <div
       className="p-4 mb-6"
       style={{
-        background: "var(--bl-surface)",
-        borderLeft: "3px solid var(--bl-amber)",
+        background: "var(--bg-card)",
+        borderLeft: "3px solid var(--accent-gold)",
         borderRadius: "0 16px 16px 0",
       }}
     >

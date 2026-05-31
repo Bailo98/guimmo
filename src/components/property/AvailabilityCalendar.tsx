@@ -91,7 +91,7 @@ export function AvailabilityCalendar({ availableNow }: Props) {
   };
 
   return (
-    <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--color-border)]">
+    <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)]">
       {/* Header */}
       <h2 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
         <Calendar className="w-4 h-4 text-[#D4AF37]" />
@@ -144,7 +144,7 @@ export function AvailabilityCalendar({ availableNow }: Props) {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-4 mt-4 pt-3 border-t border-slate-100 dark:border-[var(--color-border)]">
+      <div className="flex items-center gap-4 mt-4 pt-3 border-t border-slate-100 dark:border-[var(--border)]">
         <span className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
           <span className="w-3 h-3 rounded-full bg-green-100 dark:bg-green-900/30 inline-block" />
           Disponible

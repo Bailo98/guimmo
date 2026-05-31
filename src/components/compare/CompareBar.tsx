@@ -27,7 +27,7 @@ export function CompareBar() {
           {properties.map((p) => p && (
             <div
               key={p.id}
-              className="flex items-center gap-1.5 bg-[#151922] border border-[var(--color-border)] rounded-lg px-2.5 py-1.5"
+              className="flex items-center gap-1.5 bg-[#151922] border border-[var(--border)] rounded-lg px-2.5 py-1.5"
             >
               <span className="text-xs font-medium text-slate-200 line-clamp-1 max-w-[120px]">{p.title}</span>
               <button

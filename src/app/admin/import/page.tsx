@@ -9,10 +9,10 @@ import { useAuth } from "@/lib/auth-context";
 import { formatPrice } from "@/lib/utils";
 
 // ─── Tokens ──────────────────────────────────────────────────────────────────
-const SURFACE  = "var(--bl-surface)";
-const BORDER   = "var(--color-border)";
-const TEXT_PRI = "var(--bl-cream)";
-const TEXT_SEC = "var(--bl-cream-dim)";
+const SURFACE  = "var(--bg-card)";
+const BORDER   = "var(--border)";
+const TEXT_PRI = "var(--text-primary)";
+const TEXT_SEC = "var(--text-primary-dim)";
 const ACCENT   = "#D4AF37";
 
 interface CsvRow {

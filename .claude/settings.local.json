@@ -42,7 +42,10 @@
       "Bash(node -e \"const fs=require\\('fs'\\); const lock=JSON.parse\\(fs.readFileSync\\('package-lock.json'\\)\\); console.log\\('locked @react-spring/web:', lock.packages['node_modules/@react-spring/web']?.version\\)\")",
       "Bash(xargs grep -l \"GuImmo\\\\|BienLoger\\\\|guimmo\\\\|GUIMMO\")",
       "mcp__Claude_in_Chrome__list_connected_browsers",
-      "Bash(grep -v \"//.*#\")"
+      "Bash(grep -v \"//.*#\")",
+      "Bash(grep -E \"^.*Error.*$|Build.*failed|compiled.*error\")",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\aliou\\\\logerbien\" -Force)",
+      "Bash(Select-Object Name, PSIsContainer)"
     ]
   }
 }

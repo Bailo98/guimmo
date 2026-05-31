@@ -63,14 +63,14 @@ export function PropertyBadge({ type }: PropertyBadgeProps) {
 
 // ── Type-coloured badge (always visible, specific background per property type) ──
 const TYPE_BADGE_COLORS: Record<string, { bg: string; color: string }> = {
-  house:     { bg: "rgba(200,151,58,0.85)",  color: "var(--bl-cream)" },
-  villa:     { bg: "rgba(200,151,58,0.85)",  color: "var(--bl-cream)" },
-  apartment: { bg: "rgba(74,158,255,0.85)",  color: "var(--bl-cream)" },
-  studio:    { bg: "rgba(74,158,255,0.85)",  color: "var(--bl-cream)" },
-  land:      { bg: "rgba(76,175,80,0.85)",   color: "var(--bl-cream)" },
-  office:    { bg: "rgba(156,107,255,0.85)", color: "var(--bl-cream)" },
-  shop:      { bg: "rgba(156,107,255,0.85)", color: "var(--bl-cream)" },
-  room:      { bg: "rgba(255,107,53,0.85)",  color: "var(--bl-cream)" },
+  house:     { bg: "rgba(200,151,58,0.85)",  color: "var(--text-primary)" },
+  villa:     { bg: "rgba(200,151,58,0.85)",  color: "var(--text-primary)" },
+  apartment: { bg: "rgba(74,158,255,0.85)",  color: "var(--text-primary)" },
+  studio:    { bg: "rgba(74,158,255,0.85)",  color: "var(--text-primary)" },
+  land:      { bg: "rgba(76,175,80,0.85)",   color: "var(--text-primary)" },
+  office:    { bg: "rgba(156,107,255,0.85)", color: "var(--text-primary)" },
+  shop:      { bg: "rgba(156,107,255,0.85)", color: "var(--text-primary)" },
+  room:      { bg: "rgba(255,107,53,0.85)",  color: "var(--text-primary)" },
 };
 
 const TYPE_LABELS_BADGE: Record<string, string> = {

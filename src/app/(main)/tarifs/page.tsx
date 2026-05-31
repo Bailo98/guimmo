@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckCircle, X, MessageCircle, ArrowRight, Zap, Star, Building2 } from "lucide-react";
 import { PageHero } from "@/components/ui/PageHero";
@@ -113,7 +113,7 @@ const FAQ = [
 
 export default function TarifsPage() {
   return (
-    <div style={{ background: "var(--LogerBien-bg)" }}>
+    <div style={{ background: "var(--bg-primary)" }}>
       <PageHero
         title="Plans & tarifs"
         subtitle="Choisissez la formule qui correspond à vos besoins. Commencez gratuitement, passez en Pro ou Agence quand vous êtes prêt."
@@ -158,8 +158,8 @@ export default function TarifsPage() {
                   {plan.name}
                 </h2>
                 <div>
-                  <span style={{ fontSize: 28, fontWeight: 900, color: "var(--bl-cream)" }}>{plan.price}</span>
-                  <span style={{ fontSize: 13, color: "var(--bl-cream-faint)", marginLeft: 4 }}>{plan.period}</span>
+                  <span style={{ fontSize: 28, fontWeight: 900, color: "var(--text-primary)" }}>{plan.price}</span>
+                  <span style={{ fontSize: 13, color: "var(--text-primary-faint)", marginLeft: 4 }}>{plan.period}</span>
                 </div>
               </div>
 
@@ -173,7 +173,7 @@ export default function TarifsPage() {
                       <X style={{ width: 15, height: 15, color: "rgba(255,255,255,0.20)", flexShrink: 0 }} />
                     )}
                     <span style={{
-                      fontSize: 13, color: f.ok ? "var(--bl-cream-dim)" : "rgba(255,255,255,0.30)",
+                      fontSize: 13, color: f.ok ? "var(--text-primary-dim)" : "rgba(255,255,255,0.30)",
                       textDecoration: f.ok ? "none" : "line-through",
                     }}>
                       {f.label}
@@ -207,15 +207,15 @@ export default function TarifsPage() {
           className="rounded-2xl p-6 mb-12 text-center"
           style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.18)" }}
         >
-          <p style={{ color: "var(--bl-cream-dim)", fontSize: 14, lineHeight: 1.7 }}>
-            💡 <strong style={{ color: "var(--bl-cream)" }}>Actuellement en phase de lancement</strong> — toutes les fonctionnalités sont disponibles gratuitement.
+          <p style={{ color: "var(--text-primary-dim)", fontSize: 14, lineHeight: 1.7 }}>
+            💡 <strong style={{ color: "var(--text-primary)" }}>Actuellement en phase de lancement</strong> — toutes les fonctionnalités sont disponibles gratuitement.
             Les plans Pro et Agence seront activés progressivement. Vous serez prévenus 30 jours avant.
           </p>
         </div>
 
         {/* FAQ */}
         <div style={{ marginBottom: 48 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: "var(--bl-cream)", marginBottom: 20, textAlign: "center" }}>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "var(--text-primary)", marginBottom: 20, textAlign: "center" }}>
             Questions fréquentes
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -224,7 +224,7 @@ export default function TarifsPage() {
                 background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)",
                 borderRadius: 16, padding: "16px 20px",
               }}>
-                <p style={{ fontWeight: 700, color: "var(--bl-cream)", fontSize: 14, marginBottom: 6 }}>{item.q}</p>
+                <p style={{ fontWeight: 700, color: "var(--text-primary)", fontSize: 14, marginBottom: 6 }}>{item.q}</p>
                 <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, lineHeight: 1.6 }}>{item.a}</p>
               </div>
             ))}
@@ -237,7 +237,7 @@ export default function TarifsPage() {
           style={{ background: "rgba(37,211,102,0.08)", border: "1px solid rgba(37,211,102,0.20)" }}
         >
           <MessageCircle className="w-8 h-8 mx-auto mb-3" style={{ color: "#25D366" }} />
-          <h3 style={{ fontSize: 18, fontWeight: 800, color: "var(--bl-cream)", marginBottom: 8 }}>
+          <h3 style={{ fontSize: 18, fontWeight: 800, color: "var(--text-primary)", marginBottom: 8 }}>
             Une question sur les tarifs ?
           </h3>
           <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 14, marginBottom: 20 }}>

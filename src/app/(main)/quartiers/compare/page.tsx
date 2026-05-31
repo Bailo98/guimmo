@@ -108,7 +108,7 @@ export default function CompareQuartiersPage() {
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold border transition-all ${
               selected.includes(n.id)
                 ? "bg-[#D4AF37] border-[#D4AF37] text-white"
-                : "border-slate-200 dark:border-[var(--color-border)] text-slate-600 dark:text-slate-300 hover:border-[#D4AF37] hover:text-[#D4AF37]"
+                : "border-slate-200 dark:border-[var(--border)] text-slate-600 dark:text-slate-300 hover:border-[#D4AF37] hover:text-[#D4AF37]"
             }`}
           >
             <MapPin className="w-3.5 h-3.5" />
@@ -118,10 +118,10 @@ export default function CompareQuartiersPage() {
       </div>
 
       {/* Compare table */}
-      <div className="overflow-x-auto rounded-2xl border border-[var(--color-border)] bg-[var(--bg-card-light)]">
+      <div className="overflow-x-auto rounded-2xl border border-[var(--border)] bg-[var(--bg-card-light)]">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[var(--color-border)]">
+            <tr className="border-b border-[var(--border)]">
               <th className="text-left px-5 py-4 text-slate-500 font-semibold w-40">Critère</th>
               {neighborhoods.map((n, i) => (
                 <th key={n.id} className="px-5 py-4 text-center">
@@ -135,7 +135,7 @@ export default function CompareQuartiersPage() {
           </thead>
           <tbody>
             {/* Description row */}
-            <tr className="border-b border-[var(--color-border)] bg-[var(--bg-card-light)]">
+            <tr className="border-b border-[var(--border)] bg-[var(--bg-card-light)]">
               <td className="px-5 py-3 text-slate-500 font-semibold text-xs uppercase tracking-wide">Description</td>
               {neighborhoods.map(n => (
                 <td key={n.id} className="px-5 py-3 text-center text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
@@ -144,7 +144,7 @@ export default function CompareQuartiersPage() {
               ))}
             </tr>
             {CRITERIA.map((c, ci) => (
-              <tr key={c.key} className={`border-b border-[var(--color-border)] ${ci % 2 === 0 ? "" : "bg-[var(--bg-card-light)]"}`}>
+              <tr key={c.key} className={`border-b border-[var(--border)] ${ci % 2 === 0 ? "" : "bg-[var(--bg-card-light)]"}`}>
                 <td className="px-5 py-3.5 text-slate-600 dark:text-slate-400 font-medium">{c.label}</td>
                 {neighborhoods.map((n, i) => (
                   <td key={n.id} className="px-5 py-3.5 text-center">
@@ -175,7 +175,7 @@ export default function CompareQuartiersPage() {
           <Link
             key={n.id}
             href={`/quartiers/${n.id}`}
-            className="flex items-center justify-between p-4 bg-[var(--bg-card-light)] rounded-2xl border border-[var(--color-border)] hover:border-[#D4AF37] transition-colors group"
+            className="flex items-center justify-between p-4 bg-[var(--bg-card-light)] rounded-2xl border border-[var(--border)] hover:border-[#D4AF37] transition-colors group"
           >
             <div>
               <p className="font-bold text-slate-900 dark:text-white">{n.label}</p>

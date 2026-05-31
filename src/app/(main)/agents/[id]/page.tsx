@@ -75,21 +75,21 @@ export default async function AgentProfilePage({ params }: Props) {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 pb-24">
       {/* ── Hero ── */}
-      <div className="rounded-2xl p-6 mb-6" style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border-md)" }}>
+      <div className="rounded-2xl p-6 mb-6" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
         <div className="flex items-start gap-5">
           {profile.avatar_url ? (
             <Image src={profile.avatar_url} alt={displayName} width={80} height={80} className="rounded-2xl object-cover flex-shrink-0" />
           ) : (
             <div
               className="w-20 h-20 rounded-2xl flex items-center justify-center text-2xl font-black flex-shrink-0"
-              style={{ background: "rgba(212,175,55,0.20)", border: "1px solid rgba(212,175,55,0.30)", color: "var(--bl-amber-light)" }}
+              style={{ background: "rgba(212,175,55,0.20)", border: "1px solid rgba(212,175,55,0.30)", color: "var(--accent-gold-light)" }}
             >
               {initials}
             </div>
           )}
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
-              <h1 className="text-xl font-black" style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}>{displayName}</h1>
+              <h1 className="text-xl font-black" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>{displayName}</h1>
               {profile.is_verified_pro && (
                 <span className="bl-badge-pro flex items-center gap-1">
                   <CheckCircle className="w-3 h-3" /> Vérifié Pro
@@ -104,7 +104,7 @@ export default async function AgentProfilePage({ params }: Props) {
             <p className="text-sm mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>👔 {roleLabel}</p>
             {profile.website && (
               <a href={profile.website} target="_blank" rel="noopener noreferrer"
-                className="text-xs hover:underline mt-1 inline-block" style={{ color: "var(--bl-amber)" }}>
+                className="text-xs hover:underline mt-1 inline-block" style={{ color: "var(--accent-gold)" }}>
                 {profile.website}
               </a>
             )}
@@ -112,7 +112,7 @@ export default async function AgentProfilePage({ params }: Props) {
         </div>
 
         {profile.bio && (
-          <div className="mt-4 pt-4" style={{ borderTop: "1px solid var(--bl-border)" }}>
+          <div className="mt-4 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
             <span className="bl-section-label block mb-2">À propos</span>
             <p className="text-sm leading-relaxed" style={{ color: "var(--bl-cream-dim)" }}>{profile.bio}</p>
           </div>
@@ -150,7 +150,7 @@ export default async function AgentProfilePage({ params }: Props) {
         <Link
           href="/messages"
           className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-2xl font-bold text-sm transition-opacity hover:opacity-75"
-          style={{ background: "var(--border-subtle)", border: "1px solid var(--bl-border-md)", color: "var(--bl-cream)" }}
+          style={{ background: "var(--border-subtle)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
         >
           <MessageCircle className="w-4 h-4" />
           Message
@@ -167,7 +167,7 @@ export default async function AgentProfilePage({ params }: Props) {
         </h2>
 
         {!listings || listings.length === 0 ? (
-          <div className="text-center py-10 border-2 border-dashed rounded-2xl" style={{ borderColor: "var(--bl-border-md)" }}>
+          <div className="text-center py-10 border-2 border-dashed rounded-2xl" style={{ borderColor: "var(--border)" }}>
             <p className="text-sm" style={{ color: "var(--bl-cream-faint)" }}>Aucune annonce disponible pour l&apos;instant.</p>
           </div>
         ) : (
@@ -181,7 +181,7 @@ export default async function AgentProfilePage({ params }: Props) {
                   key={listing.id}
                   href={`/annonces/${listing.id}`}
                   className="rounded-2xl overflow-hidden hover:-translate-y-0.5 transition-transform"
-                  style={{ background: "var(--bl-surface)", border: "1px solid var(--bl-border)" }}
+                  style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
                 >
                   <div className="relative h-40" style={{ background: "var(--border-subtle)" }}>
                     {primary?.url ? (
@@ -191,12 +191,12 @@ export default async function AgentProfilePage({ params }: Props) {
                     )}
                   </div>
                   <div className="p-3">
-                    <p className="font-bold text-sm line-clamp-2 mb-1" style={{ color: "var(--bl-cream)" }}>{listing.title}</p>
+                    <p className="font-bold text-sm line-clamp-2 mb-1" style={{ color: "var(--text-primary)" }}>{listing.title}</p>
                     <div className="flex items-center gap-1 text-xs mb-2" style={{ color: "var(--bl-cream-faint)" }}>
                       <MapPin className="w-3 h-3 flex-shrink-0" />
                       {NEIGHBORHOOD_LABELS[listing.neighborhood] ?? listing.neighborhood}
                     </div>
-                    <p className="font-bold text-sm" style={{ color: "var(--bl-amber)" }}>{formatPrice(listing.price, "GNF", listing.price_period)}</p>
+                    <p className="font-bold text-sm" style={{ color: "var(--accent-gold)" }}>{formatPrice(listing.price, "GNF", listing.price_period)}</p>
                   </div>
                 </Link>
               );

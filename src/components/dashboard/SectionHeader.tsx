@@ -1,4 +1,4 @@
-export function SectionHeader({ title, subtitle, action }: {
+﻿export function SectionHeader({ title, subtitle, action }: {
   title: string;
   subtitle?: string;
   action?: React.ReactNode;
@@ -8,7 +8,7 @@ export function SectionHeader({ title, subtitle, action }: {
       <div>
         <h2 className="bl-section-title">{title}</h2>
         {subtitle && (
-          <p className="text-sm mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>{subtitle}</p>
+          <p className="text-sm mt-0.5" style={{ color: "var(--text-primary-faint)" }}>{subtitle}</p>
         )}
       </div>
       {action && <div className="flex-shrink-0 ml-3">{action}</div>}

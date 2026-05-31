@@ -104,17 +104,17 @@ export default function BudgetEstimator() {
             background: "var(--bg-card)",
             borderRadius: 20,
             boxShadow: "0 8px 40px rgba(0,0,0,0.25)",
-            border: "1px solid var(--color-border)",
+            border: "1px solid var(--border)",
             overflow: "hidden",
           }}
         >
           {/* Header */}
           <div style={{
             display: "flex", alignItems: "center", justifyContent: "space-between",
-            padding: "14px 16px", borderBottom: "1px solid var(--color-border)",
+            padding: "14px 16px", borderBottom: "1px solid var(--border)",
           }}>
             <div>
-              <p style={{ fontSize: 14, fontWeight: 700, color: "var(--bl-cream)", lineHeight: 1 }}>
+              <p style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", lineHeight: 1 }}>
                 💰 Estimateur de budget
               </p>
               <p style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 3 }}>
@@ -124,7 +124,7 @@ export default function BudgetEstimator() {
             <button
               onClick={() => setOpen(false)}
               style={{
-                background: "var(--bg-secondary)", border: "1px solid var(--color-border)", borderRadius: "50%",
+                background: "var(--bg-secondary)", border: "1px solid var(--border)", borderRadius: "50%",
                 width: 30, height: 30, display: "flex", alignItems: "center",
                 justifyContent: "center", cursor: "pointer", color: "var(--text-primary)",
                 minHeight: "auto",
@@ -191,7 +191,7 @@ export default function BudgetEstimator() {
                     key={p.label}
                     onClick={() => setBudget(gnfVal)}
                     style={{
-                      background: active ? "#D4AF37" : "var(--bl-surface)",
+                      background: active ? "#D4AF37" : "var(--bg-card)",
                       color: active ? "#0A1216" : "var(--text-primary)",
                       border: "none", borderRadius: 999, padding: "5px 12px",
                       fontSize: 12, fontWeight: 600, cursor: "pointer",
@@ -212,9 +212,9 @@ export default function BudgetEstimator() {
               alignItems: "center", justifyContent: "center",
             }}>
               {loading ? (
-                <span style={{ fontSize: 13, color: "var(--bl-cream-faint)" }}>Recherche en cours…</span>
+                <span style={{ fontSize: 13, color: "var(--text-primary-faint)" }}>Recherche en cours…</span>
               ) : count === null ? (
-                <span style={{ fontSize: 13, color: "var(--bl-cream-faint)" }}>
+                <span style={{ fontSize: 13, color: "var(--text-primary-faint)" }}>
                   Ajustez votre budget pour voir les résultats
                 </span>
               ) : (

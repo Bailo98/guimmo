@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
 import { MapPin, ChevronRight } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
@@ -203,7 +203,7 @@ function UrgencyCard({ property }: { property: Property }) {
     <Link
       href={`/annonces/${property.id}`}
       className="flex-shrink-0 rounded-xl overflow-hidden"
-      style={{ width: 176, background: "var(--bl-surface)", border: `1px solid ${cfg.border}` }}
+      style={{ width: 176, background: "var(--bg-card)", border: `1px solid ${cfg.border}` }}
     >
       <div className="relative" style={{ height: 104 }}>
         {primaryImg ? (
@@ -221,7 +221,7 @@ function UrgencyCard({ property }: { property: Property }) {
         </div>
       </div>
       <div className="p-2.5">
-        <p className="font-bold text-xs line-clamp-2 leading-snug mb-1" style={{ color: "var(--bl-cream)" }}>
+        <p className="font-bold text-xs line-clamp-2 leading-snug mb-1" style={{ color: "var(--text-primary)" }}>
           {property.title}
         </p>
         <p className="text-[11px] flex items-center gap-0.5 mb-1" style={{ color: "#666" }}>
@@ -295,7 +295,7 @@ export default async function HomePage() {
                   fontWeight: 800,
                   fontSize: "clamp(34px, 7vw, 80px)",
                   lineHeight: 1.0,
-                  color: "var(--bl-cream)",
+                  color: "var(--text-primary)",
                   marginBottom: "1rem",
                   letterSpacing: "-0.02em",
                   textTransform: "uppercase",
@@ -311,7 +311,7 @@ export default async function HomePage() {
               <p
                 className="mb-5 text-center lg:text-left"
                 style={{
-                  color: "var(--bl-cream-dim)",
+                  color: "var(--text-primary-dim)",
                   fontSize: "1.0625rem",
                   lineHeight: 1.65,
                   maxWidth: 460,
@@ -363,11 +363,11 @@ export default async function HomePage() {
       {urgentProps.length > 0 && (
         <section
           className="py-5"
-          style={{ background: "var(--bg-secondary)", borderBottom: "1px solid var(--color-border)" }}
+          style={{ background: "var(--bg-secondary)", borderBottom: "1px solid var(--border)" }}
         >
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center gap-3 mb-4">
-              <h2 className="text-base font-bold" style={{ color: "var(--bl-cream)" }}>
+              <h2 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
                 ⚡ Disponibles maintenant
               </h2>
               <span
@@ -412,7 +412,7 @@ export default async function HomePage() {
               <div>
                 <h2
                   className="text-2xl md:text-3xl font-black"
-                  style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
+                  style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
                 >
                   Annonces récentes
                 </h2>
@@ -444,7 +444,7 @@ export default async function HomePage() {
           <div className="mb-8">
             <h2
               className="text-2xl md:text-3xl font-black"
-              style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
+              style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
             >
               Quartiers populaires
             </h2>
@@ -460,7 +460,7 @@ export default async function HomePage() {
                   key={n.id}
                   href={`/annonces?neighborhood=${n.id}`}
                   className="group rounded-2xl p-5 transition-all duration-200 hover:-translate-y-0.5"
-                  style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
+                  style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
                 >
                   <div
                     className="w-9 h-9 rounded-xl flex items-center justify-center mb-3"
@@ -468,7 +468,7 @@ export default async function HomePage() {
                   >
                     <MapPin className="w-4 h-4" style={{ color: "#D4AF37" }} />
                   </div>
-                  <p className="font-bold text-sm mb-0.5" style={{ color: "var(--bl-cream)" }}>{n.name}</p>
+                  <p className="font-bold text-sm mb-0.5" style={{ color: "var(--text-primary)" }}>{n.name}</p>
                   <p className="text-xs" style={{ color: count > 0 ? "#22c55e" : "#666" }}>
                     {count > 0 ? `${count} annonce${count > 1 ? "s" : ""}` : "Aucune annonce"}
                   </p>
@@ -495,11 +495,11 @@ export default async function HomePage() {
           <div className="text-5xl mb-5">🔍</div>
           <h2
             className="text-2xl md:text-3xl font-black mb-3"
-            style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
+            style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
           >
             Vous cherchez un logement ?
           </h2>
-          <p className="text-base mb-7 max-w-md mx-auto" style={{ color: "var(--bl-cream-dim)" }}>
+          <p className="text-base mb-7 max-w-md mx-auto" style={{ color: "var(--text-primary-dim)" }}>
             Publiez votre recherche gratuitement. Les propriétaires vous contactent directement sur WhatsApp.
           </p>
           <Link
@@ -523,7 +523,7 @@ export default async function HomePage() {
           <div className="text-center mb-10">
             <h2
               className="text-2xl md:text-3xl font-black"
-              style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
+              style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
             >
               Pourquoi choisir LogerBien ?
             </h2>
@@ -536,10 +536,10 @@ export default async function HomePage() {
               <div
                 key={item.title}
                 className="rounded-2xl p-6"
-                style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
+                style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
               >
                 <span className="text-3xl block mb-4">{item.icon}</span>
-                <h3 className="font-bold text-base mb-2" style={{ color: "var(--bl-cream)" }}>{item.title}</h3>
+                <h3 className="font-bold text-base mb-2" style={{ color: "var(--text-primary)" }}>{item.title}</h3>
                 <p className="text-sm leading-relaxed" style={{ color: "#666" }}>{item.desc}</p>
               </div>
             ))}
@@ -555,7 +555,7 @@ export default async function HomePage() {
           <p className="text-5xl mb-6">🏠</p>
           <h2
             className="text-2xl md:text-4xl font-black mb-3"
-            style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
+            style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
           >
             Vous avez un logement à louer ?
           </h2>
@@ -589,11 +589,11 @@ export default async function HomePage() {
       ═══════════════════════════════════════════════════════ */}
       <section
         className="py-10"
-        style={{ background: "var(--bg-card-light)", borderTop: "1px solid var(--color-border)" }}
+        style={{ background: "var(--bg-card-light)", borderTop: "1px solid var(--border)" }}
       >
         <div className="max-w-xl mx-auto px-4 text-center">
           <div className="text-4xl mb-3">📱</div>
-          <h2 className="text-lg font-bold mb-2" style={{ color: "var(--bl-cream)" }}>
+          <h2 className="text-lg font-bold mb-2" style={{ color: "var(--text-primary)" }}>
             Installez LogerBien sur votre téléphone
           </h2>
           <p className="text-sm mb-5" style={{ color: "#666" }}>
