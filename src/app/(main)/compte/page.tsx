@@ -68,7 +68,7 @@ interface FavoriteProperty {
   price: number; price_period: string | null; primary_image: string | null;
 }
 interface Review {
-  id: string; reviewer_id: string; reviewed_id: string;
+  id: string; reviewer_id: string; owner_id: string;
   rating: number; comment: string | null; created_at: string;
 }
 interface ReviewWithProfile {
@@ -586,7 +586,7 @@ async function loadAnnonceurStats(userId: string): Promise<{
       supabase.from("properties").select("id, views").eq("owner_id", userId),
       supabase.from("visits").select("id", { count: "exact", head: true }).eq("owner_id", userId),
       supabase.from("messages").select("id", { count: "exact", head: true }).eq("receiver_id", userId),
-      supabase.from("reviews").select("rating").eq("reviewed_id", userId),
+      supabase.from("reviews").select("rating").eq("owner_id", userId),
     ]);
     const listings = (propsRes.data ?? []).length;
     const views = (propsRes.data ?? []).reduce((a: number, p: { views: number | null }) => a + (p.views ?? 0), 0);
@@ -605,7 +605,7 @@ async function loadRecentReviewsWithProfiles(userId: string): Promise<ReviewWith
     const { data: reviews, error } = await supabase
       .from("reviews")
       .select("id, rating, comment, created_at, reviewer_id")
-      .eq("reviewed_id", userId)
+      .eq("owner_id", userId)
       .order("created_at", { ascending: false })
       .limit(3);
     // Silently ignore: table missing (42P01 / "relation does not exist") or 404
@@ -1174,8 +1174,8 @@ function ReviewsSection({ userId }: { userId: string }) {
       try {
         const { data, error } = await supabase!
           .from("reviews")
-          .select("*")
-          .eq("reviewed_id", userId)
+          .select("id, rating, comment, created_at, reviewer_id")
+          .eq("owner_id", userId)
           .order("created_at", { ascending: false })
           .limit(20);
         // Silently ignore: table missing (42P01 / "relation does not exist") or 404 — no logging
@@ -2155,7 +2155,16 @@ export default function ComptePage() {
     );
   }
 
-  if (!user) return null;
+  if (!user) {
+    // Redirect is in-flight (router.replace was called in the effect above).
+    // Show a neutral loading screen so neither dark nor light mode shows a blank page.
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
+        <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "var(--bl-amber)", borderTopColor: "transparent" }} />
+        <p className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>Redirection en cours…</p>
+      </div>
+    );
+  }
 
   const role      = profile?.role ?? "buyer";
   const dashProps = { user, profile, signOut, refreshProfile };

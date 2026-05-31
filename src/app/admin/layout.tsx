@@ -235,7 +235,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   async function handleSignOut() {
     await supabase?.auth.signOut();
-    router.push("/");
+    document.cookie = "LogerBien-auth=; path=/; max-age=0";
+    window.location.href = "/";
   }
 
   if (loading || !user || (profile !== null && profile.role !== "admin")) {
