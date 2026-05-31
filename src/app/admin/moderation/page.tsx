@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Flag, CheckCircle, XCircle, RefreshCw } from "lucide-react";
+import { Flag, CheckCircle, XCircle, RefreshCw, BadgeCheck } from "lucide-react";
 import { toast } from "@/lib/toast";
 import { supabase } from "@/lib/supabase";
 import { getNeighborhoodName } from "@/data/neighborhoods";
@@ -137,6 +137,20 @@ export default function AdminModerationPage() {
     setActionId(null);
   }
 
+  async function markVerified(prop: PendingProperty) {
+    if (!supabase) return;
+    setActionId(prop.id);
+    const { data } = await supabase.from("properties").select("badges").eq("id", prop.id).single();
+    const current: string[] = Array.isArray((data as { badges?: string[] } | null)?.badges)
+      ? (data as { badges: string[] }).badges
+      : [];
+    const updated = current.includes("verifie") ? current : [...current, "verifie"];
+    const { error } = await supabase.from("properties").update({ badges: updated }).eq("id", prop.id);
+    if (error) toast(`Erreur : ${error.message}`, "error");
+    else toast("✅ Badge vérifié ajouté à l'annonce", "success");
+    setActionId(null);
+  }
+
   async function resolveReport(report: Report, action: "keep" | "remove") {
     if (!supabase) return;
     setActionId(report.id);
@@ -253,8 +267,16 @@ export default function AdminModerationPage() {
                     </button>
                     <button
                       disabled={busy}
+                      onClick={() => markVerified(prop)}
+                      title="Ajouter le badge vérifié à cette annonce"
+                      style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 14px", borderRadius: 10, background: "rgba(34,197,94,0.12)", color: "#22c55e", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer", border: "1px solid rgba(34,197,94,0.25)", whiteSpace: "nowrap" } as React.CSSProperties}
+                    >
+                      <BadgeCheck size={15} /> Vérifier
+                    </button>
+                    <button
+                      disabled={busy}
                       onClick={() => { setRejectId(prop.id); setRejectReason(""); }}
-                      style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 14px", borderRadius: 10, background: "rgba(239,68,68,0.12)", color: "#f87171", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer", border: "1px solid rgba(239,68,68,0.25)" } as React.CSSProperties}
+                      style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 14px", borderRadius: 10, background: "rgba(239,68,68,0.12)", color: "#f87171", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer", border: "1px solid rgba(239,68,68,0.25)" } as React.CSSProperties}
                     >
                       <XCircle size={15} /> Rejeter
                     </button>

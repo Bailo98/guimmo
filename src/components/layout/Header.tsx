@@ -114,6 +114,13 @@ export function Header() {
             Annonces
           </Link>
           <Link
+            href="/je-cherche"
+            className="px-3 py-2 rounded-xl transition-colors hover:bg-black/5"
+            style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.12em", textTransform: "uppercase", color: pathname === "/je-cherche" ? "var(--nav-text-active)" : "var(--nav-text)" }}
+          >
+            Je cherche 🔍
+          </Link>
+          <Link
             href="/agents"
             className="px-3 py-2 rounded-xl transition-colors hover:bg-black/5"
             style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.12em", textTransform: "uppercase", color: pathname === "/agents" ? "var(--nav-text-active)" : "var(--nav-text)" }}
@@ -289,6 +296,11 @@ export function Header() {
             className="flex items-center gap-2 px-3 py-3 rounded-xl hover:bg-black/5"
             style={{ color: "var(--nav-text)" }}>
             Annonces
+          </Link>
+          <Link href="/je-cherche" onClick={() => setMenuOpen(false)}
+            className="flex items-center gap-2 px-3 py-3 rounded-xl hover:bg-black/5"
+            style={{ color: "var(--nav-text)" }}>
+            Je cherche 🔍
           </Link>
           <Link href="/agents" onClick={() => setMenuOpen(false)}
             className="flex items-center gap-2 px-3 py-3 rounded-xl hover:bg-black/5"

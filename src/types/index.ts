@@ -102,6 +102,12 @@ export interface Property {
   ref?: string;
   created_at?: string;
   updated_at?: string;
+  // Feature 1: availability mode
+  availability_mode?: "urgent" | "today" | "immediate" | "flexible";
+  // Feature 4: trust badges
+  badges?: string[];
+  // Feature 10: boost
+  boosted_until?: string;
   property_images?: {
     url: string;
     is_primary: boolean;

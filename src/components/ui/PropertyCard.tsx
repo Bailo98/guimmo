@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,6 +30,39 @@ const NEIGHBORHOOD_LABELS: Record<string, string> = {
   dixinn: "Dixinn", matam: "Matam", madina: "Madina", kaloum: "Kaloum",
 };
 
+// ── Feature 1: Availability mode badge config ──────────────────────────────────
+const AVAIL_CONFIG: Record<string, { label: string; color: string; bg: string; border: string }> = {
+  urgent:    { label: "⚡ Urgent",               color: "#ff4d4d", bg: "rgba(255,77,77,0.18)",    border: "rgba(255,77,77,0.45)" },
+  today:     { label: "🔥 Dispo aujourd'hui",     color: "#ff8c00", bg: "rgba(255,140,0,0.18)",    border: "rgba(255,140,0,0.45)" },
+  immediate: { label: "🏃 Libre immédiatement",   color: "#25D366", bg: "rgba(37,211,102,0.18)",  border: "rgba(37,211,102,0.45)" },
+  flexible:  { label: "", color: "", bg: "", border: "" }, // no badge for default
+};
+
+// ── Feature 3: Timestamp label ─────────────────────────────────────────────────
+function freshLabel(createdAt: string | undefined): { label: string; color: string } | null {
+  if (!createdAt) return null;
+  const diff = Date.now() - new Date(createdAt).getTime();
+  const hours = diff / 3_600_000;
+  const days  = diff / 86_400_000;
+  if (hours < 24) {
+    const h = Math.max(1, Math.round(hours));
+    return { label: `il y a ${h}h`, color: "#22c55e" };
+  }
+  if (days < 7) {
+    const d = Math.round(days);
+    return { label: `il y a ${d}j`, color: "#eab308" };
+  }
+  return null;
+}
+
+// ── Feature 4: Trust badge display ────────────────────────────────────────────
+const TRUST_BADGE_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  proprietaire_direct: { label: "🏠 Proprio direct",  color: "#60a5fa", bg: "rgba(96,165,250,0.18)" },
+  sans_commission:     { label: "💰 Sans commission",  color: "#D4AF37", bg: "rgba(212,175,55,0.18)" },
+  verifie:             { label: "✅ Vérifié",           color: "#22c55e", bg: "rgba(34,197,94,0.18)"  },
+  nouveau:             { label: "🆕 Nouveau",           color: "#a78bfa", bg: "rgba(167,139,250,0.18)" },
+};
+
 export function PropertyCard({
   property,
   variant = "default",
@@ -57,6 +90,9 @@ export function PropertyCard({
   const createdAt         = new Date(property.created_at ?? Date.now());
   const isNew             = Date.now() - createdAt.getTime() < 48 * 60 * 60 * 1000;
 
+  // Feature 3: fresh timestamp
+  const fresh = freshLabel(property.created_at);
+
   // Distance from user location
   let distanceStr: string | null = null;
   const pLat = property.lat ?? property.latitude ?? null;
@@ -67,6 +103,24 @@ export function PropertyCard({
     const coords = NEIGHBORHOOD_COORDINATES[property.neighborhood];
     if (coords) distanceStr = `~${formatDistance(haversineKm(userLocation.lat, userLocation.lng, coords[0], coords[1]))}`;
   }
+
+  // Feature 7: trust dot
+  const reportsCount = (property as Property & { reports_count?: number }).reports_count ?? 0;
+  let trustDot: { color: string; label: string } | null = null;
+  if (reportsCount > 0) {
+    trustDot = { color: "#ef4444", label: "Signalement(s) en attente" };
+  } else if (property.is_verified) {
+    trustDot = { color: "#22c55e", label: "Annonce vérifiée" };
+  } else if (isNew) {
+    trustDot = { color: "#eab308", label: "Annonce récente (< 48h)" };
+  }
+
+  // Feature 1: availability mode badge
+  const availMode = property.availability_mode ?? "flexible";
+  const availCfg = AVAIL_CONFIG[availMode] ?? AVAIL_CONFIG.flexible;
+
+  // Feature 4: trust badges array
+  const trustBadges = Array.isArray(property.badges) ? property.badges : [];
 
   // ── Image nav ───────────────────────────────────────────────────────────────
   function prev(e: React.MouseEvent) {
@@ -90,7 +144,7 @@ export function PropertyCard({
     else        setCurrentImg((i) => (i - 1 + imgCount) % imgCount);
   }
 
-  // ── Favorite (full Supabase logic) ──────────────────────────────────────────
+  // ── Favorite ──────────────────────────────────────────────────────────────────
   async function handleFavorite(e: React.MouseEvent) {
     e.preventDefault(); e.stopPropagation();
     if (!user) { setShowAuthModal(true); return; }
@@ -126,16 +180,13 @@ export function PropertyCard({
   }
 
   // ════════════════════════════════════════════════════════════════════════════
-  //  HORIZONTAL VARIANT — unchanged
+  //  HORIZONTAL VARIANT
   // ════════════════════════════════════════════════════════════════════════════
   if (variant === "horizontal") {
     return (
       <div
         className={cn("group flex gap-3 rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5", className)}
-        style={{
-          background: "var(--bg-card)",
-          border: "1px solid var(--color-border)",
-        }}
+        style={{ background: "var(--bg-card)", border: "1px solid var(--color-border)" }}
       >
         <Link href={`/annonces/${property.id}`} className="relative w-28 flex-shrink-0">
           <div className="relative w-full h-full min-h-[100px]">
@@ -275,6 +326,21 @@ export function PropertyCard({
         </button>
       )}
 
+      {/* ── Feature 3: Fresh timestamp — top right corner (above fav btn) ──────── */}
+      {fresh && (
+        <div style={{
+          position: "absolute", top: 10, right: 56, zIndex: 5, pointerEvents: "none",
+        }}>
+          <span style={{
+            background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)",
+            color: fresh.color, fontSize: 10, fontWeight: 700,
+            padding: "3px 7px", borderRadius: 20, whiteSpace: "nowrap",
+          }}>
+            {fresh.label}
+          </span>
+        </div>
+      )}
+
       {/* ── Type + status badges — top left (z-5) ────────────────────────────── */}
       <div style={{
         position: "absolute", top: 12, left: 12, zIndex: 5,
@@ -300,6 +366,23 @@ export function PropertyCard({
           }}>▶ Vidéo</span>
         )}
       </div>
+
+      {/* ── Feature 1: Availability mode badge — below type badges ──────────── */}
+      {availCfg.label && (
+        <div style={{
+          position: "absolute", top: 40, left: 12, zIndex: 5, pointerEvents: "none",
+        }}>
+          <span style={{
+            background: availCfg.bg, color: availCfg.color,
+            border: `1px solid ${availCfg.border}`,
+            fontSize: 10, fontWeight: 700, padding: "3px 8px",
+            borderRadius: 20, whiteSpace: "nowrap",
+            backdropFilter: "blur(6px)",
+          }}>
+            {availCfg.label}
+          </span>
+        </div>
+      )}
 
       {/* ── Favorite button — top right (z-6) ────────────────────────────────── */}
       <button
@@ -327,7 +410,6 @@ export function PropertyCard({
       </button>
 
       {/* ── Info overlay — bottom left (z-3) ─────────────────────────────────── */}
-      {/*  right: 70px leaves room for the 46px WA button + 16px margin           */}
       <div style={{
         position: "absolute",
         bottom: 16,
@@ -407,6 +489,44 @@ export function PropertyCard({
             {distanceStr && ` · ${distanceStr}`}
           </span>
         </div>
+
+        {/* Feature 4: Trust badges row */}
+        {trustBadges.length > 0 && (
+          <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 5 }}>
+            {trustBadges.slice(0, 3).map((badge) => {
+              const cfg = TRUST_BADGE_CONFIG[badge];
+              if (!cfg) return null;
+              return (
+                <span key={badge} style={{
+                  fontSize: 9, fontWeight: 700,
+                  color: cfg.color, background: cfg.bg,
+                  padding: "2px 6px", borderRadius: 12, whiteSpace: "nowrap",
+                }}>
+                  {cfg.label}
+                </span>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Feature 7: Trust dot indicator */}
+        {trustDot && (
+          <div
+            title={trustDot.label}
+            style={{
+              position: "absolute", bottom: -20, left: 0,
+              display: "flex", alignItems: "center", gap: 4,
+              cursor: "default",
+            }}
+          >
+            <span style={{
+              width: 7, height: 7, borderRadius: "50%",
+              background: trustDot.color,
+              display: "inline-block",
+              boxShadow: `0 0 6px ${trustDot.color}99`,
+            }} />
+          </div>
+        )}
       </div>
 
       {/* ── WhatsApp button — bottom right (z-6) ─────────────────────────────── */}

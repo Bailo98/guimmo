@@ -15,6 +15,19 @@ import { cn, formatPrice } from "@/lib/utils";
 type PType = "apartment" | "house" | "studio" | "villa" | "room" | "land";
 type TxType = "rent" | "sale";
 type ContactMethod = "whatsapp" | "call" | "both";
+type AvailMode = "flexible" | "immediate" | "today" | "urgent";
+
+const AVAIL_OPTIONS: { id: AvailMode; emoji: string; label: string; sub: string }[] = [
+  { id: "flexible",  emoji: "📅", label: "Flexible",           sub: "À convenir" },
+  { id: "immediate", emoji: "🏃", label: "Libre immédiatement", sub: "Dispo maintenant" },
+  { id: "today",     emoji: "🔥", label: "Dispo aujourd'hui",   sub: "Même jour" },
+  { id: "urgent",    emoji: "⚡", label: "Urgent",              sub: "À louer vite" },
+];
+
+const OWNER_BADGE_OPTIONS: { id: string; emoji: string; label: string }[] = [
+  { id: "proprietaire_direct", emoji: "🏠", label: "Proprio direct" },
+  { id: "sans_commission",     emoji: "💰", label: "Sans commission" },
+];
 
 const TYPE_OPTIONS: { id: PType; label: string; emoji: string }[] = [
   { id: "apartment", label: "Appartement", emoji: "🏢" },
@@ -39,6 +52,8 @@ interface TourRoom {
 interface FormState {
   type: PType | "";
   txType: TxType | "";
+  availabilityMode: AvailMode;
+  selectedBadges: string[];
   photos: File[];
   price: string;
   rooms: number;
@@ -104,7 +119,8 @@ export default function PublierPage() {
   const recognitionRef = useRef<any>(null);
 
   const [form, setForm] = useState<FormState>({
-    type: "", txType: "", photos: [], price: "",
+    type: "", txType: "", availabilityMode: "flexible", selectedBadges: [],
+    photos: [], price: "",
     rooms: 1, furnished: null,
     neighborhood: "", locationDetail: "",
     phone: "", contactMethod: "both",
@@ -454,6 +470,8 @@ export default function PublierPage() {
         video_url:           videoUrl,
         owner_id:            freshUser.id,
         features:            [],
+        availability_mode:   form.availabilityMode || "flexible",
+        badges:              form.selectedBadges,
         is_boosted:          false,
         views:               0,
         whatsapp_clicks:     0,
@@ -678,6 +696,68 @@ export default function PublierPage() {
                   <p className="text-xs text-white/50 mt-0.5">{tx.sub}</p>
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* ── Mode de disponibilité ── */}
+          <div>
+            <h2 className="text-lg font-bold text-white mb-3">
+              Disponibilité
+            </h2>
+            <div className="grid grid-cols-2 gap-3">
+              {AVAIL_OPTIONS.map((opt) => (
+                <button
+                  key={opt.id}
+                  onClick={() => update("availabilityMode", opt.id)}
+                  className={cn(
+                    "flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all active:scale-95",
+                    form.availabilityMode === opt.id
+                      ? "border-[#D4AF37] bg-[rgba(212,175,55,0.12)]"
+                      : "hover:border-white/30"
+                  )}
+                >
+                  <span className="text-2xl mb-1">{opt.emoji}</span>
+                  <p className="font-bold text-sm text-white">{opt.label}</p>
+                  <p className="text-xs text-white/50">{opt.sub}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Badges de confiance ── */}
+          <div>
+            <h2 className="text-lg font-bold text-white mb-1">
+              Badges de confiance{" "}
+              <span className="text-white/40 font-normal text-sm">(optionnel)</span>
+            </h2>
+            <p className="text-white/40 text-xs mb-3">
+              Ces badges apparaissent sur votre annonce pour rassurer les locataires.
+            </p>
+            <div className="flex gap-3">
+              {OWNER_BADGE_OPTIONS.map((b) => {
+                const active = form.selectedBadges.includes(b.id);
+                return (
+                  <button
+                    key={b.id}
+                    onClick={() => {
+                      const current = form.selectedBadges;
+                      update(
+                        "selectedBadges",
+                        active ? current.filter((x) => x !== b.id) : [...current, b.id]
+                      );
+                    }}
+                    className={cn(
+                      "flex-1 flex flex-col items-center gap-2 p-4 rounded-2xl border-2 font-semibold text-sm transition-all active:scale-95",
+                      active
+                        ? "border-[#D4AF37] bg-[rgba(212,175,55,0.12)] text-[#D4AF37]"
+                        : "text-white/70 hover:border-white/30"
+                    )}
+                  >
+                    <span className="text-2xl">{b.emoji}</span>
+                    {b.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

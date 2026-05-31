@@ -34,6 +34,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
                 { label: "Appartements", href: "/annonces?type=apartment" },
                 { label: "Maisons", href: "/annonces?type=house" },
                 { label: "Villas", href: "/annonces?type=villa" },
+                { label: "Je cherche 🔍", href: "/je-cherche" },
                 { label: "Publication rapide", href: "/publier/rapide" },
                 { label: "Agents LogerBien", href: "/agents" },
               ].map((l) => (
@@ -72,6 +73,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
             <ul className="space-y-2">
               {[
                 { label: "À propos", href: "/a-propos" },
+                { label: "Tarifs", href: "/tarifs" },
                 { label: "Contact", href: "/contact" },
                 { label: "CGU", href: "/cgv" },
                 { label: "Confidentialité", href: "/confidentialite" },

@@ -317,6 +317,16 @@ html {
   }
 }
 
+/* ── Feature 9: Android low-end optimization — reduce motion ── */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 body {
   font-family: var(--font-dm-sans), var(--font-space-grotesk), var(--font-inter), -apple-system, sans-serif;
   font-weight: 400;

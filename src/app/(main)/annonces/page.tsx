@@ -286,8 +286,9 @@ function AnnoncesContent() {
   }
 
   const diaspora = searchParams.get("diaspora") === "1";
+  const recentOnly = searchParams.get("recent") === "1";
   const hasPriceFilter = priceMin > 0 || priceMax < Infinity;
-  const hasFilters = !!neighborhood || !!type || !!tx || hasPriceFilter || diaspora || amenities.size > 0 || surfaceMin > 0 || furnished || sortOrder !== "default";
+  const hasFilters = !!neighborhood || !!type || !!tx || hasPriceFilter || diaspora || amenities.size > 0 || surfaceMin > 0 || furnished || sortOrder !== "default" || recentOnly;
 
   function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number) {
     const R = 6371;
@@ -308,6 +309,10 @@ function AnnoncesContent() {
       if (diaspora && !p.is_diaspora) return false;
       if (surfaceMin > 0 && (p.surface ?? 0) < surfaceMin) return false;
       if (furnished && !p.is_furnished && !p.furnished) return false;
+      if (recentOnly) {
+        const age = Date.now() - new Date(p.created_at ?? 0).getTime();
+        if (age > 7 * 24 * 60 * 60 * 1000) return false;
+      }
       // Amenity filters
       for (const key of amenities) {
         if (!p[key]) return false;
@@ -330,7 +335,7 @@ function AnnoncesContent() {
       list = [...list].sort((a, b) => new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime());
     }
     return list;
-  }, [allProperties, neighborhood, type, tx, priceMin, priceMax, nearbyCoords, amenities, surfaceMin, furnished, sortOrder]);
+  }, [allProperties, neighborhood, type, tx, priceMin, priceMax, nearbyCoords, amenities, surfaceMin, furnished, sortOrder, recentOnly]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const safePage = Math.min(Math.max(1, page), totalPages);
@@ -356,6 +361,7 @@ function AnnoncesContent() {
     surfaceMin > 0 ? "surface" : "",
     furnished ? "furnished" : "",
     sortOrder !== "default" ? "sort" : "",
+    recentOnly ? "recent" : "",
   ].filter(Boolean).length;
 
   return (
@@ -585,6 +591,23 @@ function AnnoncesContent() {
                   </SmallChip>
                 ))}
               </div>
+            </div>
+
+            {/* Récentes seulement */}
+            <div>
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Date de publication</p>
+              <button
+                onClick={() => setParam("recent", recentOnly ? "" : "1")}
+                className="flex items-center gap-2 px-4 rounded-full text-sm font-bold transition-all"
+                style={{
+                  minHeight: 36,
+                  ...(recentOnly
+                    ? { background: "rgba(34,197,94,0.18)", border: "1px solid rgba(34,197,94,0.45)", color: "#22c55e" }
+                    : { background: "var(--bl-surface-2)", border: "1px solid var(--color-border)", color: "#666" }),
+                }}
+              >
+                🟢 Récentes seulement (7 derniers jours)
+              </button>
             </div>
 
             {/* Diaspora toggle */}
