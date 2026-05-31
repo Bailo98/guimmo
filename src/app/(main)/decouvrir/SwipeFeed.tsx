@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import TinderCard from "react-tinder-card";
 import Image from "next/image";
@@ -29,6 +29,9 @@ function addSeenId(id: string) {
     }
   } catch { /* silent */ }
 }
+function clearSeenIds() {
+  try { localStorage.removeItem(SEEN_KEY); } catch { /* silent */ }
+}
 
 type TinderAPI = {
   swipe: (dir: "left" | "right" | "up" | "down") => Promise<void>;
@@ -40,12 +43,18 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   const { user }           = useAuth();
   const { toggleFavorite } = useAppStore();
 
-  const [mounted,         setMounted]         = useState(false);
-  const [cards,           setCards]           = useState<Property[]>([]);
-  const [userLocation,    setUserLocation]    = useState<{ lat: number; lng: number } | null>(null);
-  const [reloading,       setReloading]       = useState(false);
-  const [everHadCards,    setEverHadCards]    = useState(false);
+  const [mounted,          setMounted]          = useState(false);
+  const [cards,            setCards]            = useState<Property[]>([]);
+  const [userLocation,     setUserLocation]     = useState<{ lat: number; lng: number } | null>(null);
+  const [reloading,        setReloading]        = useState(false);
+  const [everHadCards,     setEverHadCards]     = useState(false);
   const [emptyAfterReload, setEmptyAfterReload] = useState(false);
+
+  // ── Ref-based re-entry guard for the reload flow.
+  // Using a ref (not state) so flipping it never re-runs the useEffect, which
+  // would cancel the setTimeout via cleanup — the exact bug that kept the
+  // spinner stuck forever.
+  const reloadInProgress = useRef(false);
 
   // ── Overlay refs — pure DOM manipulation, ZERO React re-renders during drag ──
   const overlayRightRef = useRef<HTMLDivElement>(null);
@@ -70,61 +79,99 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     );
   }, []);
 
-  // ── Filter seen + sort ─────────────────────────────────────────────────────
-  useEffect(() => {
-    if (properties.length === 0) return;
-    const seen = getSeenIds();
-    let list = properties.filter((p) => !seen.includes(p.id));
-
-    if (list.length === 0 || list.length < Math.max(1, properties.length * 0.2)) {
-      try { localStorage.removeItem(SEEN_KEY); } catch { /* silent */ }
-      list = [...properties];
-    }
-
-    if (userLocation) {
-      list = list.sort((a, b) => {
+  // ── Sort helper ────────────────────────────────────────────────────────────
+  function sortList(list: Property[], loc: { lat: number; lng: number } | null): Property[] {
+    if (loc) {
+      return [...list].sort((a, b) => {
         const aLat = a.lat ?? a.latitude ?? NEIGHBORHOOD_COORDINATES[a.neighborhood]?.[0];
         const aLng = a.lng ?? a.longitude ?? NEIGHBORHOOD_COORDINATES[a.neighborhood]?.[1];
         const bLat = b.lat ?? b.latitude ?? NEIGHBORHOOD_COORDINATES[b.neighborhood]?.[0];
         const bLng = b.lng ?? b.longitude ?? NEIGHBORHOOD_COORDINATES[b.neighborhood]?.[1];
         if (!aLat || !bLat) return 0;
         return (
-          haversineKm(userLocation.lat, userLocation.lng, aLat, aLng) -
-          haversineKm(userLocation.lat, userLocation.lng, bLat, bLng)
+          haversineKm(loc.lat, loc.lng, aLat, aLng) -
+          haversineKm(loc.lat, loc.lng, bLat, bLng)
         );
       });
-    } else {
-      list = list.sort((a, b) => {
-        const score = (p: Property) =>
-          (p.is_featured ? 1000 : 0) +
-          (Date.now() - new Date(p.created_at ?? 0).getTime() < 48 * 3_600_000 ? 500 : 0) +
-          (p.is_boosted ? 200 : 0);
-        return score(b) - score(a);
-      });
     }
-    setCards(list);
-    if (list.length > 0) setEverHadCards(true);
+    return [...list].sort((a, b) => {
+      const score = (p: Property) =>
+        (p.is_featured ? 1000 : 0) +
+        (Date.now() - new Date(p.created_at ?? 0).getTime() < 48 * 3_600_000 ? 500 : 0) +
+        (p.is_boosted ? 200 : 0);
+      return score(b) - score(a);
+    });
+  }
+
+  // ── Initial load: filter seen + sort ──────────────────────────────────────
+  // Runs only on first mount (or when the static prop / location changes).
+  // Does NOT interfere with the reload flow because the reload directly calls
+  // setCards() and reloadInProgress prevents re-entry.
+  useEffect(() => {
+    // Skip if a reload is already managing cards
+    if (reloadInProgress.current) return;
+    if (properties.length === 0) return;
+
+    const seen = getSeenIds();
+    let list = properties.filter((p) => !seen.includes(p.id));
+
+    // If < 20 % of properties remain unseen, reset seen history and show all
+    if (list.length === 0 || list.length < Math.max(1, properties.length * 0.2)) {
+      clearSeenIds();
+      list = [...properties];
+    }
+
+    const sorted = sortList(list, userLocation);
+    setCards(sorted);
+    if (sorted.length > 0) setEverHadCards(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [properties, userLocation]);
 
-  // ── Auto-reload when all cards swiped ─────────────────────────────────────
+  // ── Auto-reload when all cards are swiped ─────────────────────────────────
+  //
+  // CRITICAL: `reloading` is intentionally NOT in the dependency array.
+  //
+  // If `reloading` were a dep, calling setReloading(true) would immediately
+  // re-run this effect → the cleanup would fire → clearTimeout(t) would CANCEL
+  // the 1.5 s timer before it fires → fetchProperties() is never called →
+  // setReloading(false) is never called → spinner stuck forever.
+  //
+  // We prevent re-entry with `reloadInProgress` (a ref), which can be read
+  // inside the effect without being listed as a dependency.
   useEffect(() => {
-    if (!mounted || !everHadCards || cards.length > 0 || reloading || emptyAfterReload) return;
+    if (!mounted || !everHadCards || cards.length > 0 || emptyAfterReload) return;
+    if (reloadInProgress.current) return;
+
+    reloadInProgress.current = true;
     setReloading(true);
+
     const t = setTimeout(() => {
-      try { localStorage.removeItem(SEEN_KEY); } catch { /* silent */ }
+      // Wipe seen history so the fresh batch isn't immediately filtered out
+      clearSeenIds();
+
+      console.log("[SwipeFeed] reload — appel fetchProperties...");
       fetchProperties().then((fresh) => {
+        console.log("[SwipeFeed] fetchProperties →", fresh.length, "annonce(s) reçue(s)");
+
+        reloadInProgress.current = false;
+
         if (fresh.length === 0) {
           setEmptyAfterReload(true);
           setReloading(false);
           return;
         }
-        setCards(fresh);
+
+        // Sort the fresh batch, load it, THEN hide the spinner
+        const sorted = sortList(fresh, null); // use score sort; location sort runs via the other effect
+        setCards(sorted);
         setEverHadCards(true);
         setReloading(false);
       });
     }, 1500);
+
     return () => clearTimeout(t);
-  }, [mounted, everHadCards, cards.length, reloading, emptyAfterReload]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mounted, everHadCards, cards.length, emptyAfterReload]);
 
   // ── Progressive overlay: pure DOM — no setState ────────────────────────────
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -195,7 +242,27 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   // ── Render ─────────────────────────────────────────────────────────────────
   if (!mounted) return null;
 
-  // ── No annonces after fresh fetch ─────────────────────────────────────────
+  // ── Reloading spinner ─────────────────────────────────────────────────────
+  if (reloading) {
+    return (
+      <div style={{
+        position: "fixed", inset: 0, zIndex: 10, background: "var(--bg-primary)",
+        display: "flex", flexDirection: "column", alignItems: "center",
+        justifyContent: "center", padding: "0 32px",
+      }}>
+        <p style={{ fontSize: 52, marginBottom: 16, animation: "spin 1s linear infinite" }}>🔄</p>
+        <p style={{ color: "#D4AF37", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
+          On recommence depuis le début…
+        </p>
+        <p style={{ color: "var(--bl-cream-faint)", fontSize: 13, textAlign: "center" }}>
+          Chargement des nouvelles annonces…
+        </p>
+        <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  // ── Empty after fresh fetch ────────────────────────────────────────────────
   if (emptyAfterReload) {
     return (
       <div style={{
@@ -213,41 +280,32 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         <button
           onClick={() => {
             setEmptyAfterReload(false);
-            setReloading(true);
-            fetchProperties().then((fresh) => {
-              if (fresh.length === 0) {
-                setEmptyAfterReload(true);
-                setReloading(false);
-                return;
-              }
-              setCards(fresh);
-              setEverHadCards(true);
-              setReloading(false);
-            });
+            // Reset in-progress guard so the auto-reload effect can fire again
+            reloadInProgress.current = false;
           }}
           style={{
             padding: "14px 32px", borderRadius: 14, border: "none",
             background: "#D4AF37", color: "#0B0F19",
             fontWeight: 700, fontSize: 15, cursor: "pointer",
-            width: "100%", maxWidth: 320,
+            width: "100%", maxWidth: 320, marginBottom: 12,
           }}
         >
           Réessayer
         </button>
         <a href="/annonces" style={{
           display: "block", textAlign: "center", width: "100%", maxWidth: 320,
-          marginTop: 12, padding: "14px 0", borderRadius: 14,
+          padding: "14px 0", borderRadius: 14,
           background: "transparent", border: "1px solid rgba(255,255,255,0.12)",
           color: "rgba(255,255,255,0.70)", fontWeight: 600, fontSize: 15, textDecoration: "none",
         }}>
-          Voir toutes les annonces
+          Voir les annonces
         </a>
       </div>
     );
   }
 
-  // ── Reloading transition ───────────────────────────────────────────────────
-  if (reloading) {
+  // ── Brief transition before reload triggers (cards just hit 0) ────────────
+  if (cards.length === 0 && everHadCards) {
     return (
       <div style={{
         position: "fixed", inset: 0, zIndex: 10, background: "var(--bg-primary)",
@@ -259,33 +317,9 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           On recommence depuis le début…
         </p>
         <p style={{ color: "var(--bl-cream-faint)", fontSize: 13, textAlign: "center" }}>
-          Toutes les annonces vont réapparaître
+          Chargement des nouvelles annonces…
         </p>
         <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
-      </div>
-    );
-  }
-
-  // ── Empty briefly before reload triggers ──────────────────────────────────
-  if (cards.length === 0 && everHadCards) {
-    return (
-      <div style={{
-        position: "fixed", inset: 0, zIndex: 10, background: "var(--bg-primary)",
-        display: "flex", flexDirection: "column", alignItems: "center",
-        justifyContent: "center", padding: "0 32px",
-      }}>
-        <p style={{ fontSize: 52, marginBottom: 16 }}>⏳</p>
-        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, textAlign: "center" }}>
-          Chargement…
-        </p>
-        <a href="/annonces" style={{
-          display: "block", textAlign: "center", width: "100%", maxWidth: 320,
-          marginTop: 24, padding: "14px 0", borderRadius: 14,
-          background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.12)",
-          color: "#ffffff", fontWeight: 600, fontSize: 15, textDecoration: "none",
-        }}>
-          Voir toutes les annonces
-        </a>
       </div>
     );
   }
@@ -315,7 +349,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     <>
       {/* ══════════════════════════════════════════════════════════════════════
           FIXED HEADER — z-200, above everything
-          Back (←) · "Découvrir / Conakry, Guinée" · Filter (⚙️)
+          Back (←) · "Découvrir / Conakry, Guinée" · placeholder (right)
       ══════════════════════════════════════════════════════════════════════ */}
       <div
         style={{
@@ -364,7 +398,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           </p>
         </div>
 
-        {/* Placeholder — keeps title centred (settings button removed) */}
+        {/* Placeholder — keeps title centred */}
         <div style={{ width: 32, flexShrink: 0 }} />
       </div>
 
@@ -513,10 +547,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             )}
 
             {/* ── Property info — bottom left ──────────────────────────────────── */}
-            {/*
-             * bottom: 82 → sits above progress dots (bottom: 68)
-             * right: 72  → clears the action buttons (right: 16, width: 54px)
-             */}
             <div style={{
               position: "absolute",
               bottom: 82,
@@ -524,7 +554,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               right: 72,
               pointerEvents: "none",
             }}>
-              {/* Prix — grand, sans badge, texte brut */}
+              {/* Prix */}
               <p style={{
                 margin: 0,
                 fontSize: 24,
@@ -590,7 +620,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
         {/* ══════════════════════════════════════════════════════════════════════
             ACTION BUTTONS — right side, column layout
-            Order top→bottom: ✕ (pass) · 🔖 (save) · ❤️ (like, bigger)
+            Order top→bottom: ✕ (pass) · ❤️ (like, bigger)
         ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
           position: "absolute",
