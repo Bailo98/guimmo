@@ -77,7 +77,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
       const suffix = period === "month" ? "/m" : "";
       return L.divIcon({
         className: "",
-        html: `<div style="background:#D4AF37;color:#0A1216;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.5);cursor:pointer;border:2px solid rgba(0,0,0,0.1);">${millions}${suffix} GNF</div>`,
+        html: `<div style="color:#A07820;font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer;text-shadow:0 1px 3px rgba(255,255,255,0.9);">${millions}${suffix} GNF</div>`,
         iconAnchor: [0, 0],
         iconSize: [0, 0],
       });
