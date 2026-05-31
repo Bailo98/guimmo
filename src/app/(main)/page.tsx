@@ -1,28 +1,60 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import Image from "next/image";
-import { MapPin, ChevronRight, Bed, Square, CheckCircle2 } from "lucide-react";
+import { MapPin, ChevronRight } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { RecentlyViewedSection } from "@/components/ui/RecentlyViewedSection";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { MaisonDuJour } from "@/components/MaisonDuJour";
+import { PWAInstallButton } from "@/components/home/PWAInstallButton";
 import { formatPrice } from "@/lib/utils";
 import { createClient } from "@supabase/supabase-js";
 import type { Metadata } from "next";
 import type { Property } from "@/types";
 
+// Revalidate every 60s for a near-live feel without re-fetching every request
+export const revalidate = 60;
+
 export const metadata: Metadata = {
-  title: "LogerBien — Trouvez votre logement en Guinée",
+  title: "LogerBien — Trouvez votre logement à Conakry",
   description:
-    "Trouvez votre logement à Conakry sans arnaque. Appartements, maisons et villas vérifiés sur LogerBien.",
+    "Trouvez votre logement à Conakry sans commission. Appartements, maisons, villas. Contact direct propriétaire en Guinée.",
   openGraph: {
-    title: "LogerBien — Trouvez votre logement en Guinée",
-    description: "Trouvez votre logement à Conakry sans arnaque.",
+    title: "LogerBien — Trouvez votre logement à Conakry",
+    description: "Trouvez votre logement à Conakry sans commission. Direct propriétaire.",
     url: "https://logerbien.gn",
     siteName: "LogerBien",
   },
 };
 
-// ─── data ─────────────────────────────────────────────────────────────────────
+// ─── Constants ─────────────────────────────────────────────────────────────────
+
+const NL: Record<string, string> = {
+  kipe: "Kipé", hamdallaye: "Hamdallaye", dixinn: "Dixinn", ratoma: "Ratoma",
+  taouyah: "Taouyah", sonfonia: "Sonfonia", lambanyi: "Lambanyi", kaloum: "Kaloum",
+  matam: "Matam", madina: "Madina", nongo: "Nongo", cosa: "Cosa",
+};
+
+const AVAIL_CONFIG: Record<string, { label: string; color: string; bg: string; border: string }> = {
+  urgent:    { label: "⚡ Urgent",              color: "#ff4d4d", bg: "rgba(255,77,77,0.20)",   border: "rgba(255,77,77,0.50)"   },
+  today:     { label: "🔥 Dispo aujourd'hui",   color: "#ff8c00", bg: "rgba(255,140,0,0.20)",   border: "rgba(255,140,0,0.50)"   },
+  immediate: { label: "🏃 Libre immédiatement", color: "#25D366", bg: "rgba(37,211,102,0.20)",  border: "rgba(37,211,102,0.50)"  },
+};
+
+const POPULAR_NEIGHBORHOODS = [
+  { id: "kipe",       name: "Kipé"       },
+  { id: "hamdallaye", name: "Hamdallaye" },
+  { id: "dixinn",     name: "Dixinn"     },
+  { id: "ratoma",     name: "Ratoma"     },
+  { id: "taouyah",    name: "Taouyah"   },
+  { id: "sonfonia",   name: "Sonfonia"   },
+];
+
+const TRUST_ITEMS = [
+  { icon: "🏠", title: "Propriétaires directs",  desc: "Contactez le propriétaire sans intermédiaire ni commission cachée." },
+  { icon: "✅", title: "Annonces vérifiées",      desc: "Chaque annonce est contrôlée par notre équipe avant publication." },
+  { icon: "📞", title: "Contact direct",          desc: "WhatsApp ou appel en un clic. Zéro formulaire, zéro délai." },
+  { icon: "⚡", title: "Réponse rapide",          desc: "Les propriétaires répondent en moins de 24h sur WhatsApp." },
+];
 
 const TYPE_GRADIENTS: Record<string, [string, string]> = {
   apartment: ["#1a252b", "#2a3d4a"],
@@ -31,8 +63,6 @@ const TYPE_GRADIENTS: Record<string, [string, string]> = {
   studio:    ["#111a1f", "#1a252b"],
   room:      ["#1a252b", "#2a3a46"],
   land:      ["#0A1216", "#1a252b"],
-  office:    ["#1a2e45", "#2a4a6b"],
-  shop:      ["#1a1a2a", "#2a2a3a"],
 };
 
 const HERO_GRADIENTS: [string, string][] = [
@@ -41,77 +71,94 @@ const HERO_GRADIENTS: [string, string][] = [
   ["#0A1216", "#1a252b"],
 ];
 
-const POPULAR_NEIGHBORHOODS = [
-  { id: "kipe",       name: "Kipé",       avgPrice: "2.500.000 GNF/mois" },
-  { id: "hamdallaye", name: "Hamdallaye", avgPrice: "1.800.000 GNF/mois" },
-  { id: "dixinn",     name: "Dixinn",     avgPrice: "3.200.000 GNF/mois" },
-  { id: "ratoma",     name: "Ratoma",     avgPrice: "1.500.000 GNF/mois" },
-  { id: "taouyah",    name: "Taouyah",    avgPrice: "2.000.000 GNF/mois" },
-  { id: "sonfonia",   name: "Sonfonia",   avgPrice: "1.200.000 GNF/mois" },
-];
-
-const WHY_LogerBien = [
-  { icon: "🏠", title: "Annonces vérifiées",       desc: "Chaque bien est contrôlé avant publication pour garantir des informations fiables." },
-  { icon: "💬", title: "Contact direct WhatsApp",  desc: "Contactez le propriétaire directement, sans intermédiaire ni commission cachée." },
-  { icon: "🔍", title: "Recherche intelligente",   desc: "Filtrez par quartier, budget et type de bien pour trouver votre logement idéal." },
-  { icon: "⚡", title: "Publication rapide",        desc: "Publiez votre annonce en 2 minutes et touchez des milliers de locataires potentiels." },
-];
-
-// ─── server data fetching ──────────────────────────────────────────────────────
-
-
-async function fetchHomeProperties(): Promise<Property[]> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) return [];
-  try {
-    const db = createClient(url, key);
-    const { data, error } = await db
-      .from("properties")
-      .select("*, property_images(*)")
-      .eq("status", "active")
-      .order("is_boosted", { ascending: false })
-      .order("created_at", { ascending: false })
-      .limit(12);
-    if (error || !data) return [];
-    return data as Property[];
-  } catch {
-    return [];
-  }
-}
-
-// ─── hero preview card (decorative, uses real data) ───────────────────────────
-
-const NEIGHBORHOOD_LABELS_HERO: Record<string, string> = {
-  kipe: "Kipé", lambanyi: "Lambanyi", ratoma: "Ratoma", sonfonia: "Sonfonia",
-  cosa: "Cosa", hamdallaye: "Hamdallaye", nongo: "Nongo", taouyah: "Taouyah",
-  dixinn: "Dixinn", matam: "Matam", madina: "Madina", kaloum: "Kaloum",
-};
-
-interface PreviewCardProps {
-  property: Property;
-  index: number;
-}
-
 const CARD_POSITIONS = [
   { top: "0px",   right: "0px",  rotate: "2deg",    zIndex: 3, opacity: 1    },
   { top: "155px", right: "28px", rotate: "-1.2deg", zIndex: 2, opacity: 0.96 },
   { top: "295px", right: "54px", rotate: "1.8deg",  zIndex: 1, opacity: 0.88 },
 ];
 
-function PreviewCard({ property, index }: PreviewCardProps) {
+// ─── Data fetching ─────────────────────────────────────────────────────────────
+
+function getDB() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
+
+async function fetchHomeProperties(): Promise<Property[]> {
+  try {
+    const db = getDB();
+    if (!db) return [];
+    const { data } = await db
+      .from("properties")
+      .select("*, property_images(*)")
+      .eq("status", "active")
+      .order("is_boosted", { ascending: false })
+      .order("created_at", { ascending: false })
+      .limit(12);
+    return (data ?? []) as Property[];
+  } catch { return []; }
+}
+
+async function fetchUrgentProperties(): Promise<Property[]> {
+  try {
+    const db = getDB();
+    if (!db) return [];
+    const { data } = await db
+      .from("properties")
+      .select("*, property_images(*)")
+      .eq("status", "active")
+      .in("availability_mode", ["urgent", "today", "immediate"])
+      .order("created_at", { ascending: false })
+      .limit(10);
+    return (data ?? []) as Property[];
+  } catch { return []; }
+}
+
+async function fetchActiveCountToday(): Promise<number> {
+  try {
+    const db = getDB();
+    if (!db) return 0;
+    const today = new Date().toISOString().split("T")[0] + "T00:00:00.000Z";
+    const { count } = await db
+      .from("properties")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "active")
+      .gte("created_at", today);
+    return count ?? 0;
+  } catch { return 0; }
+}
+
+async function fetchNeighborhoodCounts(): Promise<Record<string, number>> {
+  try {
+    const db = getDB();
+    if (!db) return {};
+    const { data } = await db
+      .from("properties")
+      .select("neighborhood")
+      .eq("status", "active");
+    const counts: Record<string, number> = {};
+    for (const row of data ?? []) {
+      counts[row.neighborhood] = (counts[row.neighborhood] ?? 0) + 1;
+    }
+    return counts;
+  } catch { return {}; }
+}
+
+// ─── Hero preview card (desktop only, decorative) ─────────────────────────────
+
+function PreviewCard({ property, index }: { property: Property; index: number }) {
   const pos = CARD_POSITIONS[index];
+  if (!pos) return null;
   const primaryImg = property.property_images?.find((i) => i.is_primary) ?? property.property_images?.[0];
   const [gradFrom, gradTo] = TYPE_GRADIENTS[property.type] ?? HERO_GRADIENTS[index % 3];
-  const neighborhoodLabel = NEIGHBORHOOD_LABELS_HERO[property.neighborhood] ?? property.neighborhood;
-  const priceStr = property.price_period === "month"
-    ? `${formatPrice(property.price)}/mois`
-    : formatPrice(property.price);
+  const priceStr = formatPrice(property.price, "GNF", property.price_period);
   const badge = property.transaction_type === "rent" ? "Location" : "Vente";
 
   return (
     <div
-      className="absolute w-[260px] rounded-2xl overflow-hidden transition-transform duration-300 hover:-translate-y-1"
+      className="absolute w-[240px] rounded-2xl overflow-hidden"
       style={{
         top: pos.top, right: pos.right,
         transform: `rotate(${pos.rotate})`,
@@ -120,64 +167,94 @@ function PreviewCard({ property, index }: PreviewCardProps) {
         boxShadow: "0 8px 32px rgba(10,20,12,0.45)",
       }}
     >
-      {/* Image */}
-      <div className="relative h-36">
+      <div className="relative h-32">
         {primaryImg ? (
-          <Image src={primaryImg.url} alt={property.title} fill className="object-cover" sizes="260px" quality={65} loading="lazy" />
+          <Image src={primaryImg.url} alt={property.title} fill className="object-cover" sizes="240px" quality={65} loading="lazy" />
         ) : (
           <div className="w-full h-full" style={{ background: `linear-gradient(135deg, ${gradFrom}, ${gradTo})` }} />
         )}
-        <div className="absolute inset-0 flex items-end p-3" style={{ background: primaryImg ? "linear-gradient(to top, rgba(0,0,0,0.55), transparent)" : "none" }}>
-          <span
-            className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-            style={{ background: "rgba(var(--nav-rgb,10,18,22),0.75)", color: "var(--bl-cream)" }}
-          >
+        <div className="absolute top-2 left-2">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.65)", color: "#fff" }}>
             {badge}
           </span>
         </div>
       </div>
-      {/* Content */}
-      <div className="p-3.5" style={{ color: "var(--bg-primary)" }}>
+      <div className="p-3" style={{ color: "#0A1216" }}>
         <p className="font-bold text-sm leading-snug line-clamp-1">{property.title}</p>
-        <div className="flex items-center gap-1 text-xs mt-1" style={{ color: "#666666" }}>
+        <div className="flex items-center gap-1 text-xs mt-1" style={{ color: "#666" }}>
           <MapPin className="w-3 h-3 flex-shrink-0" />
-          <span>{neighborhoodLabel}</span>
+          <span>{NL[property.neighborhood] ?? property.neighborhood}</span>
         </div>
-        <p className="font-black text-sm mt-2" style={{ color: "#D4AF37" }}>{priceStr}</p>
-        <div className="flex items-center gap-3 mt-1.5 text-xs" style={{ color: "rgba(17,26,20,0.45)" }}>
-          {(property.rooms ?? 0) > 0 && (
-            <span className="flex items-center gap-1"><Bed className="w-3 h-3" />{property.rooms} ch.</span>
-          )}
-          {(property.surface ?? 0) > 0 && (
-            <span className="flex items-center gap-1"><Square className="w-3 h-3" />{property.surface} m²</span>
-          )}
-        </div>
+        <p className="font-black text-sm mt-1.5" style={{ color: "#D4AF37" }}>{priceStr}</p>
       </div>
     </div>
   );
 }
 
-// ─── page ──────────────────────────────────────────────────────────────────────
+// ─── Urgency mini-card ─────────────────────────────────────────────────────────
+
+function UrgencyCard({ property }: { property: Property }) {
+  const primaryImg = property.property_images?.find((i) => i.is_primary) ?? property.property_images?.[0];
+  const mode = (property as Property & { availability_mode?: string }).availability_mode ?? "immediate";
+  const cfg  = AVAIL_CONFIG[mode] ?? AVAIL_CONFIG.immediate;
+  const priceStr = formatPrice(property.price, "GNF", property.price_period);
+
+  return (
+    <Link
+      href={`/annonces/${property.id}`}
+      className="flex-shrink-0 rounded-xl overflow-hidden"
+      style={{ width: 176, background: "var(--bl-surface)", border: `1px solid ${cfg.border}` }}
+    >
+      <div className="relative" style={{ height: 104 }}>
+        {primaryImg ? (
+          <Image src={primaryImg.url} alt={property.title} fill className="object-cover" sizes="176px" loading="lazy" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center" style={{ background: cfg.bg }}>
+            <span className="text-3xl">🏠</span>
+          </div>
+        )}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)" }} />
+        <div className="absolute top-2 left-2">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}>
+            {cfg.label}
+          </span>
+        </div>
+      </div>
+      <div className="p-2.5">
+        <p className="font-bold text-xs line-clamp-2 leading-snug mb-1" style={{ color: "var(--bl-cream)" }}>
+          {property.title}
+        </p>
+        <p className="text-[11px] flex items-center gap-0.5 mb-1" style={{ color: "#666" }}>
+          <MapPin className="w-2.5 h-2.5 flex-shrink-0" />
+          {NL[property.neighborhood] ?? property.neighborhood}
+        </p>
+        <p className="font-bold text-xs" style={{ color: "#D4AF37" }}>{priceStr}</p>
+      </div>
+    </Link>
+  );
+}
+
+// ─── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  const properties = await fetchHomeProperties();
+  const [properties, urgentProps, activeCountToday, neighborhoodCounts] = await Promise.all([
+    fetchHomeProperties(),
+    fetchUrgentProperties(),
+    fetchActiveCountToday(),
+    fetchNeighborhoodCounts(),
+  ]);
+
   const heroPreview = properties.slice(0, 3);
-  const featured = properties.filter((p) => p.is_boosted).slice(0, 6).length > 0
-    ? properties.filter((p) => p.is_boosted).slice(0, 6)
-    : properties.slice(0, 6);
-  const recent = properties.filter((p) => !p.is_boosted).slice(0, 6).length >= 3
-    ? properties.filter((p) => !p.is_boosted).slice(0, 6)
-    : properties.slice(0, 6);
+  const recent      = properties.slice(0, 6);
 
   return (
     <>
-      {/* ══════════════════════════════════════════════════════════
-          HERO — full viewport, custom gradient
-      ══════════════════════════════════════════════════════════ */}
-      <section
-        className="hero-section relative min-h-[100svh] flex flex-col overflow-hidden"
-      >
-        {/* Grain/noise texture overlay */}
+      {/* ═══════════════════════════════════════════════════════
+          1. HERO SECTION
+      ═══════════════════════════════════════════════════════ */}
+      <section className="hero-section relative min-h-[100svh] flex flex-col overflow-hidden">
+
+        {/* Grain / noise texture overlay */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -190,71 +267,80 @@ export default async function HomePage() {
           }}
         />
 
-
         {/* Hero content */}
         <div className="relative flex-1 flex items-center w-full max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16">
           <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-20 items-center w-full">
 
-            {/* ── Left column ── */}
+            {/* ── Left: headline + search ── */}
             <div className="text-center lg:text-left">
+
               {/* Badge pill */}
               <div
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-8"
-                style={{
-                  background: "rgba(212,175,55,0.08)",
-                  border: "1px solid rgba(212,175,55,0.25)",
-                }}
+                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-6"
+                style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.25)" }}
               >
-                <span className="w-2 h-2 rounded-full" style={{ background: "#D4AF37", animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite" }} />
+                <span
+                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  style={{ background: "#D4AF37", animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite" }}
+                />
                 <span className="text-sm font-medium" style={{ color: "#D4AF37" }}>
                   Annonces vérifiées · Contact direct
                 </span>
               </div>
 
-              {/* Main title */}
+              {/* Title */}
               <h1
                 style={{
                   fontFamily: "var(--font-display), sans-serif",
                   fontWeight: 800,
-                  fontSize: "clamp(40px, 8vw, 96px)",
-                  lineHeight: 0.95,
+                  fontSize: "clamp(34px, 7vw, 80px)",
+                  lineHeight: 1.0,
                   color: "var(--bl-cream)",
-                  marginBottom: "1.5rem",
+                  marginBottom: "1rem",
                   letterSpacing: "-0.02em",
                   textTransform: "uppercase",
                 }}
               >
                 Trouvez votre<br />
-                logement{" "}
-                <span style={{ color: "#D4AF37" }}>idéal</span><br />
-                en Guinée
+                logement<br />
+                à Conakry<br />
+                <span style={{ color: "#D4AF37" }}>Direct propriétaire</span>
               </h1>
 
               {/* Subtitle */}
               <p
+                className="mb-5 text-center lg:text-left"
                 style={{
-                  color: "#666666",
-                  fontSize: "0.8125rem",
-                  lineHeight: 1.7,
-                  marginBottom: "2.5rem",
-                  maxWidth: "500px",
-                  margin: "0 auto 2.5rem",
-                  fontFamily: "var(--font-space-grotesk), sans-serif",
-                  fontWeight: 300,
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
+                  color: "var(--bl-cream-dim)",
+                  fontSize: "1.0625rem",
+                  lineHeight: 1.65,
+                  maxWidth: 460,
+                  margin: "0 auto 1.25rem",
                 }}
               >
-                Appartements · Maisons · Villas
+                Sans commission.&nbsp;&nbsp;Sans intermédiaire.&nbsp;&nbsp;Sans stress.
               </p>
 
-              {/* Search box */}
+              {/* Live counter badge */}
+              {activeCountToday > 0 && (
+                <div
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
+                  style={{ background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.25)" }}
+                >
+                  <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#22c55e" }} />
+                  <span className="text-sm font-semibold" style={{ color: "#22c55e" }}>
+                    {activeCountToday}&nbsp;nouvelle{activeCountToday > 1 ? "s" : ""}&nbsp;annonce{activeCountToday > 1 ? "s" : ""}&nbsp;aujourd&apos;hui
+                  </span>
+                </div>
+              )}
+
+              {/* Search bar */}
               <HeroSearch />
             </div>
 
-            {/* ── Right column — preview cards (desktop only, only if real data) ── */}
+            {/* ── Right: floating preview cards (desktop only) ── */}
             {heroPreview.length > 0 && (
-              <div className="hidden lg:block relative" style={{ height: "480px" }}>
+              <div className="hidden lg:block relative" style={{ height: "460px" }}>
                 {heroPreview.map((p, i) => (
                   <PreviewCard key={p.id} property={p} index={i} />
                 ))}
@@ -265,68 +351,62 @@ export default async function HomePage() {
 
         {/* Scroll hint */}
         <div className="relative pb-8 flex justify-center">
-          <div
-            className="w-6 h-9 rounded-full flex items-start justify-center pt-2"
-            style={{ border: "2px solid rgba(212,175,55,0.20)" }}
-          >
-            <div
-              className="w-1 h-2 rounded-full"
-              style={{
-                background: "rgba(247,242,230,0.45)",
-                animation: "bounce 2s infinite",
-              }}
-            />
+          <div className="w-6 h-9 rounded-full flex items-start justify-center pt-2" style={{ border: "2px solid rgba(212,175,55,0.20)" }}>
+            <div className="w-1 h-2 rounded-full" style={{ background: "rgba(247,242,230,0.45)", animation: "bounce 2s infinite" }} />
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════
-          MAISON DU JOUR
-      ══════════════════════════════════════════════════════════ */}
-      <div style={{ background: "var(--bg-primary)" }}>
-        <MaisonDuJour />
-      </div>
-
-      {/* ══════════════════════════════════════════════════════════
-          ANNONCES VEDETTES — dark forest bg
-      ══════════════════════════════════════════════════════════ */}
-      {featured.length > 0 && (
-        <section style={{ background: "var(--bg-primary)" }} className="py-14">
+      {/* ═══════════════════════════════════════════════════════
+          2. BANDEAU URGENCES (only if urgent listings exist)
+      ═══════════════════════════════════════════════════════ */}
+      {urgentProps.length > 0 && (
+        <section
+          className="py-5"
+          style={{ background: "var(--bg-secondary)", borderBottom: "1px solid var(--color-border)" }}
+        >
           <div className="max-w-7xl mx-auto px-4">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2
-                  className="text-2xl md:text-3xl font-black"
-                  style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
-                >
-                  Annonces vedettes
-                </h2>
-                <p className="mt-1 text-sm" style={{ color: "#666666" }}>
-                  Sélectionnées pour vous
-                </p>
-              </div>
-              <Link
-                href="/annonces"
-                className="flex items-center gap-1 text-sm font-semibold hover:underline"
-                style={{ color: "#D4AF37" }}
+            <div className="flex items-center gap-3 mb-4">
+              <h2 className="text-base font-bold" style={{ color: "var(--bl-cream)" }}>
+                ⚡ Disponibles maintenant
+              </h2>
+              <span
+                className="text-xs px-2.5 py-0.5 rounded-full font-bold"
+                style={{ background: "rgba(255,77,77,0.15)", color: "#ff6b6b" }}
               >
-                Voir tout <ChevronRight className="w-4 h-4" />
+                {urgentProps.length} annonce{urgentProps.length > 1 ? "s" : ""}
+              </span>
+              <Link href="/annonces?recent=1" className="ml-auto text-xs font-semibold hover:underline" style={{ color: "#D4AF37" }}>
+                Voir toutes →
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {featured.map((p, i) => (
-                <PropertyCard key={p.id} property={p} index={i + 20} />
+            {/* Horizontal scrollable row — no visible scrollbar */}
+            <div
+              className="flex gap-3 pb-1 no-scrollbar"
+              style={{ overflowX: "auto" }}
+            >
+              {urgentProps.map((p) => (
+                <UrgencyCard key={p.id} property={p} />
               ))}
+              {/* Spacer so last card isn't flush against the edge */}
+              <div className="flex-shrink-0 w-4" />
             </div>
           </div>
         </section>
       )}
 
-      {/* ══════════════════════════════════════════════════════════
-          ANNONCES RÉCENTES — dark forest bg
-      ══════════════════════════════════════════════════════════ */}
+      {/* ═══════════════════════════════════════════════════════
+          3. MAISON DU JOUR
+      ═══════════════════════════════════════════════════════ */}
+      <div style={{ background: "var(--bg-primary)" }}>
+        <MaisonDuJour />
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════
+          4. ANNONCES RÉCENTES
+      ═══════════════════════════════════════════════════════ */}
       {recent.length > 0 && (
-        <section style={{ background: "var(--bg-primary)" }} className="py-14">
+        <section className="py-14" style={{ background: "var(--bg-primary)" }}>
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -336,36 +416,30 @@ export default async function HomePage() {
                 >
                   Annonces récentes
                 </h2>
-                <p className="mt-1 text-sm" style={{ color: "#666666" }}>
-                  Les dernières mises en ligne
-                </p>
+                <p className="mt-1 text-sm" style={{ color: "#666666" }}>Les dernières mises en ligne</p>
               </div>
-              <Link
-                href="/annonces"
-                className="flex items-center gap-1 text-sm font-semibold hover:underline"
-                style={{ color: "#D4AF37" }}
-              >
+              <Link href="/annonces" className="flex items-center gap-1 text-sm font-semibold hover:underline" style={{ color: "#D4AF37" }}>
                 Voir tout <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {recent.map((p, i) => (
-                <PropertyCard key={p.id} property={p} index={i + 20} />
+                <PropertyCard key={p.id} property={p} index={i + 10} />
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* Recently viewed */}
+      {/* Recently viewed (client-side, localStorage) */}
       <div style={{ background: "var(--bg-primary)" }}>
         <RecentlyViewedSection />
       </div>
 
-      {/* ══════════════════════════════════════════════════════════
-          QUARTIERS POPULAIRES — cream background
-      ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "var(--bg-card-light)" }} className="py-16">
+      {/* ═══════════════════════════════════════════════════════
+          5. QUARTIERS POPULAIRES — with live counts
+      ═══════════════════════════════════════════════════════ */}
+      <section className="py-16" style={{ background: "var(--bg-card-light)" }}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="mb-8">
             <h2
@@ -374,55 +448,77 @@ export default async function HomePage() {
             >
               Quartiers populaires
             </h2>
-            <p className="mt-1 text-sm" style={{ color: "#666666", fontFamily: "var(--font-dm-sans), sans-serif" }}>
-              Prix moyens à Conakry
+            <p className="mt-1 text-sm" style={{ color: "#666666" }}>
+              Explorez les annonces actives par quartier à Conakry
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-            {POPULAR_NEIGHBORHOODS.map((n) => (
-              <Link
-                key={n.id}
-                href={`/annonces?neighborhood=${n.id}`}
-                className="group rounded-2xl p-5 transition-all hover:-translate-y-0.5"
-                style={{
-                  background: "var(--bl-surface-2)",
-                  border: "1px solid var(--color-border)",
-                }}
-              >
-                <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center mb-3 transition-colors"
-                  style={{ background: "rgba(212,175,55,0.12)" }}
+            {POPULAR_NEIGHBORHOODS.map((n) => {
+              const count = neighborhoodCounts[n.id] ?? 0;
+              return (
+                <Link
+                  key={n.id}
+                  href={`/annonces?neighborhood=${n.id}`}
+                  className="group rounded-2xl p-5 transition-all duration-200 hover:-translate-y-0.5"
+                  style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
                 >
-                  <MapPin className="w-4 h-4" style={{ color: "#D4AF37" }} />
-                </div>
-                <p
-                  className="font-bold text-sm"
-                  style={{ color: "var(--bl-cream)" }}
-                >
-                  {n.name}
-                </p>
-                <p
-                  className="text-xs mt-1 leading-tight"
-                  style={{ color: "#666666" }}
-                >
-                  {n.avgPrice}
-                </p>
-                <p
-                  className="text-xs font-semibold mt-2"
-                  style={{ color: "#D4AF37" }}
-                >
-                  Voir →
-                </p>
-              </Link>
-            ))}
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center mb-3"
+                    style={{ background: "rgba(212,175,55,0.12)" }}
+                  >
+                    <MapPin className="w-4 h-4" style={{ color: "#D4AF37" }} />
+                  </div>
+                  <p className="font-bold text-sm mb-0.5" style={{ color: "var(--bl-cream)" }}>{n.name}</p>
+                  <p className="text-xs" style={{ color: count > 0 ? "#22c55e" : "#666" }}>
+                    {count > 0 ? `${count} annonce${count > 1 ? "s" : ""}` : "Aucune annonce"}
+                  </p>
+                  <p className="text-xs font-semibold mt-2" style={{ color: "#D4AF37" }}>Explorer →</p>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════
-          POURQUOI LogerBien — cream background
-      ══════════════════════════════════════════════════════════ */}
-      <section style={{ background: "var(--bg-card-light)" }} className="py-16">
+      {/* ═══════════════════════════════════════════════════════
+          6. JE CHERCHE — CTA pour les chercheurs
+      ═══════════════════════════════════════════════════════ */}
+      <section
+        className="py-16"
+        style={{
+          background: "linear-gradient(135deg, rgba(212,175,55,0.14) 0%, rgba(212,175,55,0.04) 100%)",
+          borderTop: "1px solid rgba(212,175,55,0.22)",
+          borderBottom: "1px solid rgba(212,175,55,0.22)",
+        }}
+      >
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <div className="text-5xl mb-5">🔍</div>
+          <h2
+            className="text-2xl md:text-3xl font-black mb-3"
+            style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
+          >
+            Vous cherchez un logement ?
+          </h2>
+          <p className="text-base mb-7 max-w-md mx-auto" style={{ color: "var(--bl-cream-dim)" }}>
+            Publiez votre recherche gratuitement. Les propriétaires vous contactent directement sur WhatsApp.
+          </p>
+          <Link
+            href="/je-cherche"
+            className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl transition-opacity hover:opacity-90 text-sm"
+            style={{ background: "#D4AF37", color: "#0A1216" }}
+          >
+            Publier ma recherche →
+          </Link>
+          <p className="mt-4 text-xs" style={{ color: "#666" }}>
+            Gratuit · Réponse en moins de 24h · Sans inscription obligatoire
+          </p>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          7. SECTION CONFIANCE — 4 cartes
+      ═══════════════════════════════════════════════════════ */}
+      <section className="py-16" style={{ background: "var(--bg-card-light)" }}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-10">
             <h2
@@ -431,76 +527,79 @@ export default async function HomePage() {
             >
               Pourquoi choisir LogerBien ?
             </h2>
-            <p
-              className="mt-2 text-sm max-w-md mx-auto"
-              style={{ color: "#666666", fontFamily: "var(--font-dm-sans), sans-serif" }}
-            >
+            <p className="mt-2 text-sm max-w-md mx-auto" style={{ color: "#666" }}>
               La plateforme immobilière conçue pour la réalité guinéenne
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {WHY_LogerBien.map((item) => (
+            {TRUST_ITEMS.map((item) => (
               <div
                 key={item.title}
                 className="rounded-2xl p-6"
                 style={{ background: "var(--bl-surface-2)", border: "1px solid var(--color-border)" }}
               >
                 <span className="text-3xl block mb-4">{item.icon}</span>
-                <h3
-                  className="font-bold text-base mb-2"
-                  style={{ color: "var(--bl-cream)" }}
-                >
-                  {item.title}
-                </h3>
-                <p
-                  className="text-sm leading-relaxed"
-                  style={{ color: "#666666", fontFamily: "var(--font-dm-sans), sans-serif" }}
-                >
-                  {item.desc}
-                </p>
+                <h3 className="font-bold text-base mb-2" style={{ color: "var(--bl-cream)" }}>{item.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "#666" }}>{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════
-          CTA PUBLIER — dark gradient
-      ══════════════════════════════════════════════════════════ */}
-      <section
-        className="py-20"
-        style={{ background: "var(--bg-secondary)" }}
-      >
+      {/* ═══════════════════════════════════════════════════════
+          8. PUBLICATION RAPIDE CTA
+      ═══════════════════════════════════════════════════════ */}
+      <section className="py-20" style={{ background: "var(--bg-secondary)" }}>
         <div className="max-w-3xl mx-auto px-4 text-center">
           <p className="text-5xl mb-6">🏠</p>
           <h2
-            className="text-2xl md:text-4xl font-black mb-4"
-            style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
+            className="text-2xl md:text-4xl font-black mb-3"
+            style={{ color: "var(--bl-cream)", fontFamily: "var(--font-display), sans-serif" }}
           >
-            Vous avez un logement à louer ou à vendre ?
+            Vous avez un logement à louer ?
           </h2>
-          <p
-            className="mb-10 max-w-lg mx-auto text-base"
-            style={{ color: "#666666", fontFamily: "var(--font-dm-sans), sans-serif" }}
-          >
-            Publiez votre annonce en 2 minutes. Touchez des milliers de locataires potentiels à Conakry.
+          <p className="mb-8 max-w-lg mx-auto text-base" style={{ color: "#666" }}>
+            Publiez en 2 minutes. 4 étapes seulement. Gratuit.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/publier"
+              href="/publier/rapide"
               className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl transition-opacity hover:opacity-90 text-sm"
-              style={{ background: "#D4AF37", color: "var(--bg-primary)" }}
+              style={{ background: "#D4AF37", color: "#0A1216" }}
             >
-              Publier gratuitement
+              ⚡ Publication rapide
             </Link>
-            <div className="flex items-center gap-2 text-sm" style={{ color: "#666666" }}>
-              <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" />
-              Sans carte bancaire
-              <span className="mx-1">·</span>
-              <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" />
-              Résultat immédiat
-            </div>
+            <Link
+              href="/publier"
+              className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl text-sm transition-all hover:border-[#D4AF37]"
+              style={{ background: "transparent", border: "1px solid rgba(212,175,55,0.35)", color: "#D4AF37" }}
+            >
+              Publication complète
+            </Link>
           </div>
+          <p className="mt-6 text-xs" style={{ color: "#555" }}>
+            ✓ Sans carte bancaire &nbsp;·&nbsp; ✓ Résultat immédiat &nbsp;·&nbsp; ✓ Contact direct WhatsApp
+          </p>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          9. PWA INSTALL SECTION
+      ═══════════════════════════════════════════════════════ */}
+      <section
+        className="py-10"
+        style={{ background: "var(--bg-card-light)", borderTop: "1px solid var(--color-border)" }}
+      >
+        <div className="max-w-xl mx-auto px-4 text-center">
+          <div className="text-4xl mb-3">📱</div>
+          <h2 className="text-lg font-bold mb-2" style={{ color: "var(--bl-cream)" }}>
+            Installez LogerBien sur votre téléphone
+          </h2>
+          <p className="text-sm mb-5" style={{ color: "#666" }}>
+            Accédez rapidement depuis votre écran d&apos;accueil. Aucun téléchargement requis.
+          </p>
+          <PWAInstallButton />
         </div>
       </section>
     </>

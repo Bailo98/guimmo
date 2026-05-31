@@ -46,6 +46,7 @@ export function HeroSearch() {
   const [tab, setTab]               = useState<"rent" | "sale">("rent");
   const [neighborhood, setNeighborhood] = useState("");
   const [type, setType]             = useState("");
+  const [budgetMax, setBudgetMax]   = useState("");
   const router = useRouter();
 
   function handleVoiceResult(text: string) {
@@ -62,6 +63,7 @@ export function HeroSearch() {
     params.set("tx", tab);
     if (neighborhood) params.set("neighborhood", neighborhood);
     if (type)         params.set("type", type);
+    if (budgetMax)    params.set("max_price", budgetMax.replace(/\D/g, ""));
     router.push(`/annonces?${params.toString()}`);
   }
 
@@ -96,8 +98,8 @@ export function HeroSearch() {
         ))}
       </div>
 
-      {/* Selects — empilés mobile, côte à côte sm+ */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+      {/* Selects + budget — empilés mobile, côte à côte sm+ */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
         <div>
           <label
             htmlFor="hs-quartier"
@@ -155,6 +157,23 @@ export function HeroSearch() {
               ))}
             </select>
           </div>
+        </div>
+        <div>
+          <label
+            htmlFor="hs-budget"
+            className="block text-xs font-semibold mb-1.5"
+            style={{ color: "#666666" }}
+          >
+            Budget max (GNF)
+          </label>
+          <input
+            id="hs-budget"
+            type="number"
+            value={budgetMax}
+            onChange={(e) => setBudgetMax(e.target.value)}
+            placeholder="Ex : 2 000 000"
+            style={{ ...SELECT_BASE, color: budgetMax ? "#ffffff" : "#666666" }}
+          />
         </div>
       </div>
 

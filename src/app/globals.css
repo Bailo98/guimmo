@@ -317,6 +317,15 @@ html {
   }
 }
 
+/* ── Scrollbar hide utility ── */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* ── Feature 9: Android low-end optimization — reduce motion ── */
 @media (prefers-reduced-motion: reduce) {
   * {
