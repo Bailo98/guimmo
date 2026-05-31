@@ -7,11 +7,13 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export function PWAInstallButton() {
+  const [mounted, setMounted]               = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [installed, setInstalled]           = useState(false);
   const [installing, setInstalling]         = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     function handlePrompt(e: Event) {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
@@ -27,6 +29,8 @@ export function PWAInstallButton() {
       window.removeEventListener("appinstalled", handleInstalled);
     };
   }, []);
+
+  if (!mounted) return null;
 
   if (installed) {
     return (

@@ -1,4 +1,5 @@
-﻿import Link from "next/link";
+﻿import { Suspense } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { MapPin, ChevronRight } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
@@ -6,6 +7,7 @@ import { RecentlyViewedSection } from "@/components/ui/RecentlyViewedSection";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { MaisonDuJour } from "@/components/MaisonDuJour";
 import { PWAInstallButton } from "@/components/home/PWAInstallButton";
+import { LiveCounterBadge } from "@/components/home/LiveCounterBadge";
 import { formatPrice } from "@/lib/utils";
 import { createClient } from "@supabase/supabase-js";
 import type { Metadata } from "next";
@@ -311,7 +313,7 @@ export default async function HomePage() {
               <p
                 className="mb-5 text-center lg:text-left"
                 style={{
-                  color: "var(--text-primary-dim)",
+                  color: "var(--text-secondary)",
                   fontSize: "1.0625rem",
                   lineHeight: 1.65,
                   maxWidth: 460,
@@ -321,18 +323,8 @@ export default async function HomePage() {
                 Sans commission.&nbsp;&nbsp;Sans intermédiaire.&nbsp;&nbsp;Sans stress.
               </p>
 
-              {/* Live counter badge */}
-              {activeCountToday > 0 && (
-                <div
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
-                  style={{ background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.25)" }}
-                >
-                  <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#22c55e" }} />
-                  <span className="text-sm font-semibold" style={{ color: "#22c55e" }}>
-                    {activeCountToday}&nbsp;nouvelle{activeCountToday > 1 ? "s" : ""}&nbsp;annonce{activeCountToday > 1 ? "s" : ""}&nbsp;aujourd&apos;hui
-                  </span>
-                </div>
-              )}
+              {/* Live counter badge — client component to avoid hydration mismatch */}
+              <LiveCounterBadge initial={activeCountToday} />
 
               {/* Search bar */}
               <HeroSearch />
@@ -499,7 +491,7 @@ export default async function HomePage() {
           >
             Vous cherchez un logement ?
           </h2>
-          <p className="text-base mb-7 max-w-md mx-auto" style={{ color: "var(--text-primary-dim)" }}>
+          <p className="text-base mb-7 max-w-md mx-auto" style={{ color: "var(--text-secondary)" }}>
             Publiez votre recherche gratuitement. Les propriétaires vous contactent directement sur WhatsApp.
           </p>
           <Link
@@ -599,7 +591,9 @@ export default async function HomePage() {
           <p className="text-sm mb-5" style={{ color: "#666" }}>
             Accédez rapidement depuis votre écran d&apos;accueil. Aucun téléchargement requis.
           </p>
-          <PWAInstallButton />
+          <Suspense fallback={null}>
+            <PWAInstallButton />
+          </Suspense>
         </div>
       </section>
     </>
