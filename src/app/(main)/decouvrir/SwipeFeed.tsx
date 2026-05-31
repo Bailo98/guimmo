@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useAppStore } from "@/lib/store";
 import { toast } from "@/lib/toast";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { fetchProperties } from "@/lib/properties";
 import { formatPrice } from "@/lib/utils";
 import { getNeighborhoodName, NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
 import { haversineKm, formatDistance } from "@/lib/haversine";
@@ -44,6 +45,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   const [userLocation,    setUserLocation]    = useState<{ lat: number; lng: number } | null>(null);
   const [reloading,       setReloading]       = useState(false);
   const [everHadCards,    setEverHadCards]    = useState(false);
+  const [emptyAfterReload, setEmptyAfterReload] = useState(false);
 
   // ── Overlay refs — pure DOM manipulation, ZERO React re-renders during drag ──
   const overlayRightRef = useRef<HTMLDivElement>(null);
@@ -106,15 +108,23 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
   // ── Auto-reload when all cards swiped ─────────────────────────────────────
   useEffect(() => {
-    if (!mounted || !everHadCards || cards.length > 0 || reloading) return;
+    if (!mounted || !everHadCards || cards.length > 0 || reloading || emptyAfterReload) return;
     setReloading(true);
     const t = setTimeout(() => {
       try { localStorage.removeItem(SEEN_KEY); } catch { /* silent */ }
-      setCards([...properties]);
-      setReloading(false);
+      fetchProperties().then((fresh) => {
+        if (fresh.length === 0) {
+          setEmptyAfterReload(true);
+          setReloading(false);
+          return;
+        }
+        setCards(fresh);
+        setEverHadCards(true);
+        setReloading(false);
+      });
     }, 1500);
     return () => clearTimeout(t);
-  }, [mounted, everHadCards, cards.length, reloading, properties]);
+  }, [mounted, everHadCards, cards.length, reloading, emptyAfterReload]);
 
   // ── Progressive overlay: pure DOM — no setState ────────────────────────────
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -184,6 +194,57 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
   // ── Render ─────────────────────────────────────────────────────────────────
   if (!mounted) return null;
+
+  // ── No annonces after fresh fetch ─────────────────────────────────────────
+  if (emptyAfterReload) {
+    return (
+      <div style={{
+        position: "fixed", inset: 0, zIndex: 10, background: "var(--bg-primary)",
+        display: "flex", flexDirection: "column", alignItems: "center",
+        justifyContent: "center", padding: "0 32px",
+      }}>
+        <p style={{ fontSize: 52, marginBottom: 16 }}>🏠</p>
+        <p style={{ color: "#D4AF37", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
+          Aucune annonce disponible
+        </p>
+        <p style={{ color: "var(--bl-cream-faint)", fontSize: 13, textAlign: "center", marginBottom: 24 }}>
+          Il n&apos;y a pas d&apos;annonces à afficher pour le moment.
+        </p>
+        <button
+          onClick={() => {
+            setEmptyAfterReload(false);
+            setReloading(true);
+            fetchProperties().then((fresh) => {
+              if (fresh.length === 0) {
+                setEmptyAfterReload(true);
+                setReloading(false);
+                return;
+              }
+              setCards(fresh);
+              setEverHadCards(true);
+              setReloading(false);
+            });
+          }}
+          style={{
+            padding: "14px 32px", borderRadius: 14, border: "none",
+            background: "#D4AF37", color: "#0B0F19",
+            fontWeight: 700, fontSize: 15, cursor: "pointer",
+            width: "100%", maxWidth: 320,
+          }}
+        >
+          Réessayer
+        </button>
+        <a href="/annonces" style={{
+          display: "block", textAlign: "center", width: "100%", maxWidth: 320,
+          marginTop: 12, padding: "14px 0", borderRadius: 14,
+          background: "transparent", border: "1px solid rgba(255,255,255,0.12)",
+          color: "rgba(255,255,255,0.70)", fontWeight: 600, fontSize: 15, textDecoration: "none",
+        }}>
+          Voir toutes les annonces
+        </a>
+      </div>
+    );
+  }
 
   // ── Reloading transition ───────────────────────────────────────────────────
   if (reloading) {
