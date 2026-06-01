@@ -33,45 +33,46 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
-   DESIGN TOKENS — Light mode (default / :root)
+   DESIGN TOKENS — Light mode
    ═══════════════════════════════════════════════════════════ */
 :root {
-  --bg-primary: #f7f3ea;
-  --bg-secondary: #efe7d8;
-  --bg-card: #ffffff;
-  --surface-soft: #f4ede1;
-  --surface-white: #ffffff;
-  --accent-gold: #b98a2e;
+  color-scheme: light;
+  --bg-primary:       #f7f3ea;
+  --bg-secondary:     #efe7d8;
+  --bg-card:          #ffffff;
+  --surface-soft:     #f4ede1;
+  --accent-gold:      #b98a2e;
   --accent-gold-dark: #7b5418;
-  --accent-gold-light: #d8b56d;
-  --text-primary: #181510;
-  --text-secondary: #625a4b;
-  --text-muted: #8a8172;
-  --border: #ded3bf;
-  --color-green: #214e3a;
+  --accent-gold-light:#d8b56d;
+  --text-primary:     #181510;
+  --text-secondary:   #625a4b;
+  --text-muted:       #8a8172;
+  --border:           #ded3bf;
+  --color-green:      #214e3a;
   --color-green-soft: #e4efe8;
-  --cta-whatsapp: #22c55e;
-  --favorite: #ef4444;
-  --nav-bg: rgba(247, 243, 234, 0.86);
-  --shadow: 0 22px 60px rgba(24,21,16,0.13);
-  --shadow-soft: 0 12px 32px rgba(24,21,16,0.08);
+  --nav-bg:           rgba(247,243,234,0.86);
+  --shadow:           0 22px 60px rgba(24,21,16,0.13);
+  --shadow-soft:      0 12px 32px rgba(24,21,16,0.08);
 }
 
 /* ── Light mode: derived + backward-compat aliases ────────────── */
 :root {
-  --nav-bg-solid:    var(--bg-primary);
-  --nav-border:      var(--border);
-  --nav-text:        var(--text-secondary);
-  --nav-text-active: var(--text-primary);
-  --nav-dropdown-bg: var(--surface-soft);
-  --bg-card-dark:    var(--bg-secondary);
-  --bg-card-light:   var(--surface-soft);
-  --border-subtle:   rgba(0,0,0,0.06);
-  --shadow-card:     var(--shadow-soft);
+  --surface-white:    var(--bg-card);
+  --cta-whatsapp:     #22c55e;
+  --favorite:         #ef4444;
+  --nav-bg-solid:     var(--bg-primary);
+  --nav-border:       var(--border);
+  --nav-text:         var(--text-secondary);
+  --nav-text-active:  var(--text-primary);
+  --nav-dropdown-bg:  var(--surface-soft);
+  --bg-card-dark:     var(--bg-secondary);
+  --bg-card-light:    var(--surface-soft);
+  --border-subtle:    rgba(0,0,0,0.06);
+  --shadow-card:      var(--shadow-soft);
   --photo-text:       #ffffff;
   --photo-text-dim:   rgba(255,255,255,0.65);
   --photo-text-muted: rgba(255,255,255,0.50);
-  --logo-text: var(--accent-gold-dark);
+  --logo-text:        var(--accent-gold-dark);
   --color-accent:     var(--accent-gold);
   --color-border:     var(--border);
   --color-text-muted: var(--text-muted);
@@ -102,49 +103,49 @@
   --LogerBien-border-md:   var(--border);
   --LogerBien-green:       var(--color-green);
   --LogerBien-sidebar:     var(--bg-secondary);
-  color-scheme: light;
 }
 
 /* ═══════════════════════════════════════════════════════════
    DESIGN TOKENS — Dark mode (.dark class)
    ═══════════════════════════════════════════════════════════ */
 .dark {
-  --bg-primary: #11100d;
-  --bg-secondary: #191713;
-  --bg-card: #242018;
-  --surface-soft: #2c261b;
-  --surface-white: #252525;
-  --accent-gold: #d2a84a;
+  color-scheme: dark;
+  --bg-primary:       #11100d;
+  --bg-secondary:     #191713;
+  --bg-card:          #242018;
+  --surface-soft:     #2c261b;
+  --accent-gold:      #d2a84a;
   --accent-gold-dark: #9c7125;
-  --accent-gold-light: #e6c46f;
-  --text-primary: #f7f0e3;
-  --text-secondary: #c9bfae;
-  --text-muted: #8f8576;
-  --border: #3a3327;
-  --color-green: #7ba88b;
+  --accent-gold-light:#e6c46f;
+  --text-primary:     #f7f0e3;
+  --text-secondary:   #c9bfae;
+  --text-muted:       #8f8576;
+  --border:           #3a3327;
+  --color-green:      #7ba88b;
   --color-green-soft: #1f3228;
-  --cta-whatsapp: #22c55e;
-  --favorite: #ef4444;
-  --nav-bg: rgba(17, 16, 13, 0.86);
-  --shadow: 0 28px 70px rgba(0,0,0,0.42);
-  --shadow-soft: 0 12px 32px rgba(0,0,0,0.28);
+  --nav-bg:           rgba(17,16,13,0.86);
 }
 
 /* ── Dark mode: derived + backward-compat aliases ─────────────── */
 .dark {
-  --nav-bg-solid:    var(--bg-primary);
-  --nav-border:      var(--border);
-  --nav-text:        var(--text-secondary);
-  --nav-text-active: var(--text-primary);
-  --nav-dropdown-bg: var(--surface-soft);
-  --bg-card-dark:    var(--bg-secondary);
-  --bg-card-light:   var(--surface-soft);
-  --border-subtle:   rgba(255,255,255,0.06);
-  --shadow-card:     var(--shadow-soft);
+  --surface-white:    var(--bg-card);
+  --cta-whatsapp:     #22c55e;
+  --favorite:         #ef4444;
+  --shadow:           0 28px 70px rgba(0,0,0,0.42);
+  --shadow-soft:      0 12px 32px rgba(0,0,0,0.28);
+  --nav-bg-solid:     var(--bg-primary);
+  --nav-border:       var(--border);
+  --nav-text:         var(--text-secondary);
+  --nav-text-active:  var(--text-primary);
+  --nav-dropdown-bg:  var(--surface-soft);
+  --bg-card-dark:     var(--bg-secondary);
+  --bg-card-light:    var(--surface-soft);
+  --border-subtle:    rgba(255,255,255,0.06);
+  --shadow-card:      var(--shadow-soft);
   --photo-text:       #ffffff;
   --photo-text-dim:   rgba(255,255,255,0.65);
   --photo-text-muted: rgba(255,255,255,0.50);
-  --logo-text: var(--accent-gold-light);
+  --logo-text:        var(--accent-gold-light);
   --color-accent:     var(--accent-gold);
   --color-border:     var(--border);
   --color-text-muted: var(--text-muted);
@@ -172,7 +173,6 @@
   --LogerBien-border-md:   var(--border);
   --LogerBien-green:       var(--color-green);
   --LogerBien-sidebar:     var(--bg-primary);
-  color-scheme: dark;
 }
 
 /* ─────────────────────────────────────────────────────────────────
@@ -277,7 +277,6 @@
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
-  font-family: var(--font-space-grotesk), var(--font-inter), sans-serif;
 }
 .text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl {
   font-family: var(--font-display), sans-serif !important;
@@ -323,7 +322,7 @@ html {
 body {
   background: var(--bg-primary);
   color: var(--text-primary);
-  font-family: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 400;
   font-size: 16px;
   line-height: 1.7;
@@ -350,11 +349,11 @@ h3 {
   font-size: clamp(18px, 2.5vw, 28px); line-height: 1.2; letter-spacing: 0;
 }
 p {
-  font-family: var(--font-space-grotesk), sans-serif;
+  font-family: "Manrope", sans-serif;
   font-weight: 300; line-height: 1.7; letter-spacing: 0.01em;
 }
 button, .btn {
-  font-family: var(--font-space-grotesk), sans-serif;
+  font-family: "Manrope", var(--font-space-grotesk), sans-serif;
   font-weight: 600; letter-spacing: 0.05em; min-height: 48px;
 }
 .label-uppercase {
@@ -371,7 +370,7 @@ input, select, textarea {
   border: 1px solid var(--border) !important;
   color: var(--text-primary) !important;
   border-radius: 12px;
-  font-family: var(--font-space-grotesk), sans-serif;
+  font-family: "Manrope", var(--font-space-grotesk), sans-serif;
 }
 input:focus, select:focus, textarea:focus {
   border-color: var(--accent-gold) !important;
@@ -386,9 +385,9 @@ input::placeholder, textarea::placeholder {
 /* ─────────────────────────────────────────────────────────────────
    Admin button helpers
 ───────────────────────────────────────────────────────────────── */
-.admin-add-btn, .admin-add-btn * { color: #1A1A1A !important; }
+.admin-add-btn, .admin-add-btn * { color: #181510 !important; }
 .admin-add-btn { background: var(--accent-gold) !important; border: none !important; }
-.admin-btn-dark { color: #1A1A1A !important; -webkit-text-fill-color: #1A1A1A !important; }
+.admin-btn-dark { color: #181510 !important; -webkit-text-fill-color: #181510 !important; }
 
 /* ─────────────────────────────────────────────────────────────────
    Scrollbar
@@ -457,7 +456,7 @@ input::placeholder, textarea::placeholder {
 }
 .card-price  { font-size: clamp(1rem, 2vw, 1.125rem); font-weight: 700; line-height: 1.2; }
 .card-meta   { font-size: 12px; line-height: 1.5; color: var(--text-secondary); }
-.on-brand    { color: #1A1A1A !important; }
+.on-brand    { color: var(--bg-primary) !important; }
 .text-secondary { color: var(--text-secondary); }
 
 /* ─────────────────────────────────────────────────────────────────
@@ -483,131 +482,14 @@ input::placeholder, textarea::placeholder {
   background:
     radial-gradient(ellipse 60% 50% at 85% 40%, rgba(185,138,46,0.07) 0%, transparent 60%),
     radial-gradient(ellipse 50% 45% at 15% 80%, rgba(25,23,19,0.6) 0%, transparent 55%),
-    #11100d;
+    var(--bg-primary);
 }
 
-/* ══════════════════════════════════════════════════════════════════
-   LIGHT MODE OVERRIDES (html:not(.dark))
-   Default :root is light — these rules handle dark-first component
-   code that uses text-white / hardcoded dark hex values.
-   ══════════════════════════════════════════════════════════════════ */
-
-/* text-white → primary text color */
-html:not(.dark) .text-white        { color: var(--text-primary) !important; }
-html:not(.dark) .text-white\/90    { color: rgba(24,21,16,0.90) !important; }
-html:not(.dark) .text-white\/80    { color: rgba(24,21,16,0.80) !important; }
-html:not(.dark) .text-white\/70    { color: rgba(24,21,16,0.70) !important; }
-html:not(.dark) .text-white\/60    { color: rgba(24,21,16,0.60) !important; }
-html:not(.dark) .text-white\/50    { color: rgba(24,21,16,0.50) !important; }
-html:not(.dark) .text-white\/40    { color: rgba(24,21,16,0.40) !important; }
-html:not(.dark) [class*="text-white/"]         { color: rgba(24,21,16,0.60) !important; }
-html:not(.dark) [class*="text-[rgba(255,255,255"] { color: var(--text-primary) !important; }
-
-html:not(.dark) [class*="border-white"]  { border-color: var(--border) !important; }
-html:not(.dark) [class*="border-white/"] { border-color: rgba(0,0,0,0.15) !important; }
-html:not(.dark) [class*="animate-pulse"] { background-color: var(--bg-secondary) !important; }
-html:not(.dark) .bg-slate-900 { background-color: #f1f5f9 !important; }
-html:not(.dark) .bg-slate-800 { background-color: #f8fafc !important; }
-
-html:not(.dark) .placeholder\:text-white\/30::placeholder { color: rgba(24,21,16,0.30) !important; }
-html:not(.dark) .placeholder\:text-white\/40::placeholder { color: rgba(24,21,16,0.40) !important; }
-html:not(.dark) .placeholder\:text-white\/50::placeholder { color: rgba(24,21,16,0.50) !important; }
-html:not(.dark) .hover\:text-white:hover { color: var(--text-primary) !important; }
-html:not(.dark) button:not([class*="bg-"]):not([style*="background"]) { color: var(--text-primary); }
-html:not(.dark) label { color: var(--text-primary) !important; }
-
-/* Inline color overrides */
-html:not(.dark) [style*="color: #fff"]     { color: var(--text-primary) !important; }
-html:not(.dark) [style*="color: white"]    { color: var(--text-primary) !important; }
-html:not(.dark) [style*="color: #FFFFFF"]  { color: var(--text-primary) !important; }
-html:not(.dark) [style*="color: #ffffff"]  { color: var(--text-primary) !important; }
-
-/* Dark hex backgrounds → card bg in light mode */
-html:not(.dark) [style*="background: #0"]       { background: var(--bg-card) !important; }
-html:not(.dark) [style*="background-color: #0"] { background-color: var(--bg-card) !important; }
-html:not(.dark) [style*="background: #1"]       { background: var(--bg-card) !important; }
-html:not(.dark) [style*="background-color: #1"] { background-color: var(--bg-card) !important; }
-html:not(.dark) [style*="background: #2"]       { background: var(--bg-card) !important; }
-html:not(.dark) [style*="background-color: #2"] { background-color: var(--bg-card) !important; }
-
-/* Preserve accent / status colors */
-html:not(.dark) [style*="background: #D4AF37"]  { background: var(--accent-gold) !important; }
-html:not(.dark) [style*="background: #C9A84C"]  { background: var(--accent-gold) !important; }
-html:not(.dark) [style*="background: #ef4444"]  { background: var(--favorite) !important; }
-html:not(.dark) [style*="background: #EF4444"]  { background: var(--favorite) !important; }
-html:not(.dark) [style*="background: #25D366"]  { background: var(--cta-whatsapp) !important; }
-html:not(.dark) [style*="background: #22C55E"]  { background: var(--cta-whatsapp) !important; }
-html:not(.dark) [style*="background: #22c55e"]  { background: var(--cta-whatsapp) !important; }
-
-/* Filter pills */
-html:not(.dark) button.rounded-full:not([style*="background: #D4AF37"]):not([style*="background: #C9A84C"]),
-html:not(.dark) a.rounded-full:not([style*="background: #D4AF37"]):not([style*="background: #C9A84C"]) {
-  background: var(--surface-white) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid rgba(0,0,0,0.15) !important;
+/* ─────────────────────────────────────────────────────────────────
+   Filter bars
+───────────────────────────────────────────────────────────────── */
+.filter-bar,
+.annonces-filter-bar {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
 }
-html:not(.dark) button.rounded-full[style*="background: #D4AF37"],
-html:not(.dark) button.rounded-full[style*="background: #C9A84C"],
-html:not(.dark) a.rounded-full[style*="background: #D4AF37"],
-html:not(.dark) a.rounded-full[style*="background: #C9A84C"] {
-  background: var(--accent-gold) !important;
-  color: #1A1A1A !important;
-  border-color: transparent !important;
-}
-
-/* Card shadow + white card background in light mode */
-html:not(.dark) .bl-card,
-html:not(.dark) [class*="rounded-2xl"][class*="border-"],
-html:not(.dark) [class*="rounded-3xl"][class*="border-"] {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-
-/* Cards that use bg-secondary or bg-card-light as inline bg → white in light mode.
-   Uses [style*="border: 1"] to match full-border cards but not borderBottom-only sections. */
-html:not(.dark) [style*="background: var(--bg-secondary)"][style*="border: 1"],
-html:not(.dark) [style*="background: var(--bg-card-light)"][style*="border: 1"],
-html:not(.dark) [style*="background: var(--bg-card-dark)"][style*="border: 1"] {
-  background: #FFFFFF !important;
-}
-
-/* Filter bars */
-html:not(.dark) .filter-bar,
-html:not(.dark) .annonces-filter-bar {
-  background: var(--bg-secondary) !important;
-  border-bottom: 1px solid var(--border) !important;
-}
-
-/* ══════════════════════════════════════════════════════════════════
-   DARK MODE OVERRIDES (.dark)
-   ══════════════════════════════════════════════════════════════════ */
-
-/* Light hex inline backgrounds → dark card in dark mode */
-.dark [style*="background: #FDF"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #F7F"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #f7f"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #F5F"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #F5E"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #F4E"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #f4e"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #F3E"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #EFE"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #efe"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #EEE"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #E8D"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #E8e"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #EDE"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #E6D"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #FFF"]    { background: var(--bg-card) !important; }
-.dark [style*="background: #fff"]    { background: var(--bg-card) !important; }
-.dark [style*="background: white"]   { background: var(--bg-card) !important; }
-.dark [style*="background: #FFFFFF"] { background: var(--bg-card) !important; }
-.dark [style*="background: #ffffff"] { background: var(--bg-card) !important; }
-
-/* Preserve accent colors in dark mode */
-.dark [style*="background: #D4AF37"] { background: var(--accent-gold) !important; }
-.dark [style*="background: #C9A84C"] { background: var(--accent-gold) !important; }
-.dark [style*="background: #ef4444"] { background: var(--favorite) !important; }
-.dark [style*="background: #EF4444"] { background: var(--favorite) !important; }
-.dark [style*="background: #25D366"] { background: var(--cta-whatsapp) !important; }
-.dark [style*="background: #22C55E"] { background: var(--cta-whatsapp) !important; }
-.dark [style*="background: #22c55e"] { background: var(--cta-whatsapp) !important; }

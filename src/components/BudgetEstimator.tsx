@@ -147,8 +147,8 @@ export default function BudgetEstimator() {
                   key={cur}
                   onClick={() => setCurrency(cur)}
                   style={{
-                    background: currency === cur ? "#D4AF37" : "transparent",
-                    color: currency === cur ? "#0A1216" : "var(--text-secondary)",
+                    background: currency === cur ? "var(--accent-gold)" : "transparent",
+                    color: currency === cur ? "var(--bg-primary)" : "var(--text-secondary)",
                     border: "none", borderRadius: 999, padding: "5px 18px",
                     fontSize: 12, fontWeight: 700, cursor: "pointer",
                     transition: "background 0.2s, color 0.2s", minHeight: "auto",
@@ -161,7 +161,7 @@ export default function BudgetEstimator() {
 
             {/* Budget display */}
             <div style={{ textAlign: "center", marginBottom: 14 }}>
-              <p style={{ fontSize: 24, fontWeight: 800, color: "#D4AF37", lineHeight: 1 }}>
+              <p style={{ fontSize: 24, fontWeight: 800, color: "var(--accent-gold)", lineHeight: 1 }}>
                 {currency === "GNF"
                   ? formatGNF(budget)
                   : `$${new Intl.NumberFormat("en-US").format(Math.round(budget / USD_RATE))}`}
@@ -178,7 +178,7 @@ export default function BudgetEstimator() {
               type="range"
               min={sliderMin} max={sliderMax} step={sliderStep} value={displayValue}
               onChange={handleSlider}
-              style={{ width: "100%", accentColor: "#D4AF37", marginBottom: 12, height: 4, cursor: "pointer" }}
+              style={{ width: "100%", accentColor: "var(--accent-gold)", marginBottom: 12, height: 4, cursor: "pointer" }}
             />
 
             {/* Presets */}
@@ -191,8 +191,8 @@ export default function BudgetEstimator() {
                     key={p.label}
                     onClick={() => setBudget(gnfVal)}
                     style={{
-                      background: active ? "#D4AF37" : "var(--bg-card)",
-                      color: active ? "#0A1216" : "var(--text-primary)",
+                      background: active ? "var(--accent-gold)" : "var(--bg-card)",
+                      color: active ? "var(--bg-primary)" : "var(--text-primary)",
                       border: "none", borderRadius: 999, padding: "5px 12px",
                       fontSize: 12, fontWeight: 600, cursor: "pointer",
                       transition: "background 0.2s, color 0.2s", minHeight: "auto",
@@ -218,7 +218,7 @@ export default function BudgetEstimator() {
                   Ajustez votre budget pour voir les résultats
                 </span>
               ) : (
-                <span style={{ fontSize: 13, color: "#D4AF37", fontWeight: 600 }}>
+                <span style={{ fontSize: 13, color: "var(--accent-gold)", fontWeight: 600 }}>
                   {count === 0
                     ? "Aucune annonce dans cette fourchette"
                     : `${count} annonce${count > 1 ? "s" : ""} dans cette fourchette de prix`}
@@ -232,8 +232,8 @@ export default function BudgetEstimator() {
               disabled={count === 0 || count === null}
               style={{
                 width: "100%",
-                background: count && count > 0 ? "#D4AF37" : "rgba(255,255,255,0.08)",
-                color: count && count > 0 ? "#0A1216" : "rgba(255,255,255,0.35)",
+                background: count && count > 0 ? "var(--accent-gold)" : "rgba(255,255,255,0.08)",
+                color: count && count > 0 ? "var(--bg-primary)" : "rgba(255,255,255,0.35)",
                 border: "none", borderRadius: 12, padding: "12px 16px",
                 fontSize: 14, fontWeight: 700,
                 cursor: count && count > 0 ? "pointer" : "not-allowed",
@@ -259,7 +259,7 @@ export default function BudgetEstimator() {
           zIndex: 50,
           width: 52, height: 52,
           borderRadius: "50%",
-          background: open ? "#B8963A" : "#D4AF37",
+          background: open ? "#B8963A" : "var(--accent-gold)",
           border: "none",
           cursor: "pointer",
           display: "flex", alignItems: "center", justifyContent: "center",

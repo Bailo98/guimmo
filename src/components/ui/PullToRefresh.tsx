@@ -91,7 +91,7 @@ export function PullToRefresh({ children, onRefresh }: PullToRefreshProps) {
                   height: "24px",
                   borderRadius: "50%",
                   border: "3px solid #f1f5f9",
-                  borderTopColor: "#D4AF37",
+                  borderTopColor: "var(--accent-gold)",
                   animation: "spin 0.7s linear infinite",
                 }}
               />
@@ -107,7 +107,7 @@ export function PullToRefresh({ children, onRefresh }: PullToRefreshProps) {
                   height: "24px",
                   borderRadius: "50%",
                   border: "3px solid #f1f5f9",
-                  borderTopColor: "#D4AF37",
+                  borderTopColor: "var(--accent-gold)",
                   transform: `rotate(${(pullDistance / THRESHOLD) * 360}deg)`,
                   transition: "transform 0.1s",
                 }}

@@ -11,7 +11,7 @@ const SURFACE  = "var(--bg-card)";
 const BORDER   = "var(--border)";
 const TEXT_PRI = "var(--text-primary)";
 const TEXT_SEC = "var(--text-primary-dim)";
-const ACCENT   = "#D4AF37";
+const ACCENT   = "var(--accent-gold)";
 
 const INPUT_STYLE: React.CSSProperties = {
   width: "100%", background: "var(--border-subtle)", border: `1px solid ${BORDER}`,
@@ -174,7 +174,7 @@ export default function AdminAgentsPage() {
             userSelect: "none",
           }}
         >
-          <Plus size={15} color="#0A1216" /> Ajouter un agent
+          <Plus size={15} color="var(--bg-primary)" /> Ajouter un agent
         </div>
       </div>
 
@@ -227,9 +227,9 @@ export default function AdminAgentsPage() {
                 style={{
                   display: "flex", alignItems: "center", gap: 8, height: 44,
                   padding: "0 14px", borderRadius: 10, fontSize: 13, fontWeight: 500,
-                  border: `1px solid ${form.is_active ? "#D4AF37" : BORDER}`,
+                  border: `1px solid ${form.is_active ? "var(--accent-gold)" : BORDER}`,
                   background: form.is_active ? "rgba(212,175,55,0.10)" : "transparent",
-                  color: form.is_active ? "#D4AF37" : TEXT_SEC, cursor: "pointer",
+                  color: form.is_active ? "var(--accent-gold)" : TEXT_SEC, cursor: "pointer",
                 }}>
                 {form.is_active ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
                 {form.is_active ? "Actif" : "Inactif"}
@@ -260,7 +260,7 @@ export default function AdminAgentsPage() {
       {/* Loading */}
       {loading && (
         <div style={{ display: "flex", justifyContent: "center", padding: "64px 0" }}>
-          <div style={{ width: 28, height: 28, borderRadius: "50%", border: "2px solid #D4AF37", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
+          <div style={{ width: 28, height: 28, borderRadius: "50%", border: "2px solid var(--accent-gold)", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
         </div>
       )}
 
@@ -302,7 +302,7 @@ export default function AdminAgentsPage() {
                           padding: "4px 10px", borderRadius: 999, fontSize: 11, fontWeight: 700,
                           border: "none", cursor: "pointer",
                           background: a.is_active ? "rgba(212,175,55,0.12)" : "rgba(255,255,255,0.06)",
-                          color: a.is_active ? "#D4AF37" : TEXT_SEC,
+                          color: a.is_active ? "var(--accent-gold)" : TEXT_SEC,
                         }}>
                         {a.is_active ? <ToggleRight size={12} /> : <ToggleLeft size={12} />}
                         {a.is_active ? "Actif" : "Inactif"}

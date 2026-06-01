@@ -10,7 +10,7 @@ const SURFACE  = "var(--bg-card)";
 const BORDER   = "var(--border)";
 const TEXT_PRI = "var(--text-primary)";
 const TEXT_SEC = "var(--text-primary-dim)";
-const ACCENT   = "#D4AF37";
+const ACCENT   = "var(--accent-gold)";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Profile {
@@ -29,7 +29,7 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-  buyer: TEXT_SEC, owner: "#D4AF37", agent: "#60a5fa",
+  buyer: TEXT_SEC, owner: "var(--accent-gold)", agent: "#60a5fa",
   agency: "#a78bfa", admin: ACCENT,
 };
 
@@ -169,7 +169,7 @@ export default function AdminUtilisateursPage() {
                         {u.full_name || "Sans nom"}
                       </p>
                       {u.is_verified && (
-                        <CheckCircle size={14} color="#D4AF37" />
+                        <CheckCircle size={14} color="var(--accent-gold)" />
                       )}
                       {u.role && (
                         <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, color: roleColor, background: `${roleColor}18` }}>

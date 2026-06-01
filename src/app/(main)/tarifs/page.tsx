@@ -43,13 +43,13 @@ const PLANS = [
     name: "Pro",
     price: "50 000 GNF",
     period: "/ mois",
-    color: "#D4AF37",
+    color: "var(--accent-gold)",
     borderColor: "rgba(212,175,55,0.40)",
     bg: "rgba(212,175,55,0.07)",
     cta: "Choisir le plan Pro",
     ctaHref: `https://wa.me/${WHATSAPP}?text=Bonjour%2C%20je%20souhaite%20souscrire%20au%20plan%20Pro%20LogerBien.`,
-    ctaBg: "#D4AF37",
-    ctaColor: "#0B0F19",
+    ctaBg: "var(--accent-gold)",
+    ctaColor: "var(--text-primary)",
     highlight: true,
     badge: "⭐ Recommandé",
     features: [
@@ -76,7 +76,7 @@ const PLANS = [
     cta: "Choisir le plan Agence",
     ctaHref: `https://wa.me/${WHATSAPP}?text=Bonjour%2C%20je%20souhaite%20souscrire%20au%20plan%20Agence%20LogerBien.`,
     ctaBg: "#60a5fa",
-    ctaColor: "#0A1216",
+    ctaColor: "var(--bg-primary)",
     highlight: false,
     features: [
       { label: "Annonces illimitées",             ok: true },
@@ -143,7 +143,7 @@ export default function TarifsPage() {
               {plan.badge && (
                 <div style={{
                   position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)",
-                  background: "#D4AF37", color: "#0B0F19",
+                  background: "var(--accent-gold)", color: "var(--text-primary)",
                   fontSize: 11, fontWeight: 800, padding: "4px 14px", borderRadius: 20,
                   whiteSpace: "nowrap",
                 }}>

@@ -109,7 +109,7 @@ export default function ParametresPage() {
       {/* Avatar */}
       <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)] flex items-center gap-4">
         <div className="relative">
-          <div className={`w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden ${profileLoading ? "bg-slate-200 dark:bg-slate-700 animate-pulse" : "bg-gradient-to-br from-[#D4AF37] to-[#B8963A]"}`}>
+          <div className={`w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden ${profileLoading ? "bg-slate-200 dark:bg-slate-700 animate-pulse" : "bg-gradient-to-br from-[var(--accent-gold)] to-[#B8963A]"}`}>
             {!profileLoading && (avatar ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
@@ -119,7 +119,7 @@ export default function ParametresPage() {
           </div>
           <button
             onClick={() => fileRef.current?.click()}
-            className="absolute -bottom-1 -right-1 w-7 h-7 bg-[#D4AF37] rounded-full flex items-center justify-center text-white shadow-lg hover:bg-[#B8963A] transition-colors"
+            className="absolute -bottom-1 -right-1 w-7 h-7 bg-[var(--accent-gold)] rounded-full flex items-center justify-center text-white shadow-lg hover:bg-[#B8963A] transition-colors"
           >
             <Camera className="w-3.5 h-3.5" />
           </button>
@@ -129,7 +129,7 @@ export default function ParametresPage() {
           <p className="font-bold text-slate-900 dark:text-white">{form.name}</p>
           <button
             onClick={() => fileRef.current?.click()}
-            className="text-xs text-[#D4AF37] hover:underline mt-0.5"
+            className="text-xs text-[var(--accent-gold)] hover:underline mt-0.5"
           >
             Changer la photo de profil
           </button>
@@ -139,7 +139,7 @@ export default function ParametresPage() {
       {/* Profile fields */}
       <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)] space-y-4">
         <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <User className="w-4 h-4 text-[#D4AF37]" /> Profil
+          <User className="w-4 h-4 text-[var(--accent-gold)]" /> Profil
         </h2>
         {profileLoading ? (
           <div className="space-y-4 animate-pulse">
@@ -165,7 +165,7 @@ export default function ParametresPage() {
                   value={form[f.key as keyof typeof form]}
                   onChange={(e) => f.key !== "email" && setForm({ ...form, [f.key]: e.target.value })}
                   readOnly={f.key === "email"}
-                  className={`w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none ${f.key === "email" ? "opacity-60 cursor-not-allowed" : "focus:ring-2 focus:ring-[#D4AF37]"}`}
+                  className={`w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none ${f.key === "email" ? "opacity-60 cursor-not-allowed" : "focus:ring-2 focus:ring-[var(--accent-gold)]"}`}
                 />
                 {f.key === "email" && (
                   <p className="text-xs text-slate-400 mt-1">L&apos;email ne peut pas être modifié ici.</p>
@@ -185,13 +185,13 @@ export default function ParametresPage() {
       {/* Preferences */}
       <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--border)] overflow-hidden">
         <h2 className="font-bold text-slate-900 dark:text-white px-5 pt-5 pb-3 flex items-center gap-2">
-          <Shield className="w-4 h-4 text-[#D4AF37]" /> Préférences
+          <Shield className="w-4 h-4 text-[var(--accent-gold)]" /> Préférences
         </h2>
         <div className="divide-y divide-slate-100 dark:divide-[#2a3040]">
           <button onClick={toggleTheme} className="w-full flex items-center gap-3 px-5 py-3.5 hover:bg-slate-50 dark:hover:bg-[#151922] transition-colors">
             {theme === "dark" ? <Moon className="w-4 h-4 text-slate-500" /> : <Sun className="w-4 h-4 text-slate-500" />}
             <span className="flex-1 text-sm text-slate-700 dark:text-slate-200 text-left">Mode {theme === "dark" ? "sombre" : "clair"}</span>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#D4AF37]/10 text-[#D4AF37]">{theme === "dark" ? "Sombre" : "Clair"}</span>
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[var(--accent-gold)]/10 text-[var(--accent-gold)]">{theme === "dark" ? "Sombre" : "Clair"}</span>
           </button>
           <div className="flex items-center gap-3 px-5 py-3.5">
             <Bell className="w-4 h-4 text-slate-500" />

@@ -47,9 +47,9 @@ export function UserPropertyDetail({ id }: { id: string }) {
   return (
     <div className="max-w-5xl mx-auto px-4 pb-32 md:pb-12">
       <nav className="flex items-center gap-2 text-xs text-slate-400 py-4">
-        <Link href="/" className="hover:text-[#D4AF37]">Accueil</Link>
+        <Link href="/" className="hover:text-[var(--accent-gold)]">Accueil</Link>
         <span>/</span>
-        <Link href="/annonces" className="hover:text-[#D4AF37]">Annonces</Link>
+        <Link href="/annonces" className="hover:text-[var(--accent-gold)]">Annonces</Link>
         <span>/</span>
         <span className="text-slate-600 dark:text-slate-300 line-clamp-1">{property.title}</span>
       </nav>
@@ -84,7 +84,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
                     {property.transactionType === "rent" ? "Location" : "Vente"}
                   </span>
                   {property.availableNow && (
-                    <span className="text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-[#D4AF37] px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-[var(--accent-gold)] px-2 py-0.5 rounded-full flex items-center gap-1">
                       <CheckCircle className="w-3 h-3" /> Disponible
                     </span>
                   )}
@@ -98,7 +98,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
                 </div>
               </div>
               <div className="text-right flex-shrink-0">
-                <p className="text-2xl font-black text-[#D4AF37]">{formatPrice(property.price)}</p>
+                <p className="text-2xl font-black text-[var(--accent-gold)]">{formatPrice(property.price)}</p>
                 {property.pricePeriod === "month" && <p className="text-slate-400 text-xs">/mois</p>}
                 {pricePerM2 && <p className="text-xs text-slate-400 mt-0.5">~{formatPrice(pricePerM2)}/m²</p>}
               </div>
@@ -108,7 +108,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
               {property.rooms && (
                 <div className="text-center">
                   <div className="w-10 h-10 bg-orange-50 dark:bg-orange-900/20 rounded-xl flex items-center justify-center mx-auto mb-1">
-                    <Bed className="w-5 h-5 text-[#D4AF37]" />
+                    <Bed className="w-5 h-5 text-[var(--accent-gold)]" />
                   </div>
                   <p className="font-bold text-slate-900 dark:text-white">{property.rooms}</p>
                   <p className="text-slate-400 text-xs">Chambre{property.rooms > 1 ? "s" : ""}</p>
@@ -162,7 +162,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
           {/* Visite virtuelle placeholder */}
           <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)]">
             <h2 className="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-              <Video className="w-4 h-4 text-[#D4AF37]" /> Visite virtuelle
+              <Video className="w-4 h-4 text-[var(--accent-gold)]" /> Visite virtuelle
             </h2>
             <div className="aspect-video bg-slate-100 dark:bg-[#151922] rounded-xl flex flex-col items-center justify-center gap-2 text-slate-400">
               <Video className="w-10 h-10" />
@@ -171,7 +171,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs text-[#D4AF37] hover:underline"
+                className="text-xs text-[var(--accent-gold)] hover:underline"
               >
                 Contacter pour accès →
               </a>
@@ -181,7 +181,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
           {/* QR Code */}
           <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)]">
             <h2 className="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-              <QrCode className="w-4 h-4 text-[#D4AF37]" /> QR Code de l&apos;annonce
+              <QrCode className="w-4 h-4 text-[var(--accent-gold)]" /> QR Code de l&apos;annonce
             </h2>
             <div className="flex items-center gap-4">
               <div className="w-20 h-20 bg-slate-100 dark:bg-[#151922] rounded-xl flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600">
@@ -192,7 +192,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
                 <p className="text-xs text-slate-400 mt-1 max-w-xs">Scannez pour accéder directement à cette annonce depuis un autre appareil.</p>
                 <button
                   onClick={() => navigator.clipboard?.writeText(window.location.href)}
-                  className="text-xs text-[#D4AF37] hover:underline mt-1"
+                  className="text-xs text-[var(--accent-gold)] hover:underline mt-1"
                 >
                   Copier le lien
                 </button>
@@ -212,7 +212,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
           <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)] sticky top-20 space-y-3">
             <h2 className="font-bold text-slate-900 dark:text-white mb-1 text-sm">Contacter l&apos;annonceur</h2>
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#B8963A] rounded-2xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+              <div className="w-12 h-12 bg-gradient-to-br from-[var(--accent-gold)] to-[#B8963A] rounded-2xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
                 {property.owner.name.charAt(0)}
               </div>
               <div>
@@ -240,7 +240,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
             {/* Réserver une visite */}
             <button
               onClick={() => setShowVisitModal(true)}
-              className="flex items-center justify-center gap-2 w-full bg-[#D4AF37]/10 hover:bg-[#B8963A]/20 text-[#D4AF37] font-semibold py-3 px-4 rounded-xl border border-[#D4AF37]/30 transition-all text-sm"
+              className="flex items-center justify-center gap-2 w-full bg-[var(--accent-gold)]/10 hover:bg-[#B8963A]/20 text-[var(--accent-gold)] font-semibold py-3 px-4 rounded-xl border border-[var(--accent-gold)]/30 transition-all text-sm"
             >
               <Calendar className="w-4 h-4" /> Réserver une visite
             </button>
@@ -274,7 +274,7 @@ export function UserPropertyDetail({ id }: { id: string }) {
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4" onClick={() => setShowVisitModal(false)}>
           <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <h3 className="font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-[#D4AF37]" /> Réserver une visite
+              <Calendar className="w-5 h-5 text-[var(--accent-gold)]" /> Réserver une visite
             </h3>
             {visitSent ? (
               <div className="text-center py-6">
@@ -286,19 +286,19 @@ export function UserPropertyDetail({ id }: { id: string }) {
               <form onSubmit={handleVisitSubmit} className="space-y-3">
                 <div>
                   <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Votre nom</label>
-                  <input required value={visitName} onChange={(e) => setVisitName(e.target.value)} className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]" />
+                  <input required value={visitName} onChange={(e) => setVisitName(e.target.value)} className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]" />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Téléphone</label>
-                  <input required type="tel" value={visitPhone} onChange={(e) => setVisitPhone(e.target.value)} className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]" />
+                  <input required type="tel" value={visitPhone} onChange={(e) => setVisitPhone(e.target.value)} className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]" />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Date souhaitée</label>
-                  <input required type="date" value={visitDate} onChange={(e) => setVisitDate(e.target.value)} min={new Date().toISOString().split("T")[0]} className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]" />
+                  <input required type="date" value={visitDate} onChange={(e) => setVisitDate(e.target.value)} min={new Date().toISOString().split("T")[0]} className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]" />
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={() => setShowVisitModal(false)} className="flex-1 py-2.5 rounded-xl border border-[var(--border)] text-sm font-semibold text-slate-600 dark:text-slate-300">Annuler</button>
-                  <button type="submit" className="flex-1 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#B8963A] text-white text-sm font-bold">Envoyer</button>
+                  <button type="submit" className="flex-1 py-2.5 rounded-xl bg-[var(--accent-gold)] hover:bg-[#B8963A] text-white text-sm font-bold">Envoyer</button>
                 </div>
               </form>
             )}

@@ -20,7 +20,7 @@ export function RecentlyViewedSection() {
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
       <div className="flex items-center gap-2 mb-5">
-        <Clock className="w-5 h-5 text-[#D4AF37]" />
+        <Clock className="w-5 h-5 text-[var(--accent-gold)]" />
         <h2 className="text-xl font-black text-slate-900 dark:text-white">Biens récemment consultés</h2>
       </div>
       <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">

@@ -104,7 +104,7 @@ export default async function AgentsPage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-bold text-white text-sm">{agent.name}</p>
                       {/* Agent Officiel badge */}
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37", border: "1px solid rgba(212,175,55,0.25)" }}>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.25)" }}>
                         ✓ Agent Officiel
                       </span>
                     </div>

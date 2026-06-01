@@ -59,18 +59,18 @@ const TRUST_ITEMS = [
 ];
 
 const TYPE_GRADIENTS: Record<string, [string, string]> = {
-  apartment: ["#1a252b", "#2a3d4a"],
-  villa:     ["#1a252b", "#0A1216"],
-  house:     ["#111a1f", "#1a252b"],
-  studio:    ["#111a1f", "#1a252b"],
-  room:      ["#1a252b", "#2a3a46"],
-  land:      ["#0A1216", "#1a252b"],
+  apartment: ["var(--bg-secondary)", "var(--bg-secondary)"],
+  villa:     ["var(--bg-secondary)", "var(--bg-primary)"],
+  house:     ["var(--bg-primary)", "var(--bg-secondary)"],
+  studio:    ["var(--bg-primary)", "var(--bg-secondary)"],
+  room:      ["var(--bg-secondary)", "var(--bg-secondary)"],
+  land:      ["var(--bg-primary)", "var(--bg-secondary)"],
 };
 
 const HERO_GRADIENTS: [string, string][] = [
-  ["#1a252b", "#2a3d4a"],
-  ["#111a1f", "#1a252b"],
-  ["#0A1216", "#1a252b"],
+  ["var(--bg-secondary)", "var(--bg-secondary)"],
+  ["var(--bg-primary)", "var(--bg-secondary)"],
+  ["var(--bg-primary)", "var(--bg-secondary)"],
 ];
 
 const CARD_POSITIONS = [
@@ -181,13 +181,13 @@ function PreviewCard({ property, index }: { property: Property; index: number })
           </span>
         </div>
       </div>
-      <div className="p-3" style={{ color: "#0A1216" }}>
+      <div className="p-3" style={{ color: "var(--bg-primary)" }}>
         <p className="font-bold text-sm leading-snug line-clamp-1">{property.title}</p>
         <div className="flex items-center gap-1 text-xs mt-1" style={{ color: "#666" }}>
           <MapPin className="w-3 h-3 flex-shrink-0" />
           <span>{NL[property.neighborhood] ?? property.neighborhood}</span>
         </div>
-        <p className="font-black text-sm mt-1.5" style={{ color: "#D4AF37" }}>{priceStr}</p>
+        <p className="font-black text-sm mt-1.5" style={{ color: "var(--accent-gold)" }}>{priceStr}</p>
       </div>
     </div>
   );
@@ -230,7 +230,7 @@ function UrgencyCard({ property }: { property: Property }) {
           <MapPin className="w-2.5 h-2.5 flex-shrink-0" />
           {NL[property.neighborhood] ?? property.neighborhood}
         </p>
-        <p className="font-bold text-xs" style={{ color: "#D4AF37" }}>{priceStr}</p>
+        <p className="font-bold text-xs" style={{ color: "var(--accent-gold)" }}>{priceStr}</p>
       </div>
     </Link>
   );
@@ -283,9 +283,9 @@ export default async function HomePage() {
               >
                 <span
                   className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ background: "#D4AF37", animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite" }}
+                  style={{ background: "var(--accent-gold)", animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite" }}
                 />
-                <span className="text-sm font-medium" style={{ color: "#D4AF37" }}>
+                <span className="text-sm font-medium" style={{ color: "var(--accent-gold)" }}>
                   Annonces vérifiées · Contact direct
                 </span>
               </div>
@@ -306,7 +306,7 @@ export default async function HomePage() {
                 Trouvez votre<br />
                 logement<br />
                 à Conakry<br />
-                <span style={{ color: "#D4AF37" }}>Direct propriétaire</span>
+                <span style={{ color: "var(--accent-gold)" }}>Direct propriétaire</span>
               </h1>
 
               {/* Subtitle */}
@@ -368,7 +368,7 @@ export default async function HomePage() {
               >
                 {urgentProps.length} annonce{urgentProps.length > 1 ? "s" : ""}
               </span>
-              <Link href="/annonces?recent=1" className="ml-auto text-xs font-semibold hover:underline" style={{ color: "#D4AF37" }}>
+              <Link href="/annonces?recent=1" className="ml-auto text-xs font-semibold hover:underline" style={{ color: "var(--accent-gold)" }}>
                 Voir toutes →
               </Link>
             </div>
@@ -410,7 +410,7 @@ export default async function HomePage() {
                 </h2>
                 <p className="mt-1 text-sm" style={{ color: "#666666" }}>Les dernières mises en ligne</p>
               </div>
-              <Link href="/annonces" className="flex items-center gap-1 text-sm font-semibold hover:underline" style={{ color: "#D4AF37" }}>
+              <Link href="/annonces" className="flex items-center gap-1 text-sm font-semibold hover:underline" style={{ color: "var(--accent-gold)" }}>
                 Voir tout <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
@@ -458,13 +458,13 @@ export default async function HomePage() {
                     className="w-9 h-9 rounded-xl flex items-center justify-center mb-3"
                     style={{ background: "rgba(212,175,55,0.12)" }}
                   >
-                    <MapPin className="w-4 h-4" style={{ color: "#D4AF37" }} />
+                    <MapPin className="w-4 h-4" style={{ color: "var(--accent-gold)" }} />
                   </div>
                   <p className="font-bold text-sm mb-0.5" style={{ color: "var(--text-primary)" }}>{n.name}</p>
                   <p className="text-xs" style={{ color: count > 0 ? "#22c55e" : "#666" }}>
                     {count > 0 ? `${count} annonce${count > 1 ? "s" : ""}` : "Aucune annonce"}
                   </p>
-                  <p className="text-xs font-semibold mt-2" style={{ color: "#D4AF37" }}>Explorer →</p>
+                  <p className="text-xs font-semibold mt-2" style={{ color: "var(--accent-gold)" }}>Explorer →</p>
                 </Link>
               );
             })}
@@ -497,7 +497,7 @@ export default async function HomePage() {
           <Link
             href="/je-cherche"
             className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl transition-opacity hover:opacity-90 text-sm"
-            style={{ background: "#D4AF37", color: "#0A1216" }}
+            style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
           >
             Publier ma recherche →
           </Link>
@@ -558,14 +558,14 @@ export default async function HomePage() {
             <Link
               href="/publier/rapide"
               className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl transition-opacity hover:opacity-90 text-sm"
-              style={{ background: "#D4AF37", color: "#0A1216" }}
+              style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
             >
               ⚡ Publication rapide
             </Link>
             <Link
               href="/publier"
-              className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl text-sm transition-all hover:border-[#D4AF37]"
-              style={{ background: "transparent", border: "1px solid rgba(212,175,55,0.35)", color: "#D4AF37" }}
+              className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl text-sm transition-all hover:border-[var(--accent-gold)]"
+              style={{ background: "transparent", border: "1px solid rgba(212,175,55,0.35)", color: "var(--accent-gold)" }}
             >
               Publication complète
             </Link>

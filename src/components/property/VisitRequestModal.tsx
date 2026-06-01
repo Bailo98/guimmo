@@ -102,7 +102,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-[#D4AF37]" />
+            <Calendar className="w-5 h-5 text-[var(--accent-gold)]" />
             <h2 className="text-white font-black text-base">Je veux visiter ce logement</h2>
           </div>
           <button
@@ -118,7 +118,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
 
         {done ? (
           <div className="text-center py-6 space-y-3">
-            <CheckCircle2 className="w-12 h-12 text-[#D4AF37] mx-auto" />
+            <CheckCircle2 className="w-12 h-12 text-[var(--accent-gold)] mx-auto" />
             <p className="text-white font-bold text-lg">Demande envoyée !</p>
             <p className="text-white/50 text-sm">Le propriétaire vous contactera pour confirmer la visite.</p>
             <button
@@ -135,7 +135,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
             <Link
               href={`/connexion?redirect=/annonces/${propertyId}`}
               className="inline-block px-6 py-2.5 rounded-xl font-bold text-sm"
-              style={{ background: "#D4AF37", color: "var(--bg-primary)" }}
+              style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
               onClick={() => { document.body.style.overflow = ""; }}
             >
               Se connecter
@@ -188,7 +188,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
                     style={{
                       background: preferredTime === t.id ? "rgba(212,175,55,0.15)" : "rgba(255,255,255,0.04)",
                       border: preferredTime === t.id ? "1px solid rgba(212,175,55,0.50)" : "1px solid rgba(255,255,255,0.08)",
-                      color: preferredTime === t.id ? "#D4AF37" : "rgba(255,255,255,0.60)",
+                      color: preferredTime === t.id ? "var(--accent-gold)" : "rgba(255,255,255,0.60)",
                     }}
                   >
                     {t.label}
@@ -216,8 +216,8 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
               className="w-full flex items-center justify-center gap-2 rounded-xl font-bold text-sm"
               style={{
                 minHeight: 52,
-                background: canSubmit && !loading ? "#D4AF37" : "rgba(255,255,255,0.08)",
-                color: canSubmit && !loading ? "#0A1216" : "rgba(255,255,255,0.30)",
+                background: canSubmit && !loading ? "var(--accent-gold)" : "rgba(255,255,255,0.08)",
+                color: canSubmit && !loading ? "var(--bg-primary)" : "rgba(255,255,255,0.30)",
               }}
             >
               {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Envoi…</> : "📅 Envoyer la demande"}

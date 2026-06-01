@@ -25,7 +25,7 @@ const BADGE_CONFIG: Record<
   premium: {
     label: "⭐ Premium",
     bg: "rgba(212,175,55,0.15)",
-    color: "#D4AF37",
+    color: "var(--accent-gold)",
     border: "1px solid rgba(212,175,55,0.40)",
   },
   diaspora: {

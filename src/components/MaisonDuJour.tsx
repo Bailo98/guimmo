@@ -181,7 +181,7 @@ export async function MaisonDuJour() {
                   className="text-xs font-semibold px-2.5 py-1 rounded-full"
                   style={{
                     background: "rgba(212,175,55,0.10)",
-                    color: "#D4AF37",
+                    color: "var(--accent-gold)",
                     border: "1px solid rgba(212,175,55,0.20)",
                   }}
                 >

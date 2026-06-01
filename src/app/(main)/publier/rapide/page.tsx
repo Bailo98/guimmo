@@ -204,7 +204,7 @@ export default function PublierRapidePage() {
         <button
           onClick={() => router.push(`/annonces/${published.id}`)}
           className="w-full flex items-center justify-center gap-2 rounded-2xl font-black text-white mb-3"
-          style={{ minHeight: 52, background: "#D4AF37" }}
+          style={{ minHeight: 52, background: "var(--accent-gold)" }}
         >
           <CheckCircle2 className="w-5 h-5" /> Voir mon annonce
         </button>
@@ -279,9 +279,9 @@ export default function PublierRapidePage() {
                 className={cn("flex flex-col items-center gap-1 py-3 rounded-xl border-2 font-semibold text-xs transition-all")}
                 style={{
                   minHeight: 60,
-                  borderColor: form.type === t.id ? "#D4AF37" : "rgba(255,255,255,0.12)",
+                  borderColor: form.type === t.id ? "var(--accent-gold)" : "rgba(255,255,255,0.12)",
                   background: form.type === t.id ? "rgba(212,175,55,0.12)" : "rgba(255,255,255,0.04)",
-                  color: form.type === t.id ? "#D4AF37" : "rgba(255,255,255,0.60)",
+                  color: form.type === t.id ? "var(--accent-gold)" : "rgba(255,255,255,0.60)",
                 }}>
                 <span className="text-xl">{t.emoji}</span>
                 {t.label}
@@ -299,9 +299,9 @@ export default function PublierRapidePage() {
                 className="py-4 rounded-xl border-2 font-bold text-sm transition-all"
                 style={{
                   minHeight: 52,
-                  borderColor: form.txType === t ? "#D4AF37" : "rgba(255,255,255,0.12)",
+                  borderColor: form.txType === t ? "var(--accent-gold)" : "rgba(255,255,255,0.12)",
                   background: form.txType === t ? "rgba(212,175,55,0.12)" : "rgba(255,255,255,0.04)",
-                  color: form.txType === t ? "#D4AF37" : "rgba(255,255,255,0.50)",
+                  color: form.txType === t ? "var(--accent-gold)" : "rgba(255,255,255,0.50)",
                 }}>
                 {t === "rent" ? "🔑 À Louer" : "💰 À Vendre"}
               </button>
@@ -321,7 +321,7 @@ export default function PublierRapidePage() {
             className="w-full rounded-xl px-4 py-3 text-white font-semibold focus:outline-none"
             style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16, minHeight: 52 }}
           />
-          {priceLabel && <p className="text-[#D4AF37] font-bold text-sm mt-1.5 ml-1">{priceLabel}{form.txType === "rent" ? "/mois" : ""}</p>}
+          {priceLabel && <p className="text-[var(--accent-gold)] font-bold text-sm mt-1.5 ml-1">{priceLabel}{form.txType === "rent" ? "/mois" : ""}</p>}
         </div>
 
         {/* Quartier */}
@@ -368,7 +368,7 @@ export default function PublierRapidePage() {
           className="w-full flex items-center justify-center gap-2 rounded-2xl font-black text-white transition-all"
           style={{
             minHeight: 56, fontSize: 15,
-            background: canSubmit && !submitting ? "#D4AF37" : "rgba(255,255,255,0.08)",
+            background: canSubmit && !submitting ? "var(--accent-gold)" : "rgba(255,255,255,0.08)",
             color: canSubmit && !submitting ? "#fff" : "rgba(255,255,255,0.30)",
             boxShadow: canSubmit && !submitting ? "0 8px 32px rgba(212,175,55,0.35)" : "none",
           }}
@@ -384,7 +384,7 @@ export default function PublierRapidePage() {
 
         <p className="text-center text-white/30 text-xs">
           En publiant, vous acceptez nos{" "}
-          <a href="/cgv" className="text-[#D4AF37] hover:underline">conditions d&apos;utilisation</a>.
+          <a href="/cgv" className="text-[var(--accent-gold)] hover:underline">conditions d&apos;utilisation</a>.
           Publication gratuite, visible immédiatement.
         </p>
 

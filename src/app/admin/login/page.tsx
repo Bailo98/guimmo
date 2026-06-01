@@ -104,7 +104,7 @@ export default function AdminLoginPage() {
                 transition: "border-color 0.2s",
               }}
               onFocus={(e) => {
-                if (!error) e.target.style.borderColor = "#D4AF37";
+                if (!error) e.target.style.borderColor = "var(--accent-gold)";
               }}
               onBlur={(e) => {
                 if (!error) e.target.style.borderColor = "#2a3040";
@@ -137,7 +137,7 @@ export default function AdminLoginPage() {
             disabled={loading}
             style={{
               width: "100%",
-              background: loading ? "#7c3b0c" : "#D4AF37",
+              background: loading ? "#7c3b0c" : "var(--accent-gold)",
               color: "var(--text-primary)",
               fontWeight: 700,
               fontSize: "0.875rem",

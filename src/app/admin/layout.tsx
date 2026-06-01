@@ -15,7 +15,7 @@ const BG_SIDEBAR  = "var(--bg-primary)";
 const BORDER      = "var(--border)";
 const TEXT_PRI    = "var(--text-primary)";
 const TEXT_SEC    = "var(--text-primary-dim)";
-const ACCENT      = "#D4AF37";
+const ACCENT      = "var(--accent-gold)";
 const SEPARATOR   = "var(--border)";
 
 // ─── Nav items ────────────────────────────────────────────────────────────────

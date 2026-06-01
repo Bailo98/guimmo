@@ -63,7 +63,7 @@ export function PropertyDetailMap({ neighborhood }: PropertyDetailMapProps) {
         className: "",
         html: `<div style="
           width:28px;height:28px;
-          background:#D4AF37;
+          background:var(--accent-gold);
           border:3px solid #fff;
           border-radius:50% 50% 50% 0;
           transform:rotate(-45deg);

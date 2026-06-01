@@ -34,7 +34,7 @@ export function SearchBar() {
             onClick={() => setTransactionType(t.value)}
             className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-colors ${
               transactionType === t.value
-                ? "bg-[var(--bg-card-light)] text-[#D4AF37] shadow-sm"
+                ? "bg-[var(--bg-card-light)] text-[var(--accent-gold)] shadow-sm"
                 : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
             }`}
           >
@@ -51,7 +51,7 @@ export function SearchBar() {
           <select
             value={neighborhood}
             onChange={(e) => setNeighborhood(e.target.value)}
-            className="w-full appearance-none bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl pl-9 pr-8 py-3 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+            className="w-full appearance-none bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl pl-9 pr-8 py-3 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)] focus:border-transparent"
           >
             <option value="">Tous les quartiers</option>
             {POPULAR_NEIGHBORHOODS.map((n) => (
@@ -66,7 +66,7 @@ export function SearchBar() {
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full appearance-none bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl pl-4 pr-8 py-3 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
+            className="w-full appearance-none bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl pl-4 pr-8 py-3 text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)] focus:border-transparent"
           >
             <option value="">Tout type</option>
             {PROPERTY_TYPES.map((t) => (
@@ -79,7 +79,7 @@ export function SearchBar() {
         {/* Submit */}
         <button
           type="submit"
-          className="flex items-center justify-center gap-2 bg-[#D4AF37] hover:bg-[#B8963A] active:scale-95 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-[0_4px_20px_rgba(212,175,55,0.25)]"
+          className="flex items-center justify-center gap-2 bg-[var(--accent-gold)] hover:bg-[#B8963A] active:scale-95 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-[0_4px_20px_rgba(212,175,55,0.25)]"
         >
           <Search className="w-5 h-5" />
           <span className="sm:hidden">Rechercher</span>

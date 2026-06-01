@@ -16,7 +16,7 @@ const LOGS = [
 const ACTION_STYLES: Record<string, { bg: string; icon: React.ReactNode; label: string; dot: string }> = {
   approve: {
     bg: "bg-green-100 dark:bg-green-900/30",
-    icon: <CheckCircle className="w-4 h-4 text-green-600 dark:text-[#D4AF37]" />,
+    icon: <CheckCircle className="w-4 h-4 text-green-600 dark:text-[var(--accent-gold)]" />,
     label: "Approbation",
     dot: "bg-green-500",
   },
@@ -27,10 +27,10 @@ const ACTION_STYLES: Record<string, { bg: string; icon: React.ReactNode; label: 
     dot: "bg-red-500",
   },
   warning: {
-    bg: "bg-[#D4AF37]/10",
-    icon: <AlertTriangle className="w-4 h-4 text-[#D4AF37]" />,
+    bg: "bg-[var(--accent-gold)]/10",
+    icon: <AlertTriangle className="w-4 h-4 text-[var(--accent-gold)]" />,
     label: "Avertissement",
-    dot: "bg-[#D4AF37]",
+    dot: "bg-[var(--accent-gold)]",
   },
   info: {
     bg: "bg-blue-100 dark:bg-blue-900/30",
@@ -54,7 +54,7 @@ export default function AdminLogsPage() {
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">Historique complet des actions administratives</p>
         </div>
-        <button className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl border border-[var(--border)] text-slate-600 dark:text-slate-300 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors">
+        <button className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl border border-[var(--border)] text-slate-600 dark:text-slate-300 hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)] transition-colors">
           <Download className="w-4 h-4" />
           Exporter
         </button>
@@ -86,7 +86,7 @@ export default function AdminLogsPage() {
                 </div>
 
                 {/* Content */}
-                <div className={`flex-1 bg-[var(--bg-card-light)] rounded-2xl p-4 border border-[var(--border)] ${index === 0 ? "border-l-4 border-l-[#D4AF37]" : ""}`}>
+                <div className={`flex-1 bg-[var(--bg-card-light)] rounded-2xl p-4 border border-[var(--border)] ${index === 0 ? "border-l-4 border-l-[var(--accent-gold)]" : ""}`}>
                   <p className="text-sm font-medium text-slate-900 dark:text-white leading-snug">{log.message}</p>
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                     <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{log.admin}</span>

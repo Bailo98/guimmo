@@ -12,7 +12,7 @@ const SURFACE  = "var(--bg-card)";
 const BORDER   = "var(--border)";
 const TEXT_PRI = "var(--text-primary)";
 const TEXT_SEC = "var(--text-primary-dim)";
-const ACCENT   = "#D4AF37";
+const ACCENT   = "var(--accent-gold)";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Stats {
@@ -159,11 +159,11 @@ export default function AdminDashboardPage() {
         className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
       >
         <StatCard label="Total annonces"    value={v?.total        ?? null} accentColor={TEXT_PRI}   icon={FileText} />
-        <StatCard label="Actives"           value={v?.active       ?? null} accentColor="#D4AF37"    icon={CheckCircle} />
+        <StatCard label="Actives"           value={v?.active       ?? null} accentColor="var(--accent-gold)"    icon={CheckCircle} />
         <StatCard label="En attente"        value={v?.pending      ?? null} accentColor={ACCENT}     icon={Clock} />
         <StatCard label="Utilisateurs"      value={v?.users        ?? null} accentColor="#60a5fa"    icon={Users} />
         <StatCard label="Cette semaine"     value={v?.thisWeek     ?? null} accentColor={ACCENT}     icon={TrendingUp} />
-        <StatCard label="À vérifier"        value={v?.pendingVerif ?? null} accentColor="#D4AF37"    icon={Users} />
+        <StatCard label="À vérifier"        value={v?.pendingVerif ?? null} accentColor="var(--accent-gold)"    icon={Users} />
         <StatCard label="Signalements"      value={v?.reports      ?? null} accentColor="#ef4444"    icon={AlertTriangle} />
       </div>
 
@@ -187,7 +187,7 @@ export default function AdminDashboardPage() {
         <ActionCard
           href="/admin/annonces/nouvelle"
           icon={Plus}
-          iconColor="#D4AF37"
+          iconColor="var(--accent-gold)"
           title="Ajouter une annonce"
           desc="Publier manuellement"
         />

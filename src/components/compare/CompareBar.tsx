@@ -49,7 +49,7 @@ export function CompareBar() {
           </button>
           <button
             onClick={() => router.push("/comparer")}
-            className="flex items-center gap-1.5 bg-[#D4AF37] hover:bg-[#B8963A] active:scale-95 text-white font-bold text-sm px-4 py-2 rounded-xl transition-all"
+            className="flex items-center gap-1.5 bg-[var(--accent-gold)] hover:bg-[#B8963A] active:scale-95 text-white font-bold text-sm px-4 py-2 rounded-xl transition-all"
           >
             <Scale className="w-4 h-4" />
             Comparer ({compareList.length})

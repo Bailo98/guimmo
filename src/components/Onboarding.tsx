@@ -83,7 +83,7 @@ export function Onboarding() {
         position: "fixed",
         inset: 0,
         zIndex: 1000,
-        background: "var(--bg-primary, #0A1216)",
+        background: "var(--bg-primary, var(--bg-primary))",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -224,7 +224,7 @@ export function Onboarding() {
         onClick={handleNext}
         style={{
           background: "var(--accent-gold)",
-          color: "#0B0F19",
+          color: "var(--text-primary)",
           fontWeight: 700,
           fontSize: 16,
           padding: "14px 48px",

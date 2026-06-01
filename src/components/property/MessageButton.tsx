@@ -138,14 +138,14 @@ export function MessageButton({
                 required
                 autoFocus
                 style={{ fontSize: 16 }}
-                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-4 py-3 text-sm text-[#ffffff] placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 resize-none"
+                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-4 py-3 text-sm text-[#ffffff] placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/50 resize-none"
               />
               <div className="flex items-center justify-between">
                 <span className="text-xs text-[rgba(255,255,255,0.40)]">{content.length}/2000</span>
                 <button
                   type="submit"
                   disabled={!content.trim() || sending}
-                  className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#B8963A] disabled:opacity-50 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm"
+                  className="flex items-center gap-2 bg-[var(--accent-gold)] hover:bg-[#B8963A] disabled:opacity-50 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm"
                 >
                   <Send className="w-4 h-4" />
                   {sending ? "Envoi…" : "Envoyer"}

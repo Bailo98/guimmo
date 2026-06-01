@@ -58,7 +58,7 @@ function freshLabel(createdAt: string | undefined): { label: string; color: stri
 // ── Feature 4: Trust badge display ────────────────────────────────────────────
 const TRUST_BADGE_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
   proprietaire_direct: { label: "🏠 Proprio direct",  color: "#60a5fa", bg: "rgba(96,165,250,0.18)" },
-  sans_commission:     { label: "💰 Sans commission",  color: "#D4AF37", bg: "rgba(212,175,55,0.18)" },
+  sans_commission:     { label: "💰 Sans commission",  color: "var(--accent-gold)", bg: "rgba(212,175,55,0.18)" },
   verifie:             { label: "✅ Vérifié",           color: "#22c55e", bg: "rgba(34,197,94,0.18)"  },
   nouveau:             { label: "🆕 Nouveau",           color: "#a78bfa", bg: "rgba(167,139,250,0.18)" },
 };
@@ -355,7 +355,7 @@ export function PropertyCard({
         {isNew && !property.is_featured && !property.is_diaspora && <PropertyBadge type="new" />}
         {property.is_boosted && (
           <span style={{
-            background: "#D4AF37", color: "var(--bg-primary)",
+            background: "var(--accent-gold)", color: "var(--bg-primary)",
             fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap",
           }}>★ Pro</span>
         )}

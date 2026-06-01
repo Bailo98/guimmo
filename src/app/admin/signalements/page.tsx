@@ -179,14 +179,14 @@ export default function AdminSignalementsPage() {
       {/* Loading */}
       {loading && (
         <div style={{ display: "flex", justifyContent: "center", padding: "64px 0" }}>
-          <div style={{ width: 28, height: 28, borderRadius: "50%", border: "2px solid #D4AF37", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
+          <div style={{ width: 28, height: 28, borderRadius: "50%", border: "2px solid var(--accent-gold)", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
         </div>
       )}
 
       {/* Empty */}
       {!loading && reports.length === 0 && (
         <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 48, textAlign: "center" }}>
-          <CheckCircle size={40} color="#D4AF37" style={{ margin: "0 auto 12px" }} />
+          <CheckCircle size={40} color="var(--accent-gold)" style={{ margin: "0 auto 12px" }} />
           <p style={{ color: TEXT_SEC, fontWeight: 600, fontSize: 14 }}>Aucun signalement en attente</p>
         </div>
       )}

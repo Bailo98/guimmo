@@ -12,7 +12,7 @@ const PAYMENTS = [
 const STATUS = {
   success: { label: "Réussi", icon: CheckCircle, color: "text-green-500", bg: "bg-green-100 dark:bg-green-900/20" },
   failed: { label: "Échoué", icon: XCircle, color: "text-red-500", bg: "bg-red-100 dark:bg-red-900/20" },
-  pending: { label: "En attente", icon: Clock, color: "text-[#D4AF37]", bg: "bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15" },
+  pending: { label: "En attente", icon: Clock, color: "text-[var(--accent-gold)]", bg: "bg-[var(--accent-gold)]/10 dark:bg-[var(--accent-gold)]/15" },
 };
 
 export default function PaiementsPage() {
@@ -24,7 +24,7 @@ export default function PaiementsPage() {
       </div>
 
       {/* Current subscription */}
-      <div className="bg-gradient-to-r from-[#D4AF37] to-[#B8963A] rounded-2xl p-5 text-white">
+      <div className="bg-gradient-to-r from-[var(--accent-gold)] to-[#B8963A] rounded-2xl p-5 text-white">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-white/80 text-xs font-semibold uppercase tracking-wide">Abonnement actuel</p>
@@ -40,22 +40,22 @@ export default function PaiementsPage() {
           <Link href="/tarifs" className="flex-1 text-center bg-white/20 hover:bg-white/30 text-white text-sm font-semibold py-2 rounded-xl transition-colors">
             Changer de plan
           </Link>
-          <button className="flex-1 text-center bg-white text-[#D4AF37] text-sm font-bold py-2 rounded-xl hover:bg-white/90 transition-colors">
+          <button className="flex-1 text-center bg-white text-[var(--accent-gold)] text-sm font-bold py-2 rounded-xl hover:bg-white/90 transition-colors">
             Renouveler
           </button>
         </div>
       </div>
 
       {/* Upgrade CTA */}
-      <div className="bg-[var(--bg-card-light)] rounded-2xl p-4 border border-[#D4AF37]/30 flex items-center gap-3">
-        <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-xl flex items-center justify-center flex-shrink-0">
-          <Zap className="w-5 h-5 text-[#D4AF37]" />
+      <div className="bg-[var(--bg-card-light)] rounded-2xl p-4 border border-[var(--accent-gold)]/30 flex items-center gap-3">
+        <div className="w-10 h-10 bg-[var(--accent-gold)]/10 rounded-xl flex items-center justify-center flex-shrink-0">
+          <Zap className="w-5 h-5 text-[var(--accent-gold)]" />
         </div>
         <div className="flex-1">
           <p className="font-semibold text-slate-900 dark:text-white text-sm">Booster une annonce</p>
           <p className="text-slate-400 text-xs">À partir de 50.000 GNF / 7 jours</p>
         </div>
-        <Link href="/tarifs" className="flex items-center gap-1 text-[#D4AF37] text-sm font-bold hover:underline flex-shrink-0">
+        <Link href="/tarifs" className="flex items-center gap-1 text-[var(--accent-gold)] text-sm font-bold hover:underline flex-shrink-0">
           Voir <ArrowRight className="w-3 h-3" />
         </Link>
       </div>

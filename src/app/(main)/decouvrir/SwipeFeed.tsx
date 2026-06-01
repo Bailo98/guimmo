@@ -251,7 +251,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         justifyContent: "center", padding: "0 32px",
       }}>
         <p style={{ fontSize: 52, marginBottom: 16, animation: "spin 1s linear infinite" }}>🔄</p>
-        <p style={{ color: "#D4AF37", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
+        <p style={{ color: "var(--accent-gold)", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
           On recommence depuis le début…
         </p>
         <p style={{ color: "var(--text-primary-faint)", fontSize: 13, textAlign: "center" }}>
@@ -271,7 +271,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         justifyContent: "center", padding: "0 32px",
       }}>
         <p style={{ fontSize: 52, marginBottom: 16 }}>🏠</p>
-        <p style={{ color: "#D4AF37", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
+        <p style={{ color: "var(--accent-gold)", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
           Aucune annonce disponible
         </p>
         <p style={{ color: "var(--text-primary-faint)", fontSize: 13, textAlign: "center", marginBottom: 24 }}>
@@ -285,7 +285,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           }}
           style={{
             padding: "14px 32px", borderRadius: 14, border: "none",
-            background: "#D4AF37", color: "#0B0F19",
+            background: "var(--accent-gold)", color: "var(--text-primary)",
             fontWeight: 700, fontSize: 15, cursor: "pointer",
             width: "100%", maxWidth: 320, marginBottom: 12,
           }}
@@ -313,7 +313,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         justifyContent: "center", padding: "0 32px",
       }}>
         <p style={{ fontSize: 52, marginBottom: 16, animation: "spin 1s linear infinite" }}>🔄</p>
-        <p style={{ color: "#D4AF37", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
+        <p style={{ color: "var(--accent-gold)", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
           On recommence depuis le début…
         </p>
         <p style={{ color: "var(--text-primary-faint)", fontSize: 13, textAlign: "center" }}>
@@ -460,7 +460,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             ) : (
               <div style={{
                 position: "absolute", inset: 0,
-                background: "linear-gradient(135deg, #1a252b 0%, #0a1216 100%)",
+                background: "linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%)",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
                 <span style={{ fontSize: 96, opacity: 0.10 }}>🏠</span>
@@ -479,7 +479,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               style={{ position: "absolute", top: 108, left: 24, pointerEvents: "none", opacity: 0 }}
             >
               <div style={{
-                border: "3px solid #D4AF37", borderRadius: 8,
+                border: "3px solid var(--accent-gold)", borderRadius: 8,
                 padding: "8px 16px", color: "#ffffff",
                 fontSize: 32, fontWeight: 900, letterSpacing: 2,
                 textTransform: "uppercase", transform: "rotate(-15deg)",
@@ -513,7 +513,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             }}>
               {topCard.is_featured && (
                 <span style={{
-                  background: "rgba(212,175,55,0.20)", color: "#D4AF37",
+                  background: "rgba(212,175,55,0.20)", color: "var(--accent-gold)",
                   border: "1px solid rgba(212,175,55,0.5)", borderRadius: 20,
                   padding: "3px 10px", fontSize: 11, fontWeight: 600,
                   backdropFilter: "blur(8px)",

@@ -108,9 +108,9 @@ export default function PropertyMap({ neighborhood, lat, lng, title }: PropertyM
               center={coords}
               radius={300}
               pathOptions={{
-                fillColor: "#D4AF37",
+                fillColor: "var(--accent-gold)",
                 fillOpacity: 0.10,
-                color: "#D4AF37",
+                color: "var(--accent-gold)",
                 weight: 1.5,
                 opacity: 0.35,
               }}

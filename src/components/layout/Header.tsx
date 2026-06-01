@@ -200,7 +200,7 @@ export function Header() {
             <Link
               href="/publier"
               className="hidden md:flex items-center gap-1.5 text-sm font-bold px-4 py-2 rounded-xl"
-              style={{ background: "var(--accent-gold)", color: "#0B0F19", transition: "opacity 0.2s ease" }}
+              style={{ background: "var(--accent-gold)", color: "var(--text-primary)", transition: "opacity 0.2s ease" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "0.85"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.opacity = "1"; }}
             >
@@ -261,7 +261,7 @@ export function Header() {
                 className="text-sm font-bold px-4 py-2 rounded-xl"
                 style={{
                   background: "var(--accent-gold)",
-                  color: "#0B0F19",
+                  color: "var(--text-primary)",
                   transition: "all 0.25s ease",
                 }}
                 onMouseEnter={(e) => {
@@ -344,9 +344,9 @@ export function Header() {
           {isProprietaire && (
             <Link href="/publier" onClick={() => setMenuOpen(false)}
               className="flex items-center justify-center gap-2 font-bold py-3 rounded-xl mt-2"
-              style={{ background: "#D4AF37", color: "#0B0F19" }}
+              style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#B8963A"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#D4AF37"; }}>
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "var(--accent-gold)"; }}>
               <Plus className="w-4 h-4" /> Publier une annonce
             </Link>
           )}

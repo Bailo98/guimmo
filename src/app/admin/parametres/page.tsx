@@ -56,13 +56,13 @@ export default function AdminParametresPage() {
                 value={whatsapp}
                 onChange={(e) => setWhatsapp(e.target.value)}
                 placeholder="224628222510"
-                className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
               />
             </div>
             <button
               onClick={save}
               disabled={saving}
-              className="w-full bg-[#D4AF37] text-white font-bold py-2.5 rounded-xl hover:bg-[#B8963A] transition-colors text-sm disabled:opacity-60"
+              className="w-full bg-[var(--accent-gold)] text-white font-bold py-2.5 rounded-xl hover:bg-[#B8963A] transition-colors text-sm disabled:opacity-60"
             >
               {saving ? "Sauvegarde…" : "Enregistrer"}
             </button>

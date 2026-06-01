@@ -14,7 +14,7 @@ const TYPE_LABELS: Record<string, string> = {
   shop: "Boutique", land: "Terrain",
 };
 
-const ACCENT = "#D4AF37";
+const ACCENT = "var(--accent-gold)";
 const S_CARD: React.CSSProperties = {
   background: "rgba(255,255,255,0.03)",
   border: "1px solid var(--border)",
@@ -226,7 +226,7 @@ export default function AdminModerationPage() {
         /* ── Pending listings ── */
         pending.length === 0 ? (
           <div style={{ ...S_CARD, textAlign: "center", padding: "48px 20px" }}>
-            <CheckCircle size={32} style={{ color: "#D4AF37", margin: "0 auto 12px", display: "block" }} />
+            <CheckCircle size={32} style={{ color: "var(--accent-gold)", margin: "0 auto 12px", display: "block" }} />
             <p style={{ color: "var(--text-primary)", fontWeight: 700, marginBottom: 4 }}>File vide !</p>
             <p style={{ color: "#666666", fontSize: 13 }}>Toutes les annonces ont été traitées.</p>
           </div>
@@ -261,7 +261,7 @@ export default function AdminModerationPage() {
                     <button
                       disabled={busy}
                       onClick={() => approve(prop)}
-                      style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 14px", borderRadius: 10, border: "none", background: "#D4AF37", color: "#0A1216", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer" }}
+                      style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "9px 14px", borderRadius: 10, border: "none", background: "var(--accent-gold)", color: "var(--bg-primary)", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer" }}
                     >
                       <CheckCircle size={15} /> Approuver
                     </button>
@@ -352,7 +352,7 @@ export default function AdminModerationPage() {
                     <button
                       disabled={busy}
                       onClick={() => resolveReport(rep, "keep")}
-                      style={{ flex: 1, padding: "8px 12px", borderRadius: 10, border: "none", background: "rgba(212,175,55,0.12)", color: "#D4AF37", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer" }}
+                      style={{ flex: 1, padding: "8px 12px", borderRadius: 10, border: "none", background: "rgba(212,175,55,0.12)", color: "var(--accent-gold)", fontWeight: 700, fontSize: 13, cursor: busy ? "not-allowed" : "pointer" }}
                     >
                       Maintenir l&apos;annonce
                     </button>

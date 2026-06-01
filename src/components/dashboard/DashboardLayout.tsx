@@ -23,7 +23,7 @@ function NavLinks({ tabs, active, onChange, onSelect }: {
           {t.label}
           {(t.badge ?? 0) > 0 && (
             <span className="ml-auto text-[10px] font-black min-w-[18px] h-[18px] flex items-center justify-center rounded-full"
-              style={{ background: "#D4AF37", color: "var(--bg-primary)" }}>
+              style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}>
               {(t.badge ?? 0) > 9 ? "9+" : t.badge}
             </span>
           )}
@@ -54,7 +54,7 @@ function SidebarLogo() {
   return (
     <div className="flex items-center gap-2.5 px-5 py-5" style={{ borderBottom: "1px solid var(--border)" }}>
       <div style={{
-        width: 36, height: 36, background: "#D4AF37", borderRadius: 8,
+        width: 36, height: 36, background: "var(--accent-gold)", borderRadius: 8,
         display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
       }}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -167,7 +167,7 @@ export function DashboardLayout({ tabs, active, onChange, signOut, userName, use
             <div className="flex items-center justify-between px-4 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
               <div className="flex items-center gap-2.5">
                 <div style={{
-                  width: 32, height: 32, background: "#D4AF37", borderRadius: 8,
+                  width: 32, height: 32, background: "var(--accent-gold)", borderRadius: 8,
                   display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                 }}>
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

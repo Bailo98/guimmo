@@ -35,7 +35,7 @@ export function PropertyQRCode({ url, title }: Props) {
   return (
     <div className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)] print:break-inside-avoid">
       <h2 className="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-        <QrCode className="w-4 h-4 text-[#D4AF37]" /> QR Code de l&apos;annonce
+        <QrCode className="w-4 h-4 text-[var(--accent-gold)]" /> QR Code de l&apos;annonce
       </h2>
       <div className="flex items-center gap-4">
         <div className="bg-white p-2 rounded-xl border border-slate-200 flex-shrink-0">
@@ -54,7 +54,7 @@ export function PropertyQRCode({ url, title }: Props) {
           <p className="text-xs text-slate-400 mt-1 mb-3">Collez ce QR code sur une affiche pour que les gens accèdent directement à cette annonce.</p>
           <button
             onClick={handleDownload}
-            className="flex items-center gap-1.5 text-xs font-semibold text-[#D4AF37] hover:text-[#B8963A] transition-colors"
+            className="flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-gold)] hover:text-[#B8963A] transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
             Télécharger le QR code

@@ -3,7 +3,7 @@
 const SIZES = { sm: 32, md: 48, lg: 80, xl: 120 } as const;
 type Size = keyof typeof SIZES;
 
-const PALETTE = ["#D4AF37", "#D4AF37", "#60a5fa", "#a78bfa", "#2dd4bf"];
+const PALETTE = ["var(--accent-gold)", "var(--accent-gold)", "#60a5fa", "#a78bfa", "#2dd4bf"];
 
 function nameColor(name: string): string {
   let h = 0;

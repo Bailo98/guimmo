@@ -89,7 +89,7 @@ function StarRating({ rating }: { rating: number }) {
       {Array.from({ length: 5 }).map((_, i) => (
         <Star
           key={i}
-          className={`w-4 h-4 ${i < rating ? "fill-[#D4AF37] text-[#D4AF37]" : "text-slate-300 dark:text-slate-600"}`}
+          className={`w-4 h-4 ${i < rating ? "fill-[var(--accent-gold)] text-[var(--accent-gold)]" : "text-slate-300 dark:text-slate-600"}`}
         />
       ))}
     </div>
@@ -105,7 +105,7 @@ export default function TemoignagesPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[var(--bg-primary)]">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#D4AF37] via-[#B8963A] to-[#c2540a] text-white">
+      <div className="bg-gradient-to-br from-[var(--accent-gold)] via-[#B8963A] to-[#c2540a] text-white">
         <div className="max-w-4xl mx-auto px-4 py-16 md:py-20 text-center">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-medium mb-5">
             <Star className="w-4 h-4 fill-white" />
@@ -125,17 +125,17 @@ export default function TemoignagesPage() {
         <div className="max-w-4xl mx-auto px-4 py-5">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div className="flex flex-col items-center gap-1">
-              <Users className="w-5 h-5 text-[#D4AF37]" />
+              <Users className="w-5 h-5 text-[var(--accent-gold)]" />
               <span className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">2 400+</span>
               <span className="text-xs text-slate-500 dark:text-slate-400">locataires satisfaits</span>
             </div>
             <div className="flex flex-col items-center gap-1">
-              <Building2 className="w-5 h-5 text-[#D4AF37]" />
+              <Building2 className="w-5 h-5 text-[var(--accent-gold)]" />
               <span className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">890+</span>
               <span className="text-xs text-slate-500 dark:text-slate-400">propriétaires actifs</span>
             </div>
             <div className="flex flex-col items-center gap-1">
-              <BarChart3 className="w-5 h-5 text-[#D4AF37]" />
+              <BarChart3 className="w-5 h-5 text-[var(--accent-gold)]" />
               <span className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">4.8/5</span>
               <span className="text-xs text-slate-500 dark:text-slate-400">note moyenne</span>
             </div>
@@ -190,13 +190,13 @@ export default function TemoignagesPage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/annonces"
-              className="inline-flex items-center justify-center gap-2 bg-[#D4AF37] hover:bg-[#B8963A] text-white font-bold px-7 py-3.5 rounded-xl transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-[var(--accent-gold)] hover:bg-[#B8963A] text-white font-bold px-7 py-3.5 rounded-xl transition-colors"
             >
               Chercher un logement
             </Link>
             <Link
               href="/inscription"
-              className="inline-flex items-center justify-center gap-2 bg-[var(--bg-card-light)] border border-[var(--border)] text-white font-bold px-7 py-3.5 rounded-xl hover:border-[#D4AF37] transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-[var(--bg-card-light)] border border-[var(--border)] text-white font-bold px-7 py-3.5 rounded-xl hover:border-[var(--accent-gold)] transition-colors"
             >
               Créer un compte
             </Link>
@@ -224,14 +224,14 @@ function TestimonialCard({
 
       {/* Saved badge */}
       {testimonial.saved && (
-        <div className="inline-flex items-center gap-1.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-[#D4AF37] text-xs font-semibold px-3 py-1.5 rounded-full w-fit">
+        <div className="inline-flex items-center gap-1.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-[var(--accent-gold)] text-xs font-semibold px-3 py-1.5 rounded-full w-fit">
           💰 Économisé {testimonial.saved}
         </div>
       )}
 
       {/* Author */}
       <div className="flex items-center gap-3 pt-1 border-t border-slate-100 dark:border-[var(--border)] mt-auto">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#B8963A] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--accent-gold)] to-[#B8963A] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
           {testimonial.name.charAt(0)}
         </div>
         <div className="flex-1 min-w-0">

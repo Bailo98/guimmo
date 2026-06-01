@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -151,7 +151,7 @@ function ConnexionForm() {
           <div style={{ display: "flex", gap: 32 }}>
             {STATS.map((s) => (
               <div key={s.val}>
-                <div style={{ fontSize: 22, fontWeight: 900, color: "#D4AF37" }}>{s.val}</div>
+                <div style={{ fontSize: 22, fontWeight: 900, color: "var(--accent-gold)" }}>{s.val}</div>
                 <div style={{ fontSize: 12, color: "rgba(255,255,255,0.52)" }}>{s.label}</div>
               </div>
             ))}
@@ -164,7 +164,7 @@ function ConnexionForm() {
       ══════════════════════════════════════════════ */}
       <div
         className="flex-1 lg:w-1/2 flex flex-col items-center justify-center px-4 py-10"
-        style={{ background: "linear-gradient(160deg, #0A1216 0%, #1a2535 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--bg-primary) 0%, #1a2535 100%)" }}
       >
         {/* Mobile: logo + tagline */}
         <div className="lg:hidden mb-8 text-center">
@@ -207,7 +207,7 @@ function ConnexionForm() {
                     padding: "10px 0", borderRadius: 10, fontSize: 14, fontWeight: 700,
                     border: "none", cursor: "pointer", transition: "all 0.2s",
                     ...(mode === m
-                      ? { background: "#D4AF37", color: "#0A1216" }
+                      ? { background: "var(--accent-gold)", color: "var(--bg-primary)" }
                       : { background: "transparent", color: "rgba(255,255,255,0.48)" }),
                   }}
                 >
@@ -261,7 +261,7 @@ function ConnexionForm() {
                   <label style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.70)" }}>
                     Mot de passe
                   </label>
-                  <Link href="/mot-de-passe-oublie" style={{ fontSize: 12, color: "#D4AF37", textDecoration: "none" }}>
+                  <Link href="/mot-de-passe-oublie" style={{ fontSize: 12, color: "var(--accent-gold)", textDecoration: "none" }}>
                     Oublié ?
                   </Link>
                 </div>
@@ -299,7 +299,7 @@ function ConnexionForm() {
                 disabled={loading}
                 style={{
                   width: "100%", padding: "14px 0",
-                  background: "#D4AF37", color: "#0A1216",
+                  background: "var(--accent-gold)", color: "var(--bg-primary)",
                   fontWeight: 800, fontSize: 15, borderRadius: 14, border: "none",
                   cursor: loading ? "not-allowed" : "pointer",
                   opacity: loading ? 0.75 : 1,
@@ -349,7 +349,7 @@ function ConnexionForm() {
           {/* Sign-up link */}
           <p style={{ textAlign: "center", fontSize: 14, color: "rgba(255,255,255,0.42)", marginTop: 20 }}>
             Pas encore de compte ?{" "}
-            <Link href="/inscription" style={{ color: "#D4AF37", fontWeight: 700, textDecoration: "none" }}>
+            <Link href="/inscription" style={{ color: "var(--accent-gold)", fontWeight: 700, textDecoration: "none" }}>
               S&apos;inscrire
             </Link>
           </p>
@@ -365,7 +365,7 @@ export default function ConnexionPage() {
       fallback={
         <div style={{
           minHeight: "calc(100svh - 72px)",
-          background: "linear-gradient(160deg, #0A1216 0%, #1a2535 100%)",
+          background: "linear-gradient(160deg, var(--bg-primary) 0%, #1a2535 100%)",
         }} />
       }
     >

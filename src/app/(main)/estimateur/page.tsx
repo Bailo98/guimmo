@@ -84,7 +84,7 @@ export default function EstimateurPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[var(--bg-primary)]">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#D4AF37] via-[#B8963A] to-[#c2540a] text-white">
+      <div className="bg-gradient-to-br from-[var(--accent-gold)] via-[#B8963A] to-[#c2540a] text-white">
         <div className="max-w-5xl mx-auto px-4 py-14 md:py-16">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-medium mb-5">
             <Calculator className="w-4 h-4" />
@@ -117,7 +117,7 @@ export default function EstimateurPage() {
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[var(--bg-primary)] border border-[var(--border)] rounded-xl px-4 py-3 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
+                  className="w-full bg-slate-50 dark:bg-[var(--bg-primary)] border border-[var(--border)] rounded-xl px-4 py-3 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/50"
                 >
                   {PROPERTY_TYPES.map((t) => (
                     <option key={t.value} value={t.value}>
@@ -135,7 +135,7 @@ export default function EstimateurPage() {
                 <select
                   value={neighborhood}
                   onChange={(e) => setNeighborhood(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[var(--bg-primary)] border border-[var(--border)] rounded-xl px-4 py-3 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
+                  className="w-full bg-slate-50 dark:bg-[var(--bg-primary)] border border-[var(--border)] rounded-xl px-4 py-3 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/50"
                 >
                   {NEIGHBORHOODS.map((n) => (
                     <option key={n.id} value={n.id}>
@@ -148,7 +148,7 @@ export default function EstimateurPage() {
               {/* Surface */}
               <div>
                 <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                  Surface : <span className="text-[#D4AF37]">{surface} m²</span>
+                  Surface : <span className="text-[var(--accent-gold)]">{surface} m²</span>
                 </label>
                 <input
                   type="range"
@@ -157,7 +157,7 @@ export default function EstimateurPage() {
                   step={5}
                   value={surface}
                   onChange={(e) => setSurface(Number(e.target.value))}
-                  className="w-full accent-[#D4AF37]"
+                  className="w-full accent-[var(--accent-gold)]"
                 />
                 <div className="flex justify-between text-xs text-slate-400 mt-1">
                   <span>15 m²</span>
@@ -169,7 +169,7 @@ export default function EstimateurPage() {
                   max={400}
                   value={surface}
                   onChange={(e) => setSurface(Math.max(15, Math.min(400, Number(e.target.value))))}
-                  className="mt-2 w-32 bg-slate-50 dark:bg-[var(--bg-primary)] border border-[var(--border)] rounded-xl px-3 py-2 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50"
+                  className="mt-2 w-32 bg-slate-50 dark:bg-[var(--bg-primary)] border border-[var(--border)] rounded-xl px-3 py-2 text-slate-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/50"
                 />
               </div>
 
@@ -186,8 +186,8 @@ export default function EstimateurPage() {
                       className={cn(
                         "w-11 h-11 rounded-xl font-bold text-sm border transition-all",
                         rooms === n
-                          ? "bg-[#D4AF37] text-white border-[#D4AF37]"
-                          : "bg-slate-50 dark:bg-[var(--bg-primary)] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[var(--border)] hover:border-[#D4AF37] hover:text-[#D4AF37]"
+                          ? "bg-[var(--accent-gold)] text-white border-[var(--accent-gold)]"
+                          : "bg-slate-50 dark:bg-[var(--bg-primary)] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[var(--border)] hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)]"
                       )}
                     >
                       {n}
@@ -210,7 +210,7 @@ export default function EstimateurPage() {
                   onClick={() => setFurnished((f) => !f)}
                   className={cn(
                     "relative w-12 h-6 rounded-full transition-colors",
-                    furnished ? "bg-[#D4AF37]" : "bg-slate-200 dark:bg-slate-700"
+                    furnished ? "bg-[var(--accent-gold)]" : "bg-slate-200 dark:bg-slate-700"
                   )}
                   role="switch"
                   aria-checked={furnished}
@@ -227,7 +227,7 @@ export default function EstimateurPage() {
               {/* CTA */}
               <button
                 onClick={handleEstimate}
-                className="w-full bg-[#D4AF37] hover:bg-[#B8963A] text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-base"
+                className="w-full bg-[var(--accent-gold)] hover:bg-[#B8963A] text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 text-base"
               >
                 <Calculator className="w-5 h-5" />
                 Estimer le loyer
@@ -254,9 +254,9 @@ export default function EstimateurPage() {
                   </div>
 
                   {/* Mid */}
-                  <div className="bg-gradient-to-br from-[#D4AF37]/10 to-[#B8963A]/5 border border-[#D4AF37]/20 rounded-xl p-4 text-center mb-5">
+                  <div className="bg-gradient-to-br from-[var(--accent-gold)]/10 to-[#B8963A]/5 border border-[var(--accent-gold)]/20 rounded-xl p-4 text-center mb-5">
                     <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">Prix estimé</p>
-                    <p className="text-3xl font-black text-[#D4AF37]">
+                    <p className="text-3xl font-black text-[var(--accent-gold)]">
                       {formatPrice(result.mid)}
                     </p>
                     <p className="text-xs text-slate-400 mt-1">par mois</p>
@@ -275,7 +275,7 @@ export default function EstimateurPage() {
                       </div>
                       <div className="h-3 bg-slate-100 dark:bg-[var(--bg-primary)] rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-[#D4AF37] rounded-full transition-all duration-500"
+                          className="h-full bg-[var(--accent-gold)] rounded-full transition-all duration-500"
                           style={{ width: `${Math.min(100, (result.mid / (avgMarket * 2)) * 100)}%` }}
                         />
                       </div>
@@ -300,7 +300,7 @@ export default function EstimateurPage() {
                     "mt-4 flex items-center gap-2 text-sm font-semibold rounded-xl px-3 py-2",
                     pctDiff > 0
                       ? "bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
-                      : "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-[#D4AF37]"
+                      : "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-[var(--accent-gold)]"
                   )}>
                     <TrendingUp className="w-4 h-4" />
                     {pctDiff > 0
@@ -329,7 +329,7 @@ export default function EstimateurPage() {
                   </p>
                   <Link
                     href="/publier"
-                    className="flex items-center justify-center gap-2 bg-[#D4AF37] hover:bg-[#B8963A] text-white font-bold px-5 py-3 rounded-xl transition-colors text-sm"
+                    className="flex items-center justify-center gap-2 bg-[var(--accent-gold)] hover:bg-[#B8963A] text-white font-bold px-5 py-3 rounded-xl transition-colors text-sm"
                   >
                     Publier mon annonce
                     <ChevronRight className="w-4 h-4" />
@@ -338,8 +338,8 @@ export default function EstimateurPage() {
               </>
             ) : (
               <div className="bg-[var(--bg-card-light)] rounded-2xl border border-[var(--border)] p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-[#D4AF37]/10 flex items-center justify-center mx-auto mb-4">
-                  <Calculator className="w-8 h-8 text-[#D4AF37]" />
+                <div className="w-16 h-16 rounded-full bg-[var(--accent-gold)]/10 flex items-center justify-center mx-auto mb-4">
+                  <Calculator className="w-8 h-8 text-[var(--accent-gold)]" />
                 </div>
                 <h3 className="font-bold text-slate-900 dark:text-white mb-2">
                   Votre estimation apparaîtra ici

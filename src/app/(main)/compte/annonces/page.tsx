@@ -12,8 +12,8 @@ import { useAppStore } from "@/lib/store";
 
 const STATUS_CONFIG = {
   active: { label: "Active", color: "text-green-500", bg: "bg-green-100 dark:bg-green-900/20", icon: CheckCircle },
-  paused: { label: "En pause", color: "text-[#D4AF37]", bg: "bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15", icon: Clock },
-  pending: { label: "En attente", color: "text-[#D4AF37]", bg: "bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15", icon: Clock },
+  paused: { label: "En pause", color: "text-[var(--accent-gold)]", bg: "bg-[var(--accent-gold)]/10 dark:bg-[var(--accent-gold)]/15", icon: Clock },
+  pending: { label: "En attente", color: "text-[var(--accent-gold)]", bg: "bg-[var(--accent-gold)]/10 dark:bg-[var(--accent-gold)]/15", icon: Clock },
   rented: { label: "Louée", color: "text-blue-500", bg: "bg-blue-100 dark:bg-blue-900/20", icon: CheckCircle },
   suspended: { label: "Suspendue", color: "text-red-500", bg: "bg-red-100 dark:bg-red-900/20", icon: XCircle },
   sold: { label: "Vendue", color: "text-purple-500", bg: "bg-purple-100 dark:bg-purple-900/20", icon: CheckCircle },
@@ -54,7 +54,7 @@ export default function MesAnnoncesPage() {
         </div>
         <Link
           href="/publier"
-          className="flex items-center gap-1.5 bg-[#D4AF37] text-white text-sm font-bold px-4 py-2.5 rounded-xl hover:bg-[#B8963A] transition-colors"
+          className="flex items-center gap-1.5 bg-[var(--accent-gold)] text-white text-sm font-bold px-4 py-2.5 rounded-xl hover:bg-[#B8963A] transition-colors"
         >
           <Plus className="w-4 h-4" /> Publier
         </Link>
@@ -65,7 +65,7 @@ export default function MesAnnoncesPage() {
           <p className="text-slate-400 text-sm mb-4">Vous n&apos;avez pas encore d&apos;annonce publiée.</p>
           <Link
             href="/publier"
-            className="inline-flex items-center gap-1.5 bg-[#D4AF37] text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-[#B8963A] transition-colors"
+            className="inline-flex items-center gap-1.5 bg-[var(--accent-gold)] text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-[#B8963A] transition-colors"
           >
             <Plus className="w-4 h-4" /> Publier ma première annonce
           </Link>
@@ -92,7 +92,7 @@ export default function MesAnnoncesPage() {
                     <img src={p.images[0].url} alt="" className="w-full h-full object-cover" />
                   )}
                   {p.isBoosted && (
-                    <div className="absolute inset-0 bg-[#D4AF37]/80 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-[var(--accent-gold)]/80 flex items-center justify-center">
                       <Zap className="w-4 h-4 text-white" />
                     </div>
                   )}
@@ -103,7 +103,7 @@ export default function MesAnnoncesPage() {
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <p className="font-semibold text-slate-900 dark:text-white text-sm line-clamp-1">{p.title}</p>
-                      <p className="text-[#D4AF37] font-bold text-sm">
+                      <p className="text-[var(--accent-gold)] font-bold text-sm">
                         {formatPrice(p.price)}{p.pricePeriod === "month" ? "/mois" : ""}
                       </p>
                     </div>
@@ -127,7 +127,7 @@ export default function MesAnnoncesPage() {
                   <div className="flex flex-wrap gap-2 mt-3">
                     <Link
                       href={`/annonces/${p.id}`}
-                      className="flex-1 text-center text-xs font-semibold py-1.5 rounded-lg border border-[var(--border)] text-slate-600 dark:text-slate-300 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors"
+                      className="flex-1 text-center text-xs font-semibold py-1.5 rounded-lg border border-[var(--border)] text-slate-600 dark:text-slate-300 hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)] transition-colors"
                     >
                       Voir
                     </Link>
@@ -145,7 +145,7 @@ export default function MesAnnoncesPage() {
                       className={`flex items-center justify-center gap-1 text-xs font-semibold py-1.5 px-3 rounded-lg border transition-colors ${
                         isPaused
                           ? "border-green-400 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20"
-                          : "border-slate-200 dark:border-[var(--border)] text-slate-500 dark:text-slate-400 hover:border-[#D4AF37] hover:text-[#D4AF37]"
+                          : "border-slate-200 dark:border-[var(--border)] text-slate-500 dark:text-slate-400 hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)]"
                       }`}
                       title={isPaused ? "Réactiver" : "Mettre en pause"}
                     >
@@ -173,7 +173,7 @@ export default function MesAnnoncesPage() {
                     {!p.isBoosted && (
                       <button
                         onClick={() => setBoostingProperty(p.id)}
-                        className="flex items-center justify-center gap-1 text-xs font-bold py-1.5 px-3 rounded-lg bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#B8963A]/20 transition-colors"
+                        className="flex items-center justify-center gap-1 text-xs font-bold py-1.5 px-3 rounded-lg bg-[var(--accent-gold)]/10 text-[var(--accent-gold)] hover:bg-[#B8963A]/20 transition-colors"
                       >
                         <Zap className="w-3 h-3" /> Booster
                       </button>

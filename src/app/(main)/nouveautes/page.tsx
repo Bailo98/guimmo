@@ -47,7 +47,7 @@ export default function NouveautesPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[var(--bg-primary)]">
       {/* Orange hero banner */}
-      <div className="bg-gradient-to-br from-[#D4AF37] via-[#B8963A] to-[#c2540a] text-white">
+      <div className="bg-gradient-to-br from-[var(--accent-gold)] via-[#B8963A] to-[#c2540a] text-white">
         <div className="max-w-6xl mx-auto px-4 py-10 md:py-14">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
@@ -83,7 +83,7 @@ export default function NouveautesPage() {
               className={`inline-flex items-center gap-2 font-bold text-sm px-5 py-2.5 rounded-xl transition-all ${
                 subscribed
                   ? "bg-white/30 text-white cursor-default"
-                  : "bg-[#D4AF37] text-[#0A1216] hover:bg-[#B8963A]"
+                  : "bg-[var(--accent-gold)] text-[var(--bg-primary)] hover:bg-[#B8963A]"
               }`}
             >
               <Bell className={`w-4 h-4 ${subscribed ? "fill-white" : ""}`} />
@@ -101,7 +101,7 @@ export default function NouveautesPage() {
             <h2 className="text-xl font-bold text-slate-900 dark:text-white">
               {properties.length > 0 ? (
                 <>
-                  <span className="text-[#D4AF37]">{properties.length}</span>{" "}
+                  <span className="text-[var(--accent-gold)]">{properties.length}</span>{" "}
                   annonce{properties.length > 1 ? "s" : ""} récente{properties.length > 1 ? "s" : ""}
                 </>
               ) : (
@@ -120,7 +120,7 @@ export default function NouveautesPage() {
               setWeekCount(getThisWeekCount(recent));
               toast("Liste mise à jour", "success");
             }}
-            className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-[#D4AF37] transition-colors"
+            className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-[var(--accent-gold)] transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             Actualiser
@@ -136,7 +136,7 @@ export default function NouveautesPage() {
         ) : (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <div className="w-20 h-20 rounded-full bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center mb-5">
-              <Sparkles className="w-10 h-10 text-[#D4AF37]" />
+              <Sparkles className="w-10 h-10 text-[var(--accent-gold)]" />
             </div>
             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
               Pas encore de nouveautés
@@ -147,7 +147,7 @@ export default function NouveautesPage() {
             </p>
             <button
               onClick={handleSubscribe}
-              className="inline-flex items-center gap-2 bg-[#D4AF37] hover:bg-[#B8963A] text-white font-bold px-6 py-3 rounded-xl transition-colors"
+              className="inline-flex items-center gap-2 bg-[var(--accent-gold)] hover:bg-[#B8963A] text-white font-bold px-6 py-3 rounded-xl transition-colors"
             >
               <Bell className="w-4 h-4" />
               Activer les alertes
@@ -157,9 +157,9 @@ export default function NouveautesPage() {
 
         {/* Alert CTA strip */}
         {properties.length > 0 && (
-          <div className="mt-12 bg-[#D4AF37]/10 dark:bg-[#D4AF37]/5 border border-[#D4AF37]/20 rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#D4AF37]/20 flex items-center justify-center flex-shrink-0">
-              <Bell className="w-6 h-6 text-[#D4AF37]" />
+          <div className="mt-12 bg-[var(--accent-gold)]/10 dark:bg-[var(--accent-gold)]/5 border border-[var(--accent-gold)]/20 rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-[var(--accent-gold)]/20 flex items-center justify-center flex-shrink-0">
+              <Bell className="w-6 h-6 text-[var(--accent-gold)]" />
             </div>
             <div className="flex-1 text-center sm:text-left">
               <h3 className="font-bold text-slate-900 dark:text-white">
@@ -174,8 +174,8 @@ export default function NouveautesPage() {
               onClick={handleSubscribe}
               className={`flex-shrink-0 inline-flex items-center gap-2 font-bold text-sm px-5 py-2.5 rounded-xl transition-all ${
                 subscribed
-                  ? "bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-[#D4AF37]"
-                  : "bg-[#D4AF37] hover:bg-[#B8963A] text-white"
+                  ? "bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-[var(--accent-gold)]"
+                  : "bg-[var(--accent-gold)] hover:bg-[#B8963A] text-white"
               }`}
             >
               <Bell className={`w-4 h-4 ${subscribed ? "fill-current" : ""}`} />

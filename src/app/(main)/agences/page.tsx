@@ -86,9 +86,9 @@ const AGENCIES: Agency[] = [
 
 // Rotating avatar background colors (orange shades + complementary)
 const AVATAR_COLORS = [
-  "bg-[#D4AF37]",
+  "bg-[var(--accent-gold)]",
   "bg-[#B8963A]",
-  "bg-[#D4AF37]",
+  "bg-[var(--accent-gold)]",
   "bg-[#c2540a]",
   "bg-[#f59e0b]",
 ];
@@ -122,10 +122,10 @@ export default function AgencesPage() {
       <div className="bg-white dark:bg-[#1e2430] border-b border-slate-100 dark:border-[var(--border)]">
         <div className="max-w-6xl mx-auto px-4 py-10 md:py-14">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/10 flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-[#D4AF37]" />
+            <div className="w-10 h-10 rounded-xl bg-[var(--accent-gold)]/10 flex items-center justify-center">
+              <Building2 className="w-5 h-5 text-[var(--accent-gold)]" />
             </div>
-            <span className="text-[#D4AF37] font-semibold text-sm uppercase tracking-wider">
+            <span className="text-[var(--accent-gold)] font-semibold text-sm uppercase tracking-wider">
               Partenaires officiels
             </span>
           </div>
@@ -148,7 +148,7 @@ export default function AgencesPage() {
               <span>Notées par les clients</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-              <Phone className="w-4 h-4 text-[#D4AF37]" />
+              <Phone className="w-4 h-4 text-[var(--accent-gold)]" />
               <span>Contact direct</span>
             </div>
           </div>
@@ -179,7 +179,7 @@ export default function AgencesPage() {
                       {agency.name}
                     </h2>
                     {agency.verified && (
-                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-[#D4AF37] bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-full mt-1">
+                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-green-600 dark:text-[var(--accent-gold)] bg-green-50 dark:bg-green-900/20 px-2 py-0.5 rounded-full mt-1">
                         <CheckCircle2 className="w-3 h-3" />
                         Agence vérifiée
                       </span>
@@ -197,7 +197,7 @@ export default function AgencesPage() {
                   {agency.specialties.map((spec) => (
                     <span
                       key={spec}
-                      className="inline-flex items-center gap-1 text-xs font-medium text-[#D4AF37] bg-[#D4AF37]/10 px-2.5 py-1 rounded-full"
+                      className="inline-flex items-center gap-1 text-xs font-medium text-[var(--accent-gold)] bg-[var(--accent-gold)]/10 px-2.5 py-1 rounded-full"
                     >
                       <Tag className="w-3 h-3" />
                       {spec}
@@ -228,14 +228,14 @@ export default function AgencesPage() {
               <div className="p-4 pt-0 flex gap-2">
                 <a
                   href={`tel:${agency.phone.replace(/\s/g, "")}`}
-                  className="flex items-center justify-center gap-1.5 text-xs font-semibold py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-colors flex-shrink-0"
+                  className="flex items-center justify-center gap-1.5 text-xs font-semibold py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)] transition-colors flex-shrink-0"
                 >
                   <Phone className="w-3.5 h-3.5" />
                   {agency.phone}
                 </a>
                 <Link
                   href="/annonces"
-                  className="flex-1 text-center text-xs font-bold py-2.5 px-3 rounded-xl bg-[#D4AF37] hover:bg-[#B8963A] text-white transition-colors"
+                  className="flex-1 text-center text-xs font-bold py-2.5 px-3 rounded-xl bg-[var(--accent-gold)] hover:bg-[#B8963A] text-white transition-colors"
                 >
                   Voir les annonces
                 </Link>
@@ -246,7 +246,7 @@ export default function AgencesPage() {
 
         {/* Bottom CTA */}
         <div className="mt-14 text-center bg-white dark:bg-[#1e2430] rounded-2xl border border-slate-100 dark:border-[var(--border)] p-8">
-          <Building2 className="w-10 h-10 text-[#D4AF37] mx-auto mb-3" />
+          <Building2 className="w-10 h-10 text-[var(--accent-gold)] mx-auto mb-3" />
           <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
             Vous êtes une agence immobilière ?
           </h3>
@@ -256,7 +256,7 @@ export default function AgencesPage() {
           </p>
           <Link
             href="/publier"
-            className="inline-flex items-center gap-2 bg-[#D4AF37] hover:bg-[#B8963A] text-white font-bold px-7 py-3 rounded-xl transition-colors"
+            className="inline-flex items-center gap-2 bg-[var(--accent-gold)] hover:bg-[#B8963A] text-white font-bold px-7 py-3 rounded-xl transition-colors"
           >
             Devenir partenaire
           </Link>

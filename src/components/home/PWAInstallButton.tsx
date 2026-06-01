@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -64,7 +64,7 @@ export function PWAInstallButton() {
       onClick={handleInstall}
       disabled={installing}
       className="inline-flex items-center gap-2 font-bold px-6 py-3 rounded-xl transition-opacity hover:opacity-90 disabled:opacity-60 text-sm"
-      style={{ background: "#D4AF37", color: "#0A1216" }}
+      style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
     >
       {installing ? "Installation en cours…" : "📱 Ajouter à l'écran d'accueil"}
     </button>

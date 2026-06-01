@@ -106,7 +106,7 @@ export function ReportButton({ propertyId, propertyTitle = "", isLoggedIn = fals
       >
         {done ? (
           <div className="text-center py-4 space-y-3">
-            <CheckCircle2 className="w-12 h-12 text-[#D4AF37] mx-auto" />
+            <CheckCircle2 className="w-12 h-12 text-[var(--accent-gold)] mx-auto" />
             <p className="text-white font-bold text-lg">Merci pour votre signalement</p>
             <p className="text-white/50 text-sm">Notre équipe va examiner cette annonce.</p>
             <button

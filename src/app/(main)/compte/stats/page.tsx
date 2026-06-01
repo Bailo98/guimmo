@@ -97,7 +97,7 @@ export default function StatsPage() {
   if (loading) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12 flex justify-center">
-        <div style={{ width: 32, height: 32, border: "2px solid #D4AF37", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+        <div style={{ width: 32, height: 32, border: "2px solid var(--accent-gold)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
@@ -115,7 +115,7 @@ export default function StatsPage() {
         {[
           { label: "Vues ce mois", value: totalViewsMonth.toLocaleString("fr-FR"), icon: Eye, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/20" },
           { label: "Contacts WhatsApp", value: String(totalWhatsApp), icon: MessageCircle, color: "text-green-500", bg: "bg-green-50 dark:bg-green-900/20" },
-          { label: "Annonces actives", value: String(activeCount), icon: Home, color: "text-[#D4AF37]", bg: "bg-orange-50 dark:bg-orange-900/20" },
+          { label: "Annonces actives", value: String(activeCount), icon: Home, color: "text-[var(--accent-gold)]", bg: "bg-orange-50 dark:bg-orange-900/20" },
           { label: "Taux de contact", value: `${contactRate}%`, icon: TrendingUp, color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-900/20" },
         ].map((s) => {
           const Icon = s.icon;
@@ -134,13 +134,13 @@ export default function StatsPage() {
       {/* Weekly chart */}
       <div className="bg-[var(--bg-card)] rounded-2xl p-5 border border-[var(--border)]">
         <h2 className="font-bold mb-4 flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
-          <BarChart3 className="w-4 h-4 text-[#D4AF37]" /> Vues cette semaine
+          <BarChart3 className="w-4 h-4 text-[var(--accent-gold)]" /> Vues cette semaine
         </h2>
         <div className="flex items-end gap-2 h-32">
           {weeklyViews.map((v, i) => (
             <div key={i} className="flex-1 flex flex-col items-center gap-1">
               {v > 0 && <span className="text-[10px]" style={{ color: "var(--text-secondary)" }}>{v}</span>}
-              <div className="w-full bg-[#D4AF37] rounded-t-lg transition-all" style={{ height: `${(v / maxViews) * 96}px`, minHeight: v > 0 ? 4 : 0 }} />
+              <div className="w-full bg-[var(--accent-gold)] rounded-t-lg transition-all" style={{ height: `${(v / maxViews) * 96}px`, minHeight: v > 0 ? 4 : 0 }} />
               <span className="text-[10px]" style={{ color: "var(--text-secondary)" }}>{DAYS[i]}</span>
             </div>
           ))}
@@ -158,7 +158,7 @@ export default function StatsPage() {
           <div className="space-y-3">
             {properties.slice(0, 5).map((p, i) => (
               <div key={p.id} className="flex items-center gap-3">
-                <span className="w-6 h-6 bg-[#D4AF37]/10 text-[#D4AF37] text-xs font-black rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="w-6 h-6 bg-[var(--accent-gold)]/10 text-[var(--accent-gold)] text-xs font-black rounded-full flex items-center justify-center flex-shrink-0">
                   {i + 1}
                 </span>
                 <div className="flex-1 min-w-0">
@@ -183,7 +183,7 @@ export default function StatsPage() {
       <div className="bg-[var(--bg-card)] rounded-2xl p-5 border border-[var(--border)]">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-bold flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
-            <Zap className="w-4 h-4 text-[#D4AF37]" /> Boostez vos annonces
+            <Zap className="w-4 h-4 text-[var(--accent-gold)]" /> Boostez vos annonces
           </h2>
         </div>
         <p className="text-sm mb-4" style={{ color: "var(--text-secondary)" }}>
@@ -193,7 +193,7 @@ export default function StatsPage() {
           onClick={() => setShowBoostModal(true)}
           disabled={properties.length === 0}
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-colors disabled:opacity-40"
-          style={{ background: "#D4AF37", color: "#0A1216" }}
+          style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
         >
           <Zap className="w-4 h-4" /> Booster une annonce
         </button>
@@ -224,7 +224,7 @@ export default function StatsPage() {
                 <select
                   value={selectedAnnonce}
                   onChange={(e) => setSelectedAnnonce(e.target.value)}
-                  className="w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                  className="w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
                   style={{ background: "var(--bg-card)", borderColor: "var(--border)", color: "var(--text-primary)" }}
                 >
                   {properties.map((a) => (
@@ -250,7 +250,7 @@ export default function StatsPage() {
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                  className="w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
                   style={{ background: "var(--bg-card)", borderColor: "var(--border)", color: "var(--text-primary)" }}
                 />
               </div>

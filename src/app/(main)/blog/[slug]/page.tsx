@@ -107,9 +107,9 @@ function readTime(wordCount: number): number {
 
 const CATEGORY_COLORS: Record<string, string> = {
   Marché: "bg-blue-500/20 text-blue-400",
-  Conseils: "bg-green-500/20 text-[#D4AF37]",
+  Conseils: "bg-green-500/20 text-[var(--accent-gold)]",
   Quartiers: "bg-purple-500/20 text-purple-400",
-  Juridique: "bg-[#D4AF37]/20 text-[#D4AF37]",
+  Juridique: "bg-[var(--accent-gold)]/20 text-[var(--accent-gold)]",
   Actualités: "bg-rose-500/20 text-rose-400",
 };
 
@@ -235,12 +235,12 @@ export default async function BlogArticlePage({ params }: PageProps) {
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-8 flex-wrap">
-          <Link href="/" className="flex items-center gap-1 hover:text-[#D4AF37] transition-colors">
+          <Link href="/" className="flex items-center gap-1 hover:text-[var(--accent-gold)] transition-colors">
             <Home className="w-3.5 h-3.5" />
             Accueil
           </Link>
           <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
-          <Link href="/blog" className="hover:text-[#D4AF37] transition-colors">
+          <Link href="/blog" className="hover:text-[var(--accent-gold)] transition-colors">
             Blog
           </Link>
           <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
@@ -271,7 +271,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
                   <Calendar className="w-4 h-4" />
                   {formatArticleDate(article.date)}
                 </span>
-                <span className="flex items-center gap-1.5 bg-[#D4AF37]/10 text-[#D4AF37] font-semibold px-2.5 py-0.5 rounded-full">
+                <span className="flex items-center gap-1.5 bg-[var(--accent-gold)]/10 text-[var(--accent-gold)] font-semibold px-2.5 py-0.5 rounded-full">
                   <Clock className="w-3.5 h-3.5" />
                   {mins} min de lecture
                 </span>
@@ -312,7 +312,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
             />
 
             {/* Bottom CTA */}
-            <div className="mt-10 p-6 bg-gradient-to-br from-[#D4AF37]/10 to-[#B8963A]/5 border border-[#D4AF37]/20 rounded-2xl">
+            <div className="mt-10 p-6 bg-gradient-to-br from-[var(--accent-gold)]/10 to-[#B8963A]/5 border border-[var(--accent-gold)]/20 rounded-2xl">
               <h3 className="font-bold text-slate-900 dark:text-white mb-2">
                 Prêt à trouver votre logement ?
               </h3>
@@ -321,7 +321,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
               </p>
               <Link
                 href="/annonces"
-                className="inline-flex items-center gap-2 bg-[#D4AF37] hover:bg-[#B8963A] text-white font-bold px-5 py-2.5 rounded-xl transition-colors text-sm"
+                className="inline-flex items-center gap-2 bg-[var(--accent-gold)] hover:bg-[#B8963A] text-white font-bold px-5 py-2.5 rounded-xl transition-colors text-sm"
               >
                 Voir les annonces
                 <ChevronRight className="w-4 h-4" />
@@ -354,7 +354,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-slate-800 dark:text-white line-clamp-2 group-hover:text-[#D4AF37] transition-colors">
+                        <p className="text-sm font-semibold text-slate-800 dark:text-white line-clamp-2 group-hover:text-[var(--accent-gold)] transition-colors">
                           {a.title}
                         </p>
                         <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
@@ -368,7 +368,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
               </div>
 
               {/* Newsletter teaser */}
-              <div className="bg-gradient-to-br from-[#D4AF37] to-[#B8963A] rounded-2xl p-5 text-white">
+              <div className="bg-gradient-to-br from-[var(--accent-gold)] to-[#B8963A] rounded-2xl p-5 text-white">
                 <h3 className="font-bold mb-2">Restez informé</h3>
                 <p className="text-white/80 text-sm mb-4">
                   Recevez nos meilleurs conseils immobiliers directement sur WhatsApp.
@@ -377,7 +377,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
                   href="https://wa.me/224628222510"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-white text-[#D4AF37] font-bold px-4 py-2 rounded-xl text-sm hover:bg-white/90 transition-colors"
+                  className="inline-flex items-center gap-2 bg-white text-[var(--accent-gold)] font-bold px-4 py-2 rounded-xl text-sm hover:bg-white/90 transition-colors"
                 >
                   Rejoindre
                 </a>
@@ -413,7 +413,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
                   >
                     {a.category}
                   </span>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-snug group-hover:text-[#D4AF37] transition-colors line-clamp-2">
+                  <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-snug group-hover:text-[var(--accent-gold)] transition-colors line-clamp-2">
                     {a.title}
                   </h3>
                   <p className="text-xs text-slate-400 mt-2 flex items-center gap-1">

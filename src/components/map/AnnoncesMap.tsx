@@ -145,7 +145,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
           border: "1px solid rgba(255,255,255,0.12)",
           borderRadius: 12,
           padding: "9px 14px",
-          color: userPos ? "#D4AF37" : "rgba(255,255,255,0.80)",
+          color: userPos ? "var(--accent-gold)" : "rgba(255,255,255,0.80)",
           display: "flex",
           alignItems: "center",
           gap: 6,
@@ -166,7 +166,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
               width: 14,
               height: 14,
               border: "2px solid rgba(255,255,255,0.3)",
-              borderTopColor: "#D4AF37",
+              borderTopColor: "var(--accent-gold)",
               borderRadius: "50%",
               display: "inline-block",
               animation: "spin 0.7s linear infinite",
@@ -225,7 +225,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
           <div style={{ flex: 1, minWidth: 0 }}>
             <p
               style={{
-                color: "#D4AF37",
+                color: "var(--accent-gold)",
                 fontWeight: 800,
                 fontSize: 15,
                 lineHeight: 1.2,
@@ -266,7 +266,7 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
             <Link
               href={`/annonces/${selected.id}`}
               style={{
-                background: "#D4AF37",
+                background: "var(--accent-gold)",
                 color: "var(--bg-primary)",
                 fontWeight: 800,
                 fontSize: 13,

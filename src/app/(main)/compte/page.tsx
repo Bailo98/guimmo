@@ -435,7 +435,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
                   <p className="font-bold text-sm mt-1" style={{ color: "var(--accent-gold-light)" }}>{formatPrice(listing.price, "GNF", listing.price_period)}</p>
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                     {listing.status === "pending" ? (
-                      <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>
+                      <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)" }}>
                         ⏳ En attente de validation
                       </span>
                     ) : (
@@ -473,17 +473,17 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
                         setActionLoading(null);
                       }}
                       disabled={busy || isRenewBusy}
-                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-[#D4AF37] transition-colors hover:bg-amber-900/10"
+                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold text-[var(--accent-gold)] transition-colors hover:bg-amber-900/10"
                       style={{ border: "1px solid rgba(212,175,55,0.30)" }}
                     >
-                      {isRenewBusy ? <div className="w-3.5 h-3.5 border border-[#D4AF37] border-t-transparent rounded-full animate-spin" /> : <RotateCcw className="w-3.5 h-3.5" />}
+                      {isRenewBusy ? <div className="w-3.5 h-3.5 border border-[var(--accent-gold)] border-t-transparent rounded-full animate-spin" /> : <RotateCcw className="w-3.5 h-3.5" />}
                       Renouveler
                     </button>
                   );
                 })()}
                 <button onClick={() => toggleAvailability(listing)} disabled={busy}
                   className={cn("flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold transition-colors",
-                    listing.available_now ? "text-red-400 hover:bg-red-900/20" : "text-[#D4AF37] hover:bg-green-900/20")}
+                    listing.available_now ? "text-red-400 hover:bg-red-900/20" : "text-[var(--accent-gold)] hover:bg-green-900/20")}
                   style={{ border: listing.available_now ? "1px solid rgba(240,68,68,0.25)" : "1px solid rgba(212,175,55,0.25)" }}>
                   {isAvailBusy ? <div className="w-3.5 h-3.5 border border-current border-t-transparent rounded-full animate-spin" />
                     : listing.available_now ? <><XCircle className="w-3.5 h-3.5" /> Marquer loué</>
@@ -745,7 +745,7 @@ function VisitRequestsManager({ userId, onPendingCount }: {
     if (s === "confirmed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e" }}>✅ Confirmée</span>;
     if (s === "cancelled") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "#ef4444" }}>❌ Annulée</span>;
     if (s === "completed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(160,160,160,0.15)", color: "#aaa" }}>✓ Terminée</span>;
-    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>⏳ En attente</span>;
+    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)" }}>⏳ En attente</span>;
   };
 
   if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: "var(--bg-secondary)" }} />)}</div>;
@@ -769,7 +769,7 @@ function VisitRequestsManager({ userId, onPendingCount }: {
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                  style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>{ini}</div>
+                  style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)" }}>{ini}</div>
                 <div>
                   <p className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>{v.visitor_name}</p>
                   <p className="text-xs" style={{ color: "var(--text-primary-faint)" }}>{v.properties?.title ?? v.property_id}</p>
@@ -885,7 +885,7 @@ function VisitorVisitsSection({ userId }: { userId: string }) {
     if (s === "confirmed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e" }}>✅ Confirmée</span>;
     if (s === "cancelled") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "#ef4444" }}>❌ Annulée</span>;
     if (s === "completed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(160,160,160,0.15)", color: "#aaa" }}>✓ Terminée</span>;
-    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>⏳ En attente</span>;
+    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)" }}>⏳ En attente</span>;
   };
 
   if (loading) return <div className="space-y-2">{[1,2,3].map((i) => <div key={i} className="h-16 rounded-xl animate-pulse" style={{ background: "var(--bg-secondary)" }} />)}</div>;
@@ -1067,10 +1067,10 @@ function BuyerProfile({ user, profile, refreshProfile }: {
               onClick={becomePro}
               disabled={becomingPro}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all disabled:opacity-50"
-              style={{ background: "var(--accent-gold)", color: "#0B0F19" }}
+              style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}
             >
               {becomingPro
-                ? <span className="w-4 h-4 border-2 border-[#0B0F19] border-t-transparent rounded-full animate-spin inline-block" />
+                ? <span className="w-4 h-4 border-2 border-[var(--text-primary)] border-t-transparent rounded-full animate-spin inline-block" />
                 : <Plus className="w-4 h-4" />}
               Devenir annonceur
             </button>
@@ -1223,8 +1223,8 @@ function ReviewsSection({ userId }: { userId: string }) {
           <div className="flex items-center gap-0.5 mt-1 justify-center">
             {[1,2,3,4,5].map((s) => (
               <Star key={s} className="w-3.5 h-3.5"
-                fill={s <= Math.round(avg) ? "#D4AF37" : "none"}
-                style={{ color: "#D4AF37" }} />
+                fill={s <= Math.round(avg) ? "var(--accent-gold)" : "none"}
+                style={{ color: "var(--accent-gold)" }} />
             ))}
           </div>
           <p className="text-xs mt-1" style={{ color: "var(--text-primary-faint)" }}>{reviews.length} avis</p>
@@ -1237,8 +1237,8 @@ function ReviewsSection({ userId }: { userId: string }) {
             <div className="flex items-center gap-1 mb-2">
               {[1,2,3,4,5].map((s) => (
                 <Star key={s} className="w-3.5 h-3.5"
-                  fill={s <= r.rating ? "#D4AF37" : "none"}
-                  style={{ color: "#D4AF37" }} />
+                  fill={s <= r.rating ? "var(--accent-gold)" : "none"}
+                  style={{ color: "var(--accent-gold)" }} />
               ))}
               <span className="text-xs ml-2" style={{ color: "var(--text-primary-faint)" }}>
                 {new Date(r.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
@@ -1280,7 +1280,7 @@ function AbonnementSection({ profile }: { profile: ReturnType<typeof useAuth>["p
             <p className="text-xs" style={{ color: "var(--text-primary-faint)" }}>Plan actuel</p>
           </div>
           {isPro && (
-            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>
+            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)" }}>
               Actif
             </span>
           )}
@@ -1297,7 +1297,7 @@ function AbonnementSection({ profile }: { profile: ReturnType<typeof useAuth>["p
           className="flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all"
           style={isPro
             ? { background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary-dim)" }
-            : { background: "var(--accent-gold)", color: "#0B0F19" }
+            : { background: "var(--accent-gold)", color: "var(--text-primary)" }
           }>
           {isPro ? "Gérer l'abonnement" : "Passer au Plan Pro →"}
         </Link>
@@ -1407,7 +1407,7 @@ function AnnonceurSidebarContent({
       <div className="px-4 py-5 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center font-bold text-sm flex-shrink-0"
-            style={{ background: "rgba(212,175,55,0.20)", color: "#D4AF37" }}>
+            style={{ background: "rgba(212,175,55,0.20)", color: "var(--accent-gold)" }}>
             {profile?.avatar_url
               ? <Image src={profile.avatar_url} alt={displayName} width={40} height={40} className="w-10 h-10 object-cover rounded-full" />
               : initials}
@@ -1428,14 +1428,14 @@ function AnnonceurSidebarContent({
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left"
               style={{
                 background: isActive ? "rgba(212,175,55,0.12)" : "transparent",
-                color: isActive ? "#D4AF37" : "rgba(255,255,255,0.50)",
-                borderLeft: isActive ? "3px solid #D4AF37" : "3px solid transparent",
+                color: isActive ? "var(--accent-gold)" : "rgba(255,255,255,0.50)",
+                borderLeft: isActive ? "3px solid var(--accent-gold)" : "3px solid transparent",
               }}>
               {t.icon}
               <span className="truncate flex-1">{t.label}</span>
               {(t.badge ?? 0) > 0 && (
                 <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
-                  style={{ background: "#D4AF37", color: "#0B0F19" }}>{t.badge}</span>
+                  style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}>{t.badge}</span>
               )}
             </button>
           );
@@ -1573,7 +1573,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
             <Menu className="w-5 h-5" />
           </button>
           <span className="font-bold text-sm flex-1 truncate" style={{ color: "#fff" }}>{displayName}</span>
-          <span className="text-[11px] px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>{accountTypeLabel}</span>
+          <span className="text-[11px] px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)" }}>{accountTypeLabel}</span>
         </div>
 
         {/* ── Profile header ── */}
@@ -1582,14 +1582,14 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
             {/* Avatar */}
             <div className="relative flex-shrink-0">
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden flex items-center justify-center font-bold text-2xl"
-                style={{ background: "rgba(212,175,55,0.20)", color: "#D4AF37", border: "3px solid rgba(212,175,55,0.30)" }}>
+                style={{ background: "rgba(212,175,55,0.20)", color: "var(--accent-gold)", border: "3px solid rgba(212,175,55,0.30)" }}>
                 {profile?.avatar_url
                   ? <Image src={profile.avatar_url} alt={displayName} width={80} height={80} className="w-full h-full object-cover" />
                   : initials}
               </div>
               {profile?.is_verified_pro && (
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "#D4AF37" }}>
-                  <CheckCircle className="w-3.5 h-3.5" style={{ color: "#0B0F19" }} />
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center" style={{ background: "var(--accent-gold)" }}>
+                  <CheckCircle className="w-3.5 h-3.5" style={{ color: "var(--text-primary)" }} />
                 </div>
               )}
             </div>
@@ -1599,7 +1599,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
               <div className="flex items-center gap-2 flex-wrap mb-1">
                 <h1 className="font-bold text-lg sm:text-xl" style={{ color: "#fff", fontFamily: "var(--font-display), sans-serif" }}>{displayName}</h1>
                 {profile?.is_verified_pro && (
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>VÉRIFIÉ ✓</span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)" }}>VÉRIFIÉ ✓</span>
                 )}
                 <button
                   onClick={() => setTab("profil")}
@@ -1647,7 +1647,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                   { label: "Note ⭐",  value: annStats.reviewCount > 0 ? `${annStats.avgRating.toFixed(1)}` : "—" },
                 ].map((s) => (
                   <div key={s.label} className="text-center">
-                    <p className="font-bold text-base sm:text-lg" style={{ color: "#D4AF37" }}>{s.value}</p>
+                    <p className="font-bold text-base sm:text-lg" style={{ color: "var(--accent-gold)" }}>{s.value}</p>
                     <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.38)" }}>{s.label}</p>
                   </div>
                 ))}
@@ -1679,10 +1679,10 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-3 mb-6">
-                    <StatCard label="Vues (30j)"       value={totalViews}  sub="toutes annonces"   borderColor="#D4AF37" />
-                    <StatCard label="Clics WhatsApp"   value={totalWA}     sub="30 derniers jours" borderColor="#D4AF37" />
-                    <StatCard label="Messages reçus"   value={msgCount}    sub="cette semaine"     borderColor="#D4AF37" />
-                    <StatCard label="Annonces actives" value={activeCount} sub={profile?.is_verified_pro ? "illimitées" : "sur 5 max"} borderColor="#D4AF37" />
+                    <StatCard label="Vues (30j)"       value={totalViews}  sub="toutes annonces"   borderColor="var(--accent-gold)" />
+                    <StatCard label="Clics WhatsApp"   value={totalWA}     sub="30 derniers jours" borderColor="var(--accent-gold)" />
+                    <StatCard label="Messages reçus"   value={msgCount}    sub="cette semaine"     borderColor="var(--accent-gold)" />
+                    <StatCard label="Annonces actives" value={activeCount} sub={profile?.is_verified_pro ? "illimitées" : "sur 5 max"} borderColor="var(--accent-gold)" />
                   </div>
                 )}
 
@@ -1691,7 +1691,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                     type="bar"
                     title="Vues par jour — 30 jours"
                     data={chartData}
-                    series={[{ dataKey: "views", name: "Vues", color: "#D4AF37" }]}
+                    series={[{ dataKey: "views", name: "Vues", color: "var(--accent-gold)" }]}
                     ticks={chartSampled.map((d) => d.label)}
                   />
                 )}
@@ -1781,10 +1781,10 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                 ) : (
                   <>
                     <div className="grid grid-cols-2 gap-3 mb-6">
-                      <StatCard label="Vues totales"      value={totalViews}  borderColor="#D4AF37" />
-                      <StatCard label="Contacts WhatsApp" value={totalWA}     borderColor="#D4AF37" />
-                      <StatCard label="Messages reçus"    value={msgCount}    borderColor="#D4AF37" />
-                      <StatCard label="Annonces actives"  value={activeCount} borderColor="#D4AF37" />
+                      <StatCard label="Vues totales"      value={totalViews}  borderColor="var(--accent-gold)" />
+                      <StatCard label="Contacts WhatsApp" value={totalWA}     borderColor="var(--accent-gold)" />
+                      <StatCard label="Messages reçus"    value={msgCount}    borderColor="var(--accent-gold)" />
+                      <StatCard label="Annonces actives"  value={activeCount} borderColor="var(--accent-gold)" />
                     </div>
                     <DashboardChart
                       type="line"
@@ -1792,7 +1792,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                       data={chartData}
                       height={200}
                       series={[
-                        { dataKey: "views",           name: "Vues",     color: "#D4AF37" },
+                        { dataKey: "views",           name: "Vues",     color: "var(--accent-gold)" },
                         { dataKey: "whatsapp_clicks", name: "WhatsApp", color: "#25D366" },
                       ]}
                       ticks={chartSampled.map((d) => d.label)}
@@ -1874,13 +1874,13 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                 <CreditCard className="w-5 h-5" style={{ color: profile?.is_verified_pro ? "var(--accent-gold)" : "var(--text-primary-faint)" }} />
                 <p className="font-bold" style={{ color: "var(--text-primary)" }}>{profile?.is_verified_pro ? "Plan Pro" : "Plan Gratuit"}</p>
                 {profile?.is_verified_pro && (
-                  <span className="ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>Actif</span>
+                  <span className="ml-auto text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)" }}>Actif</span>
                 )}
               </div>
               <Link href="/tarifs" className="flex items-center justify-center py-2 rounded-xl text-xs font-bold transition-all"
                 style={profile?.is_verified_pro
                   ? { background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary-dim)" }
-                  : { background: "var(--accent-gold)", color: "#0B0F19" }}>
+                  : { background: "var(--accent-gold)", color: "var(--text-primary)" }}>
                 {profile?.is_verified_pro ? "Gérer l'abonnement" : "Passer Pro →"}
               </Link>
             </div>
@@ -1905,8 +1905,8 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                         <div className="flex items-center gap-0.5">
                           {[1,2,3,4,5].map((s) => (
                             <Star key={s} className="w-3 h-3"
-                              fill={s <= Math.round(annStats.avgRating) ? "#D4AF37" : "none"}
-                              style={{ color: "#D4AF37" }} />
+                              fill={s <= Math.round(annStats.avgRating) ? "var(--accent-gold)" : "none"}
+                              style={{ color: "var(--accent-gold)" }} />
                           ))}
                         </div>
                         <p className="text-[10px] mt-0.5" style={{ color: "var(--text-primary-faint)" }}>{annStats.reviewCount} avis</p>
@@ -1918,7 +1918,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                     return (
                       <div key={r.id} className="flex gap-2.5">
                         <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center text-[10px] font-bold flex-shrink-0"
-                          style={{ background: "rgba(212,175,55,0.15)", color: "#D4AF37" }}>
+                          style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)" }}>
                           {r.reviewer_avatar
                             ? <Image src={r.reviewer_avatar} alt={r.reviewer_name ?? ""} width={28} height={28} className="w-7 h-7 object-cover rounded-full" />
                             : ini}
@@ -1926,7 +1926,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-0.5 mb-0.5">
                             {[1,2,3,4,5].map((s) => (
-                              <Star key={s} className="w-2.5 h-2.5" fill={s <= r.rating ? "#D4AF37" : "none"} style={{ color: "#D4AF37" }} />
+                              <Star key={s} className="w-2.5 h-2.5" fill={s <= r.rating ? "var(--accent-gold)" : "none"} style={{ color: "var(--accent-gold)" }} />
                             ))}
                           </div>
                           {r.comment && <p className="text-xs line-clamp-2" style={{ color: "var(--text-primary-dim)" }}>{r.comment}</p>}
@@ -2088,7 +2088,7 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
                       Voir les annonces <ChevronRight className="w-3.5 h-3.5" />
                     </Link>
                     <button onClick={() => toggleNotify(s)} className="flex items-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold"
-                      style={s.notify_whatsapp ? { background: "rgba(212,175,55,0.12)", color: "#D4AF37", border: "1px solid rgba(212,175,55,0.25)" } : { background: "var(--bg-secondary)", color: "var(--text-primary-faint)", border: "1px solid var(--border)" }}>
+                      style={s.notify_whatsapp ? { background: "rgba(212,175,55,0.12)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.25)" } : { background: "var(--bg-secondary)", color: "var(--text-primary-faint)", border: "1px solid var(--border)" }}>
                       {s.notify_whatsapp ? <Bell className="w-3.5 h-3.5" /> : <BellOff className="w-3.5 h-3.5" />} Alerte
                     </button>
                   </div>

@@ -67,7 +67,7 @@ export default function MotDePasseOubliePage() {
                   type="button"
                   onClick={() => { setTab(t); setError(null); setSent(false); }}
                   className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
-                    tab === t ? "bg-[#D4AF37] text-white" : "text-white/50 hover:text-white"
+                    tab === t ? "bg-[var(--accent-gold)] text-white" : "text-white/50 hover:text-white"
                   }`}
                   style={tab !== t ? { background: "var(--border-subtle)" } : {}}
                 >
@@ -95,7 +95,7 @@ export default function MotDePasseOubliePage() {
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+224 6XX XXX XXX"
                     style={{ ...INPUT, width: "100%", borderRadius: 12, padding: "12px 16px", color: "var(--text-primary)" }}
-                    className="focus:outline-none focus:ring-2 focus:ring-[#D4AF37] placeholder:text-white/30"
+                    className="focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)] placeholder:text-white/30"
                   />
                 </div>
 
@@ -119,7 +119,7 @@ export default function MotDePasseOubliePage() {
               <>
                 {sent ? (
                   <div className="text-center py-4">
-                    <CheckCircle className="w-14 h-14 text-[#D4AF37] mx-auto mb-4" />
+                    <CheckCircle className="w-14 h-14 text-[var(--accent-gold)] mx-auto mb-4" />
                     <h2 className="text-xl font-black text-white mb-2">Email envoyé !</h2>
                     <p className="text-white/50 text-sm">Vérifiez votre boîte email et cliquez sur le lien de réinitialisation.</p>
                   </div>
@@ -138,7 +138,7 @@ export default function MotDePasseOubliePage() {
                           placeholder="vous@email.com"
                           required
                           style={{ ...INPUT, width: "100%" }}
-                          className="rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                          className="rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
                         />
                       </div>
                     </div>
@@ -158,7 +158,7 @@ export default function MotDePasseOubliePage() {
             )}
 
             <p className="text-center text-sm text-white/40 mt-6">
-              <Link href="/connexion" className="text-[#D4AF37] hover:underline">
+              <Link href="/connexion" className="text-[var(--accent-gold)] hover:underline">
                 ← Retour à la connexion
               </Link>
             </p>

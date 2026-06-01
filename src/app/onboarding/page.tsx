@@ -79,15 +79,15 @@ export default function OnboardingPage() {
                 <div
                   className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0"
                   style={{
-                    background: step > i + 1 ? "#D4AF37" : step === i + 1 ? "rgba(212,175,55,0.20)" : "var(--bg-secondary)",
-                    border: step === i + 1 ? "2px solid #D4AF37" : "2px solid transparent",
-                    color: step > i + 1 ? "#0A1216" : step === i + 1 ? "#D4AF37" : "var(--text-secondary)",
+                    background: step > i + 1 ? "var(--accent-gold)" : step === i + 1 ? "rgba(212,175,55,0.20)" : "var(--bg-secondary)",
+                    border: step === i + 1 ? "2px solid var(--accent-gold)" : "2px solid transparent",
+                    color: step > i + 1 ? "var(--bg-primary)" : step === i + 1 ? "var(--accent-gold)" : "var(--text-secondary)",
                   }}
                 >
                   {step > i + 1 ? <CheckCircle2 className="w-3.5 h-3.5" /> : i + 1}
                 </div>
                 {i < STEPS.length - 1 && (
-                  <div className="flex-1 h-0.5 mx-1" style={{ background: step > i + 1 ? "#D4AF37" : "var(--border)" }} />
+                  <div className="flex-1 h-0.5 mx-1" style={{ background: step > i + 1 ? "var(--accent-gold)" : "var(--border)" }} />
                 )}
               </div>
             ))}
@@ -97,7 +97,7 @@ export default function OnboardingPage() {
               <span
                 key={label}
                 className="text-[10px] font-semibold"
-                style={{ color: step === i + 1 ? "#D4AF37" : "var(--text-secondary)" }}
+                style={{ color: step === i + 1 ? "var(--accent-gold)" : "var(--text-secondary)" }}
               >
                 {label}
               </span>
@@ -142,7 +142,7 @@ export default function OnboardingPage() {
                       width: "100%", textAlign: "left", padding: "16px 18px",
                       borderRadius: 16, cursor: "pointer", transition: "all 0.15s",
                       background: role === r.id ? "rgba(212,175,55,0.10)" : "var(--bg-card)",
-                      border: role === r.id ? "2px solid #D4AF37" : "1px solid var(--border)",
+                      border: role === r.id ? "2px solid var(--accent-gold)" : "1px solid var(--border)",
                     }}
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -151,7 +151,7 @@ export default function OnboardingPage() {
                         background: role === r.id ? "rgba(212,175,55,0.15)" : "var(--bg-secondary)",
                         display: "flex", alignItems: "center", justifyContent: "center",
                       }}>
-                        <Icon style={{ width: 20, height: 20, color: role === r.id ? "#D4AF37" : "var(--text-secondary)" }} />
+                        <Icon style={{ width: 20, height: 20, color: role === r.id ? "var(--accent-gold)" : "var(--text-secondary)" }} />
                       </div>
                       <div>
                         <p style={{ fontWeight: 700, fontSize: 15, color: "var(--text-primary)", marginBottom: 2 }}>{r.title}</p>
@@ -167,7 +167,7 @@ export default function OnboardingPage() {
               onClick={() => { if (role) setStep(2); else toast("Veuillez choisir un profil", "error"); }}
               style={{
                 width: "100%", padding: "14px", borderRadius: 14, border: "none",
-                background: role ? "#D4AF37" : "var(--bg-secondary)", color: role ? "#0A1216" : "var(--text-secondary)",
+                background: role ? "var(--accent-gold)" : "var(--bg-secondary)", color: role ? "var(--bg-primary)" : "var(--text-secondary)",
                 fontWeight: 700, fontSize: 15, cursor: role ? "pointer" : "not-allowed",
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                 transition: "all 0.2s",
@@ -183,7 +183,7 @@ export default function OnboardingPage() {
           <div style={{ animation: "fadeIn 0.3s ease" }}>
             <div className="mb-8 text-center">
               <div style={{ width: 56, height: 56, borderRadius: 16, margin: "0 auto 12px", background: "rgba(212,175,55,0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <User style={{ width: 28, height: 28, color: "#D4AF37" }} />
+                <User style={{ width: 28, height: 28, color: "var(--accent-gold)" }} />
               </div>
               <h1 className="text-2xl font-black mb-2" style={{ color: "var(--text-primary)" }}>
                 Votre profil
@@ -243,14 +243,14 @@ export default function OnboardingPage() {
                 disabled={!fullName.trim() || saving}
                 style={{
                   flex: 1, padding: "14px", borderRadius: 14, border: "none",
-                  background: fullName.trim() && !saving ? "#D4AF37" : "var(--bg-secondary)",
-                  color: fullName.trim() && !saving ? "#0A1216" : "var(--text-secondary)",
+                  background: fullName.trim() && !saving ? "var(--accent-gold)" : "var(--bg-secondary)",
+                  color: fullName.trim() && !saving ? "var(--bg-primary)" : "var(--text-secondary)",
                   fontWeight: 700, fontSize: 15, cursor: fullName.trim() && !saving ? "pointer" : "not-allowed",
                   display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                 }}
               >
                 {saving ? (
-                  <div style={{ width: 18, height: 18, border: "2px solid #0A1216", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                  <div style={{ width: 18, height: 18, border: "2px solid var(--bg-primary)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
                 ) : (
                   <>Enregistrer <ChevronRight style={{ width: 18, height: 18 }} /></>
                 )}
@@ -263,7 +263,7 @@ export default function OnboardingPage() {
         {step === 3 && (
           <div style={{ textAlign: "center", animation: "fadeIn 0.3s ease" }}>
             <div style={{ width: 80, height: 80, borderRadius: 24, margin: "0 auto 20px", background: "rgba(212,175,55,0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <CheckCircle2 style={{ width: 44, height: 44, color: "#D4AF37" }} />
+              <CheckCircle2 style={{ width: 44, height: 44, color: "var(--accent-gold)" }} />
             </div>
             <h1 className="text-2xl font-black mb-3" style={{ color: "var(--text-primary)" }}>
               Tout est prêt ! 🎉
@@ -279,7 +279,7 @@ export default function OnboardingPage() {
                   onClick={() => handleFinish("/publier")}
                   style={{
                     width: "100%", padding: "14px", borderRadius: 14, border: "none",
-                    background: "#D4AF37", color: "#0A1216", fontWeight: 700, fontSize: 15, cursor: "pointer",
+                    background: "var(--accent-gold)", color: "var(--bg-primary)", fontWeight: 700, fontSize: 15, cursor: "pointer",
                     display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                   }}
                 >
@@ -290,7 +290,7 @@ export default function OnboardingPage() {
                   onClick={() => handleFinish("/annonces")}
                   style={{
                     width: "100%", padding: "14px", borderRadius: 14, border: "none",
-                    background: "#D4AF37", color: "#0A1216", fontWeight: 700, fontSize: 15, cursor: "pointer",
+                    background: "var(--accent-gold)", color: "var(--bg-primary)", fontWeight: 700, fontSize: 15, cursor: "pointer",
                     display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                   }}
                 >

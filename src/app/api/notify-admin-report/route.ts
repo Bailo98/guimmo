@@ -29,15 +29,15 @@ export async function POST(req: Request) {
       to: adminEmail,
       subject: `🚨 Nouveau signalement — ${propertyTitle ?? "Annonce inconnue"}`,
       html: `
-        <div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:24px;background:#0A1216;color:#fff;border-radius:12px;">
-          <h2 style="color:#D4AF37;margin-top:0;">🚨 Nouveau signalement reçu</h2>
+        <div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:24px;background:var(--bg-primary);color:#fff;border-radius:12px;">
+          <h2 style="color:var(--accent-gold);margin-top:0;">🚨 Nouveau signalement reçu</h2>
           <p><strong>Annonce :</strong> ${propertyTitle ?? "—"}</p>
           <p><strong>Raison :</strong> ${reasonLabels[reason ?? ""] ?? reason ?? "—"}</p>
           <p><strong>Détails :</strong> ${details ?? "Aucun"}</p>
           <p><strong>Signalé par :</strong> ${reporterPhone ?? "Anonyme"}</p>
           <a href="${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://logerbien.gn'}/admin/signalements"
              style="display:inline-block;margin-top:16px;padding:12px 24px;
-                    background:#D4AF37;color:#0A1216;border-radius:8px;
+                    background:var(--accent-gold);color:var(--bg-primary);border-radius:8px;
                     font-weight:700;text-decoration:none;">
             Voir les signalements
           </a>

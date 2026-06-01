@@ -26,7 +26,7 @@ export default function CalculateurPage() {
     <div className="max-w-3xl mx-auto px-4 pb-24 pt-6">
       {/* Header */}
       <div className="mb-8 text-center">
-        <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "linear-gradient(135deg, #D4AF37, #B8963A)" }}>
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "linear-gradient(135deg, var(--accent-gold), #B8963A)" }}>
           <Calculator className="w-7 h-7 text-white" />
         </div>
         <h1 className="text-2xl font-black text-slate-900 dark:text-white">Calculateur de budget logement</h1>
@@ -41,7 +41,7 @@ export default function CalculateurPage() {
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Revenu mensuel</label>
-            <span className="text-[#D4AF37] font-bold text-sm">{formatPrice(revenu)}</span>
+            <span className="text-[var(--accent-gold)] font-bold text-sm">{formatPrice(revenu)}</span>
           </div>
           <input
             type="range"
@@ -51,7 +51,7 @@ export default function CalculateurPage() {
             value={revenu}
             onChange={(e) => setRevenu(parseInt(e.target.value))}
             className="w-full h-2 rounded-full appearance-none cursor-pointer"
-            style={{ accentColor: "#D4AF37" }}
+            style={{ accentColor: "var(--accent-gold)" }}
           />
           <div className="flex justify-between text-xs text-slate-400 mt-1">
             <span>500k GNF</span>
@@ -61,7 +61,7 @@ export default function CalculateurPage() {
             type="number"
             value={revenu}
             onChange={(e) => setRevenu(Math.max(0, parseInt(e.target.value) || 0))}
-            className="mt-3 w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
+            className="mt-3 w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[var(--accent-gold)] transition-colors"
             placeholder="Entrez votre revenu"
           />
         </div>
@@ -78,8 +78,8 @@ export default function CalculateurPage() {
                 onClick={() => { setCharges(preset); setCustomCharges(false); }}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                   !customCharges && charges === preset
-                    ? "bg-[#D4AF37] border-[#D4AF37] text-white"
-                    : "border-slate-200 dark:border-[var(--border)] text-slate-600 dark:text-slate-400 hover:border-[#D4AF37] hover:text-[#D4AF37]"
+                    ? "bg-[var(--accent-gold)] border-[var(--accent-gold)] text-white"
+                    : "border-slate-200 dark:border-[var(--border)] text-slate-600 dark:text-slate-400 hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)]"
                 }`}
               >
                 {formatPrice(preset)}
@@ -89,8 +89,8 @@ export default function CalculateurPage() {
               onClick={() => setCustomCharges(true)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                 customCharges
-                  ? "bg-[#D4AF37] border-[#D4AF37] text-white"
-                  : "border-slate-200 dark:border-[var(--border)] text-slate-600 dark:text-slate-400 hover:border-[#D4AF37] hover:text-[#D4AF37]"
+                  ? "bg-[var(--accent-gold)] border-[var(--accent-gold)] text-white"
+                  : "border-slate-200 dark:border-[var(--border)] text-slate-600 dark:text-slate-400 hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)]"
               }`}
             >
               Personnalisé
@@ -102,7 +102,7 @@ export default function CalculateurPage() {
               value={customChargesValue}
               onChange={(e) => setCustomChargesValue(e.target.value)}
               placeholder="Entrez vos charges en GNF"
-              className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
+              className="w-full bg-[var(--bg-card-light)] border border-[var(--border)] rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[var(--accent-gold)] transition-colors"
             />
           )}
           <p className="text-xs text-slate-400 mt-1">
@@ -114,7 +114,7 @@ export default function CalculateurPage() {
       {/* Result card */}
       <div
         className="rounded-2xl p-6 mb-6 text-white"
-        style={{ background: "linear-gradient(135deg, #D4AF37, #B8963A)" }}
+        style={{ background: "linear-gradient(135deg, var(--accent-gold), #B8963A)" }}
       >
         <p className="text-orange-100 text-sm font-medium mb-1">Budget maximum recommandé pour le loyer</p>
         <p className="text-4xl font-black mb-1">{formatPrice(budgetMax)}</p>
@@ -139,7 +139,7 @@ export default function CalculateurPage() {
             )}
           </h2>
           {filteredProperties.length > 0 && (
-            <a href="/annonces" className="text-xs text-[#D4AF37] hover:underline flex items-center gap-0.5">
+            <a href="/annonces" className="text-xs text-[var(--accent-gold)] hover:underline flex items-center gap-0.5">
               Voir tout <ChevronRight className="w-3 h-3" />
             </a>
           )}

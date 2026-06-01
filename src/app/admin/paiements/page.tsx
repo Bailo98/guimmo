@@ -12,7 +12,7 @@ const PAYMENTS = [
 const STATUS = {
   success: { label: "Réussi", icon: CheckCircle, color: "text-green-500" },
   failed: { label: "Échoué", icon: XCircle, color: "text-red-500" },
-  pending: { label: "En attente", icon: Clock, color: "text-[#D4AF37]" },
+  pending: { label: "En attente", icon: Clock, color: "text-[var(--accent-gold)]" },
 };
 
 export default function AdminPaiementsPage() {
@@ -22,7 +22,7 @@ export default function AdminPaiementsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white">Paiements</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">Total encaissé : <span className="text-[#D4AF37] font-bold">{formatPrice(total)}</span></p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">Total encaissé : <span className="text-[var(--accent-gold)] font-bold">{formatPrice(total)}</span></p>
         </div>
       </div>
       <div className="space-y-3">

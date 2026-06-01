@@ -227,7 +227,7 @@ export default function ConversationPage() {
   if (authLoading || (fetching && meId && otherId)) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[var(--accent-gold)] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -252,7 +252,7 @@ export default function ConversationPage() {
           <ArrowLeft className="w-5 h-5 text-[#ffffff]" />
         </button>
 
-        <div className="w-10 h-10 rounded-full bg-[#D4AF37] flex-shrink-0 flex items-center justify-center text-white font-bold">
+        <div className="w-10 h-10 rounded-full bg-[var(--accent-gold)] flex-shrink-0 flex items-center justify-center text-white font-bold">
           {otherName.charAt(0).toUpperCase()}
         </div>
 
@@ -261,7 +261,7 @@ export default function ConversationPage() {
           {propId && (
             <Link href={`/annonces/${propId}`} className="flex items-center gap-1 group mt-0.5">
               <Home className="w-3 h-3 text-white/40 flex-shrink-0" />
-              <p className="text-xs text-[#666666] truncate group-hover:text-[#D4AF37] transition-colors">
+              <p className="text-xs text-[#666666] truncate group-hover:text-[var(--accent-gold)] transition-colors">
                 {propertyTitle}
               </p>
             </Link>
@@ -284,7 +284,7 @@ export default function ConversationPage() {
           return (
             <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
               {!isMe && (
-                <div className="w-7 h-7 rounded-full bg-[#D4AF37] flex-shrink-0 flex items-center justify-center text-white text-xs font-bold mr-2 self-end mb-5">
+                <div className="w-7 h-7 rounded-full bg-[var(--accent-gold)] flex-shrink-0 flex items-center justify-center text-white text-xs font-bold mr-2 self-end mb-5">
                   {otherName.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -292,7 +292,7 @@ export default function ConversationPage() {
                 <div
                   className={`px-4 py-2.5 text-sm leading-relaxed ${
                     isMe
-                      ? "bg-[#D4AF37] text-white"
+                      ? "bg-[var(--accent-gold)] text-white"
                       : "bg-[var(--bg-card)] text-[#ffffff] border border-[var(--border)]"
                   }`}
                   style={{
@@ -306,7 +306,7 @@ export default function ConversationPage() {
                     {formatTime(msg.created_at)}
                   </span>
                   {isMe && msg.is_read && (
-                    <span className="text-[10px] text-[#D4AF37]" title="Lu">✓✓</span>
+                    <span className="text-[10px] text-[var(--accent-gold)]" title="Lu">✓✓</span>
                   )}
                 </div>
               </div>
@@ -334,12 +334,12 @@ export default function ConversationPage() {
             placeholder="Écrire un message…"
             rows={1}
             style={{ fontSize: 16 }}
-            className="flex-1 resize-none bg-[var(--bg-card)] border border-[var(--border)] text-[#ffffff] placeholder:text-white/30 rounded-3xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 max-h-32 overflow-y-auto"
+            className="flex-1 resize-none bg-[var(--bg-card)] border border-[var(--border)] text-[#ffffff] placeholder:text-white/30 rounded-3xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/50 max-h-32 overflow-y-auto"
           />
           <button
             type="submit"
             disabled={!input.trim() || sending}
-            className="w-11 h-11 rounded-full flex items-center justify-center bg-[#D4AF37] hover:bg-[#B8963A] disabled:opacity-40 disabled:cursor-not-allowed text-white transition-all flex-shrink-0"
+            className="w-11 h-11 rounded-full flex items-center justify-center bg-[var(--accent-gold)] hover:bg-[#B8963A] disabled:opacity-40 disabled:cursor-not-allowed text-white transition-all flex-shrink-0"
           >
             {sending
               ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

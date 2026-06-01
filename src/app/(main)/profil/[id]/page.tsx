@@ -74,7 +74,7 @@ export default async function ProfilPage({ params }: Props) {
       {/* Profile card */}
       <div className="bg-[var(--bg-card-light)] rounded-3xl border border-[var(--border)] p-6 mb-8 flex flex-col sm:flex-row items-center sm:items-start gap-5">
         {/* Avatar */}
-        <div className="w-20 h-20 rounded-2xl bg-[#D4AF37] flex-shrink-0 flex items-center justify-center text-white text-2xl font-black overflow-hidden">
+        <div className="w-20 h-20 rounded-2xl bg-[var(--accent-gold)] flex-shrink-0 flex items-center justify-center text-white text-2xl font-black overflow-hidden">
           {profile.avatar_url ? (
             <Image src={profile.avatar_url} alt={displayName} width={80} height={80} className="object-cover w-full h-full" />
           ) : (
@@ -87,11 +87,11 @@ export default async function ProfilPage({ params }: Props) {
           <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
             <h1 className="text-xl font-black text-slate-900 dark:text-white">{displayName}</h1>
             {profile.is_verified && (
-              <CheckCircle className="w-5 h-5 text-[#D4AF37] flex-shrink-0" />
+              <CheckCircle className="w-5 h-5 text-[var(--accent-gold)] flex-shrink-0" />
             )}
           </div>
           {isAgence && profile.agency_name && (
-            <p className="text-[#D4AF37] font-semibold text-sm mt-0.5">{profile.agency_name}</p>
+            <p className="text-[var(--accent-gold)] font-semibold text-sm mt-0.5">{profile.agency_name}</p>
           )}
           <span className="inline-block mt-1 text-xs font-bold bg-slate-100 dark:bg-[#2a3040] text-slate-600 dark:text-slate-300 px-2.5 py-1 rounded-full">
             {roleLabel}
@@ -126,7 +126,7 @@ export default async function ProfilPage({ params }: Props) {
               <Link
                 key={l.id}
                 href={`/annonces/${l.id}`}
-                className="flex gap-3 bg-[var(--bg-card-light)] rounded-2xl border border-[var(--border)] p-3 hover:border-[#D4AF37]/40 transition-colors"
+                className="flex gap-3 bg-[var(--bg-card-light)] rounded-2xl border border-[var(--border)] p-3 hover:border-[var(--accent-gold)]/40 transition-colors"
               >
                 <div className="relative w-24 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-slate-100 dark:bg-[#151922]">
                   {l.primaryImage ? (
@@ -141,7 +141,7 @@ export default async function ProfilPage({ params }: Props) {
                     <MapPin className="w-3 h-3 flex-shrink-0" />
                     {NEIGHBORHOOD_LABELS[l.neighborhood] ?? l.neighborhood}
                   </div>
-                  <p className="text-[#D4AF37] font-bold text-sm mt-1">
+                  <p className="text-[var(--accent-gold)] font-bold text-sm mt-1">
                     {formatPrice(l.price, "GNF", l.price_period)}
                   </p>
                 </div>

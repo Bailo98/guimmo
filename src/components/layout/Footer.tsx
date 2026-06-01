@@ -27,7 +27,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
 
           {/* Annonces */}
           <div>
-            <h3 className="font-semibold text-sm mb-4" style={{ color: "#D4AF37" }}>Annonces</h3>
+            <h3 className="font-semibold text-sm mb-4" style={{ color: "var(--accent-gold)" }}>Annonces</h3>
             <ul className="space-y-2">
               {[
                 { label: "Toutes les annonces", href: "/annonces" },
@@ -39,7 +39,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
                 { label: "Agents LogerBien", href: "/agents" },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm transition-colors hover:text-[#D4AF37]" style={{ color: "#666666" }}>
+                  <Link href={l.href} className="text-sm transition-colors hover:text-[var(--accent-gold)]" style={{ color: "#666666" }}>
                     {l.label}
                   </Link>
                 </li>
@@ -49,7 +49,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
 
           {/* Quartiers */}
           <div>
-            <h3 className="font-semibold text-sm mb-4" style={{ color: "#D4AF37" }}>Quartiers</h3>
+            <h3 className="font-semibold text-sm mb-4" style={{ color: "var(--accent-gold)" }}>Quartiers</h3>
             <ul className="space-y-2">
               {[
                 { label: "Kipé", href: "/annonces?neighborhood=kipe" },
@@ -59,7 +59,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
                 { label: "Taouyah", href: "/annonces?neighborhood=taouyah" },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm transition-colors hover:text-[#D4AF37]" style={{ color: "#666666" }}>
+                  <Link href={l.href} className="text-sm transition-colors hover:text-[var(--accent-gold)]" style={{ color: "#666666" }}>
                     {l.label}
                   </Link>
                 </li>
@@ -69,7 +69,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
 
           {/* Légal */}
           <div>
-            <h3 className="font-semibold text-sm mb-4" style={{ color: "#D4AF37" }}>Informations</h3>
+            <h3 className="font-semibold text-sm mb-4" style={{ color: "var(--accent-gold)" }}>Informations</h3>
             <ul className="space-y-2">
               {[
                 { label: "À propos", href: "/a-propos" },
@@ -80,7 +80,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
                 { label: "Mentions légales", href: "/mentions-legales" },
               ].map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="text-sm transition-colors hover:text-[#D4AF37]" style={{ color: "#666666" }}>
+                  <Link href={l.href} className="text-sm transition-colors hover:text-[var(--accent-gold)]" style={{ color: "#666666" }}>
                     {l.label}
                   </Link>
                 </li>

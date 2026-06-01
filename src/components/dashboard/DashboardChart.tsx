@@ -71,7 +71,7 @@ export default function DashboardChart({
                 dataKey={s.dataKey}
                 name={s.name}
                 fill={s.color}
-                activeBar={{ fill: "#D4AF37" }}
+                activeBar={{ fill: "var(--accent-gold)" }}
                 radius={[3, 3, 0, 0]}
               />
             ))}
@@ -95,8 +95,8 @@ export default function DashboardChart({
                 name={s.name}
                 stroke={s.color}
                 strokeWidth={2}
-                dot={showDots && i === 0 ? { fill: "#D4AF37", r: 3, strokeWidth: 0 } : false}
-                activeDot={showDots && i === 0 ? { r: 5, fill: "#D4AF37" } : { r: 4 }}
+                dot={showDots && i === 0 ? { fill: "var(--accent-gold)", r: 3, strokeWidth: 0 } : false}
+                activeDot={showDots && i === 0 ? { r: 5, fill: "var(--accent-gold)" } : { r: 4 }}
               />
             ))}
           </LineChart>

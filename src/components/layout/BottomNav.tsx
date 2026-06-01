@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -24,7 +24,7 @@ const NAV_ITEMS: NavItemDef[] = [
   { href: "/compte",    icon: User,    label: "Profil",    authRequired: false, unauthHref: "/connexion" },
 ];
 
-const GOLD = "#D4AF37";
+const GOLD = "var(--accent-gold)";
 
 export function BottomNav() {
   const pathname = usePathname();

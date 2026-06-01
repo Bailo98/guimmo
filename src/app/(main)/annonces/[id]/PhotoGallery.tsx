@@ -100,7 +100,7 @@ export function PhotoGallery({ images, title }: Props) {
               key={i}
               onClick={() => setCurrent(i)}
               className={`relative flex-none w-16 h-12 rounded-lg overflow-hidden border-2 transition-colors ${
-                i === current ? "border-[#D4AF37]" : "border-transparent opacity-60 hover:opacity-100"
+                i === current ? "border-[var(--accent-gold)]" : "border-transparent opacity-60 hover:opacity-100"
               }`}
             >
               <Image src={img.url} alt={img.alt || `Photo ${i + 1}`} fill className="object-cover" sizes="64px" quality={50} loading="lazy" />

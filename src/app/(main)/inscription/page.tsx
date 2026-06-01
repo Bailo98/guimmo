@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -200,7 +200,7 @@ function InscriptionForm() {
           <div style={{ display: "flex", gap: 32 }}>
             {STATS.map((s) => (
               <div key={s.val}>
-                <div style={{ fontSize: 22, fontWeight: 900, color: "#D4AF37" }}>{s.val}</div>
+                <div style={{ fontSize: 22, fontWeight: 900, color: "var(--accent-gold)" }}>{s.val}</div>
                 <div style={{ fontSize: 12, color: "rgba(255,255,255,0.52)" }}>{s.label}</div>
               </div>
             ))}
@@ -213,7 +213,7 @@ function InscriptionForm() {
       ══════════════════════════════════════════════ */}
       <div
         className="flex-1 lg:w-1/2 flex flex-col items-center justify-center px-4 py-10"
-        style={{ background: "linear-gradient(160deg, #0A1216 0%, #1a2535 100%)" }}
+        style={{ background: "linear-gradient(160deg, var(--bg-primary) 0%, #1a2535 100%)" }}
       >
         {/* Mobile: logo */}
         <div className="lg:hidden mb-6 text-center">
@@ -232,7 +232,7 @@ function InscriptionForm() {
                 height: 6,
                 borderRadius: 99,
                 transition: "all 0.3s",
-                background: s <= step ? "#D4AF37" : "rgba(255,255,255,0.18)",
+                background: s <= step ? "var(--accent-gold)" : "rgba(255,255,255,0.18)",
                 width: s === step ? 40 : s < step ? 32 : 24,
               }}
             />
@@ -271,7 +271,7 @@ function InscriptionForm() {
                         display: "flex", alignItems: "center", gap: 14,
                         padding: "14px 16px",
                         borderRadius: 16,
-                        border: `1px solid ${role === r.value ? "#D4AF37" : "rgba(255,255,255,0.10)"}`,
+                        border: `1px solid ${role === r.value ? "var(--accent-gold)" : "rgba(255,255,255,0.10)"}`,
                         background: role === r.value ? "rgba(212,175,55,0.10)" : "rgba(255,255,255,0.03)",
                         cursor: "pointer", textAlign: "left", transition: "all 0.2s",
                         minHeight: 72,
@@ -281,7 +281,7 @@ function InscriptionForm() {
                       <div style={{ flex: 1 }}>
                         <p style={{
                           fontWeight: 700, fontSize: 14, margin: 0,
-                          color: role === r.value ? "#D4AF37" : "rgba(255,255,255,1)",
+                          color: role === r.value ? "var(--accent-gold)" : "rgba(255,255,255,1)",
                         }}>
                           {r.label}
                         </p>
@@ -290,7 +290,7 @@ function InscriptionForm() {
                         </p>
                       </div>
                       {role === r.value && (
-                        <CheckCircle style={{ width: 18, height: 18, color: "#D4AF37", flexShrink: 0 }} />
+                        <CheckCircle style={{ width: 18, height: 18, color: "var(--accent-gold)", flexShrink: 0 }} />
                       )}
                     </button>
                   ))}
@@ -302,7 +302,7 @@ function InscriptionForm() {
                   onClick={() => role && setStep(2)}
                   style={{
                     marginTop: 20, width: "100%", padding: "14px 0",
-                    background: "#D4AF37", color: "#0A1216",
+                    background: "var(--accent-gold)", color: "var(--bg-primary)",
                     fontWeight: 800, fontSize: 15, borderRadius: 14, border: "none",
                     cursor: role ? "pointer" : "not-allowed",
                     opacity: role ? 1 : 0.45,
@@ -353,7 +353,7 @@ function InscriptionForm() {
                         padding: "10px 0", borderRadius: 10, fontSize: 14, fontWeight: 700,
                         border: "none", cursor: "pointer", transition: "all 0.2s",
                         ...(mode === m
-                          ? { background: "#D4AF37", color: "#0A1216" }
+                          ? { background: "var(--accent-gold)", color: "var(--bg-primary)" }
                           : { background: "transparent", color: "rgba(255,255,255,0.48)" }),
                       }}
                     >
@@ -443,7 +443,7 @@ function InscriptionForm() {
                         />
                       </div>
                       <button type="button" onClick={() => switchMode("email")}
-                        style={{ fontSize: 12, color: "#D4AF37", background: "none", border: "none", cursor: "pointer", marginTop: 6, padding: 0 }}>
+                        style={{ fontSize: 12, color: "var(--accent-gold)", background: "none", border: "none", cursor: "pointer", marginTop: 6, padding: 0 }}>
                         Utiliser mon email à la place →
                       </button>
                     </div>
@@ -462,7 +462,7 @@ function InscriptionForm() {
                         />
                       </div>
                       <button type="button" onClick={() => switchMode("phone")}
-                        style={{ fontSize: 12, color: "#D4AF37", background: "none", border: "none", cursor: "pointer", marginTop: 6, padding: 0 }}>
+                        style={{ fontSize: 12, color: "var(--accent-gold)", background: "none", border: "none", cursor: "pointer", marginTop: 6, padding: 0 }}>
                         ← Utiliser mon numéro de téléphone
                       </button>
                     </div>
@@ -509,7 +509,7 @@ function InscriptionForm() {
                     disabled={loading}
                     style={{
                       width: "100%", padding: "14px 0",
-                      background: "#D4AF37", color: "#0A1216",
+                      background: "var(--accent-gold)", color: "var(--bg-primary)",
                       fontWeight: 800, fontSize: 15, borderRadius: 14, border: "none",
                       cursor: loading ? "not-allowed" : "pointer",
                       opacity: loading ? 0.75 : 1,
@@ -525,7 +525,7 @@ function InscriptionForm() {
 
                 <p style={{ textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 14 }}>
                   En créant un compte, vous acceptez nos{" "}
-                  <Link href="/cgv" style={{ color: "#D4AF37", textDecoration: "none" }}>
+                  <Link href="/cgv" style={{ color: "var(--accent-gold)", textDecoration: "none" }}>
                     conditions d&apos;utilisation
                   </Link>
                 </p>
@@ -536,7 +536,7 @@ function InscriptionForm() {
           {/* Sign-in link */}
           <p style={{ textAlign: "center", fontSize: 14, color: "rgba(255,255,255,0.42)", marginTop: 20 }}>
             Déjà un compte ?{" "}
-            <Link href="/connexion" style={{ color: "#D4AF37", fontWeight: 700, textDecoration: "none" }}>
+            <Link href="/connexion" style={{ color: "var(--accent-gold)", fontWeight: 700, textDecoration: "none" }}>
               Se connecter
             </Link>
           </p>
@@ -552,7 +552,7 @@ export default function InscriptionPage() {
       fallback={
         <div style={{
           minHeight: "calc(100svh - 72px)",
-          background: "linear-gradient(160deg, #0A1216 0%, #1a2535 100%)",
+          background: "linear-gradient(160deg, var(--bg-primary) 0%, #1a2535 100%)",
         }} />
       }
     >

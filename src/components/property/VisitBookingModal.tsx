@@ -71,7 +71,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[var(--border)]">
           <div className="flex items-center gap-2">
-            <CalendarCheck className="w-5 h-5 text-[#D4AF37]" />
+            <CalendarCheck className="w-5 h-5 text-[var(--accent-gold)]" />
             <h2 className="font-bold text-slate-900 dark:text-white text-lg">Réserver une visite</h2>
           </div>
           <button
@@ -131,7 +131,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
                   min={today}
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card-light)] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37] transition"
+                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card-light)] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/40 focus:border-[var(--accent-gold)] transition"
                 />
               </div>
 
@@ -147,8 +147,8 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
                       onClick={() => setTime(slot)}
                       className={`py-2 rounded-xl text-sm font-semibold transition-all ${
                         time === slot
-                          ? "bg-[#D4AF37] text-white shadow-[0_2px_10px_rgba(249,115,22,0.35)]"
-                          : "bg-slate-100 dark:bg-[#151922] text-slate-600 dark:text-slate-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-[#D4AF37]"
+                          ? "bg-[var(--accent-gold)] text-white shadow-[0_2px_10px_rgba(249,115,22,0.35)]"
+                          : "bg-slate-100 dark:bg-[#151922] text-slate-600 dark:text-slate-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-[var(--accent-gold)]"
                       }`}
                     >
                       {slot}
@@ -167,7 +167,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
                   placeholder="Prénom et nom"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card-light)] text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37] transition"
+                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card-light)] text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/40 focus:border-[var(--accent-gold)] transition"
                 />
               </div>
 
@@ -181,7 +181,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
                   placeholder="+224 6XX XXX XXX"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card-light)] text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 focus:border-[#D4AF37] transition"
+                  className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--bg-card-light)] text-slate-900 dark:text-white text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/40 focus:border-[var(--accent-gold)] transition"
                 />
               </div>
 
@@ -191,7 +191,7 @@ export function VisitBookingModal({ property, onClose, initialTab = "physical" }
                 disabled={!canConfirm}
                 className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition-all ${
                   canConfirm
-                    ? "bg-[#D4AF37] hover:bg-[#B8963A] active:scale-95 text-white shadow-[0_4px_20px_rgba(249,115,22,0.35)]"
+                    ? "bg-[var(--accent-gold)] hover:bg-[#B8963A] active:scale-95 text-white shadow-[0_4px_20px_rgba(249,115,22,0.35)]"
                     : "bg-slate-200 dark:bg-[#151922] text-slate-400 cursor-not-allowed"
                 }`}
               >

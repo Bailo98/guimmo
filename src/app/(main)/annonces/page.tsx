@@ -110,7 +110,7 @@ function TypeChip({ active, onClick, children }: {
       style={{
         minHeight: "40px",
         ...(active
-          ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "#D4AF37" }
+          ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "var(--accent-gold)" }
           : { background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#666666" }),
       }}
     >
@@ -129,7 +129,7 @@ function SmallChip({ active, onClick, children }: {
       style={{
         minHeight: "36px",
         ...(active
-          ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "#D4AF37" }
+          ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "var(--accent-gold)" }
           : { background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#666666" }),
       }}
     >
@@ -152,7 +152,7 @@ function AmenityChip({ active, onClick, emoji, label }: {
         borderRadius: 20,
         border: active ? "1px solid rgba(212,175,55,0.50)" : "1px solid var(--border)",
         background: active ? "var(--accent-gold)" : "var(--bg-secondary)",
-        color: active ? "#0A1216" : "rgba(255,255,255,0.55)",
+        color: active ? "var(--bg-primary)" : "rgba(255,255,255,0.55)",
         fontSize: 13,
         fontWeight: 600,
         cursor: "pointer",
@@ -398,7 +398,7 @@ function AnnoncesContent() {
             aria-label="Rechercher les biens près de moi"
             className={cn(
               "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all",
-              nearbyCoords ? "text-[#D4AF37]" : "text-white/50 hover:text-white"
+              nearbyCoords ? "text-[var(--accent-gold)]" : "text-white/50 hover:text-white"
             )}
             style={nearbyCoords
               ? { background: "rgba(212,175,55,0.12)", border: "1px solid rgba(212,175,55,0.35)" }
@@ -414,7 +414,7 @@ function AnnoncesContent() {
             onClick={() => setMapView(!mapView)}
             className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
             style={mapView
-              ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "#D4AF37" }
+              ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "var(--accent-gold)" }
               : { background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary-dim)" }}
             title={mapView ? "Vue liste" : "Vue carte"}
           >
@@ -428,7 +428,7 @@ function AnnoncesContent() {
             style={{
               minHeight: 48,
               ...(filtersOpen || activeFilterCount > 0
-                ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "#D4AF37" }
+                ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "var(--accent-gold)" }
                 : { background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#666666" }),
             }}
           >
@@ -568,7 +568,7 @@ function AnnoncesContent() {
                 style={{
                   minHeight: 36,
                   ...(furnished
-                    ? { background: "rgba(212,175,55,0.18)", border: "1px solid rgba(212,175,55,0.45)", color: "#D4AF37" }
+                    ? { background: "rgba(212,175,55,0.18)", border: "1px solid rgba(212,175,55,0.45)", color: "var(--accent-gold)" }
                     : { background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#666" }),
                 }}
               >
@@ -675,7 +675,7 @@ function AnnoncesContent() {
                 <span className="font-bold text-white">{filtered.length}</span>{" "}
                 annonce{filtered.length !== 1 ? "s" : ""}
                 {hasFilters && (
-                  <button onClick={clearFilters} className="ml-2 text-[#D4AF37] hover:underline text-xs">
+                  <button onClick={clearFilters} className="ml-2 text-[var(--accent-gold)] hover:underline text-xs">
                     (voir tout)
                   </button>
                 )}
@@ -710,7 +710,7 @@ function AnnoncesContent() {
             <p className="text-white/50 text-sm mb-6">Essayez d&apos;élargir vos filtres.</p>
             <button
               onClick={clearFilters}
-              className="bg-[#D4AF37] hover:bg-[#B8963A] text-[#0A1216] font-bold px-6 py-3 rounded-xl transition-colors"
+              className="bg-[var(--accent-gold)] hover:bg-[#B8963A] text-[var(--bg-primary)] font-bold px-6 py-3 rounded-xl transition-colors"
             >
               Voir toutes les annonces
             </button>
@@ -735,7 +735,7 @@ function AnnoncesContent() {
                 <button
                   onClick={() => setPage(safePage - 1)}
                   disabled={safePage === 1}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#D4AF37] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[var(--accent-gold)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -751,7 +751,7 @@ function AnnoncesContent() {
                         onClick={() => setPage(n)}
                         className="w-9 h-9 rounded-full text-sm font-semibold transition-colors"
                         style={n === safePage
-                          ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "#D4AF37" }
+                          ? { background: "rgba(212,175,55,0.15)", border: "1px solid rgba(212,175,55,0.40)", color: "var(--accent-gold)" }
                           : { background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#666666" }}
                       >
                         {n}
@@ -762,7 +762,7 @@ function AnnoncesContent() {
                 <button
                   onClick={() => setPage(safePage + 1)}
                   disabled={safePage === totalPages}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[#D4AF37] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[var(--accent-gold)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}
                 >
                   <ChevronRight className="w-4 h-4" />

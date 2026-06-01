@@ -12,7 +12,7 @@ const SURFACE  = "var(--bg-card)";
 const BORDER   = "var(--border)";
 const TEXT_PRI = "var(--text-primary)";
 const TEXT_SEC = "var(--text-primary-dim)";
-const ACCENT   = "#D4AF37";
+const ACCENT   = "var(--accent-gold)";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 type DbStatus = "active" | "pending" | "paused" | "sold";
@@ -33,8 +33,8 @@ interface Property {
 }
 
 const STATUS_LABELS: Record<DbStatus, { label: string; color: string; bg: string }> = {
-  active:  { label: "Actif",      color: "#D4AF37", bg: "rgba(212,175,55,0.12)" },
-  pending: { label: "En attente", color: "#D4AF37", bg: "rgba(251,146,60,0.15)" },
+  active:  { label: "Actif",      color: "var(--accent-gold)", bg: "rgba(212,175,55,0.12)" },
+  pending: { label: "En attente", color: "var(--accent-gold)", bg: "rgba(251,146,60,0.15)" },
   paused:  { label: "Suspendu",   color: "#ef4444", bg: "rgba(239,68,68,0.15)" },
   sold:    { label: "Vendu",      color: TEXT_SEC,  bg: "rgba(255,255,255,0.06)" },
 };
@@ -316,7 +316,7 @@ export default function AdminAnnoncesPage() {
                       onClick={() => handleApprove(p.id)}
                       disabled={p.status === "active"}
                       title="Approuver"
-                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(212,175,55,0.12)", color: "#D4AF37", border: "none", cursor: "pointer", opacity: p.status === "active" ? 0.35 : 1, transition: "background 0.12s" }}
+                      style={{ width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: "rgba(212,175,55,0.12)", color: "var(--accent-gold)", border: "none", cursor: "pointer", opacity: p.status === "active" ? 0.35 : 1, transition: "background 0.12s" }}
                       onMouseEnter={(e) => { if (p.status !== "active") (e.currentTarget as HTMLButtonElement).style.background = "rgba(212,175,55,0.25)"; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(212,175,55,0.12)"; }}
                     >

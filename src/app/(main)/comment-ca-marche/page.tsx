@@ -28,7 +28,7 @@ export default function CommentCaMarchePage() {
       {/* For searchers */}
       <div>
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-[#D4AF37] rounded-2xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-[var(--accent-gold)] rounded-2xl flex items-center justify-center">
             <Search className="w-5 h-5 text-white" />
           </div>
           <h2 className="text-2xl font-black text-slate-900 dark:text-white">Je cherche un logement</h2>
@@ -39,11 +39,11 @@ export default function CommentCaMarchePage() {
             return (
               <div key={s.n} className="bg-[var(--bg-card-light)] rounded-2xl p-5 border border-[var(--border)] flex gap-4">
                 <div className="flex-shrink-0">
-                  <div className="w-10 h-10 bg-[#D4AF37] rounded-2xl flex items-center justify-center text-white font-black">{s.n}</div>
+                  <div className="w-10 h-10 bg-[var(--accent-gold)] rounded-2xl flex items-center justify-center text-white font-black">{s.n}</div>
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <Icon className="w-4 h-4 text-[#D4AF37]" />
+                    <Icon className="w-4 h-4 text-[var(--accent-gold)]" />
                     <h3 className="font-bold text-slate-900 dark:text-white">{s.title}</h3>
                   </div>
                   <p className="text-slate-500 dark:text-slate-400 text-sm">{s.desc}</p>
@@ -53,7 +53,7 @@ export default function CommentCaMarchePage() {
           })}
         </div>
         <div className="mt-6 text-center">
-          <Link href="/annonces" className="inline-flex items-center gap-2 bg-[#D4AF37] text-white font-bold px-8 py-3.5 rounded-2xl hover:bg-[#B8963A] transition-colors">
+          <Link href="/annonces" className="inline-flex items-center gap-2 bg-[var(--accent-gold)] text-white font-bold px-8 py-3.5 rounded-2xl hover:bg-[#B8963A] transition-colors">
             Chercher un logement <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -87,7 +87,7 @@ export default function CommentCaMarchePage() {
 
       {/* Guide link */}
       <div className="text-center">
-        <Link href="/guide" className="inline-flex items-center gap-2 text-[#D4AF37] font-semibold hover:underline">
+        <Link href="/guide" className="inline-flex items-center gap-2 text-[var(--accent-gold)] font-semibold hover:underline">
           Lire notre guide complet → <ArrowRight className="w-4 h-4" />
         </Link>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Documents à demander, red flags, droits du locataire et plus encore.</p>
@@ -95,13 +95,13 @@ export default function CommentCaMarchePage() {
 
       {/* Trust section */}
       <div className="bg-[#111418] dark:bg-[#1e2430] rounded-3xl p-8 text-center">
-        <Shield className="w-12 h-12 text-[#D4AF37] mx-auto mb-4" />
+        <Shield className="w-12 h-12 text-[var(--accent-gold)] mx-auto mb-4" />
         <h2 className="text-2xl font-black text-white mb-3">LogerBien Safe</h2>
         <p className="text-slate-400 max-w-lg mx-auto mb-6">Notre équipe vérifie chaque annonce avant publication. Badges de confiance, signalement d&apos;arnaques, modération active.</p>
         <div className="flex flex-wrap gap-3 justify-center">
           {["Annonces vérifiées", "Propriétaires vérifiés", "Photos réelles", "Anti-arnaque", "Signalement 24h"].map((f) => (
             <span key={f} className="flex items-center gap-1.5 bg-white/10 text-white text-sm px-3 py-1.5 rounded-full">
-              <CheckCircle className="w-3.5 h-3.5 text-[#D4AF37]" />{f}
+              <CheckCircle className="w-3.5 h-3.5 text-[var(--accent-gold)]" />{f}
             </span>
           ))}
         </div>

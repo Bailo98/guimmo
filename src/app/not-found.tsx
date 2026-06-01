@@ -14,13 +14,13 @@ export default function NotFound() {
       {/* Animated 404 */}
       <div className="relative mb-6">
         <div className="text-[9rem] font-black leading-none select-none">
-          <span className="text-[#D4AF37]">4</span>
+          <span className="text-[var(--accent-gold)]">4</span>
           <span className="text-white/10">0</span>
-          <span className="text-[#D4AF37]">4</span>
+          <span className="text-[var(--accent-gold)]">4</span>
         </div>
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-20 h-20 rounded-2xl bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/20">
-            <Home className="w-8 h-8 text-[#D4AF37]" />
+          <div className="w-20 h-20 rounded-2xl bg-[var(--accent-gold)]/10 flex items-center justify-center border border-[var(--accent-gold)]/20">
+            <Home className="w-8 h-8 text-[var(--accent-gold)]" />
           </div>
         </div>
       </div>
@@ -34,7 +34,7 @@ export default function NotFound() {
       <div className="flex flex-wrap gap-3 justify-center mb-10">
         <Link
           href="/"
-          className="flex items-center gap-2 bg-[#D4AF37] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#B8963A] transition-colors"
+          className="flex items-center gap-2 bg-[var(--accent-gold)] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#B8963A] transition-colors"
         >
           <Home className="w-4 h-4" /> Accueil
         </Link>
@@ -54,11 +54,11 @@ export default function NotFound() {
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#D4AF37]/40 rounded-xl text-slate-300 hover:text-white transition-all group"
+              className="flex items-center gap-3 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[var(--accent-gold)]/40 rounded-xl text-slate-300 hover:text-white transition-all group"
             >
-              <Icon className="w-4 h-4 text-[#D4AF37]" />
+              <Icon className="w-4 h-4 text-[var(--accent-gold)]" />
               <span className="text-sm font-medium flex-1 text-left">{label}</span>
-              <ArrowLeft className="w-4 h-4 rotate-180 opacity-0 group-hover:opacity-100 transition-opacity text-[#D4AF37]" />
+              <ArrowLeft className="w-4 h-4 rotate-180 opacity-0 group-hover:opacity-100 transition-opacity text-[var(--accent-gold)]" />
             </Link>
           ))}
         </div>

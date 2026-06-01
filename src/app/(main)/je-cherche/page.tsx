@@ -148,7 +148,7 @@ export default function JeCharchePage() {
             }}
             style={{
               width: "100%", padding: "14px 0", borderRadius: 14, border: "none",
-              background: "#D4AF37", color: "#0B0F19",
+              background: "var(--accent-gold)", color: "var(--text-primary)",
               fontWeight: 700, fontSize: 15, cursor: "pointer",
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
               marginBottom: 28,
@@ -199,7 +199,7 @@ export default function JeCharchePage() {
                         padding: "7px 14px", borderRadius: 20, border: "1px solid",
                         fontSize: 13, fontWeight: 600, cursor: "pointer",
                         ...(form.property_type === t.id
-                          ? { background: "rgba(212,175,55,0.15)", borderColor: "rgba(212,175,55,0.50)", color: "#D4AF37" }
+                          ? { background: "rgba(212,175,55,0.15)", borderColor: "rgba(212,175,55,0.50)", color: "var(--accent-gold)" }
                           : { background: "var(--bg-secondary)", borderColor: "var(--border)", color: "var(--text-primary-faint)" }),
                       }}>
                       {t.emoji} {t.label}
@@ -234,7 +234,7 @@ export default function JeCharchePage() {
                         flex: 1, padding: "8px 0", borderRadius: 10, border: "1px solid",
                         fontSize: 13, fontWeight: 600, cursor: "pointer",
                         ...(form.rooms === r
-                          ? { background: "rgba(212,175,55,0.15)", borderColor: "rgba(212,175,55,0.50)", color: "#D4AF37" }
+                          ? { background: "rgba(212,175,55,0.15)", borderColor: "rgba(212,175,55,0.50)", color: "var(--accent-gold)" }
                           : { background: "var(--bg-secondary)", borderColor: "var(--border)", color: "var(--text-primary-faint)" }),
                       }}>
                       {r === "" ? "Peu importe" : r}
@@ -273,8 +273,8 @@ export default function JeCharchePage() {
               style={{
                 marginTop: 16, width: "100%", padding: "13px 0",
                 borderRadius: 12, border: "none",
-                background: submitting ? "rgba(212,175,55,0.50)" : "#D4AF37",
-                color: "#0B0F19", fontWeight: 700, fontSize: 15, cursor: "pointer",
+                background: submitting ? "rgba(212,175,55,0.50)" : "var(--accent-gold)",
+                color: "var(--text-primary)", fontWeight: 700, fontSize: 15, cursor: "pointer",
               }}
             >
               {submitting ? "Publication…" : "Publier ma recherche"}
@@ -285,7 +285,7 @@ export default function JeCharchePage() {
         {/* Requests list */}
         {loading ? (
           <div style={{ display: "flex", justifyContent: "center", padding: 40 }}>
-            <div style={{ width: 32, height: 32, borderRadius: "50%", border: "2px solid #D4AF37", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
+            <div style={{ width: 32, height: 32, borderRadius: "50%", border: "2px solid var(--accent-gold)", borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
           </div>
         ) : requests.length === 0 ? (
@@ -314,7 +314,7 @@ export default function JeCharchePage() {
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
                       {req.property_type && (
                         <span style={{
-                          background: "rgba(212,175,55,0.12)", color: "#D4AF37",
+                          background: "rgba(212,175,55,0.12)", color: "var(--accent-gold)",
                           fontSize: 12, fontWeight: 700, padding: "3px 10px", borderRadius: 20,
                           border: "1px solid rgba(212,175,55,0.30)",
                         }}>

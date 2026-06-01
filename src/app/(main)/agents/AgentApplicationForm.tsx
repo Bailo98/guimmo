@@ -34,7 +34,7 @@ export function AgentApplicationForm() {
   if (done) {
     return (
       <div className="text-center py-4 space-y-3">
-        <CheckCircle2 className="w-10 h-10 text-[#D4AF37] mx-auto" />
+        <CheckCircle2 className="w-10 h-10 text-[var(--accent-gold)] mx-auto" />
         <p className="text-white font-bold">Demande envoyée !</p>
         <p className="text-white/50 text-sm">Notre équipe vous contactera sous 48h.</p>
       </div>
@@ -88,7 +88,7 @@ export function AgentApplicationForm() {
         className="w-full flex items-center justify-center gap-2 rounded-xl font-bold text-white text-sm"
         style={{
           minHeight: 52,
-          background: canSubmit && !loading ? "#D4AF37" : "rgba(255,255,255,0.08)",
+          background: canSubmit && !loading ? "var(--accent-gold)" : "rgba(255,255,255,0.08)",
           color: canSubmit && !loading ? "#fff" : "rgba(255,255,255,0.30)",
         }}
       >

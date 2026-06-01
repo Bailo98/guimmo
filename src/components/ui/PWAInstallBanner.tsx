@@ -111,8 +111,8 @@ export function PWAInstallBanner() {
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
             onClick={install}
-            className="flex items-center gap-1 px-3 rounded-lg font-bold text-[#0A1216] text-xs"
-            style={{ height: 32, background: "#D4AF37", minHeight: "auto" }}
+            className="flex items-center gap-1 px-3 rounded-lg font-bold text-[var(--bg-primary)] text-xs"
+            style={{ height: 32, background: "var(--accent-gold)", minHeight: "auto" }}
           >
             <Download className="w-3 h-3" />
             Installer
@@ -191,7 +191,7 @@ export function PWAInstallBanner() {
                     className="flex-shrink-0 flex items-center justify-center font-bold text-xs"
                     style={{
                       width: 28, height: 28, borderRadius: "50%",
-                      background: "#D4AF37", color: "var(--bg-primary)",
+                      background: "var(--accent-gold)", color: "var(--bg-primary)",
                       marginTop: 1,
                     }}
                   >
@@ -208,7 +208,7 @@ export function PWAInstallBanner() {
               style={{
                 marginTop: 24,
                 width: "100%",
-                background: "#D4AF37",
+                background: "var(--accent-gold)",
                 color: "var(--bg-primary)",
                 border: "none",
                 borderRadius: 14,

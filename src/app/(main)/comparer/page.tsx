@@ -28,7 +28,7 @@ function CompareRow({ label, values, highlight }: RowProps) {
           key={i}
           className={`py-3 px-3 text-sm text-center font-medium ${
             highlight === i
-              ? "text-green-600 dark:text-[#D4AF37] bg-green-50 dark:bg-green-900/10"
+              ? "text-green-600 dark:text-[var(--accent-gold)] bg-green-50 dark:bg-green-900/10"
               : "text-slate-800 dark:text-slate-200"
           }`}
         >
@@ -56,7 +56,7 @@ export default function ComparerPage() {
         </p>
         <Link
           href="/annonces"
-          className="inline-flex items-center gap-2 bg-[#D4AF37] hover:bg-[#B8963A] text-white font-bold px-6 py-3 rounded-xl transition-colors"
+          className="inline-flex items-center gap-2 bg-[var(--accent-gold)] hover:bg-[#B8963A] text-white font-bold px-6 py-3 rounded-xl transition-colors"
         >
           Parcourir les annonces
         </Link>
@@ -72,7 +72,7 @@ export default function ComparerPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-            <Scale className="w-6 h-6 text-[#D4AF37]" />
+            <Scale className="w-6 h-6 text-[var(--accent-gold)]" />
             Comparateur
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">
@@ -115,7 +115,7 @@ export default function ComparerPage() {
                     </div>
                     <div className="p-3">
                       <p className="font-bold text-slate-900 dark:text-white text-sm line-clamp-2 text-left">{p.title}</p>
-                      <p className="text-[#D4AF37] font-black text-lg text-left mt-1">{formatPrice(p.price)}</p>
+                      <p className="text-[var(--accent-gold)] font-black text-lg text-left mt-1">{formatPrice(p.price)}</p>
                       {p.price_period === "month" && (
                         <p className="text-slate-400 text-xs text-left">/mois</p>
                       )}
@@ -128,7 +128,7 @@ export default function ComparerPage() {
                         </button>
                         <Link
                           href={`/annonces/${p.id}`}
-                          className="flex-1 text-xs py-1.5 rounded-lg bg-[#D4AF37] text-white font-bold text-center flex items-center justify-center hover:bg-[#B8963A] transition-colors"
+                          className="flex-1 text-xs py-1.5 rounded-lg bg-[var(--accent-gold)] text-white font-bold text-center flex items-center justify-center hover:bg-[#B8963A] transition-colors"
                         >
                           Voir l&apos;annonce
                         </Link>
@@ -153,7 +153,7 @@ export default function ComparerPage() {
             <CompareRow
               label="Meilleur prix"
               values={properties.map((_, i) => i === minPriceIndex ? (
-                <span className="inline-flex items-center gap-1 text-green-600 dark:text-[#D4AF37] text-xs font-bold bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
+                <span className="inline-flex items-center gap-1 text-green-600 dark:text-[var(--accent-gold)] text-xs font-bold bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
                   <CheckCircle className="w-3 h-3" /> Meilleur prix
                 </span>
               ) : <span className="text-slate-300 dark:text-slate-600">—</span>)}
@@ -193,7 +193,7 @@ export default function ComparerPage() {
             <CompareRow
               label="Disponible"
               values={properties.map((p) => p?.available_now ? (
-                <span className="text-green-600 dark:text-[#D4AF37] text-xs font-semibold">Oui</span>
+                <span className="text-green-600 dark:text-[var(--accent-gold)] text-xs font-semibold">Oui</span>
               ) : (
                 <span className="text-slate-400 text-xs">Non</span>
               ))}
