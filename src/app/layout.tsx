@@ -1,5 +1,5 @@
 ﻿import type { Metadata, Viewport } from "next";
-import { Inter, Nunito, Playfair_Display, DM_Sans, Space_Grotesk, Barlow_Condensed } from "next/font/google";
+import { DM_Sans, Fraunces, Inter, Manrope, Nunito, Playfair_Display, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { ZustandThemeSync } from "@/components/providers/ThemeProvider";
@@ -25,8 +25,22 @@ const nunito = Nunito({
 const playfair = Playfair_Display({
   subsets: ["latin"],
   display: "swap",
-  weight: ["700", "900"],
+  weight: ["700", "800"],
   variable: "--font-playfair",
+});
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["700", "800"],
+  variable: "--font-display",
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-manrope",
 });
 
 const dmSans = DM_Sans({
@@ -40,12 +54,6 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-space-grotesk",
-});
-
-const barlowCondensed = Barlow_Condensed({
-  subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
-  variable: "--font-display",
 });
 
 
@@ -96,18 +104,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" suppressHydrationWarning className={`${spaceGrotesk.variable} ${barlowCondensed.variable}`}>
+    <html lang="fr" suppressHydrationWarning className={`${manrope.variable} ${fraunces.variable} ${playfair.variable} ${spaceGrotesk.variable}`}>
       <head>
         <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="preconnect" href="https://kqshknfrtlbjaufkdeeg.supabase.co" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap"
-          rel="stylesheet"
-        />
       </head>
-      <body className={`${inter.variable} ${nunito.variable} ${playfair.variable} ${dmSans.variable} ${spaceGrotesk.variable} ${barlowCondensed.variable} font-sans min-h-screen`}>
+      <body className={`${inter.variable} ${nunito.variable} ${playfair.variable} ${dmSans.variable} ${spaceGrotesk.variable} ${manrope.variable} ${fraunces.variable} font-sans min-h-screen`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange={false}>
           <QueryProvider>
             <AuthProvider>

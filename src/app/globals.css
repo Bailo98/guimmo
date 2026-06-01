@@ -47,6 +47,8 @@
   --text-primary:     #181510;
   --text-secondary:   #625a4b;
   --text-muted:       #8a8172;
+  --text-primary-dim: rgba(24,21,16,0.72);
+  --text-primary-faint: rgba(24,21,16,0.48);
   --border:           #ded3bf;
   --color-green:      #214e3a;
   --color-green-soft: #e4efe8;
@@ -120,6 +122,8 @@
   --text-primary:     #f7f0e3;
   --text-secondary:   #c9bfae;
   --text-muted:       #8f8576;
+  --text-primary-dim: rgba(247,240,227,0.72);
+  --text-primary-faint: rgba(247,240,227,0.48);
   --border:           #3a3327;
   --color-green:      #7ba88b;
   --color-green-soft: #1f3228;
@@ -279,29 +283,28 @@
   -webkit-tap-highlight-color: transparent;
 }
 .text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl {
-  font-family: var(--font-display), sans-serif !important;
+  font-family: var(--font-display), var(--font-playfair), Georgia, serif !important;
 }
 h1, h2, h3 {
-  font-family: "Fraunces", "Playfair Display", Georgia, serif;
+  font-family: var(--font-display), var(--font-playfair), Georgia, serif;
   font-weight: 700;
 }
 h4 {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: var(--font-playfair), Georgia, "Times New Roman", serif;
   font-weight: 700;
 }
 .font-display {
-  font-family: var(--font-display), sans-serif !important;
+  font-family: var(--font-display), var(--font-playfair), Georgia, serif !important;
   font-weight: 800 !important;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
 }
 label {
-  font-family: var(--font-space-grotesk), sans-serif;
+  font-family: var(--font-manrope), "Segoe UI", system-ui, -apple-system, sans-serif;
   font-size: 12px;
   line-height: 1.5;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 700;
 }
 html {
   scroll-behavior: smooth;
@@ -322,10 +325,10 @@ html {
 body {
   background: var(--bg-primary);
   color: var(--text-primary);
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-manrope), "Segoe UI", system-ui, -apple-system, sans-serif;
   font-weight: 400;
   font-size: 16px;
-  line-height: 1.7;
+  line-height: 1.58;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -337,28 +340,28 @@ button, a, [role="button"] {
 @media (min-width: 1024px) { body { font-size: 16px; } }
 
 h1 {
-  font-family: "Fraunces", "Playfair Display", Georgia, serif; font-weight: 800;
-  font-size: clamp(32px, 6vw, 72px); line-height: 1.1; letter-spacing: -0.01em;
+  font-family: var(--font-display), var(--font-playfair), Georgia, serif; font-weight: 800;
+  font-size: clamp(32px, 6vw, 72px); line-height: 0.98; letter-spacing: 0;
 }
 h2 {
-  font-family: "Fraunces", "Playfair Display", Georgia, serif; font-weight: 700;
-  font-size: clamp(22px, 3.5vw, 42px); line-height: 1.15; letter-spacing: -0.01em;
+  font-family: var(--font-display), var(--font-playfair), Georgia, serif; font-weight: 800;
+  font-size: clamp(22px, 3.5vw, 42px); line-height: 1.02; letter-spacing: 0;
 }
 h3 {
-  font-family: "Fraunces", "Playfair Display", Georgia, serif; font-weight: 600;
-  font-size: clamp(18px, 2.5vw, 28px); line-height: 1.2; letter-spacing: 0;
+  font-family: var(--font-display), var(--font-playfair), Georgia, serif; font-weight: 700;
+  font-size: clamp(18px, 2.5vw, 28px); line-height: 1.15; letter-spacing: 0;
 }
 p {
-  font-family: "Manrope", sans-serif;
-  font-weight: 300; line-height: 1.7; letter-spacing: 0.01em;
+  font-family: var(--font-manrope), "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-weight: 400; line-height: 1.65; letter-spacing: 0;
 }
 button, .btn {
-  font-family: "Manrope", var(--font-space-grotesk), sans-serif;
-  font-weight: 600; letter-spacing: 0.05em; min-height: 48px;
+  font-family: var(--font-manrope), "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-weight: 700; letter-spacing: 0; min-height: 48px;
 }
 .label-uppercase {
-  font-family: var(--font-space-grotesk), sans-serif;
-  font-weight: 300; font-size: 13px; letter-spacing: 0.2em;
+  font-family: var(--font-manrope), "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-weight: 800; font-size: 13px; letter-spacing: 0.08em;
   text-transform: uppercase; color: var(--text-secondary);
 }
 
@@ -370,7 +373,7 @@ input, select, textarea {
   border: 1px solid var(--border) !important;
   color: var(--text-primary) !important;
   border-radius: 12px;
-  font-family: "Manrope", var(--font-space-grotesk), sans-serif;
+  font-family: var(--font-manrope), "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 input:focus, select:focus, textarea:focus {
   border-color: var(--accent-gold) !important;
