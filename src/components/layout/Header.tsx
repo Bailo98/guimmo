@@ -100,7 +100,7 @@ export function Header() {
   return (
     <header
       className="fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300"
-      style={{ background: "var(--nav-bg)", backdropFilter: "blur(16px) saturate(180%)", WebkitBackdropFilter: "blur(16px) saturate(180%)", borderBottom: "1px solid var(--nav-border)" }}
+      style={{ background: "var(--nav-bg)", backdropFilter: "blur(18px) saturate(1.3)", WebkitBackdropFilter: "blur(18px) saturate(1.3)", borderBottom: "1px solid var(--border)" }}
     >
       <div className="max-w-7xl mx-auto px-4 h-[72px] flex items-center justify-between gap-4">
         <Logo />
