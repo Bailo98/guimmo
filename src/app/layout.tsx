@@ -1,5 +1,5 @@
 ﻿import type { Metadata, Viewport } from "next";
-import { Inter, Nunito, Playfair_Display, DM_Sans, Space_Grotesk, Barlow_Condensed } from "next/font/google";
+import { Inter, Nunito, Playfair_Display, DM_Sans, Space_Grotesk, Barlow_Condensed, Fraunces, Manrope } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { ZustandThemeSync } from "@/components/providers/ThemeProvider";
@@ -48,6 +48,20 @@ const barlowCondensed = Barlow_Condensed({
   variable: "--font-display",
 });
 
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["700", "800"],
+  variable: "--font-fraunces",
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-manrope",
+});
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://LogerBien.gn";
 
 export const metadata: Metadata = {
@@ -84,8 +98,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#121212" },
-    { media: "(prefers-color-scheme: light)", color: "#F5EBD7" },
+    { media: "(prefers-color-scheme: dark)", color: "#11100d" },
+    { media: "(prefers-color-scheme: light)", color: "#f7f3ea" },
   ],
   // Required for env(safe-area-inset-bottom) to return real values on iOS.
   // Without this the browser clips the viewport to the safe area and the
@@ -95,12 +109,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" suppressHydrationWarning className={`${spaceGrotesk.variable} ${barlowCondensed.variable}`}>
+    <html lang="fr" suppressHydrationWarning className={`${spaceGrotesk.variable} ${barlowCondensed.variable} ${fraunces.variable} ${manrope.variable}`}>
       <head>
         <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="preconnect" href="https://kqshknfrtlbjaufkdeeg.supabase.co" />
       </head>
-      <body className={`${inter.variable} ${nunito.variable} ${playfair.variable} ${dmSans.variable} ${spaceGrotesk.variable} ${barlowCondensed.variable} font-sans min-h-screen`}>
+      <body className={`${inter.variable} ${nunito.variable} ${playfair.variable} ${dmSans.variable} ${spaceGrotesk.variable} ${barlowCondensed.variable} ${fraunces.variable} ${manrope.variable} font-sans min-h-screen`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange={false}>
           <QueryProvider>
             <AuthProvider>

@@ -28,14 +28,14 @@ export function Logo({ size = "md", className, href = "/" }: LogoProps) {
   return (
     <Link href={href} className={cn("flex items-center gap-2.5", className)}>
       <div style={{
-        width: box, height: box, background: "#7A5C1A", borderRadius: 8,
+        width: box, height: box, background: "var(--accent-gold-dark)", borderRadius: 8,
         display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
       }}>
         <HouseIcon size={icon} />
       </div>
       <span style={{
-        fontFamily: "var(--font-playfair), serif",
-        fontSize: text, fontWeight: 700, color: "var(--accent-gold)",
+        fontFamily: '"Playfair Display", var(--font-playfair), Georgia, serif',
+        fontSize: text, fontWeight: 800, color: "var(--logo-text)",
         letterSpacing: "0.02em",
       }}>
         LogerBien
