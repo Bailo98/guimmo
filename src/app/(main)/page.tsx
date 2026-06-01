@@ -74,9 +74,9 @@ const HERO_GRADIENTS: [string, string][] = [
 ];
 
 const CARD_POSITIONS = [
-  { top: "0px",   right: "0px",  rotate: "2deg",    zIndex: 3, opacity: 1    },
-  { top: "155px", right: "28px", rotate: "-1.2deg", zIndex: 2, opacity: 0.96 },
-  { top: "295px", right: "54px", rotate: "1.8deg",  zIndex: 1, opacity: 0.88 },
+  { top: "0px",   right: "0px",  rotate: "-2deg",  zIndex: 3, opacity: 1    },
+  { top: "155px", right: "28px", rotate: "2.2deg", zIndex: 2, opacity: 0.96 },
+  { top: "295px", right: "54px", rotate: "1.8deg", zIndex: 1, opacity: 0.88 },
 ];
 
 // ─── Data fetching ─────────────────────────────────────────────────────────────
@@ -160,13 +160,14 @@ function PreviewCard({ property, index }: { property: Property; index: number })
 
   return (
     <div
-      className="absolute w-[240px] rounded-2xl overflow-hidden"
+      className="absolute w-[240px] overflow-hidden"
       style={{
         top: pos.top, right: pos.right,
         transform: `rotate(${pos.rotate})`,
         zIndex: pos.zIndex, opacity: pos.opacity,
         background: "#ffffff",
-        boxShadow: "0 8px 32px rgba(10,20,12,0.45)",
+        borderRadius: 22,
+        boxShadow: "0 22px 60px rgba(24,21,16,0.13)",
       }}
     >
       <div className="relative h-32">
@@ -176,18 +177,18 @@ function PreviewCard({ property, index }: { property: Property; index: number })
           <div className="w-full h-full" style={{ background: `linear-gradient(135deg, ${gradFrom}, ${gradTo})` }} />
         )}
         <div className="absolute top-2 left-2">
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(0,0,0,0.65)", color: "#fff" }}>
+          <span className="text-[10px] font-bold px-2 py-0.5" style={{ background: "#e4efe8", color: "#214e3a", borderRadius: 999 }}>
             {badge}
           </span>
         </div>
       </div>
-      <div className="p-3" style={{ color: "var(--bg-primary)" }}>
+      <div className="p-3" style={{ color: "#181510" }}>
         <p className="font-bold text-sm leading-snug line-clamp-1">{property.title}</p>
         <div className="flex items-center gap-1 text-xs mt-1" style={{ color: "#666" }}>
           <MapPin className="w-3 h-3 flex-shrink-0" />
           <span>{NL[property.neighborhood] ?? property.neighborhood}</span>
         </div>
-        <p className="font-black text-sm mt-1.5" style={{ color: "var(--accent-gold)" }}>{priceStr}</p>
+        <p className="font-black text-sm mt-1.5" style={{ color: "#b98a2e", fontWeight: 900 }}>{priceStr}</p>
       </div>
     </div>
   );
@@ -293,14 +294,13 @@ export default async function HomePage() {
               {/* Title */}
               <h1
                 style={{
-                  fontFamily: "var(--font-display), sans-serif",
+                  fontFamily: '"Manrope", sans-serif',
                   fontWeight: 800,
-                  fontSize: "clamp(34px, 7vw, 80px)",
-                  lineHeight: 1.0,
+                  fontSize: "clamp(3.2rem, 5.15vw, 5.15rem)",
+                  lineHeight: 0.98,
                   color: "var(--text-primary)",
                   marginBottom: "1rem",
-                  letterSpacing: "-0.02em",
-                  textTransform: "uppercase",
+                  letterSpacing: "-0.06em",
                 }}
               >
                 Trouvez votre<br />
@@ -323,6 +323,29 @@ export default async function HomePage() {
                 Sans commission.&nbsp;&nbsp;Sans intermédiaire.&nbsp;&nbsp;Sans stress.
               </p>
 
+              {/* Proof pills */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-5">
+                {["✓ Annonces contrôlées", "📞 Appel ou WhatsApp", "$ Zéro frais caché"].map((label) => (
+                  <span
+                    key={label}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      padding: "9px 12px",
+                      borderRadius: 999,
+                      background: "var(--bg-card)",
+                      border: "1px solid var(--border)",
+                      color: "var(--text-secondary)",
+                      fontSize: 13,
+                      fontWeight: 500,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+
               {/* Live counter badge — client component to avoid hydration mismatch */}
               <LiveCounterBadge initial={activeCountToday} />
 
@@ -333,6 +356,28 @@ export default async function HomePage() {
             {/* ── Right: floating preview cards (desktop only) ── */}
             {heroPreview.length > 0 && (
               <div className="hidden lg:block relative" style={{ height: "460px" }}>
+                {/* Floating stat card — top-right of showcase */}
+                <div
+                  className="absolute"
+                  style={{
+                    top: 0,
+                    left: 0,
+                    background: "#ffffff",
+                    borderRadius: 16,
+                    boxShadow: "0 8px 24px rgba(24,21,16,0.10)",
+                    padding: "10px 14px",
+                    zIndex: 10,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <span style={{ fontSize: 18 }}>⚡</span>
+                  <div>
+                    <p style={{ fontWeight: 700, fontSize: 12, color: "#181510", lineHeight: 1.2, margin: 0 }}>Délai de réponse rapide</p>
+                    <p style={{ fontSize: 11, color: "#888", marginTop: 2, margin: "2px 0 0" }}>&lt; 24h en moyenne</p>
+                  </div>
+                </div>
                 {heroPreview.map((p, i) => (
                   <PreviewCard key={p.id} property={p} index={i} />
                 ))}
