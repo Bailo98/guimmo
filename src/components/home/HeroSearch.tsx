@@ -28,9 +28,9 @@ const TYPES = [
 ];
 
 const SELECT_BASE: React.CSSProperties = {
-  background: "var(--surface-soft)",
+  background: "var(--bg-secondary)",
   border: "1px solid var(--border)",
-  color: "var(--text-primary)",
+  color: "#666666",
   borderRadius: "12px",
   padding: "0 14px",
   fontSize: "16px",
@@ -69,17 +69,16 @@ export function HeroSearch() {
 
   return (
     <div
-      className="rounded-[22px] p-3 sm:p-4 w-full max-w-[640px] lg:max-w-[640px] mx-auto lg:mx-0"
+      className="rounded-2xl p-3 sm:p-4 w-full max-w-[640px] lg:max-w-[680px] mx-auto"
       style={{
         background: "var(--bg-card)",
         border: "1px solid var(--border)",
-        boxShadow: "var(--shadow-soft)",
       }}
     >
       {/* Tabs — pleine largeur, 50/50 */}
       <div
         className="grid grid-cols-2 gap-1 mb-4 p-1 rounded-[10px]"
-        style={{ background: "var(--surface-soft)", borderRadius: 14 }}
+        style={{ background: "var(--bg-primary)", borderRadius: 12 }}
       >
         {(["rent", "sale"] as const).map((t) => (
           <button
@@ -91,7 +90,7 @@ export function HeroSearch() {
               borderRadius: 10,
               ...(tab === t
                 ? { background: "var(--accent-gold)", color: "var(--bg-primary)", fontWeight: 700 }
-                : { color: "var(--text-secondary)" }),
+                : { color: "#666666" }),
             }}
           >
             {t === "rent" ? "🔑 Location" : "💰 Achat"}
@@ -105,7 +104,7 @@ export function HeroSearch() {
           <label
             htmlFor="hs-quartier"
             className="block text-xs font-semibold mb-1.5"
-            style={{ color: "var(--text-secondary)" }}
+            style={{ color: "#666666" }}
           >
             Quartier
           </label>
@@ -115,13 +114,15 @@ export function HeroSearch() {
               value={neighborhood}
               onChange={(e) => {
                 setNeighborhood(e.target.value);
-                (e.target as HTMLSelectElement).style.color = "var(--text-primary)";
+                (e.target as HTMLSelectElement).style.color = e.target.value
+                  ? "#ffffff"
+                  : "rgba(247,242,230,0.55)";
               }}
               style={SELECT_BASE}
             >
-              <option value="" style={{ color: "var(--text-primary)" }}>Tous les quartiers</option>
+              <option value="" style={{ color: "var(--bg-primary)" }}>Tous les quartiers</option>
               {QUARTIERS.map((q) => (
-                <option key={q.id} value={q.id} style={{ color: "var(--text-primary)" }}>
+                <option key={q.id} value={q.id} style={{ color: "var(--bg-primary)" }}>
                   {q.name}
                 </option>
               ))}
@@ -132,7 +133,7 @@ export function HeroSearch() {
           <label
             htmlFor="hs-type"
             className="block text-xs font-semibold mb-1.5"
-            style={{ color: "var(--text-secondary)" }}
+            style={{ color: "#666666" }}
           >
             Type de bien
           </label>
@@ -142,13 +143,15 @@ export function HeroSearch() {
               value={type}
               onChange={(e) => {
                 setType(e.target.value);
-                (e.target as HTMLSelectElement).style.color = "var(--text-primary)";
+                (e.target as HTMLSelectElement).style.color = e.target.value
+                  ? "#ffffff"
+                  : "rgba(247,242,230,0.55)";
               }}
               style={SELECT_BASE}
             >
-              <option value="" style={{ color: "var(--text-primary)" }}>Tous les types</option>
+              <option value="" style={{ color: "var(--bg-primary)" }}>Tous les types</option>
               {TYPES.map((t) => (
-                <option key={t.id} value={t.id} style={{ color: "var(--text-primary)" }}>
+                <option key={t.id} value={t.id} style={{ color: "var(--bg-primary)" }}>
                   {t.name}
                 </option>
               ))}
@@ -159,7 +162,7 @@ export function HeroSearch() {
           <label
             htmlFor="hs-budget"
             className="block text-xs font-semibold mb-1.5"
-            style={{ color: "var(--text-secondary)" }}
+            style={{ color: "#666666" }}
           >
             Budget max (GNF)
           </label>
@@ -169,7 +172,7 @@ export function HeroSearch() {
             value={budgetMax}
             onChange={(e) => setBudgetMax(e.target.value)}
             placeholder="Ex : 2 000 000"
-            style={{ ...SELECT_BASE, color: budgetMax ? "var(--text-primary)" : "var(--text-muted)" }}
+            style={{ ...SELECT_BASE, color: budgetMax ? "#ffffff" : "#666666" }}
           />
         </div>
       </div>
