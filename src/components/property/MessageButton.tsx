@@ -100,7 +100,7 @@ export function MessageButton({
         disabled={checking}
         className={
           className ??
-          "flex items-center justify-center gap-2 w-full bg-[var(--bg-card)] hover:bg-[#203a24] text-[var(--text-primary)] font-semibold py-3 px-4 rounded-xl transition-colors border border-[var(--border)] text-sm disabled:opacity-60"
+          "flex items-center justify-center gap-2 w-full bg-[var(--bg-card)] hover:bg-[var(--bg-secondary)] text-[var(--text-primary)] font-semibold py-3 px-4 rounded-xl transition-colors border border-[var(--border)] text-sm disabled:opacity-60"
         }
       >
         {checking
@@ -141,7 +141,7 @@ export function MessageButton({
                 className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/50 resize-none"
               />
               <div className="flex items-center justify-between">
-                <span className="text-xs text-[rgba(255,255,255,0.40)]">{content.length}/2000</span>
+                <span className="text-xs text-[var(--text-muted)]">{content.length}/2000</span>
                 <button
                   type="submit"
                   disabled={!content.trim() || sending}

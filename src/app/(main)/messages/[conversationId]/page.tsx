@@ -247,7 +247,7 @@ export default function ConversationPage() {
       >
         <button
           onClick={() => router.push("/messages")}
-          className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[#1e2a30] transition-colors flex-shrink-0"
+          className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[var(--bg-secondary)] transition-colors flex-shrink-0"
         >
           <ArrowLeft className="w-5 h-5 text-[var(--text-primary)]" />
         </button>
@@ -347,7 +347,7 @@ export default function ConversationPage() {
             }
           </button>
         </div>
-        <p className="text-[10px] text-white/30 text-center mt-1.5">
+        <p className="text-[10px] text-[var(--text-muted)] text-center mt-1.5">
           Entrée pour envoyer · Maj+Entrée pour nouvelle ligne
         </p>
       </form>

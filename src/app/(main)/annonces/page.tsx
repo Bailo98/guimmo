@@ -152,7 +152,7 @@ function AmenityChip({ active, onClick, emoji, label }: {
         borderRadius: 20,
         border: active ? "1px solid rgba(212,175,55,0.50)" : "1px solid var(--border)",
         background: active ? "var(--accent-gold)" : "var(--bg-secondary)",
-        color: active ? "var(--bg-primary)" : "rgba(255,255,255,0.55)",
+        color: active ? "var(--bg-primary)" : "var(--text-secondary)",
         fontSize: 13,
         fontWeight: 600,
         cursor: "pointer",
@@ -386,7 +386,7 @@ function AnnoncesContent() {
             <span className="flex-1 text-sm text-[var(--text-muted)]">Rechercher un bien…</span>
             <VoiceSearchButton
               onResult={handleVoiceResult}
-              style={{ minHeight: 32, minWidth: 32, borderRadius: 8, background: "transparent", border: "none", color: "rgba(255,255,255,0.40)" }}
+              style={{ minHeight: 32, minWidth: 32, borderRadius: 8, background: "transparent", border: "none", color: "var(--text-muted)" }}
             />
           </div>
 
@@ -405,7 +405,7 @@ function AnnoncesContent() {
               : { background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
           >
             {gpsLoading
-              ? <span className="w-4 h-4 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />
+              ? <span className="w-4 h-4 border-2 border-[var(--text-muted)] border-t-transparent rounded-full animate-spin" />
               : <LocateFixed className="w-4 h-4" />}
           </button>
 
@@ -460,7 +460,7 @@ function AnnoncesContent() {
 
         {/* Collapsible filters */}
         {filtersOpen && (
-          <div className="space-y-3 pt-1 border-t border-white/8">
+            <div className="space-y-3 pt-1 border-t border-[var(--border)]">
             {/* Transaction */}
             <div>
               <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Transaction</p>
@@ -658,8 +658,8 @@ function AnnoncesContent() {
         {/* GPS message */}
         {gpsMessage && (
           <div
-            className="mb-4 rounded-xl px-4 py-3 text-sm font-semibold text-white/70"
-            style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}
+            className="mb-4 rounded-xl px-4 py-3 text-sm font-semibold text-[var(--text-secondary)]"
+            style={{ background: "var(--border-subtle)", border: "1px solid var(--border)" }}
           >
             📍 {gpsMessage}
           </div>
@@ -735,8 +735,8 @@ function AnnoncesContent() {
                 <button
                   onClick={() => setPage(safePage - 1)}
                   disabled={safePage === 1}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[var(--accent-gold)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                  style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent-gold)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  style={{ background: "var(--border-subtle)", border: "1px solid var(--border)" }}
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
@@ -745,7 +745,7 @@ function AnnoncesContent() {
                   return (
                     <div key={n} className="flex items-center gap-2">
                       {prev && n - prev > 1 && (
-                        <span className="text-white/30 text-sm px-1">…</span>
+                        <span className="text-[var(--text-muted)] text-sm px-1">…</span>
                       )}
                       <button
                         onClick={() => setPage(n)}
@@ -762,8 +762,8 @@ function AnnoncesContent() {
                 <button
                   onClick={() => setPage(safePage + 1)}
                   disabled={safePage === totalPages}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-[var(--accent-gold)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                  style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--accent-gold)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  style={{ background: "var(--border-subtle)", border: "1px solid var(--border)" }}
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>

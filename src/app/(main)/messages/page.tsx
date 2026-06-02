@@ -284,7 +284,7 @@ export default function MessagesPage() {
                     <p className="text-xs text-[var(--accent-gold)] font-medium truncate">{conv.propertyTitle}</p>
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-[13px] text-[rgba(255,255,255,0.55)] truncate leading-snug">
+                    <p className="text-[13px] text-[var(--text-secondary)] truncate leading-snug">
                       {conv.lastMessage?.content ?? ""}
                     </p>
                     {conv.unreadCount > 0 && (

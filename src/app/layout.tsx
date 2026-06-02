@@ -56,7 +56,6 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
 });
 
-
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://LogerBien.gn";
 
 export const metadata: Metadata = {
