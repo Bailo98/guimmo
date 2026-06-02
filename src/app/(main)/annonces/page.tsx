@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight, LocateFixed, Map, List } from "lucide-react";
@@ -382,8 +382,8 @@ function AnnoncesContent() {
             className="flex-1 flex items-center gap-3 rounded-full px-4"
             style={{ minHeight: 48, background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
           >
-            <Search className="w-4 h-4 text-white/40 flex-shrink-0" />
-            <span className="flex-1 text-sm text-white/40">Rechercher un bien…</span>
+            <Search className="w-4 h-4 text-[var(--text-muted)] flex-shrink-0" />
+            <span className="flex-1 text-sm text-[var(--text-muted)]">Rechercher un bien…</span>
             <VoiceSearchButton
               onResult={handleVoiceResult}
               style={{ minHeight: 32, minWidth: 32, borderRadius: 8, background: "transparent", border: "none", color: "rgba(255,255,255,0.40)" }}
@@ -398,7 +398,7 @@ function AnnoncesContent() {
             aria-label="Rechercher les biens près de moi"
             className={cn(
               "w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all",
-              nearbyCoords ? "text-[var(--accent-gold)]" : "text-white/50 hover:text-white"
+              nearbyCoords ? "text-[var(--accent-gold)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             )}
             style={nearbyCoords
               ? { background: "rgba(212,175,55,0.12)", border: "1px solid rgba(212,175,55,0.35)" }
@@ -463,7 +463,7 @@ function AnnoncesContent() {
           <div className="space-y-3 pt-1 border-t border-white/8">
             {/* Transaction */}
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Transaction</p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Transaction</p>
               <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
                 {[{ id: "", label: "Toutes" }, { id: "rent", label: "Location" }, { id: "sale", label: "Achat" }].map((c) => (
                   <SmallChip key={c.id} active={tx === c.id} onClick={() => setParam("tx", c.id)}>
@@ -475,7 +475,7 @@ function AnnoncesContent() {
 
             {/* Quartier */}
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Quartier</p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Quartier</p>
               <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
                 {QUARTIER_CHIPS.map((c) => (
                   <SmallChip key={c.id} active={neighborhood === c.id} onClick={() => setParam("neighborhood", c.id)}>
@@ -487,7 +487,7 @@ function AnnoncesContent() {
 
             {/* Budget */}
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Budget</p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Budget</p>
               <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
                 {BUDGET_CHIPS.map((c) => {
                   const isAll = c.min === 0 && c.max === Infinity;
@@ -503,7 +503,7 @@ function AnnoncesContent() {
 
             {/* Price min/max custom inputs */}
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Prix exact (GNF)</p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Prix exact (GNF)</p>
               <div className="flex gap-2 items-center">
                 <input
                   type="number"
@@ -541,7 +541,7 @@ function AnnoncesContent() {
 
             {/* Surface min */}
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Surface minimum (m²)</p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Surface minimum (m²)</p>
               <input
                 type="number"
                 inputMode="numeric"
@@ -561,7 +561,7 @@ function AnnoncesContent() {
 
             {/* Furnished toggle */}
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Meublé</p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Meublé</p>
               <button
                 onClick={() => setParam("furnished", furnished ? "" : "1")}
                 className="flex items-center gap-2 px-4 rounded-full text-sm font-bold transition-all"
@@ -578,7 +578,7 @@ function AnnoncesContent() {
 
             {/* Sort order */}
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Trier par</p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Trier par</p>
               <div className="-mx-4 px-4 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
                 {[
                   { id: "default",    label: "Défaut" },
@@ -595,7 +595,7 @@ function AnnoncesContent() {
 
             {/* Récentes seulement */}
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Date de publication</p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Date de publication</p>
               <button
                 onClick={() => setParam("recent", recentOnly ? "" : "1")}
                 className="flex items-center gap-2 px-4 rounded-full text-sm font-bold transition-all"
@@ -612,7 +612,7 @@ function AnnoncesContent() {
 
             {/* Diaspora toggle */}
             <div>
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1.5">Diaspora</p>
+              <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">Diaspora</p>
               <button
                 onClick={() => setParam("diaspora", diaspora ? "" : "1")}
                 className="flex items-center gap-2 px-4 rounded-full text-sm font-bold transition-all"
@@ -631,7 +631,7 @@ function AnnoncesContent() {
             {/* ── Amenity filters ── */}
             {AMENITY_GROUPS.map((group) => (
               <div key={group.label}>
-                <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-2">
+                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">
                   {group.label}
                 </p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -672,7 +672,7 @@ function AnnoncesContent() {
               <span className="inline-block w-24 h-4 bg-white/10 rounded animate-pulse" />
             ) : (
               <>
-                <span className="font-bold text-white">{filtered.length}</span>{" "}
+                <span className="font-bold text-[var(--text-primary)]">{filtered.length}</span>{" "}
                 annonce{filtered.length !== 1 ? "s" : ""}
                 {hasFilters && (
                   <button onClick={clearFilters} className="ml-2 text-[var(--accent-gold)] hover:underline text-xs">
@@ -693,7 +693,7 @@ function AnnoncesContent() {
               />
             )}
             {!loading && totalPages > 1 && !mapView && (
-              <p className="text-xs text-white/40">Page {safePage} / {totalPages}</p>
+              <p className="text-xs text-[var(--text-muted)]">Page {safePage} / {totalPages}</p>
             )}
           </div>
         </div>
@@ -706,8 +706,8 @@ function AnnoncesContent() {
         ) : filtered.length === 0 ? (
           <div className="text-center py-24">
             <p className="text-5xl mb-4">🏠</p>
-            <h3 className="text-lg font-bold text-white mb-2">Aucune annonce trouvée</h3>
-            <p className="text-white/50 text-sm mb-6">Essayez d&apos;élargir vos filtres.</p>
+            <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">Aucune annonce trouvée</h3>
+            <p className="text-[var(--text-secondary)] text-sm mb-6">Essayez d&apos;élargir vos filtres.</p>
             <button
               onClick={clearFilters}
               className="bg-[var(--accent-gold)] hover:bg-[#B8963A] text-[var(--bg-primary)] font-bold px-6 py-3 rounded-xl transition-colors"

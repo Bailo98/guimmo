@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -213,7 +213,7 @@ function InscriptionForm() {
       ══════════════════════════════════════════════ */}
       <div
         className="flex-1 lg:w-1/2 flex flex-col items-center justify-center px-4 py-10"
-        style={{ background: "linear-gradient(160deg, var(--bg-primary) 0%, #1a2535 100%)" }}
+        style={{ background: "linear-gradient(160deg, #11100d 0%, #1a2535 100%)" }}
       >
         {/* Mobile: logo */}
         <div className="lg:hidden mb-6 text-center">
@@ -552,7 +552,7 @@ export default function InscriptionPage() {
       fallback={
         <div style={{
           minHeight: "calc(100svh - 72px)",
-          background: "linear-gradient(160deg, var(--bg-primary) 0%, #1a2535 100%)",
+          background: "linear-gradient(160deg, #11100d 0%, #1a2535 100%)",
         }} />
       }
     >

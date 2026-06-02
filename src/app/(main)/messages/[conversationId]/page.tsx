@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -249,19 +249,19 @@ export default function ConversationPage() {
           onClick={() => router.push("/messages")}
           className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[#1e2a30] transition-colors flex-shrink-0"
         >
-          <ArrowLeft className="w-5 h-5 text-[#ffffff]" />
+          <ArrowLeft className="w-5 h-5 text-[var(--text-primary)]" />
         </button>
 
-        <div className="w-10 h-10 rounded-full bg-[var(--accent-gold)] flex-shrink-0 flex items-center justify-center text-white font-bold">
+        <div className="w-10 h-10 rounded-full bg-[var(--accent-gold)] flex-shrink-0 flex items-center justify-center text-[var(--text-primary)] font-bold">
           {otherName.charAt(0).toUpperCase()}
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-[#ffffff] text-sm leading-tight">{otherName}</p>
+          <p className="font-bold text-[var(--text-primary)] text-sm leading-tight">{otherName}</p>
           {propId && (
             <Link href={`/annonces/${propId}`} className="flex items-center gap-1 group mt-0.5">
-              <Home className="w-3 h-3 text-white/40 flex-shrink-0" />
-              <p className="text-xs text-[#666666] truncate group-hover:text-[var(--accent-gold)] transition-colors">
+              <Home className="w-3 h-3 text-[var(--text-muted)] flex-shrink-0" />
+              <p className="text-xs text-[var(--text-secondary)] truncate group-hover:text-[var(--accent-gold)] transition-colors">
                 {propertyTitle}
               </p>
             </Link>
@@ -273,7 +273,7 @@ export default function ConversationPage() {
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {messages.length === 0 && !fetching && (
           <div className="flex items-center justify-center h-full py-12">
-            <p className="text-white/40 text-sm text-center">
+            <p className="text-[var(--text-muted)] text-sm text-center">
               Aucun message encore. Soyez le premier à écrire !
             </p>
           </div>
@@ -284,7 +284,7 @@ export default function ConversationPage() {
           return (
             <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
               {!isMe && (
-                <div className="w-7 h-7 rounded-full bg-[var(--accent-gold)] flex-shrink-0 flex items-center justify-center text-white text-xs font-bold mr-2 self-end mb-5">
+                <div className="w-7 h-7 rounded-full bg-[var(--accent-gold)] flex-shrink-0 flex items-center justify-center text-[var(--text-primary)] text-xs font-bold mr-2 self-end mb-5">
                   {otherName.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -292,8 +292,8 @@ export default function ConversationPage() {
                 <div
                   className={`px-4 py-2.5 text-sm leading-relaxed ${
                     isMe
-                      ? "bg-[var(--accent-gold)] text-white"
-                      : "bg-[var(--bg-card)] text-[#ffffff] border border-[var(--border)]"
+                      ? "bg-[var(--accent-gold)] text-[var(--text-primary)]"
+                      : "bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border)]"
                   }`}
                   style={{
                     borderRadius: isMe ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
@@ -302,7 +302,7 @@ export default function ConversationPage() {
                   {msg.content}
                 </div>
                 <div className="flex items-center gap-1.5 mt-1 px-1">
-                  <span className="text-[10px] text-white/40">
+                  <span className="text-[10px] text-[var(--text-muted)]">
                     {formatTime(msg.created_at)}
                   </span>
                   {isMe && msg.is_read && (
@@ -334,12 +334,12 @@ export default function ConversationPage() {
             placeholder="Écrire un message…"
             rows={1}
             style={{ fontSize: 16 }}
-            className="flex-1 resize-none bg-[var(--bg-card)] border border-[var(--border)] text-[#ffffff] placeholder:text-white/30 rounded-3xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/50 max-h-32 overflow-y-auto"
+            className="flex-1 resize-none bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] rounded-3xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/50 max-h-32 overflow-y-auto"
           />
           <button
             type="submit"
             disabled={!input.trim() || sending}
-            className="w-11 h-11 rounded-full flex items-center justify-center bg-[var(--accent-gold)] hover:bg-[#B8963A] disabled:opacity-40 disabled:cursor-not-allowed text-white transition-all flex-shrink-0"
+            className="w-11 h-11 rounded-full flex items-center justify-center bg-[var(--accent-gold)] hover:bg-[#B8963A] disabled:opacity-40 disabled:cursor-not-allowed text-[var(--text-primary)] transition-all flex-shrink-0"
           >
             {sending
               ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

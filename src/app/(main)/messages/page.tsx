@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
@@ -95,15 +95,15 @@ function EmptyMessages() {
       <div className="w-20 h-20 rounded-full bg-[var(--accent-gold)]/10 flex items-center justify-center mb-5">
         <MessageSquare className="w-9 h-9 text-[var(--accent-gold)]" />
       </div>
-      <h1 className="text-xl font-bold text-[#ffffff] mb-2">
+      <h1 className="text-xl font-bold text-[var(--text-primary)] mb-2">
         Aucun message pour l&apos;instant
       </h1>
-      <p className="text-[#666666] max-w-xs mb-6">
+      <p className="text-[var(--text-secondary)] max-w-xs mb-6">
         Contactez un propriétaire directement depuis une annonce.
       </p>
       <Link
         href="/annonces"
-        className="bg-[var(--accent-gold)] hover:bg-[#B8963A] text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+        className="bg-[var(--accent-gold)] hover:bg-[#B8963A] text-[var(--text-primary)] font-semibold px-6 py-3 rounded-xl transition-colors"
       >
         Explorer les annonces
       </Link>
@@ -240,9 +240,9 @@ export default function MessagesPage() {
 
       {/* Header */}
       <div className="flex items-center gap-3 mb-5">
-        <h1 className="text-xl font-bold text-[#ffffff]">Messages</h1>
+        <h1 className="text-xl font-bold text-[var(--text-primary)]">Messages</h1>
         {totalUnread > 0 && (
-          <span className="bg-[var(--accent-gold)] text-white text-xs font-bold px-2.5 py-1 rounded-full">
+          <span className="bg-[var(--accent-gold)] text-[var(--text-primary)] text-xs font-bold px-2.5 py-1 rounded-full">
             {totalUnread} non lu{totalUnread > 1 ? "s" : ""}
           </span>
         )}
@@ -265,22 +265,22 @@ export default function MessagesPage() {
                 style={{ background: "var(--bg-card)" }}
               >
                 {/* Avatar */}
-                <div className="w-12 h-12 rounded-xl bg-[var(--accent-gold)] flex-shrink-0 flex items-center justify-center text-white font-bold text-lg">
+                <div className="w-12 h-12 rounded-xl bg-[var(--accent-gold)] flex-shrink-0 flex items-center justify-center text-[var(--text-primary)] font-bold text-lg">
                   {initial}
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2 mb-0.5">
-                    <p className="font-semibold text-[#ffffff] text-[15px] truncate">{conv.otherUserName}</p>
+                    <p className="font-semibold text-[var(--text-primary)] text-[15px] truncate">{conv.otherUserName}</p>
                     {conv.lastMessage && (
-                      <span className="text-[11px] text-white/40 flex-shrink-0">
+                      <span className="text-[11px] text-[var(--text-muted)] flex-shrink-0">
                         {formatTime(conv.lastMessage.created_at)}
                       </span>
                     )}
                   </div>
                   <div className="flex items-center gap-1 mb-1">
-                    <Home className="w-3 h-3 text-white/40 flex-shrink-0" />
+                    <Home className="w-3 h-3 text-[var(--text-muted)] flex-shrink-0" />
                     <p className="text-xs text-[var(--accent-gold)] font-medium truncate">{conv.propertyTitle}</p>
                   </div>
                   <div className="flex items-center justify-between gap-2">
@@ -288,7 +288,7 @@ export default function MessagesPage() {
                       {conv.lastMessage?.content ?? ""}
                     </p>
                     {conv.unreadCount > 0 && (
-                      <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-[var(--accent-gold)] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                      <span className="flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-[var(--accent-gold)] text-[var(--text-primary)] text-[10px] font-bold rounded-full flex items-center justify-center">
                         {conv.unreadCount > 9 ? "9+" : conv.unreadCount}
                       </span>
                     )}
@@ -299,7 +299,7 @@ export default function MessagesPage() {
               {/* Desktop hover trash */}
               <button
                 onClick={(e) => { e.stopPropagation(); deleteConversation(conv); }}
-                className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 items-center justify-center rounded-lg text-white/40 hover:text-red-400 hover:bg-red-900/20"
+                className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8 items-center justify-center rounded-lg text-[var(--text-muted)] hover:text-red-400 hover:bg-red-900/20"
                 aria-label="Supprimer"
               >
                 <Trash2 className="w-4 h-4" />
@@ -323,7 +323,7 @@ export default function MessagesPage() {
                     </button>
                     <button
                       onClick={() => setContextMenu(null)}
-                      className="flex items-center w-full px-4 py-3 text-[#666666] text-sm border-t border-[var(--border)]"
+                      className="flex items-center w-full px-4 py-3 text-[var(--text-secondary)] text-sm border-t border-[var(--border)]"
                     >
                       Annuler
                     </button>

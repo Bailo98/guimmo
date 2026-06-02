@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 
@@ -62,7 +62,7 @@ export function OnboardingModal() {
               background: "linear-gradient(135deg, var(--accent-gold) 0%, #B8963A 100%)",
             }}
           >
-            <h2 className="text-2xl font-bold text-white leading-tight">
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] leading-tight">
               {STEPS[0].title}
             </h2>
             <p className="mt-2 text-orange-100 text-sm">{STEPS[0].subtitle}</p>
@@ -91,7 +91,7 @@ export function OnboardingModal() {
                 <button
                   key={label}
                   onClick={() => setStep(1)}
-                  className="flex items-center gap-3 w-full px-5 py-4 rounded-xl border-2 border-[var(--border)] bg-[var(--bg-card-light)] text-white font-semibold text-sm hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)] transition-colors text-left"
+                  className="flex items-center gap-3 w-full px-5 py-4 rounded-xl border-2 border-[var(--border)] bg-[var(--bg-card-light)] text-[var(--text-primary)] font-semibold text-sm hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)] transition-colors text-left"
                 >
                   <span className="text-xl">{emoji}</span>
                   {label}
@@ -107,7 +107,7 @@ export function OnboardingModal() {
                 <button
                   key={option}
                   onClick={() => setStep(2)}
-                  className="px-4 py-4 rounded-xl border-2 border-[var(--border)] bg-[var(--bg-card-light)] text-white font-semibold text-sm hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)] transition-colors text-center"
+                  className="px-4 py-4 rounded-xl border-2 border-[var(--border)] bg-[var(--bg-card-light)] text-[var(--text-primary)] font-semibold text-sm hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)] transition-colors text-center"
                 >
                   {option}
                 </button>
@@ -122,7 +122,7 @@ export function OnboardingModal() {
                 <button
                   key={name}
                   onClick={() => finish()}
-                  className="px-3 py-3 rounded-xl border-2 border-[var(--border)] bg-[var(--bg-card-light)] text-white font-semibold text-sm hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)] transition-colors text-center"
+                  className="px-3 py-3 rounded-xl border-2 border-[var(--border)] bg-[var(--bg-card-light)] text-[var(--text-primary)] font-semibold text-sm hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)] transition-colors text-center"
                 >
                   {name}
                 </button>
