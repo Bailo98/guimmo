@@ -450,6 +450,24 @@ input::placeholder, textarea::placeholder {
 /* ─────────────────────────────────────────────────────────────────
    Responsive typography
 ───────────────────────────────────────────────────────────────── */
+.content-fluid {
+  width: min(calc(100% - clamp(24px, 5vw, 96px)), 1680px);
+  margin-inline: auto;
+}
+
+.home-section-fill {
+  min-height: calc(100svh - 72px);
+}
+
+@media (max-width: 768px) {
+  .content-fluid {
+    width: min(calc(100% - 24px), 1680px);
+  }
+  .home-section-fill {
+    min-height: auto;
+  }
+}
+
 .page-title   { font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; }
 .section-title { font-size: clamp(1.25rem, 3vw, 2rem); font-weight: 700; line-height: 1.3; }
 .detail-title  { font-size: clamp(1.25rem, 3.5vw, 1.875rem); font-weight: 800; line-height: 1.2; }

@@ -255,7 +255,7 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════════════════
           1. HERO SECTION
       ═══════════════════════════════════════════════════════ */}
-      <section className="hero-section relative min-h-[100svh] flex flex-col overflow-hidden">
+      <section className="hero-section home-section-fill relative flex flex-col overflow-hidden">
 
         {/* Grain / noise texture overlay */}
         <div
@@ -271,8 +271,8 @@ export default async function HomePage() {
         />
 
         {/* Hero content */}
-        <div className="relative flex-1 flex items-center w-full max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-20 items-center w-full">
+        <div className="content-fluid relative flex-1 flex items-center py-10 md:py-14 xl:py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(380px,0.95fr)] gap-10 lg:gap-12 xl:gap-16 items-center w-full">
 
             {/* ── Left: headline + search ── */}
             <div className="text-center lg:text-left">
@@ -294,13 +294,13 @@ export default async function HomePage() {
               {/* Title */}
               <h1
                 style={{
-                  fontFamily: '"Manrope", sans-serif',
+                  fontFamily: "var(--font-manrope), sans-serif",
                   fontWeight: 800,
-                  fontSize: "clamp(3.2rem, 5.15vw, 5.15rem)",
+                  fontSize: "clamp(3.2rem, 6vw, 6rem)",
                   lineHeight: 0.98,
                   color: "var(--text-primary)",
                   marginBottom: "1rem",
-                  letterSpacing: "-0.06em",
+                  letterSpacing: 0,
                 }}
               >
                 Trouvez votre<br />
@@ -316,7 +316,7 @@ export default async function HomePage() {
                   color: "var(--text-secondary)",
                   fontSize: "1.0625rem",
                   lineHeight: 1.65,
-                  maxWidth: 460,
+                  maxWidth: 620,
                   margin: "0 auto 1.25rem",
                 }}
               >
@@ -402,7 +402,7 @@ export default async function HomePage() {
           className="py-5"
           style={{ background: "var(--bg-secondary)", borderBottom: "1px solid var(--border)" }}
         >
-          <div className="max-w-7xl mx-auto px-4">
+          <div className="content-fluid">
             <div className="flex items-center gap-3 mb-4">
               <h2 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
                 ⚡ Disponibles maintenant
@@ -444,7 +444,7 @@ export default async function HomePage() {
       ═══════════════════════════════════════════════════════ */}
       {recent.length > 0 && (
         <section className="py-14" style={{ background: "var(--bg-primary)" }}>
-          <div className="max-w-7xl mx-auto px-4">
+          <div className="content-fluid">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2
@@ -477,7 +477,7 @@ export default async function HomePage() {
           5. QUARTIERS POPULAIRES — with live counts
       ═══════════════════════════════════════════════════════ */}
       <section className="py-16" style={{ background: "var(--bg-card-light)" }}>
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="content-fluid">
           <div className="mb-8">
             <h2
               className="text-2xl md:text-3xl font-black"
@@ -528,7 +528,7 @@ export default async function HomePage() {
           borderBottom: "1px solid rgba(212,175,55,0.22)",
         }}
       >
-        <div className="max-w-3xl mx-auto px-4 text-center">
+        <div className="content-fluid text-center">
           <div className="text-5xl mb-5">🔍</div>
           <h2
             className="text-2xl md:text-3xl font-black mb-3"
@@ -556,7 +556,7 @@ export default async function HomePage() {
           7. SECTION CONFIANCE — 4 cartes
       ═══════════════════════════════════════════════════════ */}
       <section className="py-16" style={{ background: "var(--bg-card-light)" }}>
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="content-fluid">
           <div className="text-center mb-10">
             <h2
               className="text-2xl md:text-3xl font-black"
@@ -588,7 +588,7 @@ export default async function HomePage() {
           8. PUBLICATION RAPIDE CTA
       ═══════════════════════════════════════════════════════ */}
       <section className="py-20" style={{ background: "var(--bg-secondary)" }}>
-        <div className="max-w-3xl mx-auto px-4 text-center">
+        <div className="content-fluid text-center">
           <p className="text-5xl mb-6">🏠</p>
           <h2
             className="text-2xl md:text-4xl font-black mb-3"
@@ -628,7 +628,7 @@ export default async function HomePage() {
         className="py-10"
         style={{ background: "var(--bg-card-light)", borderTop: "1px solid var(--border)" }}
       >
-        <div className="max-w-xl mx-auto px-4 text-center">
+        <div className="content-fluid text-center">
           <div className="text-4xl mb-3">📱</div>
           <h2 className="text-lg font-bold mb-2" style={{ color: "var(--text-primary)" }}>
             Installez LogerBien sur votre téléphone
