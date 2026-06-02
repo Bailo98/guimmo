@@ -102,28 +102,28 @@ export function Header() {
       className="fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300"
       style={{ background: "var(--nav-bg)", backdropFilter: "blur(18px) saturate(1.3)", WebkitBackdropFilter: "blur(18px) saturate(1.3)", borderBottom: "1px solid var(--border)" }}
     >
-      <div className="max-w-7xl mx-auto px-4 h-[72px] flex items-center justify-between gap-4">
+      <div className="max-w-[1180px] mx-auto px-5 md:px-0 h-[72px] flex items-center justify-between gap-4">
         <Logo />
 
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-5">
           <Link
             href="/annonces"
             className="px-3 py-2 rounded-xl transition-colors hover:bg-black/5"
-            style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.12em", textTransform: "uppercase", color: pathname.startsWith("/annonces") ? "var(--nav-text-active)" : "var(--nav-text)" }}
+            style={{ fontSize: 12, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", color: pathname.startsWith("/annonces") ? "var(--nav-text-active)" : "var(--nav-text)" }}
           >
             Annonces
           </Link>
           <Link
             href="/je-cherche"
             className="px-3 py-2 rounded-xl transition-colors hover:bg-black/5"
-            style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.12em", textTransform: "uppercase", color: pathname === "/je-cherche" ? "var(--nav-text-active)" : "var(--nav-text)" }}
+            style={{ fontSize: 12, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", color: pathname === "/je-cherche" ? "var(--nav-text-active)" : "var(--nav-text)" }}
           >
             Je cherche 🔍
           </Link>
           <Link
             href="/agents"
             className="px-3 py-2 rounded-xl transition-colors hover:bg-black/5"
-            style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.12em", textTransform: "uppercase", color: pathname === "/agents" ? "var(--nav-text-active)" : "var(--nav-text)" }}
+            style={{ fontSize: 12, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", color: pathname === "/agents" ? "var(--nav-text-active)" : "var(--nav-text)" }}
           >
             Agents
           </Link>
@@ -132,8 +132,8 @@ export function Header() {
         <div className="flex items-center gap-2">
           <button
             onClick={toggleTheme}
-            className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors hover:bg-black/5"
-            style={{ color: "var(--nav-text)" }}
+            className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors hover:bg-black/5"
+            style={{ color: "var(--nav-text-active)", border: "1px solid var(--border)", background: "var(--bg-card)" }}
             aria-label="Changer le thème"
           >
             {(!mounted || resolvedTheme === "dark") ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}

@@ -1,11 +1,19 @@
 ﻿import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, ChevronRight } from "lucide-react";
-import { PropertyCard } from "@/components/ui/PropertyCard";
+import {
+  Building2,
+  ChevronRight,
+  DollarSign,
+  Home,
+  MapPin,
+  PhoneCall,
+  Search,
+  ShieldCheck,
+  Zap,
+} from "lucide-react";
 import { RecentlyViewedSection } from "@/components/ui/RecentlyViewedSection";
 import { HeroSearch } from "@/components/home/HeroSearch";
-import { MaisonDuJour } from "@/components/MaisonDuJour";
 import { PWAInstallButton } from "@/components/home/PWAInstallButton";
 import { LiveCounterBadge } from "@/components/home/LiveCounterBadge";
 import { formatPrice } from "@/lib/utils";
@@ -74,9 +82,9 @@ const HERO_GRADIENTS: [string, string][] = [
 ];
 
 const CARD_POSITIONS = [
-  { top: "0px",   right: "0px",  rotate: "-2deg",  zIndex: 3, opacity: 1    },
-  { top: "155px", right: "28px", rotate: "2.2deg", zIndex: 2, opacity: 0.96 },
-  { top: "295px", right: "54px", rotate: "1.8deg", zIndex: 1, opacity: 0.88 },
+  { top: "50px",  right: "255px", rotate: "-1.4deg", zIndex: 4, opacity: 1    },
+  { top: "205px", right: "30px",  rotate: "2deg",    zIndex: 3, opacity: 0.98 },
+  { top: "355px", right: "210px", rotate: "-1deg",   zIndex: 5, opacity: 1    },
 ];
 
 // ─── Data fetching ─────────────────────────────────────────────────────────────
@@ -160,17 +168,18 @@ function PreviewCard({ property, index }: { property: Property; index: number })
 
   return (
     <div
-      className="absolute w-[240px] overflow-hidden"
+      className="absolute w-[250px] xl:w-[292px] overflow-hidden"
       style={{
         top: pos.top, right: pos.right,
         transform: `rotate(${pos.rotate})`,
         zIndex: pos.zIndex, opacity: pos.opacity,
         background: "#ffffff",
-        borderRadius: 22,
-        boxShadow: "0 22px 60px rgba(24,21,16,0.13)",
+        border: "1px solid rgba(222,211,191,0.84)",
+        borderRadius: 20,
+        boxShadow: "0 24px 60px rgba(24,21,16,0.18)",
       }}
     >
-      <div className="relative h-32">
+      <div className="relative h-28 xl:h-36">
         {primaryImg ? (
           <Image src={primaryImg.url} alt={property.title} fill className="object-cover" sizes="240px" quality={65} loading="lazy" />
         ) : (
@@ -182,15 +191,77 @@ function PreviewCard({ property, index }: { property: Property; index: number })
           </span>
         </div>
       </div>
-      <div className="p-3" style={{ color: "#181510" }}>
-        <p className="font-bold text-sm leading-snug line-clamp-1">{property.title}</p>
-        <div className="flex items-center gap-1 text-xs mt-1" style={{ color: "#666" }}>
+      <div className="p-4" style={{ color: "#181510" }}>
+        <p className="font-extrabold text-sm xl:text-base leading-snug line-clamp-2">{property.title}</p>
+        <div className="flex items-center gap-1 text-xs xl:text-sm mt-2" style={{ color: "#625a4b" }}>
           <MapPin className="w-3 h-3 flex-shrink-0" />
           <span>{NL[property.neighborhood] ?? property.neighborhood}</span>
         </div>
-        <p className="font-black text-sm mt-1.5" style={{ color: "#b98a2e", fontWeight: 900 }}>{priceStr}</p>
+        <p className="font-black text-sm xl:text-base mt-1.5" style={{ color: "#b98a2e", fontWeight: 900 }}>{priceStr}</p>
       </div>
     </div>
+  );
+}
+
+function HomeListingCard({ property }: { property: Property }) {
+  const primaryImg = property.property_images?.find((i) => i.is_primary) ?? property.property_images?.[0];
+  const priceStr = formatPrice(property.price, "GNF", property.price_period);
+  const tags = [
+    property.transaction_type === "rent" ? "Location" : "Achat",
+    property.rooms ? `${property.rooms} chambres` : null,
+    property.bathrooms ? `${property.bathrooms} douches` : null,
+  ].filter(Boolean);
+
+  return (
+    <Link
+      href={`/annonces/${property.id}`}
+      className="group overflow-hidden rounded-[22px] transition-transform duration-300 hover:-translate-y-1"
+      style={{
+        background: "var(--bg-card)",
+        border: "1px solid var(--border)",
+        boxShadow: "var(--shadow-soft)",
+      }}
+    >
+      <div className="relative aspect-[1.95/1] overflow-hidden">
+        {primaryImg ? (
+          <Image
+            src={primaryImg.url}
+            alt={property.title}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            quality={78}
+            loading="lazy"
+          />
+        ) : (
+          <div className="h-full w-full bg-[var(--bg-secondary)]" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" />
+        <span className="absolute left-4 top-4 rounded-full bg-black/55 px-3 py-1.5 text-xs font-extrabold text-white backdrop-blur">
+          {property.is_verified ? "Vérifiée" : property.transaction_type === "rent" ? "Location" : "Achat"}
+        </span>
+      </div>
+      <div className="p-5">
+        <h3 className="line-clamp-1 font-sans text-[19px] font-extrabold leading-tight" style={{ color: "var(--text-primary)" }}>
+          {property.title}
+        </h3>
+        <p className="mt-3 flex items-center gap-2 text-sm" style={{ color: "var(--text-secondary)" }}>
+          <MapPin className="h-4 w-4 shrink-0" style={{ color: "var(--color-green)" }} />
+          {NL[property.neighborhood] ?? property.neighborhood} - Disponible maintenant
+        </p>
+        <div className="mt-4 flex min-h-8 flex-wrap gap-2">
+          {tags.slice(0, 3).map((tag) => (
+            <span key={tag} className="rounded-full px-3 py-1.5 text-xs font-extrabold" style={{ background: "var(--surface-soft)", color: "var(--text-secondary)" }}>
+              {tag}
+            </span>
+          ))}
+        </div>
+        <div className="mt-5 flex items-center justify-between gap-4">
+          <p className="text-lg font-black" style={{ color: "var(--accent-gold)" }}>{priceStr}</p>
+          <span className="text-sm font-extrabold" style={{ color: "var(--color-green)" }}>Voir</span>
+        </div>
+      </div>
+    </Link>
   );
 }
 
@@ -240,11 +311,9 @@ function UrgencyCard({ property }: { property: Property }) {
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  const [properties, urgentProps, activeCountToday, neighborhoodCounts] = await Promise.all([
+  const [properties, activeCountToday] = await Promise.all([
     fetchHomeProperties(),
-    fetchUrgentProperties(),
     fetchActiveCountToday(),
-    fetchNeighborhoodCounts(),
   ]);
 
   const heroPreview = properties.slice(0, 3);
@@ -255,7 +324,7 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════════════════
           1. HERO SECTION
       ═══════════════════════════════════════════════════════ */}
-      <section className="hero-section relative min-h-[100svh] flex flex-col overflow-hidden">
+      <section className="hero-section relative min-h-[calc(100svh-72px)] flex flex-col overflow-hidden">
 
         {/* Grain / noise texture overlay */}
         <div
@@ -271,15 +340,15 @@ export default async function HomePage() {
         />
 
         {/* Hero content */}
-        <div className="relative flex-1 flex items-center w-full max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-20 items-center w-full">
+        <div className="relative flex-1 flex items-center w-full max-w-[1180px] mx-auto px-5 md:px-0 py-8 md:py-0">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.02fr_1fr] gap-8 lg:gap-12 items-center w-full">
 
             {/* ── Left: headline + search ── */}
-            <div className="text-center lg:text-left">
+            <div className="text-center lg:text-left lg:pt-5">
 
               {/* Badge pill */}
               <div
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-6"
+                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-4"
                 style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.25)" }}
               >
                 <span
@@ -294,19 +363,20 @@ export default async function HomePage() {
               {/* Title */}
               <h1
                 style={{
-                  fontFamily: '"Manrope", sans-serif',
+                  fontFamily: "var(--font-manrope), sans-serif",
                   fontWeight: 800,
-                  fontSize: "clamp(3.2rem, 5.15vw, 5.15rem)",
+                  fontSize: "clamp(3.3rem, 5.05vw, 4.95rem)",
                   lineHeight: 0.98,
                   color: "var(--text-primary)",
                   marginBottom: "1rem",
-                  letterSpacing: "-0.06em",
+                  letterSpacing: "-0.045em",
                 }}
               >
                 Trouvez votre<br />
                 logement<br />
-                à Conakry<br />
-                <span style={{ color: "var(--accent-gold)" }}>Direct propriétaire</span>
+                fiable à<br />
+                Conakry<br />
+                <span style={{ color: "var(--accent-gold)" }}>sans commission</span>
               </h1>
 
               {/* Subtitle */}
@@ -316,21 +386,23 @@ export default async function HomePage() {
                   color: "var(--text-secondary)",
                   fontSize: "1.0625rem",
                   lineHeight: 1.65,
-                  maxWidth: 460,
+                  maxWidth: 560,
                   margin: "0 auto 1.25rem",
                 }}
               >
-                Sans commission.&nbsp;&nbsp;Sans intermédiaire.&nbsp;&nbsp;Sans stress.
+                Une expérience claire pour chercher, comparer et contacter le bon propriétaire.
+                Des annonces contrôlées, des quartiers lisibles et une prise de contact simple.
               </p>
 
               {/* Proof pills */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-5">
-                {["✓ Annonces contrôlées", "📞 Appel ou WhatsApp", "$ Zéro frais caché"].map((label) => (
+                {["Annonces contrôlées", "Appel ou WhatsApp", "Zéro frais caché"].map((label, i) => (
                   <span
                     key={label}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
+                      gap: 8,
                       padding: "9px 12px",
                       borderRadius: 999,
                       background: "var(--bg-card)",
@@ -341,6 +413,9 @@ export default async function HomePage() {
                       whiteSpace: "nowrap",
                     }}
                   >
+                    {i === 0 && <ShieldCheck className="h-4 w-4" style={{ color: "var(--color-green)" }} />}
+                    {i === 1 && <PhoneCall className="h-4 w-4" style={{ color: "var(--color-green)" }} />}
+                    {i === 2 && <DollarSign className="h-4 w-4" style={{ color: "var(--color-green)" }} />}
                     {label}
                   </span>
                 ))}
@@ -355,13 +430,31 @@ export default async function HomePage() {
 
             {/* ── Right: floating preview cards (desktop only) ── */}
             {heroPreview.length > 0 && (
-              <div className="hidden lg:block relative" style={{ height: "460px" }}>
+              <div className="hidden lg:block relative" style={{ height: "610px" }}>
+                <div
+                  className="absolute right-0 top-4 h-[360px] w-[410px] overflow-hidden rounded-[30px]"
+                  style={{ boxShadow: "0 30px 80px rgba(24,21,16,0.16)" }}
+                >
+                  {heroPreview[0]?.property_images?.[0]?.url ? (
+                    <Image
+                      src={heroPreview[0].property_images[0].url}
+                      alt={heroPreview[0].title}
+                      fill
+                      className="object-cover"
+                      sizes="410px"
+                      quality={82}
+                      priority
+                    />
+                  ) : (
+                    <div className="h-full w-full bg-[var(--bg-secondary)]" />
+                  )}
+                </div>
                 {/* Floating stat card — top-right of showcase */}
                 <div
                   className="absolute"
                   style={{
-                    top: 0,
-                    left: 0,
+                    top: 4,
+                    right: 0,
                     background: "#ffffff",
                     borderRadius: 16,
                     boxShadow: "0 8px 24px rgba(24,21,16,0.10)",
@@ -372,10 +465,10 @@ export default async function HomePage() {
                     gap: 10,
                   }}
                 >
-                  <span style={{ fontSize: 18 }}>⚡</span>
+                  <Zap className="h-5 w-5" style={{ color: "#214e3a" }} />
                   <div>
-                    <p style={{ fontWeight: 700, fontSize: 12, color: "#181510", lineHeight: 1.2, margin: 0 }}>Délai de réponse rapide</p>
-                    <p style={{ fontSize: 11, color: "#888", marginTop: 2, margin: "2px 0 0" }}>&lt; 24h en moyenne</p>
+                    <p style={{ fontWeight: 800, fontSize: 20, color: "#214e3a", lineHeight: 1.2, margin: 0 }}>Délai</p>
+                    <p style={{ fontSize: 11, color: "#625a4b", marginTop: 2, margin: "2px 0 0" }}>de réponse rapide</p>
                   </div>
                 </div>
                 {heroPreview.map((p, i) => (
@@ -386,82 +479,31 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* Scroll hint */}
-        <div className="relative pb-8 flex justify-center">
-          <div className="w-6 h-9 rounded-full flex items-start justify-center pt-2" style={{ border: "2px solid rgba(212,175,55,0.20)" }}>
-            <div className="w-1 h-2 rounded-full" style={{ background: "rgba(247,242,230,0.45)", animation: "bounce 2s infinite" }} />
-          </div>
-        </div>
+        <div className="hidden" />
       </section>
-
-      {/* ═══════════════════════════════════════════════════════
-          2. BANDEAU URGENCES (only if urgent listings exist)
-      ═══════════════════════════════════════════════════════ */}
-      {urgentProps.length > 0 && (
-        <section
-          className="py-5"
-          style={{ background: "var(--bg-secondary)", borderBottom: "1px solid var(--border)" }}
-        >
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex items-center gap-3 mb-4">
-              <h2 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
-                ⚡ Disponibles maintenant
-              </h2>
-              <span
-                className="text-xs px-2.5 py-0.5 rounded-full font-bold"
-                style={{ background: "rgba(255,77,77,0.15)", color: "#ff6b6b" }}
-              >
-                {urgentProps.length} annonce{urgentProps.length > 1 ? "s" : ""}
-              </span>
-              <Link href="/annonces?recent=1" className="ml-auto text-xs font-semibold hover:underline" style={{ color: "var(--accent-gold)" }}>
-                Voir toutes →
-              </Link>
-            </div>
-            {/* Horizontal scrollable row — no visible scrollbar */}
-            <div
-              className="flex gap-3 pb-1 no-scrollbar"
-              style={{ overflowX: "auto" }}
-            >
-              {urgentProps.map((p) => (
-                <UrgencyCard key={p.id} property={p} />
-              ))}
-              {/* Spacer so last card isn't flush against the edge */}
-              <div className="flex-shrink-0 w-4" />
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ═══════════════════════════════════════════════════════
-          3. MAISON DU JOUR
-      ═══════════════════════════════════════════════════════ */}
-      <div style={{ background: "var(--bg-primary)" }}>
-        <MaisonDuJour />
-      </div>
 
       {/* ═══════════════════════════════════════════════════════
           4. ANNONCES RÉCENTES
       ═══════════════════════════════════════════════════════ */}
       {recent.length > 0 && (
-        <section className="py-14" style={{ background: "var(--bg-primary)" }}>
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex items-center justify-between mb-6">
+        <section className="min-h-[calc(100svh-72px)] py-16 md:py-20" style={{ background: "var(--bg-primary)" }}>
+          <div className="max-w-[1180px] mx-auto px-5 md:px-0">
+            <div className="flex items-center justify-between mb-8">
               <div>
                 <h2
-                  className="text-2xl md:text-3xl font-black"
+                  className="text-4xl md:text-[56px] font-black"
                   style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
                 >
                   Annonces récentes
                 </h2>
-                <p className="mt-1 text-sm" style={{ color: "#666666" }}>Les dernières mises en ligne</p>
               </div>
               <Link href="/annonces" className="flex items-center gap-1 text-sm font-semibold hover:underline" style={{ color: "var(--accent-gold)" }}>
                 Voir tout <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {recent.map((p, i) => (
-                <PropertyCard key={p.id} property={p} index={i + 10} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {recent.slice(0, 3).map((p) => (
+                <HomeListingCard key={p.id} property={p} />
               ))}
             </div>
           </div>
@@ -474,150 +516,128 @@ export default async function HomePage() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════
-          5. QUARTIERS POPULAIRES — with live counts
-      ═══════════════════════════════════════════════════════ */}
-      <section className="py-16" style={{ background: "var(--bg-card-light)" }}>
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="mb-8">
-            <h2
-              className="text-2xl md:text-3xl font-black"
-              style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
-            >
-              Quartiers populaires
-            </h2>
-            <p className="mt-1 text-sm" style={{ color: "#666666" }}>
-              Explorez les annonces actives par quartier à Conakry
-            </p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-            {POPULAR_NEIGHBORHOODS.map((n) => {
-              const count = neighborhoodCounts[n.id] ?? 0;
-              return (
-                <Link
-                  key={n.id}
-                  href={`/annonces?neighborhood=${n.id}`}
-                  className="group rounded-2xl p-5 transition-all duration-200 hover:-translate-y-0.5"
-                  style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
-                >
-                  <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center mb-3"
-                    style={{ background: "rgba(212,175,55,0.12)" }}
-                  >
-                    <MapPin className="w-4 h-4" style={{ color: "var(--accent-gold)" }} />
-                  </div>
-                  <p className="font-bold text-sm mb-0.5" style={{ color: "var(--text-primary)" }}>{n.name}</p>
-                  <p className="text-xs" style={{ color: count > 0 ? "#22c55e" : "#666" }}>
-                    {count > 0 ? `${count} annonce${count > 1 ? "s" : ""}` : "Aucune annonce"}
-                  </p>
-                  <p className="text-xs font-semibold mt-2" style={{ color: "var(--accent-gold)" }}>Explorer →</p>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════
-          6. JE CHERCHE — CTA pour les chercheurs
+          5. ACTIONS PRINCIPALES
       ═══════════════════════════════════════════════════════ */}
       <section
-        className="py-16"
-        style={{
-          background: "linear-gradient(135deg, rgba(212,175,55,0.14) 0%, rgba(212,175,55,0.04) 100%)",
-          borderTop: "1px solid rgba(212,175,55,0.22)",
-          borderBottom: "1px solid rgba(212,175,55,0.22)",
-        }}
+        className="min-h-[calc(100svh-72px)] flex items-center py-16 md:py-20"
+        style={{ background: "var(--bg-secondary)" }}
       >
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <div className="text-5xl mb-5">🔍</div>
-          <h2
-            className="text-2xl md:text-3xl font-black mb-3"
-            style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
-          >
-            Vous cherchez un logement ?
-          </h2>
-          <p className="text-base mb-7 max-w-md mx-auto" style={{ color: "var(--text-secondary)" }}>
-            Publiez votre recherche gratuitement. Les propriétaires vous contactent directement sur WhatsApp.
-          </p>
-          <Link
-            href="/je-cherche"
-            className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl transition-opacity hover:opacity-90 text-sm"
-            style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
-          >
-            Publier ma recherche →
-          </Link>
-          <p className="mt-4 text-xs" style={{ color: "#666" }}>
-            Gratuit · Réponse en moins de 24h · Sans inscription obligatoire
-          </p>
+        <div className="grid w-full max-w-[1180px] mx-auto grid-cols-1 gap-4 px-5 md:grid-cols-2 md:px-0">
+          <div className="rounded-[26px] p-8 md:p-10" style={{ background: "var(--color-green)", color: "#fff", boxShadow: "var(--shadow-soft)" }}>
+            <div className="mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15">
+              <Search className="h-7 w-7" />
+            </div>
+            <h2 className="max-w-md text-4xl md:text-[42px] font-black leading-[0.98]" style={{ color: "#fff", fontFamily: "var(--font-display), serif" }}>
+              Vous cherchez un logement ?
+            </h2>
+            <p className="mt-5 max-w-md text-base leading-7" style={{ color: "rgba(255,255,255,0.82)" }}>
+              Publiez votre recherche en quelques minutes. Les propriétaires peuvent vous contacter directement.
+            </p>
+            <Link
+              href="/je-cherche"
+              className="mt-7 inline-flex items-center justify-center rounded-xl px-6 py-3 text-sm font-extrabold"
+              style={{ background: "var(--accent-gold)", color: "#181510" }}
+            >
+              Publier ma recherche
+            </Link>
+          </div>
+
+          <div className="rounded-[26px] p-8 md:p-10" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}>
+            <div className="mb-8 flex h-14 w-14 items-center justify-center rounded-2xl" style={{ background: "var(--surface-soft)" }}>
+              <Home className="h-7 w-7" style={{ color: "var(--accent-gold)" }} />
+            </div>
+            <h2 className="max-w-md text-4xl md:text-[42px] font-black leading-[0.98]" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), serif" }}>
+              Vous avez un bien à louer ?
+            </h2>
+            <p className="mt-5 max-w-md text-base leading-7" style={{ color: "var(--text-secondary)" }}>
+              Déposez une annonce claire avec photos, quartier, prix et contact. Publication rapide, sans carte bancaire.
+            </p>
+            <Link
+              href="/publier"
+              className="mt-7 inline-flex items-center justify-center rounded-xl px-6 py-3 text-sm font-extrabold"
+              style={{ background: "transparent", border: "1px solid var(--border)", color: "var(--color-green)" }}
+            >
+              Publier une annonce
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════
           7. SECTION CONFIANCE — 4 cartes
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-16" style={{ background: "var(--bg-card-light)" }}>
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-10">
-            <h2
-              className="text-2xl md:text-3xl font-black"
-              style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
-            >
-              Pourquoi choisir LogerBien ?
-            </h2>
-            <p className="mt-2 text-sm max-w-md mx-auto" style={{ color: "#666" }}>
-              La plateforme immobilière conçue pour la réalité guinéenne
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {TRUST_ITEMS.map((item) => (
-              <div
-                key={item.title}
-                className="rounded-2xl p-6"
-                style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
+      <section className="min-h-[calc(100svh-72px)] py-16 md:py-20" style={{ background: "var(--bg-primary)" }}>
+        <div className="max-w-[1180px] mx-auto px-5 md:px-0">
+          <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr]">
+            <div>
+              <h2
+                className="mb-7 text-4xl md:text-[56px] font-black leading-none"
+                style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), serif" }}
               >
-                <span className="text-3xl block mb-4">{item.icon}</span>
-                <h3 className="font-bold text-base mb-2" style={{ color: "var(--text-primary)" }}>{item.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: "#666" }}>{item.desc}</p>
+                Pourquoi LogerBien ?
+              </h2>
+              <div className="relative min-h-[520px] overflow-hidden rounded-[28px] p-8 md:p-10" style={{ background: "var(--color-green)" }}>
+                {heroPreview[1]?.property_images?.[0]?.url && (
+                  <Image
+                    src={heroPreview[1].property_images[0].url}
+                    alt={heroPreview[1].title}
+                    fill
+                    className="object-cover opacity-35"
+                    sizes="620px"
+                    quality={80}
+                    loading="lazy"
+                  />
+                )}
+                <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(33,78,58,0.96),rgba(33,78,58,0.62))]" />
+                <div className="relative z-10">
+                  <span className="rounded-full bg-white/18 px-4 py-2 text-sm font-extrabold text-white">Pensé pour Conakry</span>
+                  <h3 className="mt-10 max-w-lg font-sans text-4xl md:text-[54px] font-black leading-[0.98] text-white">
+                    Moins d&apos;incertitude avant même de visiter.
+                  </h3>
+                  <p className="mt-6 max-w-xl text-base leading-7 text-white/82">
+                    LogerBien met en avant les signaux utiles: annonce claire, quartier lisible,
+                    contact direct et informations essentielles visibles avant l&apos;appel.
+                  </p>
+                  <div className="mt-16 grid grid-cols-3 gap-3">
+                    {[
+                      ["0", "commission cachée"],
+                      ["24h", "réponse visée"],
+                      ["4", "critères clés"],
+                    ].map(([value, label]) => (
+                      <div key={value} className="rounded-2xl border border-white/18 bg-white/16 p-4 backdrop-blur">
+                        <p className="text-2xl font-black" style={{ color: "var(--accent-gold-light)" }}>{value}</p>
+                        <p className="mt-1 text-xs font-extrabold text-white/85">{label}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </div>
 
-      {/* ═══════════════════════════════════════════════════════
-          8. PUBLICATION RAPIDE CTA
-      ═══════════════════════════════════════════════════════ */}
-      <section className="py-20" style={{ background: "var(--bg-secondary)" }}>
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <p className="text-5xl mb-6">🏠</p>
-          <h2
-            className="text-2xl md:text-4xl font-black mb-3"
-            style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
-          >
-            Vous avez un logement à louer ?
-          </h2>
-          <p className="mb-8 max-w-lg mx-auto text-base" style={{ color: "#666" }}>
-            Publiez en 2 minutes. 4 étapes seulement. Gratuit.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/publier/rapide"
-              className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl transition-opacity hover:opacity-90 text-sm"
-              style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
-            >
-              ⚡ Publication rapide
-            </Link>
-            <Link
-              href="/publier"
-              className="inline-flex items-center gap-2 font-bold px-8 py-4 rounded-2xl text-sm transition-all hover:border-[var(--accent-gold)]"
-              style={{ background: "transparent", border: "1px solid rgba(212,175,55,0.35)", color: "var(--accent-gold)" }}
-            >
-              Publication complète
-            </Link>
+            <div className="flex flex-col justify-center">
+              <p className="mb-8 max-w-md text-base leading-7" style={{ color: "var(--text-secondary)" }}>
+                Une expérience pensée pour la réalité de la recherche immobilière à Conakry.
+              </p>
+              <div className="grid gap-3">
+                {[
+                  { icon: ShieldCheck, title: "Annonces vérifiées", desc: "Les informations importantes sont contrôlées avant mise en avant." },
+                  { icon: Building2, title: "Propriétaires directs", desc: "Moins d'intermédiaires, plus de clarté dans la prise de contact." },
+                  { icon: PhoneCall, title: "Contact rapide", desc: "Appel ou WhatsApp sans tunnel inutile ni formulaire interminable." },
+                  { icon: Zap, title: "Recherche simple", desc: "Quartier, type, budget: l'essentiel visible dès le premier écran." },
+                ].map((item) => (
+                  <div key={item.title} className="flex gap-4 rounded-[22px] p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl" style={{ background: "var(--color-green-soft)" }}>
+                      <item.icon className="h-6 w-6" style={{ color: "var(--color-green)" }} />
+                    </div>
+                    <div>
+                      <h3 className="font-sans text-xl font-extrabold" style={{ color: "var(--text-primary)" }}>{item.title}</h3>
+                      <p className="mt-1 text-sm leading-6" style={{ color: "var(--text-secondary)" }}>{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          <p className="mt-6 text-xs" style={{ color: "#555" }}>
-            ✓ Sans carte bancaire &nbsp;·&nbsp; ✓ Résultat immédiat &nbsp;·&nbsp; ✓ Contact direct WhatsApp
-          </p>
         </div>
       </section>
 
