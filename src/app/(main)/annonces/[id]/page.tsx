@@ -387,7 +387,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               {/* Title + location + price + SHARE (visible) */}
               <div>
                 <div className="flex items-start justify-between gap-3 flex-wrap">
-                  <h1 className="text-xl md:text-2xl font-black text-white leading-tight flex-1">
+                  <h1 className="text-xl md:text-2xl font-black leading-tight flex-1" style={{ color: "var(--text-primary)" }}>
                     {property.title}
                   </h1>
                   {/* Favorite + Share — visible near title */}
@@ -408,11 +408,11 @@ export default async function PropertyDetailPage({ params }: Props) {
                 </div>
                 <div className="flex items-center gap-3 mt-1 flex-wrap">
                   <div className="flex items-center gap-1.5 text-sm">
-                    <MapPin className="w-4 h-4 flex-shrink-0 text-white/40" />
-                    <span className="text-white/60">{neighborhoodLabel}, {property.city}</span>
+                    <MapPin className="w-4 h-4 flex-shrink-0" style={{ color: "var(--text-muted)" }} />
+                    <span style={{ color: "var(--text-secondary)" }}>{neighborhoodLabel}, {property.city}</span>
                   </div>
                   {(property.views ?? 0) > 0 && (
-                    <span className="text-xs text-white/40">
+                    <span className="text-xs" style={{ color: "var(--text-muted)" }}>
                       👁 {property.views} vue{(property.views ?? 0) > 1 ? "s" : ""}
                     </span>
                   )}
@@ -435,28 +435,28 @@ export default async function PropertyDetailPage({ params }: Props) {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {(property.rooms ?? 0) > 0 && (
                   <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-                    <Bed className="w-6 h-6 text-white/60 mx-auto mb-1" />
-                    <p className="font-bold text-white text-lg">{property.rooms}</p>
-                    <p className="text-white/50 text-xs">Chambre{(property.rooms ?? 0) > 1 ? "s" : ""}</p>
+                    <Bed className="w-6 h-6 mx-auto mb-1" style={{ color: "var(--text-secondary)" }} />
+                    <p className="font-bold text-lg" style={{ color: "var(--text-primary)" }}>{property.rooms}</p>
+                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Chambre{(property.rooms ?? 0) > 1 ? "s" : ""}</p>
                   </div>
                 )}
                 {(property.bathrooms ?? 0) > 0 && (
                   <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                     <Bath className="w-6 h-6 text-blue-500 mx-auto mb-1" />
-                    <p className="font-bold text-white text-lg">{property.bathrooms}</p>
-                    <p className="text-white/50 text-xs">Salle{(property.bathrooms ?? 0) > 1 ? "s" : ""} de bain</p>
+                    <p className="font-bold text-lg" style={{ color: "var(--text-primary)" }}>{property.bathrooms}</p>
+                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Salle{(property.bathrooms ?? 0) > 1 ? "s" : ""} de bain</p>
                   </div>
                 )}
                 {(property.surface ?? 0) > 0 && (
                   <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                     <Square className="w-6 h-6 text-green-500 mx-auto mb-1" />
-                    <p className="font-bold text-white text-lg">{property.surface}</p>
-                    <p className="text-white/50 text-xs">m²</p>
+                    <p className="font-bold text-lg" style={{ color: "var(--text-primary)" }}>{property.surface}</p>
+                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>m²</p>
                   </div>
                 )}
                 <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                   <span className="text-2xl block mb-1">{property.furnished ? "🛋️" : "🪑"}</span>
-                  <p className="font-bold text-white text-sm">
+                  <p className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>
                     {property.furnished ? "Meublé" : "Non meublé"}
                   </p>
                 </div>
@@ -464,7 +464,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* ── Équipements essentiels ── */}
               <div>
-                <h2 className="font-bold text-white text-sm mb-3">Équipements essentiels</h2>
+                <h2 className="font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>Équipements essentiels</h2>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
                   {/* Eau */}
                   <div style={{ ...(waterAvail ? CARD_AVAIL : CARD_NONE), borderRadius: 12, padding: 16, textAlign: "center" }}>
@@ -502,7 +502,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               {/* ── Autres équipements pills ── */}
               {otherEquip.length > 0 && (
                 <div>
-                  <h2 className="font-bold text-white text-sm mb-3">Autres équipements</h2>
+                  <h2 className="font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>Autres équipements</h2>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                     {otherEquip.map((eq) => (
                       <span key={eq.label} style={{
@@ -522,7 +522,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                 property.has_tap_water || property.has_borehole || property.has_running_water ||
                 property.is_furnished || property.has_pool) && (
                 <div>
-                  <h2 className="font-bold text-white text-sm mb-3">Équipements détaillés</h2>
+                  <h2 className="font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>Équipements détaillés</h2>
                   {/* Electricity */}
                   {(property.has_edg || property.has_generator || property.has_solar) && (
                     <div style={{ marginBottom: 14 }}>
@@ -566,7 +566,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* ── Réactions rapides ── */}
               <div>
-                <h2 className="font-bold text-white text-sm mb-3">Réactions</h2>
+                <h2 className="font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>Réactions</h2>
                 <ReactionBar propertyId={property.id} />
               </div>
 
@@ -575,18 +575,18 @@ export default async function PropertyDetailPage({ params }: Props) {
                 <div className="rounded-2xl p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                   {property.description && (
                     <>
-                      <h2 className="font-bold text-white mb-3">Description</h2>
-                      <p className="text-white/60 text-sm leading-relaxed whitespace-pre-line">
+                      <h2 className="font-bold mb-3" style={{ color: "var(--text-primary)" }}>Description</h2>
+                      <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: "var(--text-secondary)" }}>
                         {property.description}
                       </p>
                     </>
                   )}
                   {(property.features?.length ?? 0) > 0 && (
-                    <div className={property.description ? "mt-4 pt-4 border-t border-white/8" : ""}>
-                      <h3 className="font-semibold text-white text-sm mb-3">Équipements</h3>
+                    <div className={property.description ? "mt-4 pt-4 border-t" : ""} style={property.description ? { borderColor: "var(--border)" } : undefined}>
+                      <h3 className="font-semibold text-sm mb-3" style={{ color: "var(--text-primary)" }}>Équipements</h3>
                       <div className="flex flex-wrap gap-2">
                         {(property.features ?? []).map((f: string) => (
-                          <span key={f} className="text-white/60 text-xs font-medium px-3 py-1.5 rounded-lg" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+                          <span key={f} className="text-xs font-medium px-3 py-1.5 rounded-lg" style={{ background: "var(--surface-soft)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}>
                             {f}
                           </span>
                         ))}
@@ -598,7 +598,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* ── Carte de localisation ── */}
               <div>
-                <h2 className="font-bold text-white text-sm mb-3">📍 Localisation</h2>
+                <h2 className="font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>📍 Localisation</h2>
                 <PropertyMapWrapper
                   neighborhood={property.neighborhood}
                   lat={property.lat ?? property.latitude}
@@ -615,7 +615,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               {((profileData as {is_verified?: boolean} | null)?.is_verified || (property.property_images?.length ?? 0) > 0 || property.contact_phone) && (
                 <div className="rounded-2xl p-4 space-y-3" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                   {(profileData as {is_verified?: boolean} | null)?.is_verified && (
-                    <p className="text-white font-bold text-sm mb-2">Pourquoi faire confiance à cette annonce</p>
+                    <p className="font-bold text-sm mb-2" style={{ color: "var(--text-primary)" }}>Pourquoi faire confiance à cette annonce</p>
                   )}
                   <div className="flex flex-wrap gap-2">
                     {(profileData as {is_verified?: boolean} | null)?.is_verified && (
@@ -645,7 +645,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               {/* Similar listings */}
               {similar.length > 0 && (
                 <div className="pt-2 pb-6">
-                  <h2 className="font-bold text-white mb-4 text-lg">
+                  <h2 className="font-bold mb-4 text-lg" style={{ color: "var(--text-primary)" }}>
                     Annonces similaires à {neighborhoodLabel}
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -667,14 +667,14 @@ export default async function PropertyDetailPage({ params }: Props) {
             <div className="hidden lg:block lg:col-span-1">
               <div className="sticky top-20 rounded-2xl p-5 space-y-3" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                 {profileData && (
-                  <div className="flex items-center gap-3 pb-3 border-b border-white/8">
+                  <div className="flex items-center gap-3 pb-3 border-b" style={{ borderColor: "var(--border)" }}>
                     <Avatar
                       url={(profileData as { avatar_url?: string | null }).avatar_url}
                       name={(profileData as { full_name?: string | null }).full_name ?? undefined}
                       size="sm"
                     />
                     <div className="min-w-0">
-                      <p className="text-white font-semibold text-sm truncate">
+                      <p className="font-semibold text-sm truncate" style={{ color: "var(--text-primary)" }}>
                         {(profileData as { full_name?: string | null }).full_name ?? "Propriétaire"}
                       </p>
                       {(profileData as { is_verified?: boolean }).is_verified && (
@@ -683,11 +683,11 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </div>
                   </div>
                 )}
-                <div className="text-center pb-3 border-b border-white/8">
-                  <p className="text-3xl font-black text-white">
+                <div className="text-center pb-3 border-b" style={{ borderColor: "var(--border)" }}>
+                  <p className="text-3xl font-black" style={{ color: "var(--text-primary)" }}>
                     {formatPrice(property.price, "GNF", property.price_period)}
                   </p>
-                  <p className="text-white/50 text-sm mt-1">
+                  <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
                     {neighborhoodLabel} · {TYPE_LABELS[property.type] ?? property.type}
                   </p>
                 </div>
@@ -702,7 +702,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   </Link>
                 ) : !isLoggedIn ? (
                   <>
-                    <p className="text-white/50 text-xs text-center">Connectez-vous pour voir les coordonnées du propriétaire</p>
+                    <p className="text-xs text-center" style={{ color: "var(--text-secondary)" }}>Connectez-vous pour voir les coordonnées du propriétaire</p>
                     <Link
                       href={`/connexion?redirect=/annonces/${property.id}`}
                       className="flex items-center justify-center gap-2 w-full font-bold py-4 px-4 rounded-2xl transition-all text-sm"
@@ -736,20 +736,20 @@ export default async function PropertyDetailPage({ params }: Props) {
 
                     {/* Phone */}
                     <a href={phoneUrl}
-                      className="flex items-center justify-center gap-2 w-full text-white font-semibold py-3 px-4 rounded-xl transition-colors text-sm hover:bg-white/5"
-                      style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+                      className="flex items-center justify-center gap-2 w-full font-semibold py-3 px-4 rounded-xl transition-colors text-sm hover:bg-black/5"
+                      style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
                       <Phone className="w-4 h-4" />
                       📞 Appeler le propriétaire
                     </a>
 
                     <MessageButton propertyId={property.id} ownerId={property.owner_id} propertyTitle={property.title} />
 
-                    <p className="text-white/40 text-[11px] text-center">Mentionnez LogerBien lors de votre contact</p>
+                    <p className="text-[11px] text-center" style={{ color: "var(--text-muted)" }}>Mentionnez LogerBien lors de votre contact</p>
                   </>
                 )}
 
-                <div className="pt-3 border-t border-white/8">
-                  <p className="text-white/30 text-xs leading-relaxed">
+                <div className="pt-3 border-t" style={{ borderColor: "var(--border)" }}>
+                  <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
                     🔒 Ne payez jamais avant de visiter le logement. LogerBien ne demande aucun paiement direct.
                   </p>
                 </div>
@@ -802,8 +802,8 @@ export default async function PropertyDetailPage({ params }: Props) {
                 propertyTitle={property.title}
               />
               <a href={phoneUrl}
-                className="flex-1 flex items-center justify-center gap-2 text-white font-semibold rounded-xl text-sm"
-                style={{ background: "var(--bg-card)", border: "1px solid var(--border)", minHeight: "48px" }}>
+                className="flex-1 flex items-center justify-center gap-2 font-semibold rounded-xl text-sm"
+                style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)", minHeight: "48px" }}>
                 <Phone className="w-4 h-4" /> Appeler
               </a>
             </div>
