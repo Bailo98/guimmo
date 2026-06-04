@@ -451,12 +451,12 @@ input::placeholder, textarea::placeholder {
    Responsive typography
 ───────────────────────────────────────────────────────────────── */
 .content-fluid {
-  width: min(calc(100% - clamp(24px, 5vw, 96px)), 1680px);
+  width: min(calc(100% - clamp(20px, 3.5vw, 72px)), 1760px);
   margin-inline: auto;
 }
 
 .home-section-fill {
-  min-height: clamp(560px, calc(88svh - 72px), 760px);
+  min-height: clamp(520px, calc(84svh - 72px), 720px);
 }
 
 @media (max-width: 768px) {

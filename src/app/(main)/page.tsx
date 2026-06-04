@@ -74,9 +74,9 @@ const HERO_GRADIENTS: [string, string][] = [
 ];
 
 const CARD_POSITIONS = [
-  { top: "0px",   right: "0px",  rotate: "-2deg",  zIndex: 3, opacity: 1    },
-  { top: "155px", right: "28px", rotate: "2.2deg", zIndex: 2, opacity: 0.96 },
-  { top: "295px", right: "54px", rotate: "1.8deg", zIndex: 1, opacity: 0.88 },
+  { top: "6px",   right: "2%",  rotate: "-2deg",  zIndex: 3, opacity: 1    },
+  { top: "132px", right: "15%", rotate: "2.2deg", zIndex: 2, opacity: 0.96 },
+  { top: "260px", right: "6%",  rotate: "1.8deg", zIndex: 1, opacity: 0.9  },
 ];
 
 // ─── Data fetching ─────────────────────────────────────────────────────────────
@@ -181,7 +181,7 @@ function PreviewCard({ property, index }: { property: Property; index: number })
 
   return (
     <div
-      className="absolute w-[240px] overflow-hidden"
+      className="absolute w-[min(76%,320px)] overflow-hidden"
       style={{
         top: pos.top, right: pos.right,
         transform: `rotate(${pos.rotate})`,
@@ -191,9 +191,9 @@ function PreviewCard({ property, index }: { property: Property; index: number })
         boxShadow: "0 22px 60px rgba(24,21,16,0.13)",
       }}
     >
-      <div className="relative h-32">
+      <div className="relative h-[clamp(128px,12vw,168px)]">
         {primaryImg ? (
-          <Image src={primaryImg.url} alt={property.title} fill className="object-cover" sizes="240px" quality={65} loading="lazy" />
+          <Image src={primaryImg.url} alt={property.title} fill className="object-cover" sizes="(min-width: 1024px) 320px, 240px" quality={65} loading="lazy" />
         ) : (
           <div className="w-full h-full" style={{ background: `linear-gradient(135deg, ${gradFrom}, ${gradTo})` }} />
         )}
@@ -203,13 +203,13 @@ function PreviewCard({ property, index }: { property: Property; index: number })
           </span>
         </div>
       </div>
-      <div className="p-3" style={{ color: "#181510" }}>
-        <p className="font-bold text-sm leading-snug line-clamp-1">{property.title}</p>
+      <div className="p-3.5" style={{ color: "#181510" }}>
+        <p className="font-bold text-[15px] leading-snug line-clamp-1">{property.title}</p>
         <div className="flex items-center gap-1 text-xs mt-1" style={{ color: "#666" }}>
           <MapPin className="w-3 h-3 flex-shrink-0" />
           <span>{NL[property.neighborhood] ?? property.neighborhood}</span>
         </div>
-        <p className="font-black text-sm mt-1.5" style={{ color: "#b98a2e", fontWeight: 900 }}>{priceStr}</p>
+        <p className="font-black text-[15px] mt-1.5" style={{ color: "#b98a2e", fontWeight: 900 }}>{priceStr}</p>
       </div>
     </div>
   );
@@ -300,15 +300,15 @@ export default async function HomePage() {
         />
 
         {/* Hero content */}
-        <div className="content-fluid relative flex-1 flex items-center py-6 md:py-9 xl:py-10">
-          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(380px,0.95fr)] gap-10 lg:gap-12 xl:gap-16 items-center w-full">
+        <div className="content-fluid relative flex-1 flex items-center py-5 sm:py-7 lg:py-8 xl:py-9">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(520px,0.96fr)_minmax(420px,1.04fr)] gap-8 lg:gap-10 xl:gap-14 items-center w-full">
 
             {/* ── Left: headline + search ── */}
             <div className="text-center lg:text-left">
 
               {/* Badge pill */}
               <div
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-6"
+                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-4 lg:mb-5"
                 style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.25)" }}
               >
                 <span
@@ -325,10 +325,10 @@ export default async function HomePage() {
                 style={{
                   fontFamily: "var(--font-manrope), sans-serif",
                   fontWeight: 800,
-                  fontSize: "clamp(3.2rem, 6vw, 6rem)",
-                  lineHeight: 0.98,
+                  fontSize: "clamp(2.65rem, 5.35vw, 5.45rem)",
+                  lineHeight: 0.99,
                   color: "var(--text-primary)",
-                  marginBottom: "1rem",
+                  marginBottom: "0.85rem",
                   letterSpacing: 0,
                 }}
               >
@@ -353,7 +353,7 @@ export default async function HomePage() {
               </p>
 
               {/* Proof pills */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-5">
+              <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-4">
                 {["✓ Annonces contrôlées", "📞 Appel ou WhatsApp", "$ Zéro frais caché"].map((label) => (
                   <span
                     key={label}
@@ -378,7 +378,7 @@ export default async function HomePage() {
               {/* Live counter badge — client component to avoid hydration mismatch */}
               <LiveCounterBadge initial={activeCountToday} />
 
-              <div className="grid grid-cols-3 gap-2 mb-5 max-w-[760px] mx-auto lg:mx-0">
+              <div className="grid grid-cols-3 gap-2 mb-4 max-w-[760px] mx-auto lg:mx-0">
                 {[
                   { icon: Flame, value: stats.active, label: "logements" },
                   { icon: ShieldCheck, value: stats.verifiedOwners, label: "propriétaires" },
@@ -406,7 +406,7 @@ export default async function HomePage() {
 
             {/* ── Right: floating preview cards (desktop only) ── */}
             {heroPreview.length > 0 && (
-              <div className="hidden lg:block relative" style={{ height: "460px" }}>
+              <div className="hidden lg:block relative min-h-[420px] xl:min-h-[460px]">
                 {/* Floating stat card — top-right of showcase */}
                 <div
                   className="absolute"
@@ -438,7 +438,7 @@ export default async function HomePage() {
         </div>
 
         {/* Scroll hint */}
-        <div className="relative pb-8 flex justify-center">
+        <div className="relative pb-3 lg:pb-4 flex justify-center">
           <div className="w-6 h-9 rounded-full flex items-start justify-center pt-2" style={{ border: "2px solid rgba(212,175,55,0.20)" }}>
             <div className="w-1 h-2 rounded-full" style={{ background: "rgba(247,242,230,0.45)", animation: "bounce 2s infinite" }} />
           </div>
@@ -494,9 +494,9 @@ export default async function HomePage() {
           4. ANNONCES RÉCENTES
       ═══════════════════════════════════════════════════════ */}
       {recent.length > 0 && (
-        <section className="py-14" style={{ background: "var(--bg-primary)" }}>
+        <section className="py-10 md:py-12" style={{ background: "var(--bg-primary)" }}>
           <div className="content-fluid">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between gap-4 mb-5">
               <div>
                 <h2
                   className="text-2xl md:text-3xl font-black"
@@ -510,7 +510,7 @@ export default async function HomePage() {
                 Voir tout <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-5 items-stretch">
               {recent.map((p, i) => (
                 <PropertyCard key={p.id} property={p} index={i + 10} />
               ))}
@@ -527,9 +527,9 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════════════════
           5. QUARTIERS POPULAIRES — with live counts
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-16" style={{ background: "var(--bg-card-light)" }}>
+      <section className="py-10 md:py-12" style={{ background: "var(--bg-card-light)" }}>
         <div className="content-fluid">
-          <div className="mb-8">
+          <div className="mb-5 md:mb-6">
             <h2
               className="text-2xl md:text-3xl font-black"
               style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
@@ -540,14 +540,14 @@ export default async function HomePage() {
               Explorez les annonces actives par quartier à Conakry
             </p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3 md:gap-4">
             {(popularWithListings.length > 0 ? popularWithListings : popularSoon).map((n) => {
               const count = neighborhoodCounts[n.id] ?? 0;
               return (
                 <Link
                   key={n.id}
                   href={`/annonces?neighborhood=${n.id}`}
-                  className="group rounded-2xl p-5 transition-all duration-200 hover:-translate-y-0.5"
+                  className="group rounded-2xl p-4 md:p-5 transition-all duration-200 hover:-translate-y-0.5 min-h-[132px]"
                   style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
                 >
                   <div
@@ -572,7 +572,7 @@ export default async function HomePage() {
           6. JE CHERCHE — CTA pour les chercheurs
       ═══════════════════════════════════════════════════════ */}
       <section
-        className="py-16"
+        className="py-10 md:py-12"
         style={{
           background: "linear-gradient(135deg, rgba(212,175,55,0.14) 0%, rgba(212,175,55,0.04) 100%)",
           borderTop: "1px solid rgba(212,175,55,0.22)",
@@ -580,7 +580,7 @@ export default async function HomePage() {
         }}
       >
         <div className="content-fluid text-center">
-          <div className="text-5xl mb-5">🔍</div>
+          <div className="text-4xl mb-4">🔍</div>
           <h2
             className="text-2xl md:text-3xl font-black mb-3"
             style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
@@ -606,9 +606,9 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════════════════
           7. SECTION CONFIANCE — 4 cartes
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-16" style={{ background: "var(--bg-card-light)" }}>
+      <section className="py-10 md:py-12" style={{ background: "var(--bg-card-light)" }}>
         <div className="content-fluid">
-          <div className="text-center mb-10">
+          <div className="text-center mb-7 md:mb-8">
             <h2
               className="text-2xl md:text-3xl font-black"
               style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
@@ -619,11 +619,11 @@ export default async function HomePage() {
               La plateforme immobilière conçue pour la réalité guinéenne
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 xl:gap-5">
             {TRUST_ITEMS.map((item) => (
               <div
                 key={item.title}
-                className="rounded-2xl p-6"
+                className="rounded-2xl p-5"
                 style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
               >
                 <span className="text-3xl block mb-4">{item.icon}</span>
@@ -638,9 +638,9 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════════════════
           8. PUBLICATION RAPIDE CTA
       ═══════════════════════════════════════════════════════ */}
-      <section className="py-20" style={{ background: "var(--bg-secondary)" }}>
+      <section className="py-11 md:py-14" style={{ background: "var(--bg-secondary)" }}>
         <div className="content-fluid text-center">
-          <p className="text-5xl mb-6">🏠</p>
+          <p className="text-4xl mb-4">🏠</p>
           <h2
             className="text-2xl md:text-4xl font-black mb-3"
             style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
