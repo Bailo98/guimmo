@@ -468,7 +468,31 @@ function AnnoncesContent() {
             </button>
           </div>
 
-          <div className="grid gap-3 lg:grid-cols-4">
+          <div className="md:hidden space-y-2">
+            <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+              {QUARTIER_CHIPS.slice(0, 5).map((c) => (
+                <VisualChip key={c.id} active={neighborhood === c.id} onClick={() => setParam("neighborhood", c.id)} icon={<MapPin className="h-4 w-4" />} label={c.label} compact />
+              ))}
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+              {TYPE_CHIPS.slice(0, 5).map((c) => (
+                <VisualChip key={c.id} active={type === c.id} onClick={() => setParam("type", c.id)} icon={<c.Icon className="h-4 w-4" />} label={c.label} compact />
+              ))}
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+              {BUDGET_CHIPS.map((c) => {
+                const isAll = c.min === 0 && c.max === Infinity;
+                const active = isAll ? !hasPriceFilter : priceMin === c.min && priceMax === c.max;
+                return <VisualChip key={c.label} active={active} onClick={() => setPriceRange(c.min, c.max)} icon={<CircleDollarSign className="h-4 w-4" />} label={c.label} compact />;
+              })}
+              <VisualChip active={availability === "now"} onClick={() => setParam("availability", availability === "now" ? "" : "now")} icon={<CheckCircle2 className="h-4 w-4" />} label="Dispo" compact />
+              <VisualChip active={recentOnly} onClick={() => setParam("recent", recentOnly ? "" : "1")} icon={<CalendarClock className="h-4 w-4" />} label="Recent" compact />
+            </div>
+          </div>
+
+          <div className="hidden md:grid gap-3 lg:grid-cols-4">
             <FilterGroup title="Quartier" icon={<MapPin className="h-4 w-4" />}>
               <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-2 gap-2">
                 {QUARTIER_CHIPS.slice(0, 5).map((c) => (
@@ -504,7 +528,7 @@ function AnnoncesContent() {
             </FilterGroup>
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+          <div className="hidden md:flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
             <VisualChip active={availability === "now"} onClick={() => setParam("availability", availability === "now" ? "" : "now")} icon={<CheckCircle2 className="h-4 w-4" />} label="Dispo" compact />
             <VisualChip active={recentOnly} onClick={() => setParam("recent", recentOnly ? "" : "1")} icon={<CalendarClock className="h-4 w-4" />} label="Nouveau" compact />
             <VisualChip active={whatsappDirect} onClick={() => setParam("whatsapp", whatsappDirect ? "" : "1")} icon={<MessageCircle className="h-4 w-4" />} label="WhatsApp" compact />
