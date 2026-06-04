@@ -8,6 +8,7 @@ import { HeroSearch } from "@/components/home/HeroSearch";
 import { MaisonDuJour } from "@/components/MaisonDuJour";
 import { PWAInstallButton } from "@/components/home/PWAInstallButton";
 import { formatPrice } from "@/lib/utils";
+import { isPubliclyAvailable } from "@/lib/property-signals";
 import { createClient } from "@supabase/supabase-js";
 import type { Metadata } from "next";
 import type { Property } from "@/types";
@@ -92,7 +93,7 @@ async function fetchHomeProperties(): Promise<Property[]> {
       .order("is_boosted", { ascending: false })
       .order("created_at", { ascending: false })
       .limit(12);
-    return (data ?? []) as Property[];
+    return ((data ?? []) as Property[]).filter(isPubliclyAvailable);
   } catch { return []; }
 }
 
@@ -107,7 +108,7 @@ async function fetchUrgentProperties(): Promise<Property[]> {
       .in("availability_mode", ["urgent", "today", "immediate"])
       .order("created_at", { ascending: false })
       .limit(10);
-    return (data ?? []) as Property[];
+    return ((data ?? []) as Property[]).filter(isPubliclyAvailable);
   } catch { return []; }
 }
 

@@ -2,11 +2,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass, Heart, Home, User } from "lucide-react";
+import { Compass, Heart, Home, List, Plus, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/lib/auth-context";
 
-// 4 items fixes : Découvrir | Favoris | Annonces | Profil
 interface NavItemDef {
   href: string;
   icon: React.ElementType;
@@ -15,23 +14,17 @@ interface NavItemDef {
   unauthHref?: string;
 }
 
-const NAV_ITEMS: NavItemDef[] = [
-  // authRequired:true → item hidden entirely when user is not logged in
-  { href: "/decouvrir", icon: Compass, label: "Découvrir", authRequired: true  },
-  { href: "/favoris",   icon: Heart,   label: "Favoris",   authRequired: true  },
-  { href: "/annonces",  icon: Home,    label: "Annonces",  authRequired: false },
-  // Profil always visible; unauthHref sends guests to /connexion
-  { href: "/compte",    icon: User,    label: "Profil",    authRequired: false, unauthHref: "/connexion" },
-];
-
 const GOLD = "var(--accent-gold)";
 
 export function BottomNav() {
   const pathname = usePathname();
-  const { user }  = useAuth();
+  const { user, profile }  = useAuth();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    const id = window.setTimeout(() => setMounted(true), 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   const isLight = mounted && resolvedTheme === "light";
   const MUTED   = isLight ? "#5A4A2A" : "#8A8FA8";
@@ -48,6 +41,28 @@ export function BottomNav() {
     return pathname.startsWith(href);
   }
 
+  const accountType = profile?.account_type ?? profile?.role ?? "";
+  const isOwner = ["owner", "proprietaire", "agent", "agence", "agency", "admin"].includes(accountType);
+  const navItems: NavItemDef[] = user
+    ? isOwner
+      ? [
+          { href: "/decouvrir", icon: Compass, label: "Découvrir", authRequired: true },
+          { href: "/compte/annonces", icon: List, label: "Mes biens", authRequired: true },
+          { href: "/publier/rapide", icon: Plus, label: "Publier", authRequired: true },
+          { href: "/favoris", icon: Heart, label: "Favoris", authRequired: true },
+          { href: "/compte", icon: User, label: "Profil", authRequired: true },
+        ]
+      : [
+          { href: "/decouvrir", icon: Compass, label: "Découvrir", authRequired: true },
+          { href: "/annonces?recent=1", icon: Home, label: "Récentes", authRequired: false },
+          { href: "/favoris", icon: Heart, label: "Favoris", authRequired: true },
+          { href: "/compte", icon: User, label: "Profil", authRequired: true },
+        ]
+    : [
+        { href: "/annonces", icon: Home, label: "Annonces", authRequired: false },
+        { href: "/connexion", icon: User, label: "Profil", authRequired: false },
+      ];
+
   return (
     <nav
       className="md:hidden"
@@ -60,7 +75,7 @@ export function BottomNav() {
 
         /* Pill geometry */
         height: 60,
-        maxWidth: 320,
+        maxWidth: 360,
         width: "auto",
         padding: "0 8px",
         borderRadius: 40,
@@ -80,7 +95,7 @@ export function BottomNav() {
         gap: 4,
       }}
     >
-      {NAV_ITEMS.filter((item) => !item.authRequired || !!user).map(({ href, icon: Icon, label, authRequired, unauthHref }) => {
+      {navItems.filter((item) => !item.authRequired || !!user).map(({ href, icon: Icon, label, authRequired, unauthHref }) => {
         const dest =
           !user && authRequired
             ? `/connexion?redirect=${href}`
@@ -99,7 +114,7 @@ export function BottomNav() {
               flexDirection: "column",
               alignItems: "center",
               gap: 2,
-              padding: "6px 14px",
+              padding: navItems.length >= 5 ? "6px 10px" : "6px 14px",
               borderRadius: 30,
               textDecoration: "none",
               background: active ? "rgba(212,175,55,0.15)" : "transparent",

@@ -12,6 +12,7 @@ import { fetchProperties } from "@/lib/properties";
 import { formatPrice } from "@/lib/utils";
 import { getNeighborhoodName, NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
 import { haversineKm, formatDistance } from "@/lib/haversine";
+import { advanceSignal, availabilitySignal, publishedSignal } from "@/lib/property-signals";
 import type { Property } from "@/types";
 
 const SEEN_KEY = "lb_swipe_seen";
@@ -379,6 +380,9 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   const whatsappMessage = encodeURIComponent(`Bonjour, je suis intéressé par "${topCard.title}" sur LogerBien`);
   const whatsappUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${whatsappMessage}` : `/annonces/${topCard.id}`;
   const phoneUrl = cleanPhone ? `tel:${cleanPhone}` : `/annonces/${topCard.id}`;
+  const availability = availabilitySignal(topCard);
+  const published = publishedSignal(topCard.created_at);
+  const advance = advanceSignal(topCard);
 
   // Distance string
   let topDistStr: string | null = null;
@@ -632,6 +636,18 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                     ✓ Vérifié
                   </span>
                 )}
+                <span style={{
+                  background: availability.bg,
+                  color: "#ffffff",
+                  border: `1px solid ${availability.border}`,
+                  borderRadius: 999,
+                  padding: "5px 10px",
+                  fontSize: 11,
+                  fontWeight: 800,
+                  backdropFilter: "blur(10px)",
+                }}>
+                  {availability.label}
+                </span>
               </div>
 
               {/* Prix */}
@@ -693,6 +709,16 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                     </span>
                   </>
                 )}
+              </div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
+                {published && (
+                  <span style={{ color: "rgba(255,255,255,0.86)", fontSize: 12, fontWeight: 800 }}>
+                    {published.label}
+                  </span>
+                )}
+                <span style={{ color: "rgba(255,255,255,0.86)", fontSize: 12, fontWeight: 800 }}>
+                  {advance}
+                </span>
               </div>
             </div>
           </div>

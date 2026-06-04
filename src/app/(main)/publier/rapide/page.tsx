@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Camera, Upload, X, Phone, MapPin, CheckCircle2, Loader2 } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { useAuth } from "@/lib/auth-context";
 import { toast } from "@/lib/toast";
 import { NEIGHBORHOODS } from "@/data/neighborhoods";
 import { cn, formatPrice } from "@/lib/utils";
@@ -29,6 +30,7 @@ function formatGNF(raw: string): string {
 
 export default function PublierRapidePage() {
   const router = useRouter();
+  const { user, profile } = useAuth();
   const fileRef   = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -58,6 +60,45 @@ export default function PublierRapidePage() {
 
   const canSubmit = files.length >= 1 && !!form.price && !!form.neighborhood && !!form.phone;
   const priceLabel = formatGNF(form.price);
+  const isSeekerAccount = !!user && ["chercheur", "seeker"].includes(profile?.account_type ?? profile?.role ?? "");
+
+  async function becomeOwner() {
+    if (!user || !supabase) return;
+    let { error } = await supabase.from("profiles").update({ account_type: "owner", role: "owner" }).eq("id", user.id);
+    if (error) {
+      const legacy = await supabase.from("profiles").update({ account_type: "proprietaire", role: "owner" }).eq("id", user.id);
+      error = legacy.error;
+    }
+    if (error) {
+      toast("Impossible de changer le type de compte", "error");
+      return;
+    }
+    toast("Compte propriétaire activé", "success");
+    window.location.reload();
+  }
+
+  if (isSeekerAccount) {
+    return (
+      <div className="max-w-lg mx-auto px-4 pt-12 pb-32 text-center" style={{ background: "var(--bg-primary)" }}>
+        <div className="rounded-3xl p-6" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+          <p className="text-4xl mb-4">🏠</p>
+          <h1 className="text-2xl font-black mb-3" style={{ color: "var(--text-primary)" }}>
+            Tu veux publier un logement ?
+          </h1>
+          <p className="text-sm leading-relaxed mb-6" style={{ color: "var(--text-secondary)" }}>
+            Passe en compte propriétaire pour publier en moins de 60 secondes.
+          </p>
+          <button
+            onClick={becomeOwner}
+            className="w-full rounded-2xl font-black"
+            style={{ minHeight: 52, background: "var(--accent-gold)", color: "var(--bg-primary)" }}
+          >
+            Devenir propriétaire
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

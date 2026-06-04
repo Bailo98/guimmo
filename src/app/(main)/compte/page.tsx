@@ -369,7 +369,15 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
     if (!supabase) return;
     setActionLoading(listing.id + "-avail");
     const newVal = !listing.available_now;
-    const { error } = await supabase.from("properties").update({ available_now: newVal }).eq("id", listing.id);
+    let { error } = await supabase.from("properties").update({
+      available_now: newVal,
+      availability_status: newVal ? "available_now" : "rented",
+      availability_checked_at: new Date().toISOString(),
+    }).eq("id", listing.id);
+    if (error && /availability_status|availability_checked_at/i.test(error.message ?? "")) {
+      const fallback = await supabase.from("properties").update({ available_now: newVal }).eq("id", listing.id);
+      error = fallback.error;
+    }
     if (error) toast("Erreur lors de la mise à jour", "error");
     else { setListings((p) => p.map((l) => l.id === listing.id ? { ...l, available_now: newVal } : l)); toast(newVal ? "✅ Remise disponible" : "✅ Marquée comme louée", "success"); }
     setActionLoading(null);

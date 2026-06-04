@@ -132,13 +132,62 @@ export default function PublierPage() {
     tourRooms: [{ id: crypto.randomUUID(), name: "Salon", file: null, preview: null }],
   });
   const [geoState, setGeoState] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const isSeekerAccount = !!user && ["chercheur", "seeker"].includes(profile?.account_type ?? profile?.role ?? "");
+
+  async function becomeOwner() {
+    if (!user || !supabase) return;
+    let { error: updateError } = await supabase
+      .from("profiles")
+      .update({ account_type: "owner", role: "owner" })
+      .eq("id", user.id);
+    if (updateError) {
+      const legacy = await supabase
+        .from("profiles")
+        .update({ account_type: "proprietaire", role: "owner" })
+        .eq("id", user.id);
+      updateError = legacy.error;
+    }
+    if (updateError) {
+      toast("Impossible de changer le type de compte", "error");
+      return;
+    }
+    toast("Compte propriétaire activé", "success");
+    window.location.reload();
+  }
 
   // Pre-fill phone from profile
   useEffect(() => {
-    if (profile?.phone) setForm((f) => ({ ...f, phone: profile.phone! }));
+    if (!profile?.phone) return;
+    const id = window.setTimeout(() => {
+      setForm((f) => ({ ...f, phone: profile.phone! }));
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [profile]);
 
   const [roomsError, setRoomsError] = useState<string | null>(null);
+
+  if (isSeekerAccount) {
+    return (
+      <div className="min-h-screen px-4 py-14 flex items-center justify-center" style={{ background: "var(--bg-primary)" }}>
+        <div className="max-w-md w-full rounded-3xl p-6 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+          <p className="text-4xl mb-4">🏠</p>
+          <h1 className="text-2xl font-black mb-3" style={{ color: "var(--text-primary)" }}>
+            Tu veux publier un logement ?
+          </h1>
+          <p className="text-sm leading-relaxed mb-6" style={{ color: "var(--text-secondary)" }}>
+            Passe en compte propriétaire pour publier et recevoir des contacts directement sur WhatsApp.
+          </p>
+          <button
+            onClick={becomeOwner}
+            className="w-full rounded-2xl font-black"
+            style={{ minHeight: 52, background: "var(--accent-gold)", color: "var(--bg-primary)" }}
+          >
+            Devenir propriétaire
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   function update<K extends keyof FormState>(key: K, val: FormState[K]) {
     setForm((f) => {

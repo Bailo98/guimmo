@@ -63,6 +63,12 @@ export interface Property {
   bathrooms?: number;
   furnished?: boolean;
   available_now?: boolean;
+  availability_status?: "available_now" | "available_soon" | "rented" | "paused";
+  available_date?: string;
+  advance_required?: boolean;
+  advance_months?: number;
+  availability_checked_at?: string;
+  availability_reminder_count?: number;
   neighborhood: string;
   city?: string;
   features?: string[];

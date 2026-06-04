@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { formatPrice } from "@/lib/utils";
+import { isPubliclyAvailable } from "@/lib/property-signals";
 import { getNeighborhoodName } from "@/data/neighborhoods";
 import type { Property } from "@/types";
 
@@ -40,7 +41,7 @@ async function fetchMaisonDuJour(): Promise<(Property & { fav_count: number }) |
       .eq("status", "active")
       .single();
 
-    if (!prop) return null;
+    if (!prop || !isPubliclyAvailable(prop as Property)) return null;
     return { ...(prop as Property), fav_count: topCount };
   } catch {
     return null;

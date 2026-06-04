@@ -26,7 +26,10 @@ export function Header() {
   const pathname = usePathname();
   const { user, profile, signOut } = useAuth();
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    const id = window.setTimeout(() => setMounted(true), 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   // Fetch notifications
   const loadNotifications = useCallback(async () => {
@@ -43,7 +46,12 @@ export function Header() {
     }
   }, [user]);
 
-  useEffect(() => { loadNotifications(); }, [loadNotifications]);
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      void loadNotifications();
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [loadNotifications]);
 
   // Close bell dropdown on outside click
   useEffect(() => {
@@ -84,14 +92,14 @@ export function Header() {
   }
 
   const displayName = profile?.full_name ?? user?.email?.split("@")[0] ?? "Mon compte";
-  const role = profile?.role ?? "buyer";
-  const accountType = profile?.account_type ?? null;
+  const role = String(profile?.role ?? "buyer");
+  const accountType = profile?.account_type ? String(profile.account_type) : null;
   const isAdmin = role === "admin";
   // Chercheur accounts never see Publier, even if role is misconfigured
-  const isChercheur = accountType === "chercheur" || role === "chercheur";
+  const isChercheur = accountType === "chercheur" || accountType === "seeker" || role === "chercheur" || role === "seeker";
   const isProprietaire = !isChercheur && (
     ["proprietaire", "owner", "agent", "agence", "admin"].includes(role)
-    || ["proprietaire", "agent", "agence"].includes(accountType ?? "")
+    || ["proprietaire", "owner", "agent", "agence"].includes(accountType ?? "")
   );
 
   const NO_HEADER = ["/inscription", "/connexion", "/mot-de-passe-oublie"];

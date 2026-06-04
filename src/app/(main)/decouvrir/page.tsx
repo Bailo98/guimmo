@@ -1,6 +1,7 @@
 ﻿import { SwipeFeed } from "./SwipeFeed";
 import { MaisonDuJour } from "@/components/MaisonDuJour";
 import { createClient } from "@supabase/supabase-js";
+import { isPubliclyAvailable } from "@/lib/property-signals";
 import type { Property } from "@/types";
 import type { Metadata } from "next";
 
@@ -34,9 +35,9 @@ async function fetchSwipeProperties(): Promise<Property[]> {
         .eq("status", "active")
         .order("created_at", { ascending: false })
         .limit(60);
-      return (fallback ?? []) as Property[];
+      return ((fallback ?? []) as Property[]).filter(isPubliclyAvailable);
     }
-    return (data ?? []) as Property[];
+    return ((data ?? []) as Property[]).filter(isPubliclyAvailable);
   } catch {
     return [];
   }

@@ -20,6 +20,7 @@ import VirtualTourWrapper from "@/components/VirtualTourWrapper";
 import { getNeighborhoodName } from "@/data/neighborhoods";
 import type { Metadata } from "next";
 import { formatPrice } from "@/lib/utils";
+import { advanceSignal, availabilitySignal, getAvailabilityStatus, isPubliclyAvailable, publishedSignal } from "@/lib/property-signals";
 import type { Property } from "@/types";
 import PropertyMapWrapper from "@/components/property/PropertyMapWrapper";
 import { PropertyViewTracker } from "@/components/property/PropertyViewTracker";
@@ -193,6 +194,14 @@ export default async function PropertyDetailPage({ params }: Props) {
   const property = finalRow as Property;
   const videoUrl = property.video_url ?? null;
   const shortRef = property.ref ?? null;
+  const isOwner   = !!currentUserId && currentUserId === property.owner_id;
+  const isLoggedIn = !!currentUserId;
+  const availabilityStatus = getAvailabilityStatus(property);
+  const isHiddenAvailability = availabilityStatus === "rented" || availabilityStatus === "paused";
+  if (isHiddenAvailability && !isAdmin && !isOwner) notFound();
+  const availabilityInfo = availabilitySignal(property);
+  const publishedInfo = publishedSignal(property.created_at);
+  const advanceInfo = advanceSignal(property);
 
   void db.rpc("increment_views", { property_id: id }).then(() => {});
 
@@ -207,10 +216,7 @@ export default async function PropertyDetailPage({ params }: Props) {
     .lte("price", Math.round(finalRow.price * 1.5))
     .not("title", "is", null)
     .limit(3);
-  const similar = (similarRows ?? []) as Property[];
-
-  const isOwner   = !!currentUserId && currentUserId === property.owner_id;
-  const isLoggedIn = !!currentUserId;
+  const similar = ((similarRows ?? []) as Property[]).filter(isPubliclyAvailable);
 
   // Virtual tour images (table added via migration; handle missing gracefully)
   let vtRooms: VTRoom[] = [];
@@ -233,11 +239,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   const contactMsg = encodeURIComponent(
     `Bonjour, je suis intéressé par votre annonce "${property.title}" sur LogerBien`
   );
-  const visitMsg = encodeURIComponent(
-    `Bonjour, je souhaite visiter ce logement : "${property.title}" à ${neighborhoodLabel}${shortRef ? ` (Réf: ${shortRef})` : ""}. Quand êtes-vous disponible ?`
-  );
   const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${contactMsg}`;
-  const visitUrl    = `https://wa.me/${whatsappPhone}?text=${visitMsg}`;
   const phoneUrl    = `tel:${phone}`;
 
   // ── Derived essentials ──────────────────────────────────────────────────────
@@ -319,11 +321,13 @@ export default async function PropertyDetailPage({ params }: Props) {
         <div className="max-w-5xl mx-auto px-4 pt-6">
 
           {/* Déjà loué banner */}
-          {!property.available_now && (
+          {isHiddenAvailability && (
             <div className="mb-4 rounded-2xl px-4 py-3 flex items-center justify-between gap-3" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)" }}>
               <div className="flex items-center gap-2">
                 <XCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-                <p className="text-red-400 font-semibold text-sm">Ce logement est déjà loué.</p>
+                <p className="text-red-400 font-semibold text-sm">
+                  {availabilityStatus === "paused" ? "Ce logement est indisponible." : "Ce logement est déjà loué."}
+                </p>
               </div>
               <Link href={`/annonces?neighborhood=${property.neighborhood}&type=${property.type}`}
                 className="text-red-500 font-bold text-sm whitespace-nowrap hover:underline">
@@ -420,6 +424,17 @@ export default async function PropertyDetailPage({ params }: Props) {
                 <p className="text-2xl md:text-3xl font-black mt-3" style={{ color: "var(--accent-gold)" }}>
                   {formatPrice(property.price, "GNF", property.price_period)}
                 </p>
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <span className="rounded-2xl px-3 py-3 text-xs font-black" style={{ background: availabilityInfo.bg, border: `1px solid ${availabilityInfo.border}`, color: availabilityInfo.color }}>
+                    {availabilityInfo.label}
+                  </span>
+                  <span className="rounded-2xl px-3 py-3 text-xs font-black" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                    {publishedInfo?.label ?? "⚪ Date non renseignée"}
+                  </span>
+                  <span className="rounded-2xl px-3 py-3 text-xs font-black" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                    {advanceInfo}
+                  </span>
+                </div>
               </div>
 
               {/* Score de confiance */}

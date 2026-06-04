@@ -1,6 +1,7 @@
 "use client";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { MOCK_PROPERTIES } from "@/data/mock-properties";
+import { getAvailabilityStatus, isPubliclyAvailable } from "@/lib/property-signals";
 import type { Property } from "@/types";
 
 export async function fetchProperties(): Promise<Property[]> {
@@ -17,7 +18,9 @@ export async function fetchProperties(): Promise<Property[]> {
 
   if (error || !data || data.length === 0) return MOCK_PROPERTIES;
 
-  return (data as Property[]).filter((p) => p.title && p.title.trim().length >= 5);
+  return sortPublicProperties(
+    (data as Property[]).filter((p) => p.title && p.title.trim().length >= 5 && isPubliclyAvailable(p))
+  );
 }
 
 export async function fetchPropertyById(id: string): Promise<Property | undefined> {
@@ -34,6 +37,26 @@ export async function fetchPropertyById(id: string): Promise<Property | undefine
   if (error || !data) return MOCK_PROPERTIES.find((p) => p.id === id);
 
   return data as Property;
+}
+
+function sortPublicProperties(properties: Property[]) {
+  const now = Date.now();
+  return [...properties].sort((a, b) => score(b, now) - score(a, now));
+}
+
+function score(property: Property, now: number) {
+  const availability = getAvailabilityStatus(property);
+  const ageDays = property.created_at
+    ? Math.max(0, (now - new Date(property.created_at).getTime()) / 86_400_000)
+    : 999;
+
+  return (
+    (availability === "available_now" ? 10000 : 0) +
+    (availability === "available_soon" ? 4000 : 0) +
+    (property.is_verified ? 1000 : 0) +
+    Math.max(0, 800 - ageDays * 80) +
+    (property.is_boosted ? 500 : 0)
+  );
 }
 
 export async function publishProperty(

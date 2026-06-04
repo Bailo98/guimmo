@@ -13,6 +13,7 @@ import { AuthPromptModal } from "@/components/AuthPromptModal";
 import { TypeBadge, PropertyBadge } from "@/components/PropertyBadge";
 import { haversineKm, formatDistance } from "@/lib/haversine";
 import { NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
+import { advanceSignal, availabilitySignal, publishedSignal } from "@/lib/property-signals";
 import type { Property } from "@/types";
 
 interface PropertyCardProps {
@@ -63,6 +64,8 @@ const TRUST_BADGE_CONFIG: Record<string, { label: string; color: string; bg: str
   nouveau:             { label: "🆕 Nouveau",           color: "#a78bfa", bg: "rgba(167,139,250,0.18)" },
 };
 
+const CARD_NOW = Date.now();
+
 export function PropertyCard({
   property,
   variant = "default",
@@ -87,11 +90,14 @@ export function PropertyCard({
   const primaryImage = images[0];
 
   const neighborhoodLabel = NEIGHBORHOOD_LABELS[property.neighborhood] ?? property.neighborhood;
-  const createdAt         = new Date(property.created_at ?? Date.now());
-  const isNew             = Date.now() - createdAt.getTime() < 48 * 60 * 60 * 1000;
+  const createdAt         = new Date(property.created_at ?? CARD_NOW);
+  const isNew             = CARD_NOW - createdAt.getTime() < 48 * 60 * 60 * 1000;
 
   // Feature 3: fresh timestamp
   const fresh = freshLabel(property.created_at);
+  const availability = availabilitySignal(property);
+  const published = publishedSignal(property.created_at);
+  const advance = advanceSignal(property);
 
   // Distance from user location
   let distanceStr: string | null = null;
@@ -384,6 +390,46 @@ export function PropertyCard({
         </div>
       )}
 
+      <div style={{
+        position: "absolute",
+        top: availCfg.label ? 68 : 40,
+        left: 12,
+        right: 56,
+        zIndex: 5,
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 4,
+        pointerEvents: "none",
+      }}>
+        <span style={{
+          background: availability.bg,
+          color: availability.color,
+          border: `1px solid ${availability.border}`,
+          fontSize: 10,
+          fontWeight: 800,
+          padding: "3px 8px",
+          borderRadius: 20,
+          whiteSpace: "nowrap",
+          backdropFilter: "blur(6px)",
+        }}>
+          {availability.label}
+        </span>
+        {published && (
+          <span style={{
+            background: "rgba(0,0,0,0.48)",
+            color: published.color,
+            fontSize: 10,
+            fontWeight: 800,
+            padding: "3px 8px",
+            borderRadius: 20,
+            whiteSpace: "nowrap",
+            backdropFilter: "blur(6px)",
+          }}>
+            {published.label}
+          </span>
+        )}
+      </div>
+
       {/* ── Favorite button — top right (z-6) ────────────────────────────────── */}
       <button
         onClick={handleFavorite}
@@ -487,6 +533,20 @@ export function PropertyCard({
             {neighborhoodLabel}
             {(property.rooms ?? 0) > 0 && ` · 🛏 ${property.rooms}`}
             {distanceStr && ` · ${distanceStr}`}
+          </span>
+        </div>
+
+        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 5 }}>
+          <span style={{
+            fontSize: 10,
+            fontWeight: 800,
+            color: "#ffffff",
+            background: "rgba(0,0,0,0.45)",
+            padding: "3px 7px",
+            borderRadius: 12,
+            whiteSpace: "nowrap",
+          }}>
+            {advance}
           </span>
         </div>
 

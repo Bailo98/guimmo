@@ -7,6 +7,7 @@ import { NEIGHBORHOODS, getNeighborhoodName } from "@/data/neighborhoods";
 import type { Metadata } from "next";
 import type { Property } from "@/types";
 import { formatPrice } from "@/lib/utils";
+import { isPubliclyAvailable } from "@/lib/property-signals";
 
 const SLUGS = [
   "kipe", "hamdallaye", "dixinn", "ratoma", "taouyah", "sonfonia",
@@ -52,7 +53,7 @@ async function getProperties(slug: string): Promise<Property[]> {
     .not("title", "is", null)
     .order("created_at", { ascending: false })
     .limit(24);
-  return (data ?? []) as Property[];
+  return ((data ?? []) as Property[]).filter(isPubliclyAvailable);
 }
 
 export const revalidate = 3600;
