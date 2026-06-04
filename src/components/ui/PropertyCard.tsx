@@ -205,17 +205,17 @@ export function PropertyCard({
         </Link>
         <div className="flex-1 p-3 min-w-0">
           <Link href={`/annonces/${property.id}`}>
-            <p className="font-bold text-sm dark:text-white text-[#121212] line-clamp-1">{property.title}</p>
-            <div className="flex items-center gap-1 dark:text-white/50 text-[rgba(18,18,18,0.5)] text-xs mt-0.5">
+            <p className="font-black text-base dark:text-white text-[#121212] line-clamp-1">{property.title}</p>
+            <div className="flex items-center gap-1 dark:text-white/60 text-[rgba(18,18,18,0.62)] text-base mt-0.5">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                 strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="flex-shrink-0 dark:text-white/40 text-[rgba(18,18,18,0.4)]">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
               </svg>
               <span>{neighborhoodLabel}</span>
             </div>
-            <p className="dark:text-white text-[#121212] font-bold text-sm mt-1">
+            <p className="dark:text-white text-[#121212] font-black text-xl mt-1">
               {formatPrice(property.price)}
-              {property.price_period === "month" && <span className="text-xs font-normal dark:text-white/40 text-[rgba(18,18,18,0.4)]">/mois</span>}
+              {property.price_period === "month" && <span className="text-base font-bold dark:text-white/55 text-[rgba(18,18,18,0.58)]">/mois</span>}
             </p>
           </Link>
         </div>
@@ -269,7 +269,7 @@ export function PropertyCard({
           justifyContent: "center", gap: 8, background: "var(--bg-secondary)",
         }}>
           <Home style={{ width: 40, height: 40, color: "var(--text-primary-faint)", strokeWidth: 1.2 }} />
-          <span style={{ color: "var(--text-primary-faint)", fontSize: 11 }}>Aucune photo</span>
+          <span style={{ color: "var(--text-primary-faint)", fontSize: 16 }}>Aucune photo</span>
         </div>
       )}
 
@@ -339,8 +339,8 @@ export function PropertyCard({
         }}>
           <span style={{
             background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)",
-            color: fresh.color, fontSize: 10, fontWeight: 700,
-            padding: "3px 7px", borderRadius: 20, whiteSpace: "nowrap",
+            color: fresh.color, fontSize: 16, fontWeight: 800,
+            padding: "4px 9px", borderRadius: 20, whiteSpace: "nowrap",
           }}>
             {fresh.label}
           </span>
@@ -362,13 +362,13 @@ export function PropertyCard({
         {property.is_boosted && (
           <span style={{
             background: "var(--accent-gold)", color: "var(--bg-primary)",
-            fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap",
+            fontSize: 16, padding: "4px 10px", borderRadius: 20, fontWeight: 800, whiteSpace: "nowrap",
           }}>★ Pro</span>
         )}
         {property.video_url && (
           <span style={{
             background: "rgba(212,175,55,0.90)", color: "var(--bg-primary)",
-            fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700, whiteSpace: "nowrap",
+            fontSize: 16, padding: "4px 10px", borderRadius: 20, fontWeight: 800, whiteSpace: "nowrap",
           }}>▶ Vidéo</span>
         )}
       </div>
@@ -381,7 +381,7 @@ export function PropertyCard({
           <span style={{
             background: availCfg.bg, color: availCfg.color,
             border: `1px solid ${availCfg.border}`,
-            fontSize: 10, fontWeight: 700, padding: "3px 8px",
+            fontSize: 16, fontWeight: 800, padding: "4px 10px",
             borderRadius: 20, whiteSpace: "nowrap",
             backdropFilter: "blur(6px)",
           }}>
@@ -405,7 +405,7 @@ export function PropertyCard({
           background: availability.bg,
           color: availability.color,
           border: `1px solid ${availability.border}`,
-          fontSize: 10,
+          fontSize: 16,
           fontWeight: 800,
           padding: "3px 8px",
           borderRadius: 20,
@@ -418,7 +418,7 @@ export function PropertyCard({
           <span style={{
             background: "rgba(0,0,0,0.48)",
             color: published.color,
-            fontSize: 10,
+            fontSize: 16,
             fontWeight: 800,
             padding: "3px 8px",
             borderRadius: 20,
@@ -467,8 +467,8 @@ export function PropertyCard({
         {/* Prix sans badge */}
         <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
           <span style={{
-            fontSize: 22,
-            fontWeight: 800,
+            fontSize: 30,
+            fontWeight: 900,
             color: "var(--photo-text)",
             lineHeight: 1.1,
             textShadow: "0 2px 6px rgba(0,0,0,0.50)",
@@ -476,7 +476,7 @@ export function PropertyCard({
             {formatPrice(property.price)}
           </span>
           {property.price_period === "month" && (
-            <span style={{ fontSize: 12, color: "var(--photo-text-dim)" }}>/mois</span>
+            <span style={{ fontSize: 16, color: "var(--photo-text-dim)", fontWeight: 800 }}>/mois</span>
           )}
         </div>
 
@@ -484,7 +484,7 @@ export function PropertyCard({
         {showDiasporaPrice && (
           <p style={{
             margin: "2px 0 0",
-            fontSize: 11,
+            fontSize: 16,
             color: "var(--photo-text-muted)",
             lineHeight: 1,
             fontWeight: 500,
@@ -497,8 +497,8 @@ export function PropertyCard({
         {/* Titre */}
         <p style={{
           margin: "4px 0 0",
-          fontSize: 14,
-          fontWeight: 600,
+          fontSize: 16,
+          fontWeight: 800,
           color: "var(--photo-text)",
           whiteSpace: "nowrap",
           overflow: "hidden",
@@ -524,7 +524,7 @@ export function PropertyCard({
             <circle cx="12" cy="10" r="3" />
           </svg>
           <span style={{
-            fontSize: 12,
+            fontSize: 16,
             color: "var(--photo-text-dim)",
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -538,7 +538,7 @@ export function PropertyCard({
 
         <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 5 }}>
           <span style={{
-            fontSize: 10,
+            fontSize: 16,
             fontWeight: 800,
             color: "#ffffff",
             background: "rgba(0,0,0,0.45)",
