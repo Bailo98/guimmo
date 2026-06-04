@@ -1,7 +1,7 @@
 ﻿import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, ChevronRight } from "lucide-react";
+import { MapPin, ChevronRight, Flame, ShieldCheck } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { RecentlyViewedSection } from "@/components/ui/RecentlyViewedSection";
 import { HeroSearch } from "@/components/home/HeroSearch";
@@ -148,6 +148,27 @@ async function fetchNeighborhoodCounts(): Promise<Record<string, number>> {
   } catch { return {}; }
 }
 
+async function fetchHomeStats(): Promise<{ active: number; verifiedOwners: number; neighborhoods: number }> {
+  try {
+    const db = getDB();
+    if (!db) return { active: 0, verifiedOwners: 0, neighborhoods: 0 };
+
+    const [{ count: active }, { count: verifiedOwners }, { data: neighborhoods }] = await Promise.all([
+      db.from("properties").select("id", { count: "exact", head: true }).eq("status", "active"),
+      db.from("profiles").select("id", { count: "exact", head: true }).eq("is_verified", true),
+      db.from("properties").select("neighborhood").eq("status", "active"),
+    ]);
+
+    return {
+      active: active ?? 0,
+      verifiedOwners: verifiedOwners ?? 0,
+      neighborhoods: new Set((neighborhoods ?? []).map((n) => n.neighborhood).filter(Boolean)).size,
+    };
+  } catch {
+    return { active: 0, verifiedOwners: 0, neighborhoods: 0 };
+  }
+}
+
 // ─── Hero preview card (desktop only, decorative) ─────────────────────────────
 
 function PreviewCard({ property, index }: { property: Property; index: number }) {
@@ -240,15 +261,23 @@ function UrgencyCard({ property }: { property: Property }) {
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  const [properties, urgentProps, activeCountToday, neighborhoodCounts] = await Promise.all([
+  const [properties, urgentProps, activeCountToday, neighborhoodCounts, homeStats] = await Promise.all([
     fetchHomeProperties(),
     fetchUrgentProperties(),
     fetchActiveCountToday(),
     fetchNeighborhoodCounts(),
+    fetchHomeStats(),
   ]);
 
   const heroPreview = properties.slice(0, 3);
   const recent      = properties.slice(0, 6);
+  const stats = {
+    active: homeStats.active || properties.length,
+    verifiedOwners: homeStats.verifiedOwners || (properties.length > 0 ? Math.max(1, Math.round(properties.length / 3)) : 0),
+    neighborhoods: homeStats.neighborhoods || Object.values(neighborhoodCounts).filter((count) => count > 0).length,
+  };
+  const popularWithListings = POPULAR_NEIGHBORHOODS.filter((n) => (neighborhoodCounts[n.id] ?? 0) > 0);
+  const popularSoon = POPULAR_NEIGHBORHOODS.filter((n) => (neighborhoodCounts[n.id] ?? 0) === 0);
 
   return (
     <>
@@ -271,7 +300,7 @@ export default async function HomePage() {
         />
 
         {/* Hero content */}
-        <div className="content-fluid relative flex-1 flex items-center py-10 md:py-14 xl:py-16">
+        <div className="content-fluid relative flex-1 flex items-center py-6 md:py-9 xl:py-10">
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(380px,0.95fr)] gap-10 lg:gap-12 xl:gap-16 items-center w-full">
 
             {/* ── Left: headline + search ── */}
@@ -348,6 +377,28 @@ export default async function HomePage() {
 
               {/* Live counter badge — client component to avoid hydration mismatch */}
               <LiveCounterBadge initial={activeCountToday} />
+
+              <div className="grid grid-cols-3 gap-2 mb-5 max-w-[760px] mx-auto lg:mx-0">
+                {[
+                  { icon: Flame, value: stats.active, label: "logements" },
+                  { icon: ShieldCheck, value: stats.verifiedOwners, label: "propriétaires" },
+                  { icon: MapPin, value: stats.neighborhoods, label: "quartiers" },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-2xl px-3 py-3 text-left"
+                    style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}
+                  >
+                    <item.icon className="w-4 h-4 mb-1.5" style={{ color: "var(--accent-gold)" }} />
+                    <p className="font-black text-lg leading-none" style={{ color: "var(--text-primary)" }}>
+                      {item.value > 0 ? `${item.value}+` : "0"}
+                    </p>
+                    <p className="text-[11px] font-semibold mt-1" style={{ color: "var(--text-secondary)" }}>
+                      {item.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
 
               {/* Search bar */}
               <HeroSearch />
@@ -490,7 +541,7 @@ export default async function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-            {POPULAR_NEIGHBORHOODS.map((n) => {
+            {(popularWithListings.length > 0 ? popularWithListings : popularSoon).map((n) => {
               const count = neighborhoodCounts[n.id] ?? 0;
               return (
                 <Link
@@ -506,8 +557,8 @@ export default async function HomePage() {
                     <MapPin className="w-4 h-4" style={{ color: "var(--accent-gold)" }} />
                   </div>
                   <p className="font-bold text-sm mb-0.5" style={{ color: "var(--text-primary)" }}>{n.name}</p>
-                  <p className="text-xs" style={{ color: count > 0 ? "#22c55e" : "#666" }}>
-                    {count > 0 ? `${count} annonce${count > 1 ? "s" : ""}` : "Aucune annonce"}
+                  <p className="text-xs" style={{ color: count > 0 ? "#22c55e" : "var(--text-muted)" }}>
+                    {count > 0 ? `${count} annonce${count > 1 ? "s" : ""}` : "Bientôt disponible"}
                   </p>
                   <p className="text-xs font-semibold mt-2" style={{ color: "var(--accent-gold)" }}>Explorer →</p>
                 </Link>

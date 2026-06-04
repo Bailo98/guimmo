@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import TinderCard from "react-tinder-card";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { useAppStore } from "@/lib/store";
@@ -63,11 +64,12 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const topCardRef = useRef<TinderAPI>(null as any);
-  const cardsRef   = useRef(cards);
-  cardsRef.current = cards;
 
   // ── Mount ──────────────────────────────────────────────────────────────────
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    const id = window.setTimeout(() => setMounted(true), 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   // ── Geolocation ────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -121,10 +123,13 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
       list = [...properties];
     }
 
-    const sorted = sortList(list, userLocation);
-    setCards(sorted);
-    if (sorted.length > 0) setEverHadCards(true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    const id = window.setTimeout(() => {
+      const sorted = sortList(list, userLocation);
+      setCards(sorted);
+      if (sorted.length > 0) setEverHadCards(true);
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [properties, userLocation]);
 
   // ── Auto-reload when all cards are swiped ─────────────────────────────────
@@ -170,7 +175,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     }, 1500);
 
     return () => clearTimeout(t);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted, everHadCards, cards.length, emptyAfterReload]);
 
   // ── Progressive overlay: pure DOM — no setState ────────────────────────────
@@ -239,6 +243,14 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     await topCardRef.current?.swipe(dir);
   }, []);
 
+  const requireLoginOrRun = useCallback((action: () => void) => {
+    if (!user) {
+      router.push("/connexion?redirect=/decouvrir");
+      return;
+    }
+    action();
+  }, [router, user]);
+
   // ── Render ─────────────────────────────────────────────────────────────────
   if (!mounted) return null;
 
@@ -292,14 +304,14 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         >
           Réessayer
         </button>
-        <a href="/annonces" style={{
+        <Link href="/annonces" style={{
           display: "block", textAlign: "center", width: "100%", maxWidth: 320,
           padding: "14px 0", borderRadius: 14,
-          background: "transparent", border: "1px solid rgba(255,255,255,0.12)",
-          color: "rgba(255,255,255,0.70)", fontWeight: 600, fontSize: 15, textDecoration: "none",
+          background: "var(--bg-card)", border: "1px solid var(--border)",
+          color: "var(--text-primary)", fontWeight: 700, fontSize: 15, textDecoration: "none",
         }}>
-          Voir les annonces
-        </a>
+          Voir toutes les annonces
+        </Link>
       </div>
     );
   }
@@ -324,10 +336,49 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     );
   }
 
-  if (cards.length === 0) return null;
+  if (cards.length === 0) {
+    return (
+      <div style={{
+        minHeight: "calc(100svh - 72px)",
+        background: "var(--bg-primary)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "32px",
+        textAlign: "center",
+      }}>
+        <p style={{ fontSize: 56, marginBottom: 16 }}>🏠</p>
+        <h1 style={{ color: "var(--text-primary)", fontSize: 28, fontWeight: 800, marginBottom: 8 }}>
+          Aucune annonce à découvrir
+        </h1>
+        <p style={{ color: "var(--text-secondary)", maxWidth: 360, marginBottom: 24 }}>
+          Les nouvelles annonces apparaîtront ici dès qu’elles seront disponibles.
+        </p>
+        <Link href="/annonces" style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: 48,
+          padding: "0 24px",
+          borderRadius: 14,
+          background: "var(--accent-gold)",
+          color: "var(--bg-primary)",
+          fontWeight: 800,
+          textDecoration: "none",
+        }}>
+          Voir toutes les annonces
+        </Link>
+      </div>
+    );
+  }
 
   const topCard = cards[0];
   const topImg  = topCard.property_images?.find((i) => i.is_primary) ?? topCard.property_images?.[0];
+  const cleanPhone = topCard.contact_phone?.replace(/\D/g, "");
+  const whatsappMessage = encodeURIComponent(`Bonjour, je suis intéressé par "${topCard.title}" sur LogerBien`);
+  const whatsappUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${whatsappMessage}` : `/annonces/${topCard.id}`;
+  const phoneUrl = cleanPhone ? `tel:${cleanPhone}` : `/annonces/${topCard.id}`;
 
   // Distance string
   let topDistStr: string | null = null;
@@ -554,6 +605,35 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               right: 72,
               pointerEvents: "none",
             }}>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 }}>
+                <span style={{
+                  background: "rgba(255,255,255,0.16)",
+                  color: "#ffffff",
+                  border: "1px solid rgba(255,255,255,0.22)",
+                  borderRadius: 999,
+                  padding: "5px 10px",
+                  fontSize: 11,
+                  fontWeight: 800,
+                  backdropFilter: "blur(10px)",
+                }}>
+                  {topCard.transaction_type === "rent" ? "Location" : "Vente"}
+                </span>
+                {topCard.is_verified && (
+                  <span style={{
+                    background: "rgba(34,197,94,0.18)",
+                    color: "#ffffff",
+                    border: "1px solid rgba(34,197,94,0.42)",
+                    borderRadius: 999,
+                    padding: "5px 10px",
+                    fontSize: 11,
+                    fontWeight: 800,
+                    backdropFilter: "blur(10px)",
+                  }}>
+                    ✓ Vérifié
+                  </span>
+                )}
+              </div>
+
               {/* Prix */}
               <p style={{
                 margin: 0,
@@ -603,7 +683,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 </span>
                 <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>·</span>
                 <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, whiteSpace: "nowrap" }}>
-                  {topCard.transaction_type === "rent" ? "Location" : "Vente"}
+                  {topCard.type === "apartment" ? "Appartement" : topCard.type === "house" ? "Maison" : topCard.type === "villa" ? "Villa" : topCard.type === "studio" ? "Studio" : topCard.type}
                 </span>
                 {(topCard.rooms ?? 0) > 0 && (
                   <>
@@ -676,6 +756,51 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
+          </button>
+
+          {/* 📞 Appeler */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              requireLoginOrRun(() => { window.location.href = phoneUrl; });
+            }}
+            aria-label="Contacter"
+            style={{
+              width: 48, height: 48,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.14)",
+              border: "1.5px solid rgba(255,255,255,0.25)",
+              color: "#ffffff",
+              cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              WebkitTapHighlightColor: "transparent",
+              flexShrink: 0,
+            }}
+          >
+            📞
+          </button>
+
+          {/* 💬 WhatsApp */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              requireLoginOrRun(() => { window.open(whatsappUrl, "_blank", "noopener"); });
+            }}
+            aria-label="WhatsApp"
+            style={{
+              width: 52, height: 52,
+              borderRadius: "50%",
+              background: "#25D366",
+              border: "none",
+              color: "#ffffff",
+              cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              WebkitTapHighlightColor: "transparent",
+              flexShrink: 0,
+              boxShadow: "0 4px 18px rgba(37,211,102,0.45)",
+            }}
+          >
+            💬
           </button>
         </div>
 

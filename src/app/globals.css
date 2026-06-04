@@ -456,7 +456,7 @@ input::placeholder, textarea::placeholder {
 }
 
 .home-section-fill {
-  min-height: calc(100svh - 72px);
+  min-height: clamp(560px, calc(88svh - 72px), 760px);
 }
 
 @media (max-width: 768px) {
