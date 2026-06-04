@@ -11,6 +11,16 @@ import { cn, formatPrice } from "@/lib/utils";
 
 const COMMUNES = ["Ratoma", "Dixinn", "Matam", "Kaloum", "Matoto", "Coyah"];
 
+const fieldStyle = {
+  background: "var(--bg-secondary)",
+  border: "1px solid var(--border)",
+  color: "var(--text-primary)",
+  fontSize: 16,
+  minHeight: 52,
+};
+
+const helpTextStyle = { color: "var(--text-secondary)" };
+
 const TYPE_OPTIONS = [
   { id: "apartment", label: "Appart.",  emoji: "🏢" },
   { id: "house",     label: "Maison",   emoji: "🏠" },
@@ -237,21 +247,22 @@ export default function PublierRapidePage() {
         <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl" style={{ background: "rgba(212,175,55,0.12)", border: "2px solid rgba(212,175,55,0.30)" }}>
           ✅
         </div>
-        <h1 className="text-2xl font-black text-white mb-3">Annonce soumise !</h1>
-        <p className="text-white/60 text-sm leading-relaxed mb-6">
+        <h1 className="text-2xl font-black mb-3" style={{ color: "var(--text-primary)" }}>Annonce soumise !</h1>
+        <p className="text-sm leading-relaxed mb-6" style={helpTextStyle}>
           Votre annonce est en cours de vérification. Elle sera publiée sous 24h.<br />
-          <span className="text-white font-semibold">Retenez votre numéro {form.phone} pour vous connecter plus tard.</span>
+          <span className="font-semibold" style={{ color: "var(--text-primary)" }}>Retenez votre numéro {form.phone} pour vous connecter plus tard.</span>
         </p>
         <button
           onClick={() => router.push(`/annonces/${published.id}`)}
-          className="w-full flex items-center justify-center gap-2 rounded-2xl font-black text-white mb-3"
-          style={{ minHeight: 52, background: "var(--accent-gold)" }}
+          className="w-full flex items-center justify-center gap-2 rounded-2xl font-black mb-3"
+          style={{ minHeight: 52, background: "var(--accent-gold)", color: "#17120a" }}
         >
           <CheckCircle2 className="w-5 h-5" /> Voir mon annonce
         </button>
         <button
           onClick={() => router.push("/annonces")}
-          className="w-full text-white/50 text-sm py-3"
+          className="w-full text-sm py-3"
+          style={helpTextStyle}
         >
           Voir toutes les annonces
         </button>
@@ -260,24 +271,24 @@ export default function PublierRapidePage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto px-4 pt-6 pb-32 min-h-screen" style={{ background: "var(--bg-primary)" }}>
+    <div className="max-w-lg mx-auto px-4 pt-6 min-h-screen" style={{ background: "var(--bg-primary)", paddingBottom: "calc(120px + env(safe-area-inset-bottom, 0px))" }}>
       {/* Header */}
       <div className="mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-3"
-          style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold-light)", border: "1px solid rgba(212,175,55,0.25)" }}>
+          style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.25)" }}>
           ⚡ Publication rapide
         </div>
-        <h1 className="text-2xl font-black text-white mb-1">Publie ton bien</h1>
-        <p className="text-white/50 text-sm">Sans compte — en moins de 2 minutes</p>
+        <h1 className="text-2xl font-black mb-1" style={{ color: "var(--text-primary)" }}>Publie ton bien</h1>
+        <p className="text-sm" style={helpTextStyle}>Sans compte — en moins de 2 minutes</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
 
         {/* Photos */}
         <div>
-          <label className="block text-sm font-bold text-white mb-3">
+          <label className="block text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>
             📸 Photos <span className="text-red-400">*</span>
-            <span className="text-white/40 font-normal ml-1">(min. 1, max. 4)</span>
+            <span className="font-normal ml-1" style={helpTextStyle}>(min. 1, max. 4)</span>
           </label>
           {previews.length > 0 && (
             <div className="grid grid-cols-4 gap-2 mb-3">
@@ -296,13 +307,13 @@ export default function PublierRapidePage() {
           {files.length < 4 && (
             <div className="flex gap-2">
               <button type="button" onClick={() => fileRef.current?.click()}
-                className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed border-white/20 text-white/60 hover:border-white/40 hover:text-white transition-colors text-sm font-semibold"
-                style={{ minHeight: 52 }}>
+                className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed transition-colors text-sm font-bold"
+                style={{ minHeight: 52, background: "var(--bg-card)", borderColor: "rgba(212,175,55,0.35)", color: "var(--text-primary)" }}>
                 <Upload className="w-4 h-4" /> Galerie
               </button>
               <button type="button" onClick={() => cameraRef.current?.click()}
-                className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed border-white/20 text-white/60 hover:border-white/40 hover:text-white transition-colors text-sm font-semibold"
-                style={{ minHeight: 52 }}>
+                className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed transition-colors text-sm font-bold"
+                style={{ minHeight: 52, background: "var(--bg-card)", borderColor: "rgba(212,175,55,0.35)", color: "var(--text-primary)" }}>
                 <Camera className="w-4 h-4" /> Caméra
               </button>
             </div>
@@ -313,16 +324,16 @@ export default function PublierRapidePage() {
 
         {/* Type de bien */}
         <div>
-          <label className="block text-sm font-bold text-white mb-3">🏠 Type de bien</label>
+          <label className="block text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>🏠 Type de bien</label>
           <div className="grid grid-cols-3 gap-2">
             {TYPE_OPTIONS.map((t) => (
               <button key={t.id} type="button" onClick={() => setForm((f) => ({ ...f, type: t.id }))}
                 className={cn("flex flex-col items-center gap-1 py-3 rounded-xl border-2 font-semibold text-xs transition-all")}
                 style={{
                   minHeight: 60,
-                  borderColor: form.type === t.id ? "var(--accent-gold)" : "rgba(255,255,255,0.12)",
-                  background: form.type === t.id ? "rgba(212,175,55,0.12)" : "rgba(255,255,255,0.04)",
-                  color: form.type === t.id ? "var(--accent-gold)" : "rgba(255,255,255,0.60)",
+                  borderColor: form.type === t.id ? "var(--accent-gold)" : "var(--border)",
+                  background: form.type === t.id ? "rgba(212,175,55,0.16)" : "var(--bg-card)",
+                  color: form.type === t.id ? "var(--accent-gold)" : "var(--text-primary)",
                 }}>
                 <span className="text-xl">{t.emoji}</span>
                 {t.label}
@@ -333,16 +344,16 @@ export default function PublierRapidePage() {
 
         {/* Transaction type */}
         <div>
-          <label className="block text-sm font-bold text-white mb-3">🔑 Location ou vente ?</label>
+          <label className="block text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>🔑 Location ou vente ?</label>
           <div className="grid grid-cols-2 gap-3">
             {(["rent", "sale"] as const).map((t) => (
               <button key={t} type="button" onClick={() => setForm((f) => ({ ...f, txType: t }))}
                 className="py-4 rounded-xl border-2 font-bold text-sm transition-all"
                 style={{
                   minHeight: 52,
-                  borderColor: form.txType === t ? "var(--accent-gold)" : "rgba(255,255,255,0.12)",
-                  background: form.txType === t ? "rgba(212,175,55,0.12)" : "rgba(255,255,255,0.04)",
-                  color: form.txType === t ? "var(--accent-gold)" : "rgba(255,255,255,0.50)",
+                  borderColor: form.txType === t ? "var(--accent-gold)" : "var(--border)",
+                  background: form.txType === t ? "rgba(212,175,55,0.16)" : "var(--bg-card)",
+                  color: form.txType === t ? "var(--accent-gold)" : "var(--text-primary)",
                 }}>
                 {t === "rent" ? "🔑 À Louer" : "💰 À Vendre"}
               </button>
@@ -352,29 +363,29 @@ export default function PublierRapidePage() {
 
         {/* Price */}
         <div>
-          <label className="block text-sm font-bold text-white mb-2">
+          <label className="block text-sm font-bold mb-2" style={{ color: "var(--text-primary)" }}>
             💰 Prix {form.txType === "rent" ? "(par mois)" : ""} <span className="text-red-400">*</span>
           </label>
           <input
             type="number" inputMode="numeric" placeholder="Ex : 1 500 000"
             value={form.price}
             onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
-            className="w-full rounded-xl px-4 py-3 text-white font-semibold focus:outline-none"
-            style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16, minHeight: 52 }}
+            className="w-full rounded-xl px-4 py-3 font-semibold focus:outline-none placeholder:text-[var(--text-muted)]"
+            style={fieldStyle}
           />
           {priceLabel && <p className="text-[var(--accent-gold)] font-bold text-sm mt-1.5 ml-1">{priceLabel}{form.txType === "rent" ? "/mois" : ""}</p>}
         </div>
 
         {/* Quartier */}
         <div>
-          <label className="block text-sm font-bold text-white mb-2">
+          <label className="block text-sm font-bold mb-2" style={{ color: "var(--text-primary)" }}>
             <MapPin className="w-4 h-4 inline mr-1" />Quartier <span className="text-red-400">*</span>
           </label>
           <select
             value={form.neighborhood}
             onChange={(e) => setForm((f) => ({ ...f, neighborhood: e.target.value }))}
-            className="w-full rounded-xl px-4 py-3 text-white focus:outline-none appearance-none"
-            style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16, minHeight: 52 }}
+            className="w-full rounded-xl px-4 py-3 focus:outline-none appearance-none"
+            style={fieldStyle}
           >
             <option value="">— Choisir un quartier —</option>
             {COMMUNES.map((commune) => (
@@ -389,28 +400,29 @@ export default function PublierRapidePage() {
 
         {/* Phone / WhatsApp */}
         <div>
-          <label className="block text-sm font-bold text-white mb-2">
+          <label className="block text-sm font-bold mb-2" style={{ color: "var(--text-primary)" }}>
             <Phone className="w-4 h-4 inline mr-1" />Votre WhatsApp <span className="text-red-400">*</span>
           </label>
           <input
             type="tel" placeholder="+224 6XX XX XX XX"
             value={form.phone}
             onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-            className="w-full rounded-xl px-4 py-3 text-white font-semibold focus:outline-none"
-            style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 16, minHeight: 52 }}
+            className="w-full rounded-xl px-4 py-3 font-semibold focus:outline-none placeholder:text-[var(--text-muted)]"
+            style={fieldStyle}
           />
-          <p className="text-white/40 text-xs mt-1.5 ml-1">Les acheteurs vous contacteront via ce numéro</p>
+          <p className="text-xs mt-1.5 ml-1" style={helpTextStyle}>Les acheteurs vous contacteront via ce numéro</p>
         </div>
 
         {/* Submit */}
         <button
           type="submit"
           disabled={!canSubmit || submitting}
-          className="w-full flex items-center justify-center gap-2 rounded-2xl font-black text-white transition-all"
+          className="w-full flex items-center justify-center gap-2 rounded-2xl font-black transition-all"
           style={{
             minHeight: 56, fontSize: 15,
-            background: canSubmit && !submitting ? "var(--accent-gold)" : "rgba(255,255,255,0.08)",
-            color: canSubmit && !submitting ? "#fff" : "rgba(255,255,255,0.30)",
+            background: canSubmit && !submitting ? "var(--accent-gold)" : "var(--bg-card)",
+            border: canSubmit && !submitting ? "1px solid var(--accent-gold)" : "1px solid var(--border)",
+            color: canSubmit && !submitting ? "#16120a" : "var(--text-muted)",
             boxShadow: canSubmit && !submitting ? "0 8px 32px rgba(212,175,55,0.35)" : "none",
           }}
         >
@@ -423,7 +435,7 @@ export default function PublierRapidePage() {
           )}
         </button>
 
-        <p className="text-center text-white/30 text-xs">
+        <p className="text-center text-xs" style={helpTextStyle}>
           En publiant, vous acceptez nos{" "}
           <a href="/cgv" className="text-[var(--accent-gold)] hover:underline">conditions d&apos;utilisation</a>.
           Publication gratuite, visible immédiatement.
