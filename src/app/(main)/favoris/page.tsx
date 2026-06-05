@@ -44,7 +44,11 @@ export default function FavorisPage() {
   }, [user]);
 
   useEffect(() => {
-    if (!authLoading) fetchFavorites();
+    if (authLoading) return;
+    const id = window.setTimeout(() => {
+      void fetchFavorites();
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [authLoading, fetchFavorites]);
 
   async function removeFavorite(propertyId: string) {
@@ -59,7 +63,7 @@ export default function FavorisPage() {
   if (authLoading || loading) {
     return (
       <div className="max-w-5xl mx-auto px-4 py-12 flex items-center justify-center min-h-[40vh]">
-        <Loader2 className="w-6 h-6 text-white/40 animate-spin" />
+        <Loader2 className="w-6 h-6 animate-spin" style={{ color: "var(--accent-gold)" }} />
       </div>
     );
   }
@@ -75,7 +79,7 @@ export default function FavorisPage() {
 
       {properties.length === 0 ? (
         <div className="text-center py-24">
-          <Heart className="w-16 h-16 mx-auto mb-4" style={{ color: "rgba(255,255,255,0.08)" }} />
+          <Heart className="w-16 h-16 mx-auto mb-4" style={{ color: "rgba(185,138,46,0.24)" }} />
           <h3 className="text-xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>Aucun favori</h3>
           <p className="text-sm mb-6" style={{ color: "var(--text-secondary)" }}>
             Appuyez sur le cœur d&apos;une annonce pour la sauvegarder ici

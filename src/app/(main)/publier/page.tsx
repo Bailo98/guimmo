@@ -618,21 +618,21 @@ export default function PublierPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-white/40 border-t-transparent rounded-full animate-spin" />
+      <div className="publish-page-light min-h-[60vh] flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full animate-spin" style={{ border: "2px solid rgba(185,138,46,0.34)", borderTopColor: "transparent" }} />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center px-4">
+      <div className="publish-page-light min-h-[60vh] flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ background: "rgba(212,175,55,0.10)", border: "1px solid rgba(212,175,55,0.20)" }}>
             <span className="text-3xl">🔒</span>
           </div>
-          <h1 className="text-2xl font-black text-white mb-2">Connexion requise</h1>
-          <p className="text-white/50 text-sm mb-8 leading-relaxed">
+          <h1 className="text-2xl font-black app-text mb-2">Connexion requise</h1>
+          <p className="app-text-muted text-sm mb-8 leading-relaxed">
             Connectez-vous pour publier une annonce sur LogerBien.
           </p>
           <div className="flex flex-col gap-3">
@@ -644,8 +644,7 @@ export default function PublierPage() {
             </a>
             <a
               href="/inscription?redirect=/publier"
-              className="w-full flex items-center justify-center gap-2 font-semibold py-3.5 px-6 rounded-2xl transition-colors text-sm text-white/70 hover:text-white"
-              style={{ border: "1px solid rgba(255,255,255,0.12)" }}
+              className="w-full flex items-center justify-center gap-2 font-semibold py-3.5 px-6 rounded-2xl transition-colors text-sm app-button-secondary"
             >
               Créer un compte
             </a>
@@ -661,7 +660,7 @@ export default function PublierPage() {
   const priceFormatted   = formatGNF(form.price);
 
   return (
-    <div className="max-w-xl mx-auto px-4 pt-4 pb-40">
+    <div className="publish-page-light max-w-xl mx-auto px-4 pt-4 pb-40">
 
       {/* ── Progress ── */}
       <div className="mb-8">

@@ -57,7 +57,7 @@ export default async function AgentsPage() {
   );
 
   return (
-    <div className="max-w-2xl mx-auto px-4 pt-6 pb-28">
+    <div className="agents-page-light max-w-2xl mx-auto px-4 pt-6 pb-28">
       {/* Hero */}
       <div className="mb-8">
         <div
@@ -66,12 +66,12 @@ export default async function AgentsPage() {
         >
           <UserCheck className="w-3.5 h-3.5" /> Agents certifiés
         </div>
-        <h1 className="text-2xl font-black text-white mb-1">Agents LogerBien</h1>
-        <p className="text-white/50 text-sm">Votre quartier, votre expert — contactez un agent local de confiance</p>
+        <h1 className="text-2xl font-black app-text mb-1">Agents LogerBien</h1>
+        <p className="app-text-muted text-sm">Votre quartier, votre expert — contactez un agent local de confiance</p>
       </div>
 
       {neighborhoods.length === 0 && (
-        <p className="text-white/40 text-center mt-20">Aucun agent disponible pour le moment.</p>
+        <p className="app-text-muted text-center mt-20">Aucun agent disponible pour le moment.</p>
       )}
 
       <div className="space-y-8">
@@ -89,7 +89,7 @@ export default async function AgentsPage() {
                 <div
                   key={agent.id}
                   className="flex items-center gap-4 rounded-2xl p-4"
-                  style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.08)" }}
+                  style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
                 >
                   {/* Avatar */}
                   <Avatar
@@ -147,8 +147,8 @@ export default async function AgentsPage() {
         className="mt-12 rounded-2xl p-6"
         style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.20)" }}
       >
-        <h2 className="text-white font-black text-lg mb-1">Devenir agent LogerBien</h2>
-        <p className="text-white/50 text-sm mb-5">Rejoignez notre réseau et touchez des milliers de clients à Conakry</p>
+        <h2 className="app-text font-black text-lg mb-1">Devenir agent LogerBien</h2>
+        <p className="app-text-muted text-sm mb-5">Rejoignez notre réseau et touchez des milliers de clients à Conakry</p>
         <AgentApplicationForm />
       </div>
     </div>
