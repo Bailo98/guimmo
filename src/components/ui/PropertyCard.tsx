@@ -13,7 +13,7 @@ import { AuthPromptModal } from "@/components/AuthPromptModal";
 import { TypeBadge, PropertyBadge } from "@/components/PropertyBadge";
 import { haversineKm, formatDistance } from "@/lib/haversine";
 import { NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
-import { advanceSignal, availabilitySignal, publishedSignal } from "@/lib/property-signals";
+import { advanceSignal, availabilitySignal } from "@/lib/property-signals";
 import type { Property } from "@/types";
 
 interface PropertyCardProps {
@@ -39,33 +39,6 @@ const AVAIL_CONFIG: Record<string, { label: string; color: string; bg: string; b
   flexible:  { label: "", color: "", bg: "", border: "" }, // no badge for default
 };
 
-// ── Feature 3: Timestamp label ─────────────────────────────────────────────────
-function freshLabel(createdAt: string | undefined): { label: string; color: string } | null {
-  if (!createdAt) return null;
-  const diff = Date.now() - new Date(createdAt).getTime();
-  const hours = diff / 3_600_000;
-  const days  = diff / 86_400_000;
-  if (hours < 24) {
-    const h = Math.max(1, Math.round(hours));
-    return { label: `il y a ${h}h`, color: "#22c55e" };
-  }
-  if (days < 7) {
-    const d = Math.round(days);
-    return { label: `il y a ${d}j`, color: "#eab308" };
-  }
-  return null;
-}
-
-// ── Feature 4: Trust badge display ────────────────────────────────────────────
-const TRUST_BADGE_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  proprietaire_direct: { label: "🏠 Proprio direct",  color: "#60a5fa", bg: "rgba(96,165,250,0.18)" },
-  sans_commission:     { label: "💰 Sans commission",  color: "var(--accent-gold)", bg: "rgba(212,175,55,0.18)" },
-  verifie:             { label: "✅ Vérifié",           color: "#22c55e", bg: "rgba(34,197,94,0.18)"  },
-  nouveau:             { label: "🆕 Nouveau",           color: "#a78bfa", bg: "rgba(167,139,250,0.18)" },
-};
-
-const CARD_NOW = Date.now();
-
 export function PropertyCard({
   property,
   variant = "default",
@@ -90,13 +63,7 @@ export function PropertyCard({
   const primaryImage = images[0];
 
   const neighborhoodLabel = NEIGHBORHOOD_LABELS[property.neighborhood] ?? property.neighborhood;
-  const createdAt         = new Date(property.created_at ?? CARD_NOW);
-  const isNew             = CARD_NOW - createdAt.getTime() < 48 * 60 * 60 * 1000;
-
-  // Feature 3: fresh timestamp
-  const fresh = freshLabel(property.created_at);
   const availability = availabilitySignal(property);
-  const published = publishedSignal(property.created_at);
   const advance = advanceSignal(property);
 
   // Distance from user location
@@ -110,23 +77,9 @@ export function PropertyCard({
     if (coords) distanceStr = `~${formatDistance(haversineKm(userLocation.lat, userLocation.lng, coords[0], coords[1]))}`;
   }
 
-  // Feature 7: trust dot
-  const reportsCount = (property as Property & { reports_count?: number }).reports_count ?? 0;
-  let trustDot: { color: string; label: string } | null = null;
-  if (reportsCount > 0) {
-    trustDot = { color: "#ef4444", label: "Signalement(s) en attente" };
-  } else if (property.is_verified) {
-    trustDot = { color: "#22c55e", label: "Annonce vérifiée" };
-  } else if (isNew) {
-    trustDot = { color: "#eab308", label: "Annonce récente (< 48h)" };
-  }
-
   // Feature 1: availability mode badge
   const availMode = property.availability_mode ?? "flexible";
   const availCfg = AVAIL_CONFIG[availMode] ?? AVAIL_CONFIG.flexible;
-
-  // Feature 4: trust badges array
-  const trustBadges = Array.isArray(property.badges) ? property.badges : [];
 
   // ── Image nav ───────────────────────────────────────────────────────────────
   function prev(e: React.MouseEvent) {
@@ -332,22 +285,7 @@ export function PropertyCard({
         </button>
       )}
 
-      {/* ── Feature 3: Fresh timestamp — top right corner (above fav btn) ──────── */}
-      {fresh && (
-        <div style={{
-          position: "absolute", top: 10, right: 56, zIndex: 5, pointerEvents: "none",
-        }}>
-          <span style={{
-            background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)",
-            color: fresh.color, fontSize: 16, fontWeight: 800,
-            padding: "4px 9px", borderRadius: 20, whiteSpace: "nowrap",
-          }}>
-            {fresh.label}
-          </span>
-        </div>
-      )}
-
-      {/* ── Type + status badges — top left (z-5) ────────────────────────────── */}
+      {/* ── Type + main trust badge — top left (z-5) ─────────────────────────── */}
       <div style={{
         position: "absolute", top: 12, left: 12, zIndex: 5,
         display: "flex", gap: 4, flexWrap: "wrap",
@@ -355,25 +293,11 @@ export function PropertyCard({
         pointerEvents: "none",
       }}>
         <TypeBadge propertyType={property.type} />
-        {property.is_featured && <PropertyBadge type="premium" />}
-        {property.is_diaspora && <PropertyBadge type="diaspora" />}
-        {property.is_verified && !property.is_featured && <PropertyBadge type="verified" />}
-        {isNew && !property.is_featured && !property.is_diaspora && <PropertyBadge type="new" />}
-        {property.is_boosted && (
-          <span style={{
-            background: "var(--accent-gold)", color: "var(--bg-primary)",
-            fontSize: 16, padding: "4px 10px", borderRadius: 20, fontWeight: 800, whiteSpace: "nowrap",
-          }}>★ Pro</span>
-        )}
-        {property.video_url && (
-          <span style={{
-            background: "rgba(212,175,55,0.90)", color: "var(--bg-primary)",
-            fontSize: 16, padding: "4px 10px", borderRadius: 20, fontWeight: 800, whiteSpace: "nowrap",
-          }}>▶ Vidéo</span>
-        )}
+        {property.is_verified && <PropertyBadge type="verified" />}
+        {!property.is_verified && property.is_featured && <PropertyBadge type="premium" />}
       </div>
 
-      {/* ── Feature 1: Availability mode badge — below type badges ──────────── */}
+      {/* ── Urgency badge — below type badges ───────────────────────────────── */}
       {availCfg.label && (
         <div style={{
           position: "absolute", top: 40, left: 12, zIndex: 5, pointerEvents: "none",
@@ -389,46 +313,6 @@ export function PropertyCard({
           </span>
         </div>
       )}
-
-      <div style={{
-        position: "absolute",
-        top: availCfg.label ? 68 : 40,
-        left: 12,
-        right: 56,
-        zIndex: 5,
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 4,
-        pointerEvents: "none",
-      }}>
-        <span style={{
-          background: availability.bg,
-          color: availability.color,
-          border: `1px solid ${availability.border}`,
-          fontSize: 16,
-          fontWeight: 800,
-          padding: "3px 8px",
-          borderRadius: 20,
-          whiteSpace: "nowrap",
-          backdropFilter: "blur(6px)",
-        }}>
-          {availability.label}
-        </span>
-        {published && (
-          <span style={{
-            background: "rgba(0,0,0,0.48)",
-            color: published.color,
-            fontSize: 16,
-            fontWeight: 800,
-            padding: "3px 8px",
-            borderRadius: 20,
-            whiteSpace: "nowrap",
-            backdropFilter: "blur(6px)",
-          }}>
-            {published.label}
-          </span>
-        )}
-      </div>
 
       {/* ── Favorite button — top right (z-6) ────────────────────────────────── */}
       <button
@@ -467,7 +351,7 @@ export function PropertyCard({
         {/* Prix sans badge */}
         <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
           <span style={{
-            fontSize: 30,
+            fontSize: 34,
             fontWeight: 900,
             color: "var(--photo-text)",
             lineHeight: 1.1,
@@ -536,57 +420,33 @@ export function PropertyCard({
           </span>
         </div>
 
-        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 5 }}>
+        <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginTop: 7 }}>
           <span style={{
             fontSize: 16,
-            fontWeight: 800,
+            fontWeight: 900,
+            color: availability.color,
+            background: availability.bg,
+            border: `1px solid ${availability.border}`,
+            padding: "4px 9px",
+            borderRadius: 14,
+            whiteSpace: "nowrap",
+            backdropFilter: "blur(6px)",
+          }}>
+            {availability.label}
+          </span>
+          <span style={{
+            fontSize: 16,
+            fontWeight: 900,
             color: "#ffffff",
             background: "rgba(0,0,0,0.45)",
-            padding: "3px 7px",
-            borderRadius: 12,
+            border: "1px solid rgba(255,255,255,0.20)",
+            padding: "4px 9px",
+            borderRadius: 14,
             whiteSpace: "nowrap",
           }}>
             {advance}
           </span>
         </div>
-
-        {/* Feature 4: Trust badges row */}
-        {trustBadges.length > 0 && (
-          <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 5 }}>
-            {trustBadges.slice(0, 3).map((badge) => {
-              const cfg = TRUST_BADGE_CONFIG[badge];
-              if (!cfg) return null;
-              return (
-                <span key={badge} style={{
-                  fontSize: 9, fontWeight: 700,
-                  color: cfg.color, background: cfg.bg,
-                  padding: "2px 6px", borderRadius: 12, whiteSpace: "nowrap",
-                }}>
-                  {cfg.label}
-                </span>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Feature 7: Trust dot indicator */}
-        {trustDot && (
-          <div
-            title={trustDot.label}
-            style={{
-              position: "absolute", bottom: -20, left: 0,
-              display: "flex", alignItems: "center", gap: 4,
-              cursor: "default",
-            }}
-          >
-            <span style={{
-              width: 7, height: 7, borderRadius: "50%",
-              background: trustDot.color,
-              display: "inline-block",
-              boxShadow: `0 0 6px ${trustDot.color}99`,
-            }} />
-          </div>
-        )}
       </div>
 
       {/* ── WhatsApp button — bottom right (z-6) ─────────────────────────────── */}

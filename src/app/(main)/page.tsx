@@ -52,10 +52,10 @@ const POPULAR_NEIGHBORHOODS = [
 ];
 
 const TRUST_ITEMS = [
-  { icon: "🏠", title: "Propriétaires directs",  desc: "Contactez le propriétaire sans intermédiaire ni commission cachée." },
-  { icon: "✅", title: "Annonces vérifiées",      desc: "Chaque annonce est contrôlée par notre équipe avant publication." },
-  { icon: "📞", title: "Contact direct",          desc: "WhatsApp ou appel en un clic. Zéro formulaire, zéro délai." },
-  { icon: "⚡", title: "Réponse rapide",          desc: "Les propriétaires répondent en moins de 24h sur WhatsApp." },
+  { icon: "🏠", title: "Direct propriétaire", desc: "Sans intermédiaire." },
+  { icon: "✅", title: "Vérifié", desc: "Annonces contrôlées." },
+  { icon: "💬", title: "WhatsApp", desc: "Contact en un clic." },
+  { icon: "⚡", title: "Réponse rapide", desc: "Moins d’attente." },
 ];
 
 const TYPE_GRADIENTS: Record<string, [string, string]> = {
@@ -136,8 +136,8 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
   const priceStr = property ? formatPrice(property.price, "GNF", property.price_period) : "Découvre les annonces";
 
   return (
-    <section className="py-7 md:py-9" style={{ background: "var(--bg-card-light)" }}>
-      <div className="content-fluid grid grid-cols-1 lg:grid-cols-[minmax(0,0.8fr)_minmax(360px,0.7fr)] gap-6 lg:gap-8 items-center">
+    <section className="py-6 md:py-8" style={{ background: "var(--bg-card-light)" }}>
+      <div className="content-fluid grid grid-cols-1 lg:grid-cols-[minmax(0,0.65fr)_minmax(380px,0.8fr)] gap-5 lg:gap-7 items-center">
         <div>
           <p className="text-base font-black uppercase tracking-[0.08em] mb-2" style={{ color: "var(--accent-gold)" }}>
             ❤️ Découvrir
@@ -145,10 +145,7 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
           <h2 className="text-[30px] md:text-[40px] font-black mb-3" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
             Swipe les logements
           </h2>
-          <p className="text-base md:text-lg max-w-xl mb-5" style={{ color: "var(--text-secondary)" }}>
-            Découvre rapidement les annonces qui te correspondent.
-          </p>
-          <div className="grid grid-cols-3 gap-2 max-w-md mb-6">
+          <div className="grid grid-cols-3 gap-2 max-w-md mb-5">
             {["❌ Passer", "❤️ J’aime", "📞 Contacter"].map((label) => (
               <div
                 key={label}
@@ -168,11 +165,11 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
           </Link>
         </div>
 
-        <Link href={property ? `/annonces/${property.id}` : "/decouvrir"} className="mx-auto block w-full max-w-[390px]">
+        <Link href={property ? `/annonces/${property.id}` : "/decouvrir"} className="mx-auto block w-full max-w-[430px]">
           <div
             className="relative overflow-hidden rounded-[28px]"
             style={{
-              aspectRatio: "0.70",
+              aspectRatio: "0.68",
               background: `linear-gradient(135deg, ${gradFrom}, ${gradTo})`,
               boxShadow: "0 22px 70px rgba(24,21,16,0.18)",
             }}
@@ -261,10 +258,13 @@ export default async function HomePage() {
   const recent      = properties.slice(0, 6);
   const popularWithListings = POPULAR_NEIGHBORHOODS.filter((n) => (neighborhoodCounts[n.id] ?? 0) > 0);
   const popularSoon = POPULAR_NEIGHBORHOODS.filter((n) => (neighborhoodCounts[n.id] ?? 0) === 0);
+  const verifiedOwners = new Set(properties.filter((p) => p.is_verified && p.owner_id).map((p) => p.owner_id)).size;
+  const totalListings = properties.length;
+  const coveredNeighborhoods = Object.values(neighborhoodCounts).filter((count) => count > 0).length;
 
   return (
     <>
-      <section className="hero-section relative overflow-hidden py-6 sm:py-8 lg:py-9">
+      <section className="hero-section relative overflow-hidden py-5 sm:py-7 lg:py-8">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -279,24 +279,25 @@ export default async function HomePage() {
 
         <div className="content-fluid relative">
           <div className="mx-auto max-w-[900px] text-center">
-            <p className="mb-3 text-base font-black" style={{ color: "var(--accent-gold)" }}>
-              📍 Où cherches-tu ?
-            </p>
             <h1
-              className="mx-auto mb-4 max-w-[820px] text-[clamp(2.375rem,6vw,3.5rem)] font-black leading-[0.98]"
+              className="mx-auto mb-3 max-w-[820px] text-[clamp(2.375rem,6vw,3.5rem)] font-black leading-[0.98]"
               style={{ color: "var(--text-primary)", fontFamily: "var(--font-manrope), sans-serif", letterSpacing: 0 }}
             >
-              Où cherches-tu ton logement ?
+              📍 Où cherches-tu ton logement ?
             </h1>
-            <p className="mx-auto mb-5 max-w-[720px] text-base md:text-lg leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-              Trouve un logement à Conakry sans démarcheur, sans commission et contacte directement le propriétaire.
+            <p className="mx-auto mb-4 max-w-[560px] text-base md:text-lg font-bold leading-snug" style={{ color: "var(--text-secondary)" }}>
+              Sans démarcheur. Sans commission.
             </p>
 
-            <div className="mb-5 flex flex-wrap justify-center gap-2">
-              {["Annonces contrôlées", "Appel ou WhatsApp", "Zéro frais caché"].map((label) => (
+            <div className="mb-4 grid grid-cols-3 gap-2 max-w-2xl mx-auto">
+              {[
+                `🏠 ${totalListings || "10+"} logements`,
+                `📍 ${coveredNeighborhoods || "10"} quartiers`,
+                `✅ ${verifiedOwners || "5+"} vérifiés`,
+              ].map((label) => (
                 <span
                   key={label}
-                  className="rounded-full px-4 py-2 text-base font-bold"
+                  className="rounded-2xl px-3 py-3 text-base font-black"
                   style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}
                 >
                   {label}
@@ -322,7 +323,6 @@ export default async function HomePage() {
                 >
                   🔥 Annonces récentes
                 </h2>
-                <p className="mt-1 text-base" style={{ color: "var(--text-secondary)" }}>Les dernières mises en ligne</p>
               </div>
               <Link href="/annonces" className="flex items-center gap-1 text-base font-bold hover:underline" style={{ color: "var(--accent-gold)" }}>
                 Voir tout <ChevronRight className="w-4 h-4" />
@@ -345,8 +345,8 @@ export default async function HomePage() {
           >
             Tu as un logement à louer ?
           </h2>
-          <p className="mb-6 max-w-xl mx-auto text-base md:text-lg" style={{ color: "var(--text-secondary)" }}>
-            Publie ton annonce en quelques minutes et reçois des contacts directement sur WhatsApp.
+          <p className="mb-6 max-w-xl mx-auto text-base md:text-lg font-bold" style={{ color: "var(--text-secondary)" }}>
+            Reçois des contacts sur WhatsApp.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
@@ -405,9 +405,6 @@ export default async function HomePage() {
             <h2 className="text-[30px] md:text-[40px] font-black" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
               Quartiers populaires
             </h2>
-            <p className="mt-1 text-base" style={{ color: "var(--text-secondary)" }}>
-              Explorez les annonces actives par quartier à Conakry
-            </p>
           </div>
           <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(190px,1fr))] gap-3 md:gap-4">
             {(popularWithListings.length > 0 ? popularWithListings : popularSoon).map((n) => {
@@ -424,7 +421,7 @@ export default async function HomePage() {
                   </div>
                   <p className="font-black text-lg mb-1" style={{ color: "var(--text-primary)" }}>{n.name}</p>
                   <p className="text-base font-bold" style={{ color: count > 0 ? "#22c55e" : "var(--text-muted)" }}>
-                    {count > 0 ? `${count} annonce${count > 1 ? "s" : ""}` : "Bientôt disponible"}
+                    {count > 0 ? `${count} annonce${count > 1 ? "s" : ""}` : "Bientôt"}
                   </p>
                 </Link>
               );
@@ -439,16 +436,13 @@ export default async function HomePage() {
             <h2 className="text-[30px] md:text-[40px] font-black" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
               Pourquoi LogerBien ?
             </h2>
-            <p className="mt-2 text-base max-w-md" style={{ color: "var(--text-secondary)" }}>
-              Les essentiels pour chercher vite et contacter directement.
-            </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {TRUST_ITEMS.map((item) => (
-              <div key={item.title} className="rounded-2xl p-5" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}>
-                <span className="text-4xl block mb-3">{item.icon}</span>
-                <h3 className="font-black text-[22px] mb-2" style={{ color: "var(--text-primary)" }}>{item.title}</h3>
-                <p className="text-base leading-relaxed" style={{ color: "var(--text-secondary)" }}>{item.desc}</p>
+              <div key={item.title} className="rounded-2xl p-4" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}>
+                <span className="text-3xl block mb-2">{item.icon}</span>
+                <h3 className="font-black text-xl mb-1" style={{ color: "var(--text-primary)" }}>{item.title}</h3>
+                <p className="text-base leading-snug" style={{ color: "var(--text-secondary)" }}>{item.desc}</p>
               </div>
             ))}
           </div>
@@ -456,17 +450,14 @@ export default async function HomePage() {
       </section>
 
       <section
-        className="py-7"
+        className="py-5"
         style={{ background: "var(--bg-card-light)", borderTop: "1px solid var(--border)" }}
       >
         <div className="content-fluid text-center">
           <div className="text-3xl mb-2">📱</div>
-          <h2 className="text-[28px] font-black mb-2" style={{ color: "var(--text-primary)" }}>
-            Installez LogerBien sur votre téléphone
+          <h2 className="text-[26px] font-black mb-4" style={{ color: "var(--text-primary)" }}>
+            LogerBien sur ton téléphone
           </h2>
-          <p className="text-base mb-5" style={{ color: "var(--text-secondary)" }}>
-            Accédez rapidement depuis votre écran d&apos;accueil. Aucun téléchargement requis.
-          </p>
           <Suspense fallback={null}>
             <PWAInstallButton />
           </Suspense>

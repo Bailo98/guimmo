@@ -26,7 +26,7 @@ export function availabilitySignal(
 
   if (status === "available_soon") {
     return {
-      label: property.available_date ? `Disponible le ${formatShortDate(property.available_date)}` : "Disponible bientot",
+      label: "Bientot dispo",
       color: "#ca8a04",
       bg: "rgba(250,204,21,0.16)",
       border: "rgba(250,204,21,0.38)",
@@ -52,7 +52,7 @@ export function availabilitySignal(
   }
 
   return {
-    label: "Disponible maintenant",
+    label: "Disponible",
     color: "#22c55e",
     bg: "rgba(34,197,94,0.16)",
     border: "rgba(34,197,94,0.38)",
@@ -71,10 +71,5 @@ export function publishedSignal(createdAt?: string) {
 
 export function advanceSignal(property: Pick<Property, "advance_required" | "advance_months">) {
   if (!property.advance_required) return "Sans avance";
-  const months = Math.max(1, property.advance_months ?? 1);
-  return `Avance : ${months} mois`;
-}
-
-function formatShortDate(value: string) {
-  return new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" }).format(new Date(value));
+  return "Avance demandee";
 }
