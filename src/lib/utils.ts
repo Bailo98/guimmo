@@ -6,9 +6,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(amount: number, currency = "GNF", period?: string | null): string {
-  // Intl.NumberFormat("fr-FR") on Node 18+ uses U+202F (narrow no-break space) as the
-  // thousands separator. Normalise to a plain ASCII space → "6 000 000 GNF".
-  const raw = new Intl.NumberFormat("fr-FR").format(Math.round(amount));
+  // Keep price rendering deterministic across SSR and browser hydration.
+  const raw = String(Math.round(amount)).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   const formatted = raw.replace(/ /g, " ").replace(/ /g, " ");
   const base = `${formatted} ${currency}`;
   if (period === "month") return `${base}/mois`;
