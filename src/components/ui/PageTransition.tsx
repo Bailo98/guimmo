@@ -6,7 +6,10 @@ import { usePathname } from "next/navigation";
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    const id = window.setTimeout(() => setMounted(true), 1200);
+    return () => window.clearTimeout(id);
+  }, []);
 
   // Render children without wrapper before hydration to avoid framer-motion mismatch
   if (!mounted) return <>{children}</>;

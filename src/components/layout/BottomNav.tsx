@@ -22,7 +22,7 @@ export function BottomNav() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    const id = window.setTimeout(() => setMounted(true), 0);
+    const id = window.setTimeout(() => setMounted(true), 1200);
     return () => window.clearTimeout(id);
   }, []);
 
