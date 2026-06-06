@@ -27,7 +27,7 @@ export function Header() {
   const { user, profile, signOut } = useAuth();
 
   useEffect(() => {
-    const id = window.setTimeout(() => setMounted(true), 0);
+    const id = window.setTimeout(() => setMounted(true), 1200);
     return () => window.clearTimeout(id);
   }, []);
 
