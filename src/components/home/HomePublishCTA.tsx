@@ -10,10 +10,10 @@ export function HomePublishCTA() {
   const href = isOwner ? "/publier/rapide" : user ? "/compte" : "/connexion?redirect=/compte";
 
   return (
-    <section className="py-7 md:py-9" style={{ background: "var(--bg-secondary)" }}>
-      <div className="content-fluid">
+    <section className="pt-5 pb-4 md:pt-6 md:pb-5" style={{ background: "var(--bg-secondary)" }}>
+      <div className="content-fluid max-w-[1240px]">
         <div
-          className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-center rounded-[28px] p-5 md:p-7"
+          className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-center rounded-[24px] p-5 md:p-6"
           style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}
         >
           <div>

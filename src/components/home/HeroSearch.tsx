@@ -69,7 +69,7 @@ export function HeroSearch() {
 
   return (
     <div
-      className="rounded-2xl p-3 sm:p-4 w-full max-w-[760px] mx-auto lg:mx-0"
+      className="rounded-2xl p-3 sm:p-4 w-full max-w-[1080px] mx-auto"
       style={{
         background: "var(--bg-card)",
         border: "1px solid var(--border)",

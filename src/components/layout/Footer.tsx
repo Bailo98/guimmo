@@ -4,20 +4,20 @@ import { MessageCircle } from "lucide-react";
 
 export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
   return (
-    <footer style={{ background: "var(--bg-secondary)", borderTop: "1px solid var(--border)" }} className="mt-6">
-      <div className="content-fluid py-5 md:py-6 pb-[calc(88px+env(safe-area-inset-bottom,0px))] md:pb-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mb-4">
+    <footer style={{ background: "var(--bg-secondary)", borderTop: "1px solid var(--border)" }} className="mt-0">
+      <div className="content-fluid max-w-[1240px] py-4 md:py-5 pb-[calc(78px+env(safe-area-inset-bottom,0px))] md:pb-5">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Logo size="md" />
-            <p className="text-base mt-2 leading-snug" style={{ color: "var(--text-secondary)" }}>
+            <p className="text-base mt-1.5 leading-snug" style={{ color: "var(--text-secondary)" }}>
               Logement direct à Conakry.
             </p>
             <a
               href={`https://wa.me/${whatsappNumber}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-3 text-[#25D366] text-base font-black px-4 py-2.5 rounded-2xl transition-colors hover:bg-[rgba(37,211,102,0.18)]"
+              className="inline-flex items-center gap-2 mt-2 text-[#25D366] text-base font-black px-4 py-2 rounded-2xl transition-colors hover:bg-[rgba(37,211,102,0.18)]"
               style={{ background: "rgba(37,211,102,0.10)", border: "1px solid rgba(37,211,102,0.25)" }}
             >
               <MessageCircle className="w-4 h-4" />
@@ -80,7 +80,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
           </div>
         </div>
 
-        <div className="pt-3 text-center" style={{ borderTop: "1px solid var(--border)" }}>
+        <div className="pt-2.5 text-center" style={{ borderTop: "1px solid var(--border)" }}>
           <p className="text-base" style={{ color: "var(--text-secondary)" }}>
             🏠 LogerBien — Conakry © 2025
           </p>

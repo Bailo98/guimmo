@@ -80,8 +80,8 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
   const priceStr = property ? formatPrice(property.price, "GNF", property.price_period) : "Découvre les annonces";
 
   return (
-    <section className="py-6 md:py-8" style={{ background: "var(--bg-card-light)" }}>
-      <div className="content-fluid grid grid-cols-1 lg:grid-cols-[minmax(0,0.75fr)_minmax(320px,0.7fr)] gap-5 lg:gap-8 items-center">
+    <section className="py-5 md:py-6" style={{ background: "var(--bg-card-light)" }}>
+      <div className="content-fluid max-w-[1240px] grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.9fr)] gap-4 lg:gap-5 items-center">
         <div className="text-center lg:text-left">
           <h2 className="text-[32px] md:text-[46px] font-black mb-3 leading-tight" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
             ❤️ Découvre les logements
@@ -109,7 +109,7 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
           </Link>
         </div>
 
-        <Link href={property ? `/annonces/${property.id}` : "/decouvrir"} className="mx-auto block w-full max-w-[360px]">
+        <Link href={property ? `/annonces/${property.id}` : "/decouvrir"} className="mx-auto block w-full max-w-[430px]">
           <div
             className="relative overflow-hidden rounded-[28px]"
             style={{
@@ -158,7 +158,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="hero-section relative overflow-hidden py-5 sm:py-7 lg:py-8">
+      <section className="hero-section relative overflow-hidden py-4 sm:py-5 lg:py-6">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -171,8 +171,8 @@ export default async function HomePage() {
           }}
         />
 
-        <div className="content-fluid relative">
-          <div className="mx-auto max-w-[900px] text-center">
+        <div className="content-fluid max-w-[1240px] relative">
+          <div className="mx-auto max-w-[1120px] text-center">
             <h1
               className="mx-auto mb-3 max-w-[820px] text-[clamp(2.375rem,6vw,3.5rem)] font-black leading-[0.98]"
               style={{ color: "var(--text-primary)", fontFamily: "var(--font-manrope), sans-serif", letterSpacing: 0 }}
@@ -207,8 +207,8 @@ export default async function HomePage() {
       <DiscoverPreview property={discoverPreview} />
 
       {recent.length > 0 && (
-        <section className="py-7 md:py-9" style={{ background: "var(--bg-primary)" }}>
-          <div className="content-fluid">
+        <section className="py-5 md:py-7" style={{ background: "var(--bg-primary)" }}>
+          <div className="content-fluid max-w-[1240px]">
             <div className="flex items-center justify-between gap-4 mb-5">
               <div>
                 <h2
