@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Heart, ChevronLeft, ChevronRight, Home } from "lucide-react";
+import { Heart, ChevronLeft, ChevronRight, Home, Phone } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth-context";
@@ -136,6 +136,17 @@ export function PropertyCard({
     if (!phone) return;
     const msg = encodeURIComponent(`Bonjour, je suis intéressé par "${property.title}" sur LogerBien`);
     window.open(`https://wa.me/${phone}?text=${msg}`, "_blank", "noopener");
+  }
+
+  function handleCall(e: React.MouseEvent) {
+    e.preventDefault(); e.stopPropagation();
+    if (!user) {
+      router.push(`/connexion?redirect=/annonces/${property.id}`);
+      return;
+    }
+    const phone = (property as Property & { contact_phone?: string }).contact_phone?.replace(/\D/g, "");
+    if (!phone) return;
+    window.location.href = `tel:${phone}`;
   }
 
   // ════════════════════════════════════════════════════════════════════════════
@@ -448,6 +459,33 @@ export function PropertyCard({
           </span>
         </div>
       </div>
+
+      {/* ── Call button — above WhatsApp (z-6) ──────────────────────────────── */}
+      <button
+        onClick={handleCall}
+        aria-label="Appeler"
+        style={{
+          position: "absolute",
+          bottom: 68,
+          right: 16,
+          zIndex: 6,
+          width: 42,
+          height: 42,
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.94)",
+          color: "#17120a",
+          border: "1px solid rgba(255,255,255,0.45)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.24)",
+          WebkitTapHighlightColor: "transparent",
+          flexShrink: 0,
+        }}
+      >
+        <Phone style={{ width: 18, height: 18, strokeWidth: 2.4 }} />
+      </button>
 
       {/* ── WhatsApp button — bottom right (z-6) ─────────────────────────────── */}
       <button

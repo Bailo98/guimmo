@@ -50,11 +50,6 @@ interface SavedSearch {
 interface DayStat {
   date: string; views: number; whatsapp_clicks: number; message_clicks: number;
 }
-interface Lead {
-  id: string; sender_id: string; property_id: string | null;
-  message: string; created_at: string;
-  sender_name: string | null; sender_phone: string | null;
-}
 interface VisitRequest {
   id: string; property_id: string; visitor_id: string;
   visitor_name: string; visitor_phone: string; visitor_email: string | null;
@@ -92,10 +87,6 @@ const TL: Record<string, string> = {
 function fmtDate(iso: string) {
   const d = new Date(iso);
   return `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}`;
-}
-function fmtTime(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 }
 function todayLabel() {
   return new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
@@ -179,6 +170,44 @@ function ProfileForm({ user, profile, refreshProfile }: {
 
   const isAgence = profile?.account_type === "agence" || profile?.role === "agence";
   const isPro    = ["agent","agence"].includes(profile?.account_type ?? "");
+  const accountMode = ["owner", "proprietaire", "agent", "agence", "agency"].includes(profile?.account_type ?? profile?.role ?? "")
+    ? "owner"
+    : "seeker";
+
+  async function updateAccountMode(next: "seeker" | "owner") {
+    if (!supabase) return;
+    setSaving(true);
+    const payload = next === "owner"
+      ? { account_type: "owner", role: "owner" }
+      : { account_type: "seeker", role: "seeker" };
+    const { error } = await supabase.from("profiles").update(payload).eq("id", user.id);
+    if (error && next === "owner") {
+      const legacy = await supabase
+        .from("profiles")
+        .update({ account_type: "proprietaire", role: "proprietaire" })
+        .eq("id", user.id);
+      if (legacy.error) toast("Impossible de changer le type de compte", "error");
+      else { await refreshProfile(); toast("✅ Profil propriétaire activé", "success"); }
+      setSaving(false);
+      return;
+    }
+    if (error && next === "seeker") {
+      const legacy = await supabase
+        .from("profiles")
+        .update({ account_type: "chercheur", role: "chercheur" })
+        .eq("id", user.id);
+      if (legacy.error) toast("Impossible de changer le type de compte", "error");
+      else { await refreshProfile(); toast("✅ Profil chercheur activé", "success"); }
+      setSaving(false);
+      return;
+    }
+    if (error) toast("Impossible de changer le type de compte", "error");
+    else {
+      await refreshProfile();
+      toast(next === "owner" ? "✅ Profil propriétaire activé" : "✅ Profil chercheur activé", "success");
+    }
+    setSaving(false);
+  }
 
   async function save() {
     if (!supabase || !fullName.trim()) return;
@@ -211,17 +240,6 @@ function ProfileForm({ user, profile, refreshProfile }: {
     textTransform: "uppercase", fontWeight: 500, marginBottom: 6, display: "block",
   };
 
-  function FocusInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
-    return (
-      <input
-        {...props}
-        style={inputCss}
-        onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent-gold)")}
-        onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
-      />
-    );
-  }
-
   return (
     <div>
       {/* Avatar */}
@@ -234,10 +252,49 @@ function ProfileForm({ user, profile, refreshProfile }: {
         />
       </div>
 
+      <div className="rounded-2xl p-4 mb-6" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+        <p className="bl-section-label mb-3">Type de compte</p>
+        <div className="grid grid-cols-2 gap-3">
+          {([
+            { id: "seeker" as const, icon: "🔍", title: "Je cherche", sub: "Logement" },
+            { id: "owner" as const, icon: "🏠", title: "Je publie", sub: "Mes biens" },
+          ]).map((item) => {
+            const active = accountMode === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => { if (!active) void updateAccountMode(item.id); }}
+                disabled={saving}
+                className="rounded-2xl p-4 text-left transition-all disabled:opacity-60"
+                style={{
+                  minHeight: 96,
+                  background: active ? "rgba(185,138,46,0.16)" : "var(--bg-secondary)",
+                  border: active ? "2px solid var(--accent-gold)" : "1px solid var(--border)",
+                  color: "var(--text-primary)",
+                }}
+              >
+                <span className="block text-3xl mb-2">{item.icon}</span>
+                <span className="block text-base font-black">{item.title}</span>
+                <span className="block text-xs font-bold mt-1" style={{ color: "var(--text-secondary)" }}>{item.sub}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="space-y-4 mb-6">
         <div>
           <label style={labelCss}>Prénom &amp; Nom</label>
-          <FocusInput type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Votre nom complet" />
+          <input
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="Votre nom complet"
+            style={inputCss}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent-gold)")}
+            onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
+          />
         </div>
         <div>
           <label style={labelCss}>Email</label>
@@ -248,7 +305,15 @@ function ProfileForm({ user, profile, refreshProfile }: {
         </div>
         <div>
           <label style={labelCss}>Téléphone</label>
-          <FocusInput type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+224 620 00 00 00" />
+          <input
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="+224 620 00 00 00"
+            style={inputCss}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent-gold)")}
+            onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
+          />
         </div>
         {isPro && (
           <div>
@@ -265,7 +330,15 @@ function ProfileForm({ user, profile, refreshProfile }: {
         {isAgence && (
           <div>
             <label style={labelCss}>Nom de l&apos;agence</label>
-            <FocusInput type="text" value={agencyName} onChange={(e) => setAgencyName(e.target.value)} placeholder="Nom de votre agence" />
+            <input
+              type="text"
+              value={agencyName}
+              onChange={(e) => setAgencyName(e.target.value)}
+              placeholder="Nom de votre agence"
+              style={inputCss}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent-gold)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
+            />
           </div>
         )}
       </div>
@@ -363,7 +436,10 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
     setLoading(false);
   }, [userId]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void load(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [load]);
 
   async function toggleAvailability(listing: Listing) {
     if (!supabase) return;
@@ -563,28 +639,6 @@ async function loadMessagesCount(userId: string): Promise<number> {
   return count ?? 0;
 }
 
-async function loadRecentLeads(userId: string): Promise<Lead[]> {
-  if (!supabase) return [];
-  try {
-    const { data } = await supabase.from("messages")
-      .select("id, sender_id, property_id, message, created_at")
-      .eq("receiver_id", userId)
-      .order("created_at", { ascending: false })
-      .limit(5);
-    if (!data || data.length === 0) return [];
-    const senderIds = [...new Set(data.map((m) => m.sender_id))];
-    const { data: profiles } = await supabase.from("profiles").select("id, full_name, phone").in("id", senderIds);
-    const pMap: Record<string, { full_name: string | null; phone: string | null }> = {};
-    for (const p of profiles ?? []) pMap[p.id] = p;
-    return data.map((m) => ({
-      id: m.id, sender_id: m.sender_id, property_id: m.property_id,
-      message: m.message, created_at: m.created_at,
-      sender_name: pMap[m.sender_id]?.full_name ?? null,
-      sender_phone: pMap[m.sender_id]?.phone ?? null,
-    }));
-  } catch { return []; }
-}
-
 async function loadAnnonceurStats(userId: string): Promise<{
   listings: number; views: number; demands: number; visits: number; avgRating: number; reviewCount: number;
 }> {
@@ -642,7 +696,10 @@ function MonthlyReportSection({ userId }: { userId: string }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!supabase) { setLoading(false); return; }
+    if (!supabase) {
+      const timer = window.setTimeout(() => setLoading(false), 0);
+      return () => window.clearTimeout(timer);
+    }
     supabase.from("monthly_reports")
       .select("id,month,views_total,whatsapp_clicks_total,active_listings,sent_at")
       .eq("user_id", userId)
@@ -711,7 +768,10 @@ function VisitRequestsManager({ userId, onPendingCount }: {
     setLoading(false);
   }, [userId, onPendingCount]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void load(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [load]);
 
   useEffect(() => {
     if (!supabase) return;
@@ -872,7 +932,10 @@ function VisitorVisitsSection({ userId }: { userId: string }) {
     setLoading(false);
   }, [userId]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void load(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [load]);
 
   useEffect(() => {
     if (!supabase) return;
@@ -1177,7 +1240,10 @@ function ReviewsSection({ userId }: { userId: string }) {
   const [unavailable, setUnavailable] = useState(false);
 
   useEffect(() => {
-    if (!supabase) { setLoading(false); return; }
+    if (!supabase) {
+      const timer = window.setTimeout(() => setLoading(false), 0);
+      return () => window.clearTimeout(timer);
+    }
     async function load() {
       try {
         const { data, error } = await supabase!
@@ -1985,7 +2051,10 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
     setSearches((data ?? []) as SavedSearch[]);
     setSearchesLoading(false);
   }, [user.id]);
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void load(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [load]);
 
   async function deleteSearch(id: string) {
     if (!supabase) return;

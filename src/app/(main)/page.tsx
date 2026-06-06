@@ -283,10 +283,10 @@ export default async function HomePage() {
               className="mx-auto mb-3 max-w-[820px] text-[clamp(2.375rem,6vw,3.5rem)] font-black leading-[0.98]"
               style={{ color: "var(--text-primary)", fontFamily: "var(--font-manrope), sans-serif", letterSpacing: 0 }}
             >
-              📍 Où cherches-tu ton logement ?
+              📍 Où cherches-tu ?
             </h1>
             <p className="mx-auto mb-4 max-w-[560px] text-base md:text-lg font-bold leading-snug" style={{ color: "var(--text-secondary)" }}>
-              Sans démarcheur. Sans commission.
+              Logement sans démarcheur.
             </p>
 
             <div className="mb-4 grid grid-cols-3 gap-2 max-w-2xl mx-auto">
@@ -343,10 +343,10 @@ export default async function HomePage() {
             className="text-[30px] md:text-[40px] font-black mb-3"
             style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
           >
-            Tu as un logement à louer ?
+            ➕ Tu as un logement ?
           </h2>
           <p className="mb-6 max-w-xl mx-auto text-base md:text-lg font-bold" style={{ color: "var(--text-secondary)" }}>
-            Reçois des contacts sur WhatsApp.
+            Publie vite. Contacts WhatsApp.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
@@ -354,7 +354,7 @@ export default async function HomePage() {
               className="inline-flex items-center gap-2 font-black px-8 py-4 rounded-2xl transition-opacity hover:opacity-90 text-base"
               style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
             >
-              ⚡ Publication rapide
+              ➕ Publie vite
             </Link>
             <Link
               href="/publier"

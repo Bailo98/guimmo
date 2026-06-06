@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass, Heart, Home, List, Plus, User } from "lucide-react";
+import { Compass, Heart, Home, List, MessageCircle, Plus, Search, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/lib/auth-context";
 
@@ -46,14 +46,15 @@ export function BottomNav() {
   const navItems: NavItemDef[] = user
     ? isOwner
       ? [
-          { href: "/decouvrir", icon: Compass, label: "Découvrir", authRequired: true },
           { href: "/compte/annonces", icon: List, label: "Mes biens", authRequired: true },
           { href: "/publier/rapide", icon: Plus, label: "Publier", authRequired: true },
-          { href: "/favoris", icon: Heart, label: "Favoris", authRequired: true },
+          { href: "/annonces?recent=1", icon: Home, label: "Récentes", authRequired: false },
+          { href: "/messages", icon: MessageCircle, label: "Contacts", authRequired: true },
           { href: "/compte", icon: User, label: "Profil", authRequired: true },
         ]
       : [
-          { href: "/decouvrir", icon: Compass, label: "Découvrir", authRequired: true },
+          { href: "/annonces", icon: Search, label: "Chercher", authRequired: false },
+          { href: "/decouvrir", icon: Compass, label: "Voir", authRequired: true },
           { href: "/annonces?recent=1", icon: Home, label: "Récentes", authRequired: false },
           { href: "/favoris", icon: Heart, label: "Favoris", authRequired: true },
           { href: "/compte", icon: User, label: "Profil", authRequired: true },

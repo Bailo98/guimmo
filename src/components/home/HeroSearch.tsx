@@ -107,7 +107,7 @@ export function HeroSearch() {
             className="block text-xs font-semibold mb-1.5"
             style={{ color: "var(--text-secondary)" }}
           >
-            Quartier
+            📍 Quartier
           </label>
           <div className="relative">
             <select
@@ -119,7 +119,7 @@ export function HeroSearch() {
               }}
               style={SELECT_BASE}
             >
-              <option value="" style={{ color: "var(--text-primary)" }}>Tous les quartiers</option>
+              <option value="" style={{ color: "var(--text-primary)" }}>Tous</option>
               {QUARTIERS.map((q) => (
                 <option key={q.id} value={q.id} style={{ color: "var(--text-primary)" }}>
                   {q.name}
@@ -134,7 +134,7 @@ export function HeroSearch() {
             className="block text-xs font-semibold mb-1.5"
             style={{ color: "var(--text-secondary)" }}
           >
-            Type de bien
+            🏠 Type
           </label>
           <div className="relative">
             <select
@@ -146,7 +146,7 @@ export function HeroSearch() {
               }}
               style={SELECT_BASE}
             >
-              <option value="" style={{ color: "var(--text-primary)" }}>Tous les types</option>
+              <option value="" style={{ color: "var(--text-primary)" }}>Tous</option>
               {TYPES.map((t) => (
                 <option key={t.id} value={t.id} style={{ color: "var(--text-primary)" }}>
                   {t.name}
@@ -161,7 +161,7 @@ export function HeroSearch() {
             className="block text-xs font-semibold mb-1.5"
             style={{ color: "var(--text-secondary)" }}
           >
-            Budget max (GNF)
+            💰 Budget
           </label>
           <input
             id="hs-budget"
@@ -184,7 +184,7 @@ export function HeroSearch() {
           onMouseLeave={(e) => { e.currentTarget.style.background = "var(--accent-gold)"; }}
         >
           <Search className="w-4 h-4" />
-          Rechercher
+          Voir
         </button>
         <VoiceSearchButton onResult={handleVoiceResult} />
       </div>

@@ -7,8 +7,8 @@ export interface Profile {
   id: string;
   full_name: string | null;
   phone: string | null;
-  role: "buyer" | "chercheur" | "proprietaire" | "owner" | "agent" | "agence" | "agency" | "admin";
-  account_type: "chercheur" | "proprietaire" | "agent" | "agence" | null;
+  role: "buyer" | "seeker" | "chercheur" | "proprietaire" | "owner" | "agent" | "agence" | "agency" | "admin";
+  account_type: "seeker" | "owner" | "chercheur" | "proprietaire" | "agent" | "agence" | "agency" | null;
   agency_name: string | null;
   agency_logo_url: string | null;
   avatar_url: string | null;
@@ -60,13 +60,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
       // Mock session for dev without Supabase
-      const cookie = document.cookie.includes("LogerBien-auth=mock-session");
-      if (cookie) {
-        setUser({ id: "mock-user", email: "demo@LogerBien.gn" } as User);
-      }
-      loadingRef.current = false;
-      setLoading(false);
-      return;
+      const mockSessionTimer = window.setTimeout(() => {
+        const cookie = document.cookie.includes("LogerBien-auth=mock-session");
+        if (cookie) {
+          setUser({ id: "mock-user", email: "demo@LogerBien.gn" } as User);
+        }
+        loadingRef.current = false;
+        setLoading(false);
+      }, 0);
+      return () => window.clearTimeout(mockSessionTimer);
     }
 
     // Safety timeout: if getSession never resolves (network hung), unblock after 2s.

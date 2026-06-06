@@ -287,7 +287,7 @@ export default function PublierRapidePage() {
         {/* Photos */}
         <div>
           <label className="block text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>
-            📸 Photos <span className="text-red-400">*</span>
+            1. 📸 Photos <span className="text-red-400">*</span>
             <span className="font-normal ml-1" style={helpTextStyle}>(min. 1, max. 4)</span>
           </label>
           {previews.length > 0 && (
@@ -324,7 +324,7 @@ export default function PublierRapidePage() {
 
         {/* Type de bien */}
         <div>
-          <label className="block text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>🏠 Type de bien</label>
+          <label className="block text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>2. 🏠 Type</label>
           <div className="grid grid-cols-3 gap-2">
             {TYPE_OPTIONS.map((t) => (
               <button key={t.id} type="button" onClick={() => setForm((f) => ({ ...f, type: t.id }))}
@@ -344,7 +344,7 @@ export default function PublierRapidePage() {
 
         {/* Transaction type */}
         <div>
-          <label className="block text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>🔑 Location ou vente ?</label>
+          <label className="block text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>🔑 Offre</label>
           <div className="grid grid-cols-2 gap-3">
             {(["rent", "sale"] as const).map((t) => (
               <button key={t} type="button" onClick={() => setForm((f) => ({ ...f, txType: t }))}
@@ -361,25 +361,10 @@ export default function PublierRapidePage() {
           </div>
         </div>
 
-        {/* Price */}
-        <div>
-          <label className="block text-sm font-bold mb-2" style={{ color: "var(--text-primary)" }}>
-            💰 Prix {form.txType === "rent" ? "(par mois)" : ""} <span className="text-red-400">*</span>
-          </label>
-          <input
-            type="number" inputMode="numeric" placeholder="Ex : 1 500 000"
-            value={form.price}
-            onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
-            className="w-full rounded-xl px-4 py-3 font-semibold focus:outline-none placeholder:text-[var(--text-muted)]"
-            style={fieldStyle}
-          />
-          {priceLabel && <p className="text-[var(--accent-gold)] font-bold text-sm mt-1.5 ml-1">{priceLabel}{form.txType === "rent" ? "/mois" : ""}</p>}
-        </div>
-
         {/* Quartier */}
         <div>
           <label className="block text-sm font-bold mb-2" style={{ color: "var(--text-primary)" }}>
-            <MapPin className="w-4 h-4 inline mr-1" />Quartier <span className="text-red-400">*</span>
+            3. <MapPin className="w-4 h-4 inline mr-1" />Quartier <span className="text-red-400">*</span>
           </label>
           <select
             value={form.neighborhood}
@@ -398,10 +383,25 @@ export default function PublierRapidePage() {
           </select>
         </div>
 
+        {/* Price */}
+        <div>
+          <label className="block text-sm font-bold mb-2" style={{ color: "var(--text-primary)" }}>
+            4. 💰 Prix {form.txType === "rent" ? "/ mois" : ""} <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="number" inputMode="numeric" placeholder="Ex : 1 500 000"
+            value={form.price}
+            onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
+            className="w-full rounded-xl px-4 py-3 font-semibold focus:outline-none placeholder:text-[var(--text-muted)]"
+            style={fieldStyle}
+          />
+          {priceLabel && <p className="text-[var(--accent-gold)] font-bold text-sm mt-1.5 ml-1">{priceLabel}{form.txType === "rent" ? "/mois" : ""}</p>}
+        </div>
+
         {/* Phone / WhatsApp */}
         <div>
           <label className="block text-sm font-bold mb-2" style={{ color: "var(--text-primary)" }}>
-            <Phone className="w-4 h-4 inline mr-1" />Votre WhatsApp <span className="text-red-400">*</span>
+            5. <Phone className="w-4 h-4 inline mr-1" />WhatsApp <span className="text-red-400">*</span>
           </label>
           <input
             type="tel" placeholder="+224 6XX XX XX XX"
@@ -429,7 +429,7 @@ export default function PublierRapidePage() {
           {submitting ? (
             <><Loader2 className="w-5 h-5 animate-spin" />Publication en cours…</>
           ) : canSubmit ? (
-            <><CheckCircle2 className="w-5 h-5" />Publier maintenant — gratuit</>
+            <><CheckCircle2 className="w-5 h-5" />6. ✅ Publier</>
           ) : (
             "Complétez les champs obligatoires"
           )}
