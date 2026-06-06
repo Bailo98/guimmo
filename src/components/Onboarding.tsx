@@ -1,7 +1,6 @@
 ﻿"use client";
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
 import { Hand, Home, Phone } from "lucide-react";
 
 const SCREENS = [
@@ -254,5 +253,5 @@ export function Onboarding() {
     </div>
   );
 
-  return createPortal(modal, document.body);
+  return modal;
 }
