@@ -1,7 +1,7 @@
 ﻿import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
-import { MapPin, ArrowLeft } from "lucide-react";
+import { Home, MapPin, ArrowLeft } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { NEIGHBORHOODS, getNeighborhoodName } from "@/data/neighborhoods";
 import type { Metadata } from "next";
@@ -124,9 +124,9 @@ export default async function QuartierPage({ params }: Props) {
       {properties.length === 0 ? (
         <div className="rounded-2xl p-12 text-center"
           style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.08)" }}>
-          <p className="text-5xl mb-4">🏠</p>
+          <Home className="mx-auto mb-4 h-12 w-12 text-[var(--accent-gold)]" />
           <h2 className="text-lg font-bold text-white mb-2">Aucune annonce disponible à {name}</h2>
-          <p className="text-white/40 text-sm mb-6">Revenez bientôt ou explorez d'autres quartiers.</p>
+          <p className="text-white/40 text-sm mb-6">Revenez bientôt ou explorez d&apos;autres quartiers.</p>
           <Link
             href="/annonces"
             className="inline-flex items-center gap-2 bg-[var(--accent-gold)] hover:bg-[#B8963A] text-white font-bold px-6 py-3 rounded-xl transition-colors"

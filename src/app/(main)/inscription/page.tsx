@@ -2,17 +2,16 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Eye, EyeOff, Phone, Lock, Mail, User, Building, ArrowRight, CheckCircle } from "lucide-react";
+import { Briefcase, Building2, Eye, EyeOff, Phone, Lock, Mail, User, Building, ArrowRight, CheckCircle, Home, Search } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
-import { cn } from "@/lib/utils";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { erreurFrancais } from "@/lib/errors";
 
 const USER_ROLES = [
-  { value: "buyer",  label: "Je cherche un logement",    icon: "🔍", desc: "Je cherche à louer ou acheter" },
-  { value: "owner",  label: "Je suis propriétaire",      icon: "🏠", desc: "Je loue mon propre logement" },
-  { value: "agent",  label: "Je suis agent immobilier",  icon: "👔", desc: "Je suis agent professionnel" },
-  { value: "agency", label: "J'ai une agence",           icon: "🏢", desc: "Je représente une agence immobilière" },
+  { value: "buyer",  label: "Je cherche un logement",    Icon: Search, desc: "Je cherche à louer ou acheter" },
+  { value: "owner",  label: "Je suis propriétaire",      Icon: Home, desc: "Je loue mon propre logement" },
+  { value: "agent",  label: "Je suis agent immobilier",  Icon: Briefcase, desc: "Je suis agent professionnel" },
+  { value: "agency", label: "J'ai une agence",           Icon: Building2, desc: "Je représente une agence immobilière" },
 ];
 
 function roleToAccountType(role: string): string {
@@ -262,7 +261,9 @@ function InscriptionForm() {
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {USER_ROLES.map((r) => (
+                  {USER_ROLES.map((r) => {
+                    const Icon = r.Icon;
+                    return (
                     <button
                       key={r.value}
                       type="button"
@@ -277,7 +278,7 @@ function InscriptionForm() {
                         minHeight: 72,
                       }}
                     >
-                      <span style={{ fontSize: 28, lineHeight: 1, flexShrink: 0 }}>{r.icon}</span>
+                      <Icon style={{ width: 28, height: 28, flexShrink: 0, color: role === r.value ? "var(--accent-gold)" : "rgba(255,255,255,0.72)" }} strokeWidth={2.2} />
                       <div style={{ flex: 1 }}>
                         <p style={{
                           fontWeight: 700, fontSize: 14, margin: 0,
@@ -293,7 +294,7 @@ function InscriptionForm() {
                         <CheckCircle style={{ width: 18, height: 18, color: "var(--accent-gold)", flexShrink: 0 }} />
                       )}
                     </button>
-                  ))}
+                  )})}
                 </div>
 
                 <button
@@ -331,7 +332,7 @@ function InscriptionForm() {
                     ← Retour
                   </button>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 4 }}>
-                    <span style={{ fontSize: 20 }}>{selectedRole?.icon}</span>
+                    {selectedRole && <selectedRole.Icon style={{ width: 20, height: 20, color: "var(--accent-gold)" }} strokeWidth={2.4} />}
                     <h1 style={{ fontSize: 20, fontWeight: 900, color: "rgba(255,255,255,1)", margin: 0 }}>
                       {selectedRole?.label}
                     </h1>
@@ -357,7 +358,10 @@ function InscriptionForm() {
                           : { background: "transparent", color: "rgba(255,255,255,0.48)" }),
                       }}
                     >
-                      {m === "phone" ? "📱 Téléphone" : "✉️ Email"}
+                      <span className="inline-flex items-center justify-center gap-2">
+                        {m === "phone" ? <Phone className="h-4 w-4" strokeWidth={2.4} /> : <Mail className="h-4 w-4" strokeWidth={2.4} />}
+                        {m === "phone" ? "Téléphone" : "Email"}
+                      </span>
                     </button>
                   ))}
                 </div>

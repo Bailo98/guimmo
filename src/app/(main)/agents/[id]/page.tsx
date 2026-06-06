@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
-import { CheckCircle, MapPin, Phone, MessageCircle } from "lucide-react";
+import { Briefcase, CheckCircle, Home, MapPin, Phone, MessageCircle } from "lucide-react";
 import type { Metadata } from "next";
 import { formatPrice } from "@/lib/utils";
 
@@ -101,7 +101,10 @@ export default async function AgentProfilePage({ params }: Props) {
                 </span>
               )}
             </div>
-            <p className="text-sm mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>👔 {roleLabel}</p>
+            <p className="inline-flex items-center gap-1.5 text-sm mt-0.5" style={{ color: "var(--bl-cream-faint)" }}>
+              <Briefcase className="h-3.5 w-3.5" />
+              {roleLabel}
+            </p>
             {profile.website && (
               <a href={profile.website} target="_blank" rel="noopener noreferrer"
                 className="text-xs hover:underline mt-1 inline-block" style={{ color: "var(--accent-gold)" }}>
@@ -187,7 +190,9 @@ export default async function AgentProfilePage({ params }: Props) {
                     {primary?.url ? (
                       <Image src={primary.url} alt={listing.title} fill className="object-cover" sizes="(max-width: 640px) 100vw, 50vw" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-3xl">🏠</div>
+                      <div className="w-full h-full flex items-center justify-center text-[var(--accent-gold)]">
+                        <Home className="h-7 w-7" />
+                      </div>
                     )}
                   </div>
                   <div className="p-3">

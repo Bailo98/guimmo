@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
-import { CheckCircle, MapPin, Phone, MessageCircle, Building2 } from "lucide-react";
+import { CheckCircle, Home, MapPin, Phone, MessageCircle, Building2 } from "lucide-react";
 import type { Metadata } from "next";
 import { formatPrice } from "@/lib/utils";
 
@@ -177,7 +177,9 @@ export default async function AgenceProfilePage({ params }: Props) {
                     {primary?.url ? (
                       <Image src={primary.url} alt={listing.title} fill className="object-cover" sizes="(max-width: 640px) 100vw, 50vw" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-3xl">🏠</div>
+                      <div className="w-full h-full flex items-center justify-center text-[var(--accent-gold)]">
+                        <Home className="h-7 w-7" />
+                      </div>
                     )}
                   </div>
                   <div className="p-3">

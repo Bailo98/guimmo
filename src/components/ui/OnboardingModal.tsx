@@ -1,17 +1,19 @@
-"use client";
+﻿"use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { ClipboardList, Home, KeyRound } from "lucide-react";
 
 const STEPS = [
   {
-    title: "Bienvenue sur LogerBien 🏠",
-    subtitle: "Trouvez votre logement idéal en Guinée",
+    title: "Bienvenue sur LogerBien",
+    subtitle: "Trouvez votre logement ideal en Guinee",
   },
   {
     title: "Quel est votre budget ?",
   },
   {
-    title: "Votre quartier préféré ?",
+    title: "Votre quartier prefere ?",
   },
 ];
 
@@ -22,7 +24,7 @@ const BUDGET_OPTIONS = [
   "> 3M GNF",
 ];
 
-const NEIGHBORHOODS = ["Kipé", "Ratoma", "Lambanyi", "Hamdallaye", "Taouyah", "Dixinn"];
+const NEIGHBORHOODS = ["Kipe", "Ratoma", "Lambanyi", "Hamdallaye", "Taouyah", "Dixinn"];
 
 export function OnboardingModal() {
   const [mounted, setMounted] = useState(false);
@@ -80,27 +82,27 @@ export function OnboardingModal() {
 
         {/* Body */}
         <div className="px-6 py-6">
-          {/* Step 0 — intent buttons */}
+          {/* Step 0 â€” intent buttons */}
           {step === 0 && (
             <div className="flex flex-col gap-3">
               {[
-                { emoji: "🔑", label: "Je cherche à louer" },
-                { emoji: "🏡", label: "Je cherche à acheter" },
-                { emoji: "📋", label: "Je veux publier" },
-              ].map(({ emoji, label }) => (
+                { Icon: KeyRound, label: "Je cherche a louer" },
+                { Icon: Home, label: "Je cherche a acheter" },
+                { Icon: ClipboardList, label: "Je veux publier" },
+              ].map(({ Icon, label }) => (
                 <button
                   key={label}
                   onClick={() => setStep(1)}
                   className="flex items-center gap-3 w-full px-5 py-4 rounded-xl border-2 border-[var(--border)] bg-[var(--bg-card-light)] text-[var(--text-primary)] font-semibold text-sm hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)] transition-colors text-left"
                 >
-                  <span className="text-xl">{emoji}</span>
+                  <Icon className="h-5 w-5" />
                   {label}
                 </button>
               ))}
             </div>
           )}
 
-          {/* Step 1 — budget buttons */}
+          {/* Step 1 â€” budget buttons */}
           {step === 1 && (
             <div className="grid grid-cols-2 gap-3">
               {BUDGET_OPTIONS.map((option) => (
@@ -115,7 +117,7 @@ export function OnboardingModal() {
             </div>
           )}
 
-          {/* Step 2 — neighborhood buttons */}
+          {/* Step 2 â€” neighborhood buttons */}
           {step === 2 && (
             <div className="grid grid-cols-3 gap-3">
               {NEIGHBORHOODS.map((name) => (

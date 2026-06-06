@@ -5,6 +5,9 @@ import Image from "next/image";
 import {
   ChevronLeft, X, Mic, MicOff, MapPin, Phone,
   Upload, Camera, ArrowRight, Locate, CheckCircle2, Loader2,
+  Armchair, Banknote, Battery, Bed, BrickWall, Building2, Calendar, Car,
+  DoorOpen, Droplets, Flame, Home, KeyRound, Leaf, Lock, MessageCircle,
+  Rocket, Shield, Sofa, Sun, Utensils, Video, Wifi, Zap,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/lib/supabase";
@@ -17,25 +20,25 @@ type TxType = "rent" | "sale";
 type ContactMethod = "whatsapp" | "call" | "both";
 type AvailMode = "flexible" | "immediate" | "today" | "urgent";
 
-const AVAIL_OPTIONS: { id: AvailMode; emoji: string; label: string; sub: string }[] = [
-  { id: "flexible",  emoji: "📅", label: "Flexible",           sub: "À convenir" },
-  { id: "immediate", emoji: "🏃", label: "Libre immédiatement", sub: "Dispo maintenant" },
-  { id: "today",     emoji: "🔥", label: "Dispo aujourd'hui",   sub: "Même jour" },
-  { id: "urgent",    emoji: "⚡", label: "Urgent",              sub: "À louer vite" },
+const AVAIL_OPTIONS: { id: AvailMode; Icon: typeof Calendar; label: string; sub: string }[] = [
+  { id: "flexible",  Icon: Calendar, label: "Flexible",           sub: "À convenir" },
+  { id: "immediate", Icon: Zap,      label: "Libre immédiatement", sub: "Dispo maintenant" },
+  { id: "today",     Icon: Flame,    label: "Dispo aujourd'hui",   sub: "Même jour" },
+  { id: "urgent",    Icon: Zap,      label: "Urgent",              sub: "À louer vite" },
 ];
 
-const OWNER_BADGE_OPTIONS: { id: string; emoji: string; label: string }[] = [
-  { id: "proprietaire_direct", emoji: "🏠", label: "Proprio direct" },
-  { id: "sans_commission",     emoji: "💰", label: "Sans commission" },
+const OWNER_BADGE_OPTIONS: { id: string; Icon: typeof Home; label: string }[] = [
+  { id: "proprietaire_direct", Icon: Home,     label: "Proprio direct" },
+  { id: "sans_commission",     Icon: Banknote, label: "Sans commission" },
 ];
 
-const TYPE_OPTIONS: { id: PType; label: string; emoji: string }[] = [
-  { id: "apartment", label: "Appartement", emoji: "🏢" },
-  { id: "house",     label: "Maison",      emoji: "🏠" },
-  { id: "studio",    label: "Studio",      emoji: "🛏️" },
-  { id: "villa",     label: "Villa",       emoji: "🏡" },
-  { id: "room",      label: "Chambre",     emoji: "🚪" },
-  { id: "land",      label: "Terrain",     emoji: "🌿" },
+const TYPE_OPTIONS: { id: PType; label: string; Icon: typeof Home }[] = [
+  { id: "apartment", label: "Appartement", Icon: Building2 },
+  { id: "house",     label: "Maison",      Icon: Home },
+  { id: "studio",    label: "Studio",      Icon: Bed },
+  { id: "villa",     label: "Villa",       Icon: Home },
+  { id: "room",      label: "Chambre",     Icon: DoorOpen },
+  { id: "land",      label: "Terrain",     Icon: Leaf },
 ];
 
 const ROOM_OPTIONS = [0, 1, 2, 3, 4, "5+"] as const;
@@ -170,7 +173,7 @@ export default function PublierPage() {
     return (
       <div className="min-h-screen px-4 py-14 flex items-center justify-center" style={{ background: "var(--bg-primary)" }}>
         <div className="max-w-md w-full rounded-3xl p-6 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-          <p className="text-4xl mb-4">🏠</p>
+          <Home className="mx-auto mb-4 h-10 w-10 text-[var(--accent-gold)]" strokeWidth={1.8} />
           <h1 className="text-2xl font-black mb-3" style={{ color: "var(--text-primary)" }}>
             Tu veux publier un logement ?
           </h1>
@@ -601,7 +604,7 @@ export default function PublierPage() {
         }
       }
 
-      toast("✅ Annonce soumise — elle sera publiée sous 24h après vérification.", "success");
+      toast("Annonce soumise — elle sera publiée sous 24h après vérification.", "success");
       router.push("/compte");
     } catch (err) {
       console.error("ERREUR INATTENDUE:", err);
@@ -629,7 +632,7 @@ export default function PublierPage() {
       <div className="publish-page-light min-h-[60vh] flex items-center justify-center px-4">
         <div className="w-full max-w-sm text-center">
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ background: "rgba(212,175,55,0.10)", border: "1px solid rgba(212,175,55,0.20)" }}>
-            <span className="text-3xl">🔒</span>
+            <Lock className="h-8 w-8 text-[var(--accent-gold)]" strokeWidth={2.2} />
           </div>
           <h1 className="text-2xl font-black app-text mb-2">Connexion requise</h1>
           <p className="app-text-muted text-sm mb-8 leading-relaxed">
@@ -655,7 +658,7 @@ export default function PublierPage() {
   }
 
   const typeLabel        = TYPE_OPTIONS.find((t) => t.id === form.type)?.label ?? "";
-  const typeEmoji        = TYPE_OPTIONS.find((t) => t.id === form.type)?.emoji ?? "";
+  const TypeIcon         = TYPE_OPTIONS.find((t) => t.id === form.type)?.Icon ?? Home;
   const neighborhoodName = NEIGHBORHOODS.find((n) => n.id === form.neighborhood)?.name ?? "";
   const priceFormatted   = formatGNF(form.price);
 
@@ -702,7 +705,9 @@ export default function PublierPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {TYPE_OPTIONS.map((t) => (
+            {TYPE_OPTIONS.map((t) => {
+              const Icon = t.Icon;
+              return (
               <button
                 key={t.id}
                 onClick={() => update("type", t.id)}
@@ -713,10 +718,10 @@ export default function PublierPage() {
                     : "hover:border-white/30 text-white"
                 )}
               >
-                <span className="text-4xl leading-none">{t.emoji}</span>
+                <Icon className="h-9 w-9" strokeWidth={2.1} />
                 {t.label}
               </button>
-            ))}
+            )})}
           </div>
 
           <div>
@@ -725,8 +730,8 @@ export default function PublierPage() {
             </h2>
             <div className="grid grid-cols-2 gap-3">
               {([
-                { id: "rent" as TxType, label: "🔑 Location", sub: "Louer mon bien" },
-                { id: "sale" as TxType, label: "💰 Vente",    sub: "Vendre mon bien" },
+                { id: "rent" as TxType, label: "Location", sub: "Louer mon bien", Icon: KeyRound },
+                { id: "sale" as TxType, label: "Vente",    sub: "Vendre mon bien", Icon: Banknote },
               ] as const).map((tx) => (
                 <button
                   key={tx.id}
@@ -738,7 +743,8 @@ export default function PublierPage() {
                       : "hover:border-white/30"
                   )}
                 >
-                  <p className="font-bold text-base text-white">
+                  <p className="inline-flex items-center gap-2 font-bold text-base text-white">
+                    <tx.Icon className="h-4 w-4" strokeWidth={2.4} />
                     {tx.label}
                   </p>
                   <p className="text-xs text-white/50 mt-0.5">{tx.sub}</p>
@@ -753,7 +759,9 @@ export default function PublierPage() {
               Disponibilité
             </h2>
             <div className="grid grid-cols-2 gap-3">
-              {AVAIL_OPTIONS.map((opt) => (
+              {AVAIL_OPTIONS.map((opt) => {
+                const Icon = opt.Icon;
+                return (
                 <button
                   key={opt.id}
                   onClick={() => update("availabilityMode", opt.id)}
@@ -764,11 +772,11 @@ export default function PublierPage() {
                       : "hover:border-white/30"
                   )}
                 >
-                  <span className="text-2xl mb-1">{opt.emoji}</span>
+                  <Icon className="mb-1 h-6 w-6" strokeWidth={2.3} />
                   <p className="font-bold text-sm text-white">{opt.label}</p>
                   <p className="text-xs text-white/50">{opt.sub}</p>
                 </button>
-              ))}
+              )})}
             </div>
           </div>
 
@@ -784,6 +792,7 @@ export default function PublierPage() {
             <div className="flex gap-3">
               {OWNER_BADGE_OPTIONS.map((b) => {
                 const active = form.selectedBadges.includes(b.id);
+                const Icon = b.Icon;
                 return (
                   <button
                     key={b.id}
@@ -801,7 +810,7 @@ export default function PublierPage() {
                         : "text-white/70 hover:border-white/30"
                     )}
                   >
-                    <span className="text-2xl">{b.emoji}</span>
+                    <Icon className="h-6 w-6" strokeWidth={2.3} />
                     {b.label}
                   </button>
                 );
@@ -912,7 +921,10 @@ export default function PublierPage() {
           {/* Video upload */}
           <div>
             <label className="block text-sm font-bold text-white mb-2">
-              🎥 Vidéo de visite <span className="text-white/40 font-normal">(optionnel — max 60 s, 50 Mo)</span>
+              <span className="inline-flex items-center gap-2">
+                <Video className="h-4 w-4" strokeWidth={2.4} />
+                Vidéo de visite <span className="text-white/40 font-normal">(optionnel — max 60 s, 50 Mo)</span>
+              </span>
             </label>
             {videoUploading && (
               <div style={{ background: "rgba(212,175,55,0.10)", border: "1px solid rgba(212,175,55,0.25)", borderRadius: 10, padding: "10px 14px", marginBottom: 8 }}>
@@ -943,7 +955,8 @@ export default function PublierPage() {
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed border-white/20 text-white/60 hover:border-white/40 hover:text-white transition-colors text-sm font-semibold"
                 style={{ minHeight: 52 }}
               >
-                🎥 Ajouter une vidéo
+                <Video className="h-4 w-4" strokeWidth={2.4} />
+                Ajouter une vidéo
               </button>
             )}
           </div>
@@ -957,7 +970,7 @@ export default function PublierPage() {
             }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: form.hasVirtualTour ? 14 : 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontSize: 20 }}>🏠</span>
+                  <Home style={{ width: 20, height: 20, color: "var(--accent-gold)" }} strokeWidth={2.2} />
                   <div>
                     <p style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: 13, marginBottom: 1 }}>Visite virtuelle</p>
                     <p style={{ color: "#666666", fontSize: 11 }}>Photos par pièce · max 10 pièces</p>
@@ -1004,7 +1017,7 @@ export default function PublierPage() {
                         {room.preview
                           /* eslint-disable-next-line @next/next/no-img-element */
                           ? <img src={room.preview} alt={room.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                          : <span style={{ fontSize: 20 }}>📷</span>
+                          : <Camera style={{ width: 20, height: 20, color: "var(--accent-gold)" }} strokeWidth={2.2} />
                         }
                       </button>
                       <input
@@ -1149,7 +1162,7 @@ export default function PublierPage() {
             </div>
             {roomsError && (
               <p className="mt-2 text-xs font-semibold" style={{ color: "#ef4444" }}>
-                ⚠ {roomsError}
+                {roomsError}
               </p>
             )}
             {form.type === "studio" && (
@@ -1166,8 +1179,8 @@ export default function PublierPage() {
             </label>
             <div className="flex gap-3">
               {([
-                { val: true,  label: "🛋️ Oui" },
-                { val: false, label: "🪑 Non" },
+                { val: true,  label: "Oui", Icon: Sofa },
+                { val: false, label: "Non", Icon: Armchair },
               ] as const).map((f) => (
                 <button
                   key={String(f.val)}
@@ -1179,6 +1192,7 @@ export default function PublierPage() {
                       : "text-white/70 hover:border-white/30"
                   )}
                 >
+                  <f.Icon className="mr-2 inline h-4 w-4" strokeWidth={2.4} />
                   {f.label}
                 </button>
               ))}
@@ -1191,13 +1205,16 @@ export default function PublierPage() {
 
             {/* Eau */}
             <div className="mb-4">
-              <label className="block text-xs font-bold text-white/50 uppercase tracking-wider mb-3">💧 Source d&apos;eau</label>
+              <label className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-wider mb-3">
+                <Droplets className="h-4 w-4" strokeWidth={2.4} />
+                Source d&apos;eau
+              </label>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8 }}>
                 {([
-                  { id: "robinet", icon: "💧", label: "Robinet" },
-                  { id: "forage",  icon: "💧", label: "Forage" },
-                  { id: "citerne", icon: "💧", label: "Citerne" },
-                  { id: "none",    icon: "❌", label: "Aucune" },
+                  { id: "robinet", Icon: Droplets, label: "Robinet" },
+                  { id: "forage",  Icon: Droplets, label: "Forage" },
+                  { id: "citerne", Icon: Droplets, label: "Citerne" },
+                  { id: "none",    Icon: X, label: "Aucune" },
                 ] as const).map((opt) => (
                   <button key={opt.id} type="button" onClick={() => update("waterSource", opt.id)}
                     style={{
@@ -1208,7 +1225,7 @@ export default function PublierPage() {
                       color: form.waterSource === opt.id ? "var(--accent-gold)" : "#666666",
                       fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                     }}>
-                    <span style={{ fontSize: 24 }}>{opt.icon}</span>
+                    <opt.Icon style={{ width: 24, height: 24 }} strokeWidth={2.2} />
                     {opt.label}
                   </button>
                 ))}
@@ -1217,13 +1234,16 @@ export default function PublierPage() {
 
             {/* Électricité */}
             <div className="mb-4">
-              <label className="block text-xs font-bold text-white/50 uppercase tracking-wider mb-3">⚡ Électricité</label>
+              <label className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-wider mb-3">
+                <Zap className="h-4 w-4" strokeWidth={2.4} />
+                Électricité
+              </label>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8 }}>
                 {([
-                  { id: "edg",     icon: "⚡", label: "EDG" },
-                  { id: "solaire", icon: "☀️", label: "Solaire" },
-                  { id: "groupe",  icon: "🔋", label: "Groupe" },
-                  { id: "none",    icon: "❌", label: "Aucune" },
+                  { id: "edg",     Icon: Zap, label: "EDG" },
+                  { id: "solaire", Icon: Sun, label: "Solaire" },
+                  { id: "groupe",  Icon: Battery, label: "Groupe" },
+                  { id: "none",    Icon: X, label: "Aucune" },
                 ] as const).map((opt) => (
                   <button key={opt.id} type="button" onClick={() => update("electricity", opt.id)}
                     style={{
@@ -1234,7 +1254,7 @@ export default function PublierPage() {
                       color: form.electricity === opt.id ? "var(--accent-gold)" : "#666666",
                       fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                     }}>
-                    <span style={{ fontSize: 24 }}>{opt.icon}</span>
+                    <opt.Icon style={{ width: 24, height: 24 }} strokeWidth={2.2} />
                     {opt.label}
                   </button>
                 ))}
@@ -1243,11 +1263,14 @@ export default function PublierPage() {
 
             {/* Internet */}
             <div className="mb-4">
-              <label className="block text-xs font-bold text-white/50 uppercase tracking-wider mb-3">📶 Internet <span className="text-white/25 font-normal normal-case tracking-normal">(optionnel)</span></label>
+              <label className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-wider mb-3">
+                <Wifi className="h-4 w-4" strokeWidth={2.4} />
+                Internet <span className="text-white/25 font-normal normal-case tracking-normal">(optionnel)</span>
+              </label>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 8 }}>
                 {([
-                  { id: "wifi", icon: "📶", label: "WiFi / Fibre" },
-                  { id: "none", icon: "❌", label: "Aucun" },
+                  { id: "wifi", Icon: Wifi, label: "WiFi / Fibre" },
+                  { id: "none", Icon: X, label: "Aucun" },
                 ] as const).map((opt) => (
                   <button key={opt.id} type="button" onClick={() => update("internet", opt.id)}
                     style={{
@@ -1258,7 +1281,7 @@ export default function PublierPage() {
                       color: form.internet === opt.id ? "var(--accent-gold)" : "#666666",
                       fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                     }}>
-                    <span style={{ fontSize: 24 }}>{opt.icon}</span>
+                    <opt.Icon style={{ width: 24, height: 24 }} strokeWidth={2.2} />
                     {opt.label}
                   </button>
                 ))}
@@ -1270,12 +1293,12 @@ export default function PublierPage() {
               <label className="block text-xs font-bold text-white/50 uppercase tracking-wider mb-3">Autres équipements <span className="text-white/25 font-normal normal-case tracking-normal">(optionnel)</span></label>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8 }}>
                 {([
-                  { key: "hasParking",      icon: "🚗", label: "Parking" },
-                  { key: "hasSecurity",     icon: "👮", label: "Gardien" },
-                  { key: "hasFence",        icon: "🧱", label: "Clôture" },
-                  { key: "hasAc",           icon: "❄️", label: "Climatisation" },
-                  { key: "kitchenEquipped", icon: "🍳", label: "Cuisine équipée" },
-                ] as { key: "hasParking" | "hasSecurity" | "hasFence" | "hasAc" | "kitchenEquipped"; icon: string; label: string }[]).map((opt) => {
+                  { key: "hasParking",      Icon: Car, label: "Parking" },
+                  { key: "hasSecurity",     Icon: Shield, label: "Gardien" },
+                  { key: "hasFence",        Icon: BrickWall, label: "Clôture" },
+                  { key: "hasAc",           Icon: Zap, label: "Climatisation" },
+                  { key: "kitchenEquipped", Icon: Utensils, label: "Cuisine équipée" },
+                ] as { key: "hasParking" | "hasSecurity" | "hasFence" | "hasAc" | "kitchenEquipped"; Icon: typeof Car; label: string }[]).map((opt) => {
                   const active = form[opt.key];
                   return (
                     <button key={opt.key} type="button" onClick={() => update(opt.key, !active)}
@@ -1287,7 +1310,7 @@ export default function PublierPage() {
                         color: active ? "var(--accent-gold)" : "#666666",
                         fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
                       }}>
-                      <span style={{ fontSize: 24 }}>{opt.icon}</span>
+                      <opt.Icon style={{ width: 24, height: 24 }} strokeWidth={2.2} />
                       {opt.label}
                     </button>
                   );
@@ -1443,18 +1466,21 @@ export default function PublierPage() {
             </p>
             <div className="flex flex-wrap gap-2">
               {form.type && (
-                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
-                  {typeEmoji} {typeLabel}
+                <span className="inline-flex items-center gap-1.5 text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
+                  <TypeIcon className="h-3.5 w-3.5" strokeWidth={2.4} />
+                  {typeLabel}
                 </span>
               )}
               {form.txType && (
-                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
-                  {form.txType === "rent" ? "🔑 Location" : "💰 Vente"}
+                <span className="inline-flex items-center gap-1.5 text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
+                  {form.txType === "rent" ? <KeyRound className="h-3.5 w-3.5" strokeWidth={2.4} /> : <Banknote className="h-3.5 w-3.5" strokeWidth={2.4} />}
+                  {form.txType === "rent" ? "Location" : "Vente"}
                 </span>
               )}
               {form.neighborhood && (
-                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
-                  📍 {neighborhoodName}
+                <span className="inline-flex items-center gap-1.5 text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
+                  <MapPin className="h-3.5 w-3.5" strokeWidth={2.4} />
+                  {neighborhoodName}
                 </span>
               )}
               {priceFormatted && (
@@ -1463,13 +1489,15 @@ export default function PublierPage() {
                 </span>
               )}
               {form.photos.length > 0 && (
-                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
-                  📸 {form.photos.length} photo{form.photos.length > 1 ? "s" : ""}
+                <span className="inline-flex items-center gap-1.5 text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
+                  <Camera className="h-3.5 w-3.5" strokeWidth={2.4} />
+                  {form.photos.length} photo{form.photos.length > 1 ? "s" : ""}
                 </span>
               )}
               {form.rooms > 0 && form.type !== "land" && (
-                <span className="text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
-                  🛏️ {form.rooms === 5 ? "5+" : form.rooms} ch.
+                <span className="inline-flex items-center gap-1.5 text-white text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
+                  <Bed className="h-3.5 w-3.5" strokeWidth={2.4} />
+                  {form.rooms === 5 ? "5+" : form.rooms} ch.
                 </span>
               )}
             </div>
@@ -1502,9 +1530,9 @@ export default function PublierPage() {
             </label>
             <div className="grid grid-cols-3 gap-2">
               {([
-                { id: "whatsapp" as ContactMethod, label: "WhatsApp", emoji: "💬" },
-                { id: "call"     as ContactMethod, label: "Appel",    emoji: "📞" },
-                { id: "both"     as ContactMethod, label: "Les deux", emoji: "✅" },
+                { id: "whatsapp" as ContactMethod, label: "WhatsApp", Icon: MessageCircle },
+                { id: "call"     as ContactMethod, label: "Appel",    Icon: Phone },
+                { id: "both"     as ContactMethod, label: "Les deux", Icon: CheckCircle2 },
               ] as const).map((c) => (
                 <button
                   key={c.id}
@@ -1516,7 +1544,7 @@ export default function PublierPage() {
                       : "text-white/70 hover:border-white/30"
                   )}
                 >
-                  <span className="text-2xl">{c.emoji}</span>
+                  <c.Icon className="h-6 w-6" strokeWidth={2.3} />
                   {c.label}
                 </button>
               ))}
@@ -1543,7 +1571,10 @@ export default function PublierPage() {
                 Publication en cours…
               </>
             ) : (
-              "🚀 Publier mon annonce"
+              <>
+                <Rocket className="h-5 w-5" strokeWidth={2.4} />
+                Publier mon annonce
+              </>
             )}
           </button>
 

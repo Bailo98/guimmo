@@ -1,7 +1,7 @@
 ﻿"use client";
 import { useState, useEffect, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { X, Search } from "lucide-react";
+import { Banknote, X, Search } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 const USD_RATE = 8600; // 1 USD ≈ 8 600 GNF
@@ -115,7 +115,10 @@ export default function BudgetEstimator() {
           }}>
             <div>
               <p style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", lineHeight: 1 }}>
-                💰 Estimateur de budget
+                <span className="inline-flex items-center gap-1.5">
+                  <Banknote style={{ width: 14, height: 14 }} />
+                  Estimateur de budget
+                </span>
               </p>
               <p style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 3 }}>
                 Trouvez des logements dans votre budget
@@ -271,7 +274,7 @@ export default function BudgetEstimator() {
         onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.1)"; }}
         onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = ""; }}
       >
-        💰
+        <Banknote style={{ width: 22, height: 22 }} />
       </button>
     </>
   );

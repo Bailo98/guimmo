@@ -1,5 +1,18 @@
-"use client";
+﻿"use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
+import { WifiOff } from "lucide-react";
+
+type NetworkInformationLike = {
+  effectiveType?: string;
+  downlink?: number;
+};
+
+type NavigatorWithConnection = Navigator & {
+  connection?: NetworkInformationLike;
+  mozConnection?: NetworkInformationLike;
+  webkitConnection?: NetworkInformationLike;
+};
 
 export function LowConnectionMode() {
   const [showBanner, setShowBanner] = useState(false);
@@ -7,11 +20,8 @@ export function LowConnectionMode() {
   useEffect(() => {
     if (typeof navigator === "undefined") return;
 
-    // Network Information API (Chrome / Android)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const conn = (navigator as any).connection
-      ?? (navigator as any).mozConnection
-      ?? (navigator as any).webkitConnection;
+    const nav = navigator as NavigatorWithConnection;
+    const conn = nav.connection ?? nav.mozConnection ?? nav.webkitConnection;
 
     const isSlow =
       conn?.effectiveType === "2g" ||
@@ -57,7 +67,8 @@ export function LowConnectionMode() {
         gap: 8,
       }}
     >
-      📶 Connexion lente — mode économique activé
+      <WifiOff className="h-4 w-4" />
+      Connexion lente - mode economique active
     </div>
   );
 }

@@ -1,6 +1,5 @@
 ﻿import type { Metadata } from "next";
-import Link from "next/link";
-import { CheckCircle, X, MessageCircle, ArrowRight, Zap, Star, Building2 } from "lucide-react";
+import { CheckCircle, X, MessageCircle, ArrowRight, Star, Building2, Home, Lightbulb } from "lucide-react";
 import { PageHero } from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
@@ -13,7 +12,7 @@ const WHATSAPP = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "224628000000";
 const PLANS = [
   {
     id: "gratuit",
-    icon: "🏠",
+    Icon: Home,
     name: "Gratuit",
     price: "0 GNF",
     period: "pour toujours",
@@ -39,7 +38,7 @@ const PLANS = [
   },
   {
     id: "pro",
-    icon: "⭐",
+    Icon: Star,
     name: "Pro",
     price: "50 000 GNF",
     period: "/ mois",
@@ -51,14 +50,14 @@ const PLANS = [
     ctaBg: "var(--accent-gold)",
     ctaColor: "var(--text-primary)",
     highlight: true,
-    badge: "⭐ Recommandé",
+    badge: "Recommandé",
     features: [
       { label: "20 annonces actives",             ok: true },
       { label: "Photos HD (10 max)",              ok: true },
       { label: "Contact WhatsApp direct",         ok: true },
       { label: "Profil vendeur",                  ok: true },
       { label: "Je cherche — demandes inversées", ok: true },
-      { label: "Badge vérifié ✅",                ok: true },
+      { label: "Badge vérifié",                  ok: true },
       { label: "Statistiques avancées",           ok: true },
       { label: "1 boost par mois inclus",         ok: true },
       { label: "Annonces illimitées",             ok: false },
@@ -66,7 +65,7 @@ const PLANS = [
   },
   {
     id: "agence",
-    icon: "🏢",
+    Icon: Building2,
     name: "Agence",
     price: "150 000 GNF",
     period: "/ mois",
@@ -103,7 +102,7 @@ const FAQ = [
   },
   {
     q: "Qu'est-ce que le badge vérifié ?",
-    a: "Le badge vérifié (✅) est attribué par notre équipe après vérification de votre identité et de vos annonces. Il rassure les locataires sur l'authenticité du propriétaire.",
+    a: "Le badge vérifié est attribué par notre équipe après vérification de votre identité et de vos annonces. Il rassure les locataires sur l'authenticité du propriétaire.",
   },
   {
     q: "Qu'est-ce qu'un boost ?",
@@ -153,7 +152,7 @@ export default function TarifsPage() {
 
               {/* Header */}
               <div style={{ marginBottom: 16 }}>
-                <span style={{ fontSize: 32 }}>{plan.icon}</span>
+                <plan.Icon style={{ width: 32, height: 32, color: plan.color }} />
                 <h2 style={{ fontSize: 20, fontWeight: 800, color: plan.color, marginTop: 8, marginBottom: 4 }}>
                   {plan.name}
                 </h2>
@@ -208,7 +207,8 @@ export default function TarifsPage() {
           style={{ background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.18)" }}
         >
           <p style={{ color: "var(--text-primary-dim)", fontSize: 14, lineHeight: 1.7 }}>
-            💡 <strong style={{ color: "var(--text-primary)" }}>Actuellement en phase de lancement</strong> — toutes les fonctionnalités sont disponibles gratuitement.
+            <Lightbulb className="mr-1 inline h-4 w-4 text-[var(--accent-gold)]" />
+            <strong style={{ color: "var(--text-primary)" }}>Actuellement en phase de lancement</strong> — toutes les fonctionnalités sont disponibles gratuitement.
             Les plans Pro et Agence seront activés progressivement. Vous serez prévenus 30 jours avant.
           </p>
         </div>

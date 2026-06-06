@@ -1,4 +1,6 @@
-﻿"use client";
+"use client";
+
+import { BadgeCheck, Flame, Plane, Star } from "lucide-react";
 
 export type BadgeType = "verified" | "new" | "premium" | "diaspora";
 
@@ -8,36 +10,41 @@ interface PropertyBadgeProps {
 
 const BADGE_CONFIG: Record<
   BadgeType,
-  { label: string; bg: string; color: string; border: string }
+  { label: string; bg: string; color: string; border: string; Icon: typeof BadgeCheck }
 > = {
   verified: {
-    label: "✅ Vérifié",
+    label: "Vérifié",
     bg: "rgba(76,175,80,0.20)",
     color: "#4CAF50",
     border: "1px solid rgba(76,175,80,0.40)",
+    Icon: BadgeCheck,
   },
   new: {
-    label: "🔥 Nouveau",
+    label: "Nouveau",
     bg: "rgba(255,107,53,0.20)",
     color: "#FF6B35",
     border: "1px solid rgba(255,107,53,0.40)",
+    Icon: Flame,
   },
   premium: {
-    label: "⭐ Premium",
+    label: "Premium",
     bg: "rgba(212,175,55,0.15)",
     color: "var(--accent-gold)",
     border: "1px solid rgba(212,175,55,0.40)",
+    Icon: Star,
   },
   diaspora: {
-    label: "✈️ Diaspora",
+    label: "Diaspora",
     bg: "rgba(74,158,255,0.20)",
     color: "#4A9EFF",
     border: "1px solid rgba(74,158,255,0.40)",
+    Icon: Plane,
   },
 };
 
 export function PropertyBadge({ type }: PropertyBadgeProps) {
   const cfg = BADGE_CONFIG[type];
+  const Icon = cfg.Icon;
   return (
     <span
       style={{
@@ -53,15 +60,17 @@ export function PropertyBadge({ type }: PropertyBadgeProps) {
         WebkitBackdropFilter: "blur(8px)",
         display: "inline-flex",
         alignItems: "center",
+        gap: 4,
         lineHeight: 1.6,
       }}
     >
+      <Icon style={{ width: 13, height: 13 }} strokeWidth={2.4} />
       {cfg.label}
     </span>
   );
 }
 
-// ── Type-coloured badge (always visible, specific background per property type) ──
+// Type-coloured badge (always visible, specific background per property type)
 const TYPE_BADGE_COLORS: Record<string, { bg: string; color: string }> = {
   house:     { bg: "rgba(200,151,58,0.85)",  color: "var(--text-primary)" },
   villa:     { bg: "rgba(200,151,58,0.85)",  color: "var(--text-primary)" },

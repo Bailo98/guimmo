@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Flame, Heart, Home, MapPin, MessageCircle, Phone, Search, X } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { HomePublishCTA } from "@/components/home/HomePublishCTA";
@@ -79,24 +79,34 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
   const [gradFrom, gradTo] = TYPE_GRADIENTS[property?.type ?? "apartment"] ?? HERO_GRADIENTS[0];
   const priceStr = property ? formatPrice(property.price, "GNF", property.price_period) : "Découvre les annonces";
   const neighborhood = property ? NL[property.neighborhood] ?? property.neighborhood : "Conakry";
+  const actions = [
+    { label: "Passer", Icon: X },
+    { label: "J'aime", Icon: Heart },
+    { label: "WhatsApp", Icon: MessageCircle },
+    { label: "Appeler", Icon: Phone },
+  ];
 
   return (
     <section className="py-5 md:py-6" style={{ background: "var(--bg-card-light)" }}>
       <div className="content-fluid max-w-[1240px] grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.9fr)] gap-4 lg:gap-5 items-center">
         <div className="text-center lg:text-left">
           <h2 className="text-[32px] md:text-[46px] font-black mb-3 leading-tight" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
-            ❤️ Découvre les logements
+            <span className="inline-flex items-center justify-center gap-3">
+              <Heart className="h-8 w-8 md:h-10 md:w-10" strokeWidth={2.4} />
+              Découvre les logements
+            </span>
           </h2>
           <p className="mb-4 text-lg font-black" style={{ color: "var(--text-secondary)" }}>
             Swipe. Aime. Contacte.
           </p>
           <div className="grid grid-cols-2 gap-2 max-w-md mx-auto lg:mx-0 mb-5">
-            {["❌ Passer", "❤️ J’aime", "💬 WhatsApp", "📞 Appeler"].map((label) => (
+            {actions.map(({ label, Icon }) => (
               <div
                 key={label}
-                className="rounded-2xl px-3 py-4 text-center text-base font-black"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-4 text-center text-base font-black"
                 style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
               >
+                <Icon className="h-5 w-5" strokeWidth={2.3} />
                 {label}
               </div>
             ))}
@@ -115,13 +125,15 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
             className="absolute left-0 top-[32%] z-10 hidden sm:flex -translate-x-2 -rotate-6 items-center gap-2 rounded-2xl px-4 py-3 text-base font-black"
             style={{ background: "rgba(255,255,255,0.92)", color: "#b91c1c", border: "1px solid rgba(185,28,28,0.18)", boxShadow: "0 16px 40px rgba(24,21,16,0.12)" }}
           >
-            ← ❌ Passer
+            <X className="h-5 w-5" strokeWidth={2.5} />
+            Passer
           </div>
           <div
             className="absolute right-0 top-[32%] z-10 hidden sm:flex translate-x-2 rotate-6 items-center gap-2 rounded-2xl px-4 py-3 text-base font-black"
             style={{ background: "rgba(255,255,255,0.92)", color: "#be8a2e", border: "1px solid rgba(185,138,46,0.22)", boxShadow: "0 16px 40px rgba(24,21,16,0.12)" }}
           >
-            ❤️ J’aime →
+            <Heart className="h-5 w-5" strokeWidth={2.5} />
+            J&apos;aime
           </div>
 
           <div className="absolute left-9 right-9 top-8 h-[88%] rotate-[-8deg] rounded-[30px]" style={{ background: "rgba(185,138,46,0.18)", border: "1px solid rgba(185,138,46,0.20)" }} />
@@ -139,7 +151,9 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
               {primaryImg ? (
                 <Image src={primaryImg.url} alt={property?.title ?? "Découvrir les logements"} fill className="object-cover" sizes="360px" quality={75} />
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-7xl opacity-20">🏠</div>
+                <div className="absolute inset-0 flex items-center justify-center opacity-20">
+                  <Home className="h-20 w-20" strokeWidth={1.6} />
+                </div>
               )}
               <div className="absolute inset-0" style={{ background: "linear-gradient(transparent 28%, rgba(0,0,0,0.9) 100%)" }} />
               <div className="absolute left-4 right-4 bottom-4">
@@ -147,18 +161,33 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
                   Glisse. Choisis. Contacte.
                 </p>
                 <p className="text-[32px] font-black leading-tight text-white">{priceStr}</p>
-                <p className="mt-1 text-lg font-black text-white">📍 {neighborhood}</p>
+                <p className="mt-1 inline-flex items-center gap-2 text-lg font-black text-white">
+                  <MapPin className="h-5 w-5" strokeWidth={2.4} />
+                  {neighborhood}
+                </p>
                 <div className="mt-3 grid grid-cols-2 gap-2">
-                  <span className="rounded-2xl px-3 py-2 text-center text-base font-black text-white" style={{ background: "#25D366" }}>💬 WhatsApp</span>
-                  <span className="rounded-2xl px-3 py-2 text-center text-base font-black" style={{ background: "rgba(255,255,255,0.92)", color: "#17120a" }}>📞 Appeler</span>
+                  <span className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-2 text-center text-base font-black text-white" style={{ background: "#25D366" }}>
+                    <MessageCircle className="h-4 w-4" strokeWidth={2.4} />
+                    WhatsApp
+                  </span>
+                  <span className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-2 text-center text-base font-black" style={{ background: "rgba(255,255,255,0.92)", color: "#17120a" }}>
+                    <Phone className="h-4 w-4" strokeWidth={2.4} />
+                    Appeler
+                  </span>
                 </div>
               </div>
             </div>
           </Link>
 
           <div className="mt-3 grid grid-cols-2 gap-2 sm:hidden">
-            <span className="rounded-2xl px-3 py-3 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#b91c1c" }}>← ❌ Passer</span>
-            <span className="rounded-2xl px-3 py-3 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--accent-gold)" }}>❤️ J’aime →</span>
+            <span className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#b91c1c" }}>
+              <X className="h-5 w-5" strokeWidth={2.5} />
+              Passer
+            </span>
+            <span className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--accent-gold)" }}>
+              <Heart className="h-5 w-5" strokeWidth={2.5} />
+              J&apos;aime
+            </span>
           </div>
         </div>
       </div>
@@ -195,7 +224,10 @@ export default async function HomePage() {
               className="mx-auto mb-3 max-w-[820px] text-[clamp(2.375rem,6vw,3.5rem)] font-black leading-[0.98]"
               style={{ color: "var(--text-primary)", fontFamily: "var(--font-manrope), sans-serif", letterSpacing: 0 }}
             >
-              📍 Où cherches-tu ?
+              <span className="inline-flex items-center justify-center gap-3">
+                <MapPin className="h-9 w-9 md:h-11 md:w-11" strokeWidth={2.5} />
+                Où cherches-tu ?
+              </span>
             </h1>
             <p className="mx-auto mb-4 max-w-[560px] text-base md:text-lg font-bold leading-snug" style={{ color: "var(--text-secondary)" }}>
               Sans démarcheur. Sans commission.
@@ -203,15 +235,16 @@ export default async function HomePage() {
 
             <div className="mb-4 grid grid-cols-3 gap-2 max-w-xl mx-auto">
               {[
-                "🔍 Je cherche",
-                "❤️ Je découvre",
-                "💬 Je contacte",
-              ].map((label) => (
+                { label: "Je cherche", Icon: Search },
+                { label: "Je découvre", Icon: Heart },
+                { label: "Je contacte", Icon: MessageCircle },
+              ].map(({ label, Icon }) => (
                 <span
                   key={label}
-                  className="rounded-2xl px-3 py-3 text-base font-black"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-base font-black"
                   style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}
                 >
+                  <Icon className="h-5 w-5" strokeWidth={2.3} />
                   {label}
                 </span>
               ))}
@@ -233,7 +266,10 @@ export default async function HomePage() {
                   className="text-[30px] md:text-[40px] font-black"
                   style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
                 >
-                  🔥 Annonces récentes
+                  <span className="inline-flex items-center gap-3">
+                    <Flame className="h-8 w-8" strokeWidth={2.4} />
+                    Annonces récentes
+                  </span>
                 </h2>
               </div>
               <Link href="/annonces" className="flex items-center gap-1 text-base font-bold hover:underline" style={{ color: "var(--accent-gold)" }}>

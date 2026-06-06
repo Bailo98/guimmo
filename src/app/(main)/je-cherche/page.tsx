@@ -1,7 +1,8 @@
 ﻿"use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Plus, X, MapPin, Home, DollarSign } from "lucide-react";
+import { Bed, Building2, DoorOpen, FileText, Leaf, Phone, Search, Plus, X, MapPin, Home, DollarSign } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
@@ -9,12 +10,12 @@ import { formatPrice } from "@/lib/utils";
 import { NEIGHBORHOODS } from "@/data/neighborhoods";
 
 const TYPES = [
-  { id: "apartment", label: "Appartement", emoji: "🏢" },
-  { id: "house",     label: "Maison",      emoji: "🏠" },
-  { id: "villa",     label: "Villa",       emoji: "🏡" },
-  { id: "studio",    label: "Studio",      emoji: "🛏️" },
-  { id: "room",      label: "Chambre",     emoji: "🚪" },
-  { id: "land",      label: "Terrain",     emoji: "🌿" },
+  { id: "apartment", label: "Appartement", Icon: Building2 },
+  { id: "house",     label: "Maison",      Icon: Home },
+  { id: "villa",     label: "Villa",       Icon: Home },
+  { id: "studio",    label: "Studio",      Icon: Bed },
+  { id: "room",      label: "Chambre",     Icon: DoorOpen },
+  { id: "land",      label: "Terrain",     Icon: Leaf },
 ];
 
 interface PropertyRequest {
@@ -81,7 +82,7 @@ export default function JeCharchePage() {
     setLoading(false);
   }
 
-  useEffect(() => { loadRequests(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { loadRequests(); }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -104,7 +105,7 @@ export default function JeCharchePage() {
     });
     setSubmitting(false);
     if (error) { toast("Erreur lors de la publication", "error"); return; }
-    toast("✅ Recherche publiée !", "success");
+    toast("Recherche publiée !", "success");
     setShowForm(false);
     setForm({ budget_max: "", neighborhood: "", property_type: "", rooms: "", description: "", contact_phone: "" });
     loadRequests();
@@ -132,7 +133,10 @@ export default function JeCharchePage() {
             fontSize: 28, fontWeight: 800, color: "var(--text-primary)",
             fontFamily: "var(--font-display), sans-serif", marginBottom: 8,
           }}>
-            Je cherche 🔍
+            <span className="inline-flex items-center gap-2">
+              Je cherche
+              <Search className="h-6 w-6" strokeWidth={2.4} />
+            </span>
           </h1>
           <p style={{ color: "var(--text-primary-faint)", fontSize: 15 }}>
             Décrivez ce que vous cherchez. Les propriétaires qui ont le bien vous contacteront directement.
@@ -178,7 +182,7 @@ export default function JeCharchePage() {
             <div style={{ display: "grid", gap: 14 }}>
               {/* Budget max */}
               <div>
-                <label style={labelStyle}>💰 Budget maximum (GNF)</label>
+                <label style={labelStyle}><DollarSign className="mr-1 inline h-3.5 w-3.5" />Budget maximum (GNF)</label>
                 <input
                   type="text" inputMode="numeric"
                   placeholder="Ex: 2 000 000"
@@ -190,9 +194,11 @@ export default function JeCharchePage() {
 
               {/* Type */}
               <div>
-                <label style={labelStyle}>🏠 Type de bien</label>
+                <label style={labelStyle}><Home className="mr-1 inline h-3.5 w-3.5" />Type de bien</label>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                  {TYPES.map((t) => (
+                  {TYPES.map((t) => {
+                    const Icon = t.Icon;
+                    return (
                     <button key={t.id} type="button"
                       onClick={() => setForm((f) => ({ ...f, property_type: f.property_type === t.id ? "" : t.id }))}
                       style={{
@@ -202,15 +208,16 @@ export default function JeCharchePage() {
                           ? { background: "rgba(212,175,55,0.15)", borderColor: "rgba(212,175,55,0.50)", color: "var(--accent-gold)" }
                           : { background: "var(--bg-secondary)", borderColor: "var(--border)", color: "var(--text-primary-faint)" }),
                       }}>
-                      {t.emoji} {t.label}
+                      <Icon className="mr-1 inline h-3.5 w-3.5" strokeWidth={2.4} />
+                      {t.label}
                     </button>
-                  ))}
+                  )})}
                 </div>
               </div>
 
               {/* Quartier */}
               <div>
-                <label style={labelStyle}>📍 Quartier souhaité</label>
+                <label style={labelStyle}><MapPin className="mr-1 inline h-3.5 w-3.5" />Quartier souhaité</label>
                 <select
                   value={form.neighborhood}
                   onChange={(e) => setForm((f) => ({ ...f, neighborhood: e.target.value }))}
@@ -225,7 +232,7 @@ export default function JeCharchePage() {
 
               {/* Rooms */}
               <div>
-                <label style={labelStyle}>🛏️ Nombre de chambres</label>
+                <label style={labelStyle}><Bed className="mr-1 inline h-3.5 w-3.5" />Nombre de chambres</label>
                 <div style={{ display: "flex", gap: 8 }}>
                   {["", "1", "2", "3", "4", "5+"].map((r) => (
                     <button key={r} type="button"
@@ -245,7 +252,7 @@ export default function JeCharchePage() {
 
               {/* Description */}
               <div>
-                <label style={labelStyle}>📝 Description (optionnel)</label>
+                <label style={labelStyle}><FileText className="mr-1 inline h-3.5 w-3.5" />Description (optionnel)</label>
                 <textarea
                   placeholder="Décrivez votre besoin : étage, meublé, proche école…"
                   value={form.description}
@@ -257,7 +264,7 @@ export default function JeCharchePage() {
 
               {/* Phone */}
               <div>
-                <label style={labelStyle}>📞 Téléphone de contact</label>
+                <label style={labelStyle}><Phone className="mr-1 inline h-3.5 w-3.5" />Téléphone de contact</label>
                 <input
                   type="tel"
                   placeholder="+224 6XX XXX XXX"
@@ -290,7 +297,7 @@ export default function JeCharchePage() {
           </div>
         ) : requests.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px 0" }}>
-            <p style={{ fontSize: 40, marginBottom: 12 }}>🔍</p>
+            <Search className="mx-auto mb-3 h-10 w-10 text-[var(--accent-gold)]" strokeWidth={2.2} />
             <p style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: 18, marginBottom: 8 }}>
               Aucune demande active
             </p>
@@ -313,14 +320,21 @@ export default function JeCharchePage() {
                     {/* Type + quartier */}
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
                       {req.property_type && (
+                        (() => {
+                          const type = TYPES.find((t) => t.id === req.property_type);
+                          const Icon = type?.Icon ?? Home;
+                          return (
                         <span style={{
                           background: "rgba(212,175,55,0.12)", color: "var(--accent-gold)",
                           fontSize: 12, fontWeight: 700, padding: "3px 10px", borderRadius: 20,
                           border: "1px solid rgba(212,175,55,0.30)",
+                          display: "inline-flex", alignItems: "center", gap: 4,
                         }}>
-                          {TYPES.find((t) => t.id === req.property_type)?.emoji}{" "}
-                          {TYPES.find((t) => t.id === req.property_type)?.label ?? req.property_type}
+                          <Icon style={{ width: 12, height: 12 }} strokeWidth={2.4} />
+                          {type?.label ?? req.property_type}
                         </span>
+                          );
+                        })()
                       )}
                       {req.neighborhood && (
                         <span style={{
@@ -338,8 +352,10 @@ export default function JeCharchePage() {
                           background: "var(--bg-secondary)", color: "var(--text-primary-dim)",
                           fontSize: 12, fontWeight: 600, padding: "3px 10px", borderRadius: 20,
                           border: "1px solid var(--border)",
+                          display: "inline-flex", alignItems: "center", gap: 4,
                         }}>
-                          🛏 {req.rooms} ch.
+                          <Bed style={{ width: 12, height: 12 }} strokeWidth={2.4} />
+                          {req.rooms} ch.
                         </span>
                       )}
                     </div>

@@ -1,35 +1,35 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
-import { Star, MapPin, Users, Building2, BarChart3 } from "lucide-react";
+import { Banknote, Star, MapPin, Users, Building2, BarChart3 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Témoignages | LogerBien",
+  title: "TÃ©moignages | LogerBien",
   description:
-    "Découvrez les avis et témoignages de locataires et propriétaires qui ont trouvé leur logement grâce à LogerBien en Guinée.",
+    "DÃ©couvrez les avis et tÃ©moignages de locataires et propriÃ©taires qui ont trouvÃ© leur logement grÃ¢ce Ã  LogerBien en GuinÃ©e.",
 };
 
 const TESTIMONIALS = [
   {
-    name: "Mamadou Kouyaté",
-    role: "Locataire • Kipé",
+    name: "Mamadou KouyatÃ©",
+    role: "Locataire â€¢ KipÃ©",
     rating: 5,
-    text: "J'ai trouvé mon appartement en 3 jours grâce à LogerBien. Les photos correspondaient exactement à la réalité, et le propriétaire était très réactif sur WhatsApp.",
-    neighborhood: "Kipé",
+    text: "J'ai trouvÃ© mon appartement en 3 jours grÃ¢ce Ã  LogerBien. Les photos correspondaient exactement Ã  la rÃ©alitÃ©, et le propriÃ©taire Ã©tait trÃ¨s rÃ©actif sur WhatsApp.",
+    neighborhood: "KipÃ©",
     saved: "500.000 GNF/mois",
   },
   {
     name: "Fatoumata Bah",
-    role: "Propriétaire • Ratoma",
+    role: "PropriÃ©taire â€¢ Ratoma",
     rating: 5,
-    text: "J'ai publié mon studio meublé et j'ai reçu 12 contacts en 48h. Le boost a vraiment fait la différence. Je recommande à tous les propriétaires.",
+    text: "J'ai publiÃ© mon studio meublÃ© et j'ai reÃ§u 12 contacts en 48h. Le boost a vraiment fait la diffÃ©rence. Je recommande Ã  tous les propriÃ©taires.",
     neighborhood: "Ratoma",
     saved: null,
   },
   {
     name: "Ibrahim Diallo",
-    role: "Locataire • Hamdallaye",
+    role: "Locataire â€¢ Hamdallaye",
     rating: 4,
-    text: "Super plateforme ! La carte interactive m'a permis de trouver exactement le quartier que je voulais. J'aurais aimé encore plus de photos.",
+    text: "Super plateforme ! La carte interactive m'a permis de trouver exactement le quartier que je voulais. J'aurais aimÃ© encore plus de photos.",
     neighborhood: "Hamdallaye",
     saved: "1.200.000 GNF",
   },
@@ -42,42 +42,42 @@ const TESTIMONIALS = [
     saved: null,
   },
   {
-    name: "Sékou Condé",
-    role: "Locataire • Taouyah",
+    name: "SÃ©kou CondÃ©",
+    role: "Locataire â€¢ Taouyah",
     rating: 5,
-    text: "J'étais dans la diaspora et je cherchais un logement avant mon retour en Guinée. Les visites virtuelles 360° m'ont convaincu sans avoir à me déplacer !",
+    text: "J'Ã©tais dans la diaspora et je cherchais un logement avant mon retour en GuinÃ©e. Les visites virtuelles 360Â° m'ont convaincu sans avoir Ã  me dÃ©placer !",
     neighborhood: "Taouyah",
     saved: null,
   },
   {
     name: "Mariama Sylla",
-    role: "Propriétaire • Lambanyi",
+    role: "PropriÃ©taire â€¢ Lambanyi",
     rating: 4,
-    text: "Ma villa était vide depuis 6 mois. Après publication sur LogerBien, j'ai trouvé des locataires sérieux en moins de 2 semaines.",
+    text: "Ma villa Ã©tait vide depuis 6 mois. AprÃ¨s publication sur LogerBien, j'ai trouvÃ© des locataires sÃ©rieux en moins de 2 semaines.",
     neighborhood: "Lambanyi",
     saved: null,
   },
   {
     name: "Oumar Barry",
-    role: "Locataire • Dixinn",
+    role: "Locataire â€¢ Dixinn",
     rating: 5,
-    text: "Le calculateur de budget est vraiment pratique. Ça m'a aidé à définir clairement ce que je pouvais me permettre avant de chercher.",
+    text: "Le calculateur de budget est vraiment pratique. Ã‡a m'a aidÃ© Ã  dÃ©finir clairement ce que je pouvais me permettre avant de chercher.",
     neighborhood: "Dixinn",
     saved: "800.000 GNF",
   },
   {
-    name: "Kadiatou Konaté",
-    role: "Agence immobilière",
+    name: "Kadiatou KonatÃ©",
+    role: "Agence immobiliÃ¨re",
     rating: 5,
-    text: "Notre agence gère 30+ annonces sur LogerBien. La plateforme est fiable, les annonceurs sérieux et le support réactif.",
+    text: "Notre agence gÃ¨re 30+ annonces sur LogerBien. La plateforme est fiable, les annonceurs sÃ©rieux et le support rÃ©actif.",
     neighborhood: "Conakry",
     saved: null,
   },
   {
     name: "Abdoulaye Keita",
-    role: "Locataire • Kaloum",
+    role: "Locataire â€¢ Kaloum",
     rating: 4,
-    text: "Très bonne expérience. Le processus de réservation de visite est simple et j'ai pu visiter 4 appartements en une journée grâce à la carte.",
+    text: "TrÃ¨s bonne expÃ©rience. Le processus de rÃ©servation de visite est simple et j'ai pu visiter 4 appartements en une journÃ©e grÃ¢ce Ã  la carte.",
     neighborhood: "Kaloum",
     saved: "300.000 GNF",
   },
@@ -112,10 +112,10 @@ export default function TemoignagesPage() {
             Ils nous font confiance
           </div>
           <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight">
-            Ils ont trouvé leur logement<br className="hidden md:block" /> grâce à LogerBien
+            Ils ont trouvÃ© leur logement<br className="hidden md:block" /> grÃ¢ce Ã  LogerBien
           </h1>
           <p className="text-white/80 text-lg">
-            Des milliers de Guinéens nous font confiance pour leur projet immobilier.
+            Des milliers de GuinÃ©ens nous font confiance pour leur projet immobilier.
           </p>
         </div>
       </div>
@@ -132,7 +132,7 @@ export default function TemoignagesPage() {
             <div className="flex flex-col items-center gap-1">
               <Building2 className="w-5 h-5 text-[var(--accent-gold)]" />
               <span className="text-xl md:text-2xl font-black text-slate-900 dark:text-[var(--text-primary)]">890+</span>
-              <span className="text-xs text-slate-500 dark:text-slate-400">propriétaires actifs</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">propriÃ©taires actifs</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <BarChart3 className="w-5 h-5 text-[var(--accent-gold)]" />
@@ -182,10 +182,10 @@ export default function TemoignagesPage() {
       <div className="bg-[var(--bg-card-light)] border-t border-slate-100 dark:border-[var(--border)]">
         <div className="max-w-2xl mx-auto px-4 py-16 text-center">
           <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-[var(--text-primary)] mb-3">
-            Rejoignez la communauté LogerBien
+            Rejoignez la communautÃ© LogerBien
           </h2>
           <p className="text-slate-500 dark:text-slate-400 mb-8">
-            Des milliers de Guinéens ont déjà trouvé leur logement idéal. À votre tour !
+            Des milliers de GuinÃ©ens ont dÃ©jÃ  trouvÃ© leur logement idÃ©al. Ã€ votre tour !
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
@@ -198,7 +198,7 @@ export default function TemoignagesPage() {
               href="/inscription"
               className="inline-flex items-center justify-center gap-2 bg-[var(--bg-card-light)] border border-[var(--border)] text-[var(--text-primary)] font-bold px-7 py-3.5 rounded-xl hover:border-[var(--accent-gold)] transition-colors"
             >
-              Créer un compte
+              CrÃ©er un compte
             </Link>
           </div>
         </div>
@@ -225,7 +225,8 @@ function TestimonialCard({
       {/* Saved badge */}
       {testimonial.saved && (
         <div className="inline-flex items-center gap-1.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-[var(--accent-gold)] text-xs font-semibold px-3 py-1.5 rounded-full w-fit">
-          💰 Économisé {testimonial.saved}
+          <Banknote className="h-3.5 w-3.5" />
+          Economisé {testimonial.saved}
         </div>
       )}
 

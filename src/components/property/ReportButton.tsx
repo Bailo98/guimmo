@@ -190,7 +190,17 @@ export function ReportButton({ propertyId, propertyTitle = "", isLoggedIn = fals
                 color:      reason && !loading ? "#fff"    : "rgba(255,255,255,0.30)",
               }}
             >
-              {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Envoi…</> : "🚩 Envoyer le signalement"}
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Envoi…
+                </>
+              ) : (
+                <>
+                  <Flag className="w-4 h-4" />
+                  Envoyer le signalement
+                </>
+              )}
             </button>
           </>
         )}

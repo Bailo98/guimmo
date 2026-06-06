@@ -1,4 +1,5 @@
 ﻿"use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 
 import { useState, useEffect, useCallback } from "react";
 import { TrendingUp, Eye, MessageCircle, MapPin, Home, BarChart3, Zap, X } from "lucide-react";
@@ -205,7 +206,8 @@ export default function StatsPage() {
           <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between mb-5">
               <h3 className="font-black text-slate-900 dark:text-white flex items-center gap-2">
-                <span style={{ color: "#FF7900" }}>⚡</span> Booster une annonce
+                <Zap className="h-5 w-5" style={{ color: "#FF7900" }} />
+                Booster une annonce
               </h3>
               <button
                 onClick={() => setShowBoostModal(false)}

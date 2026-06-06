@@ -1,7 +1,7 @@
 ﻿"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Moon, Sun, Menu, X, Plus, LogOut, User, ChevronDown, Shield, Bell } from "lucide-react";
+import { Moon, Sun, Menu, X, Plus, LogOut, User, ChevronDown, Shield, Bell, Search } from "lucide-react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/lib/auth-context";
@@ -126,7 +126,10 @@ export function Header() {
             className="px-3 py-2 rounded-xl transition-colors hover:bg-black/5"
             style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: pathname === "/je-cherche" ? "var(--nav-text-active)" : "var(--nav-text)" }}
           >
-            Je cherche 🔍
+            <span className="inline-flex items-center gap-1.5">
+              Je cherche
+              <Search className="h-3.5 w-3.5" strokeWidth={2.4} />
+            </span>
           </Link>
           <Link
             href="/agents"
@@ -308,7 +311,8 @@ export function Header() {
           <Link href="/je-cherche" onClick={() => setMenuOpen(false)}
             className="flex items-center gap-2 px-3 py-3 rounded-xl hover:bg-black/5"
             style={{ color: "var(--nav-text)" }}>
-            Je cherche 🔍
+            <Search className="h-4 w-4" strokeWidth={2.4} />
+            Je cherche
           </Link>
           <Link href="/agents" onClick={() => setMenuOpen(false)}
             className="flex items-center gap-2 px-3 py-3 rounded-xl hover:bg-black/5"

@@ -1,7 +1,8 @@
 ﻿"use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, ChevronRight, User, Home, Search } from "lucide-react";
+import { CheckCircle2, ChevronRight, PartyPopper, User, Home, Search } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
@@ -109,7 +110,9 @@ export default function OnboardingPage() {
         {step === 1 && (
           <div style={{ animation: "fadeIn 0.3s ease" }}>
             <div className="mb-8 text-center">
-              <div className="text-5xl mb-3">👋</div>
+              <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-[rgba(212,175,55,0.12)] text-[var(--accent-gold)]">
+                <User className="h-7 w-7" />
+              </div>
               <h1 className="text-2xl font-black mb-2" style={{ color: "var(--text-primary)" }}>
                 Bienvenue sur LogerBien !
               </h1>
@@ -266,7 +269,10 @@ export default function OnboardingPage() {
               <CheckCircle2 style={{ width: 44, height: 44, color: "var(--accent-gold)" }} />
             </div>
             <h1 className="text-2xl font-black mb-3" style={{ color: "var(--text-primary)" }}>
-              Tout est prêt ! 🎉
+              <span className="inline-flex items-center justify-center gap-2">
+                Tout est prêt !
+                <PartyPopper className="h-5 w-5 text-[var(--accent-gold)]" />
+              </span>
             </h1>
             <p className="text-sm mb-8" style={{ color: "var(--text-secondary)" }}>
               {role === "proprietaire"
@@ -283,7 +289,8 @@ export default function OnboardingPage() {
                     display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                   }}
                 >
-                  🏠 Publier ma première annonce
+                  <Home className="h-4 w-4" />
+                  Publier ma première annonce
                 </button>
               ) : (
                 <button
@@ -294,7 +301,8 @@ export default function OnboardingPage() {
                     display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                   }}
                 >
-                  🔍 Explorer les annonces
+                  <Search className="h-4 w-4" />
+                  Explorer les annonces
                 </button>
               )}
               <button

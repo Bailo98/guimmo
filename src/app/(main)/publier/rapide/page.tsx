@@ -2,7 +2,7 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Camera, Upload, X, Phone, MapPin, CheckCircle2, Loader2 } from "lucide-react";
+import { Banknote, Building2, Camera, CheckCircle2, DoorOpen, Home, KeyRound, Leaf, Phone, MapPin, Sofa, Upload, X, Zap, Loader2 } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "@/lib/toast";
@@ -22,12 +22,12 @@ const fieldStyle = {
 const helpTextStyle = { color: "var(--text-secondary)" };
 
 const TYPE_OPTIONS = [
-  { id: "apartment", label: "Appart.",  emoji: "🏢" },
-  { id: "house",     label: "Maison",   emoji: "🏠" },
-  { id: "villa",     label: "Villa",    emoji: "🏡" },
-  { id: "studio",    label: "Studio",   emoji: "🛋️" },
-  { id: "room",      label: "Chambre",  emoji: "🚪" },
-  { id: "land",      label: "Terrain",  emoji: "🌿" },
+  { id: "apartment", label: "Appart.",  Icon: Building2 },
+  { id: "house",     label: "Maison",   Icon: Home },
+  { id: "villa",     label: "Villa",    Icon: Home },
+  { id: "studio",    label: "Studio",   Icon: Sofa },
+  { id: "room",      label: "Chambre",  Icon: DoorOpen },
+  { id: "land",      label: "Terrain",  Icon: Leaf },
 ] as const;
 
 type PType = typeof TYPE_OPTIONS[number]["id"];
@@ -91,7 +91,7 @@ export default function PublierRapidePage() {
     return (
       <div className="max-w-lg mx-auto px-4 pt-12 pb-32 text-center" style={{ background: "var(--bg-primary)" }}>
         <div className="rounded-3xl p-6" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-          <p className="text-4xl mb-4">🏠</p>
+          <Home className="mx-auto mb-4 h-10 w-10 text-[var(--accent-gold)]" strokeWidth={1.8} />
           <h1 className="text-2xl font-black mb-3" style={{ color: "var(--text-primary)" }}>
             Tu veux publier un logement ?
           </h1>
@@ -119,7 +119,7 @@ export default function PublierRapidePage() {
       if (!isSupabaseConfigured || !supabase) {
         // Mock mode
         await new Promise((r) => setTimeout(r, 1200));
-        toast("✅ Annonce soumise (mode demo)", "success");
+        toast("Annonce soumise (mode demo)", "success");
         router.push("/annonces");
         return;
       }
@@ -245,7 +245,7 @@ export default function PublierRapidePage() {
     return (
       <div className="max-w-lg mx-auto px-4 pt-12 pb-32 text-center" style={{ background: "var(--bg-primary)" }}>
         <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl" style={{ background: "rgba(212,175,55,0.12)", border: "2px solid rgba(212,175,55,0.30)" }}>
-          ✅
+          <CheckCircle2 className="h-10 w-10 text-[var(--accent-gold)]" strokeWidth={2.2} />
         </div>
         <h1 className="text-2xl font-black mb-3" style={{ color: "var(--text-primary)" }}>Annonce soumise !</h1>
         <p className="text-sm leading-relaxed mb-6" style={helpTextStyle}>
@@ -276,7 +276,8 @@ export default function PublierRapidePage() {
       <div className="mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-3"
           style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.25)" }}>
-          ⚡ Publication rapide
+          <Zap className="h-3.5 w-3.5" strokeWidth={2.4} />
+          Publication rapide
         </div>
         <h1 className="text-2xl font-black mb-1" style={{ color: "var(--text-primary)" }}>Publie ton bien</h1>
         <p className="text-sm" style={helpTextStyle}>Sans compte — en moins de 2 minutes</p>
@@ -287,7 +288,9 @@ export default function PublierRapidePage() {
         {/* Photos */}
         <div>
           <label className="block text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>
-            1. 📸 Photos <span className="text-red-400">*</span>
+            <span className="inline-flex items-center gap-2">
+              1. <Camera className="h-4 w-4" strokeWidth={2.4} /> Photos <span className="text-red-400">*</span>
+            </span>
             <span className="font-normal ml-1" style={helpTextStyle}>(min. 1, max. 4)</span>
           </label>
           {previews.length > 0 && (
@@ -324,9 +327,13 @@ export default function PublierRapidePage() {
 
         {/* Type de bien */}
         <div>
-          <label className="block text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>2. 🏠 Type</label>
+          <label className="flex items-center gap-2 text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>
+            2. <Home className="h-4 w-4" strokeWidth={2.4} /> Type
+          </label>
           <div className="grid grid-cols-3 gap-2">
-            {TYPE_OPTIONS.map((t) => (
+            {TYPE_OPTIONS.map((t) => {
+              const Icon = t.Icon;
+              return (
               <button key={t.id} type="button" onClick={() => setForm((f) => ({ ...f, type: t.id }))}
                 className={cn("flex flex-col items-center gap-1 py-3 rounded-xl border-2 font-semibold text-xs transition-all")}
                 style={{
@@ -335,16 +342,19 @@ export default function PublierRapidePage() {
                   background: form.type === t.id ? "rgba(212,175,55,0.16)" : "var(--bg-card)",
                   color: form.type === t.id ? "var(--accent-gold)" : "var(--text-primary)",
                 }}>
-                <span className="text-xl">{t.emoji}</span>
+                <Icon className="h-5 w-5" strokeWidth={2.3} />
                 {t.label}
               </button>
-            ))}
+            )})}
           </div>
         </div>
 
         {/* Transaction type */}
         <div>
-          <label className="block text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>🔑 Offre</label>
+          <label className="flex items-center gap-2 text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>
+            <KeyRound className="h-4 w-4" strokeWidth={2.4} />
+            Offre
+          </label>
           <div className="grid grid-cols-2 gap-3">
             {(["rent", "sale"] as const).map((t) => (
               <button key={t} type="button" onClick={() => setForm((f) => ({ ...f, txType: t }))}
@@ -355,7 +365,10 @@ export default function PublierRapidePage() {
                   background: form.txType === t ? "rgba(212,175,55,0.16)" : "var(--bg-card)",
                   color: form.txType === t ? "var(--accent-gold)" : "var(--text-primary)",
                 }}>
-                {t === "rent" ? "🔑 À Louer" : "💰 À Vendre"}
+                <span className="inline-flex items-center justify-center gap-2">
+                  {t === "rent" ? <KeyRound className="h-4 w-4" strokeWidth={2.4} /> : <Banknote className="h-4 w-4" strokeWidth={2.4} />}
+                  {t === "rent" ? "À Louer" : "À Vendre"}
+                </span>
               </button>
             ))}
           </div>
@@ -386,7 +399,9 @@ export default function PublierRapidePage() {
         {/* Price */}
         <div>
           <label className="block text-sm font-bold mb-2" style={{ color: "var(--text-primary)" }}>
-            4. 💰 Prix {form.txType === "rent" ? "/ mois" : ""} <span className="text-red-400">*</span>
+            <span className="inline-flex items-center gap-2">
+              4. <Banknote className="h-4 w-4" strokeWidth={2.4} /> Prix {form.txType === "rent" ? "/ mois" : ""} <span className="text-red-400">*</span>
+            </span>
           </label>
           <input
             type="number" inputMode="numeric" placeholder="Ex : 1 500 000"
@@ -429,7 +444,7 @@ export default function PublierRapidePage() {
           {submitting ? (
             <><Loader2 className="w-5 h-5 animate-spin" />Publication en cours…</>
           ) : canSubmit ? (
-            <><CheckCircle2 className="w-5 h-5" />6. ✅ Publier</>
+            <><CheckCircle2 className="w-5 h-5" />6. Publier</>
           ) : (
             "Complétez les champs obligatoires"
           )}

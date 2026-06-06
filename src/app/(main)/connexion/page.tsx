@@ -211,7 +211,10 @@ function ConnexionForm() {
                       : { background: "transparent", color: "rgba(255,255,255,0.48)" }),
                   }}
                 >
-                  {m === "phone" ? "📱 Téléphone" : "✉️ Email"}
+                  <span className="inline-flex items-center justify-center gap-2">
+                    {m === "phone" ? <Phone className="h-4 w-4" strokeWidth={2.4} /> : <Mail className="h-4 w-4" strokeWidth={2.4} />}
+                    {m === "phone" ? "Téléphone" : "Email"}
+                  </span>
                 </button>
               ))}
             </div>

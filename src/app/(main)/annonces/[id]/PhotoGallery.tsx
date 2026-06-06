@@ -1,7 +1,7 @@
 ﻿"use client";
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Home } from "lucide-react";
 
 interface Props {
   images: { url: string; alt: string }[];
@@ -15,7 +15,7 @@ export function PhotoGallery({ images, title }: Props) {
   if (!images.length) {
     return (
       <div className="aspect-[4/3] bg-slate-200 dark:bg-slate-700 rounded-2xl flex items-center justify-center">
-        <span className="text-4xl">🏠</span>
+        <Home className="h-10 w-10 text-slate-500 dark:text-slate-300" strokeWidth={1.8} />
       </div>
     );
   }

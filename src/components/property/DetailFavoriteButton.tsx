@@ -1,4 +1,5 @@
-"use client";
+﻿"use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect, useCallback } from "react";
 import { Heart } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
@@ -14,20 +15,20 @@ interface Props {
 /**
  * Favorite button for the property detail page.
  *
- * Fully decoupled from Zustand — Supabase is the single source of truth.
+ * Fully decoupled from Zustand â€” Supabase is the single source of truth.
  * On mount we re-check the DB so the button reflects reality even if the
  * server-rendered `initialIsFav` was stale (different device / another tab).
  */
-export function DetailFavoriteButton({ propertyId, initialIsFav: _ }: Props) {
+export function DetailFavoriteButton({ propertyId }: Props) {
   const { user } = useAuth();
-  // Always start as false — Supabase re-check on mount sets the real value.
+  // Always start as false â€” Supabase re-check on mount sets the real value.
   // Never initialise from the server-rendered prop or the Zustand store, both
   // can be stale (e.g. user deleted the fav on /favoris then came back here).
   const [isFav,         setIsFav]         = useState(false);
   const [checked,       setChecked]       = useState(false); // true once Supabase replied
   const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // ── Re-check Supabase on mount (corrects stale server render or cache) ────
+  // â”€â”€ Re-check Supabase on mount (corrects stale server render or cache) â”€â”€â”€â”€
   useEffect(() => {
     if (!user) {
       setIsFav(false);
@@ -59,7 +60,7 @@ export function DetailFavoriteButton({ propertyId, initialIsFav: _ }: Props) {
     if (!checked) return; // wait until we know the real state
     const next = !isFav;
     setIsFav(next); // optimistic
-    toast(next ? "❤️ Ajouté aux favoris" : "Retiré des favoris", next ? "success" : "info");
+    toast(next ? "Ajouté aux favoris" : "Retiré des favoris", next ? "success" : "info");
 
     if (!isSupabaseConfigured || !supabase) return;
     try {

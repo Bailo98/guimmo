@@ -1,21 +1,23 @@
 ﻿"use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { Hand, Home, Phone } from "lucide-react";
 
 const SCREENS = [
   {
-    icon: "🏠",
+    Icon: Home,
     title: "Trouve ton logement en Guinée",
     subtitle: "Simple. Rapide. Sans arnaque.",
   },
   {
-    icon: "👆",
+    Icon: Hand,
     title: "Swipe pour découvrir",
     subtitle: "Glisse à droite si tu aimes, à gauche pour passer",
     swipeAnimation: true,
   },
   {
-    icon: "📞",
+    Icon: Phone,
     title: "Contacte directement",
     subtitle: "WhatsApp, appel ou visite en 1 clic",
   },
@@ -76,6 +78,7 @@ export function Onboarding() {
   if (!mounted || !show) return null;
 
   const screen = SCREENS[step];
+  const ScreenIcon = screen.Icon;
 
   const modal = (
     <div
@@ -133,7 +136,6 @@ export function Onboarding() {
         {/* Icon */}
         <div
           style={{
-            fontSize: 80,
             lineHeight: 1,
             marginBottom: 32,
             display: "flex",
@@ -146,7 +148,7 @@ export function Onboarding() {
             border: "2px solid rgba(212,175,55,0.25)",
           }}
         >
-          {screen.icon}
+          <ScreenIcon className="h-14 w-14 text-[var(--accent-gold)]" />
         </div>
 
         {/* Swipe hand animation on screen 2 */}
@@ -159,7 +161,7 @@ export function Onboarding() {
               animation: "swipeHint 1.8s ease-in-out infinite",
             }}
           >
-            👈
+            <Hand className="h-9 w-9 text-[var(--accent-gold)]" />
           </div>
         )}
 

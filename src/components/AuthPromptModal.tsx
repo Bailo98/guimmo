@@ -1,6 +1,6 @@
 ﻿"use client";
 import { useRouter } from "next/navigation";
-import { X } from "lucide-react";
+import { Home, X } from "lucide-react";
 
 interface Props {
   onClose: () => void;
@@ -43,7 +43,7 @@ export function AuthPromptModal({ onClose, redirectUrl, action }: Props) {
         </button>
 
         {/* Icon */}
-        <div className="text-4xl mb-4">🏠</div>
+        <Home className="mx-auto mb-4 h-10 w-10 text-[var(--accent-gold)]" strokeWidth={1.8} />
 
         {/* Title */}
         <h2 className="font-black text-[20px] mb-2" style={{ color: "var(--text-primary)", fontFamily: "Georgia, serif" }}>

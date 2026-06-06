@@ -1,5 +1,5 @@
 ﻿import type { Metadata } from "next";
-import { MapPin, MessageCircle, UserCheck } from "lucide-react";
+import { ClipboardList, MapPin, MessageCircle, UserCheck } from "lucide-react";
 import { Avatar } from "@/components/ui/Avatar";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { NEIGHBORHOODS } from "@/data/neighborhoods";
@@ -114,8 +114,9 @@ export default async function AgentsPage() {
                         <span>{nbLabel(agent.neighborhood)}</span>
                       </div>
                       {agent.listings_count > 0 && (
-                        <span className="text-white/40 text-xs">
-                          📋 {agent.listings_count} annonce{agent.listings_count > 1 ? "s" : ""}
+                        <span className="inline-flex items-center gap-1 text-white/40 text-xs">
+                          <ClipboardList className="h-3 w-3" />
+                          {agent.listings_count} annonce{agent.listings_count > 1 ? "s" : ""}
                         </span>
                       )}
                     </div>

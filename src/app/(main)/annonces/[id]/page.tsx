@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { ArrowLeft, MapPin, Bed, Bath, Square, Phone, CheckCircle, XCircle } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Armchair, Battery, Bed, Bath, BrickWall, Building2, Camera, Car, CheckCircle, Droplets, Edit3, Eye, Home, KeyRound, Lock, MapPin, MessageCircle, Phone, Shield, Snowflake, Sofa, Square, Sun, Utensils, Video, Wifi, XCircle, Zap } from "lucide-react";
 import { ListingScore } from "@/components/ListingScore";
 import { Avatar } from "@/components/ui/Avatar";
 import { PhotoGallery } from "./PhotoGallery";
@@ -34,21 +34,21 @@ const TYPE_LABELS: Record<string, string> = {
   villa: "Villa", room: "Chambre", office: "Bureau", shop: "Boutique", land: "Terrain",
 };
 
-const WATER_INFO: Record<string, { icon: string; label: string }> = {
-  robinet: { icon: "💧", label: "Robinet" },
-  forage:  { icon: "💧", label: "Forage" },
-  citerne: { icon: "💧", label: "Citerne" },
-  none:    { icon: "❌", label: "Pas d'eau" },
+const WATER_INFO: Record<string, { Icon: typeof Droplets; label: string }> = {
+  robinet: { Icon: Droplets, label: "Robinet" },
+  forage:  { Icon: Droplets, label: "Forage" },
+  citerne: { Icon: Droplets, label: "Citerne" },
+  none:    { Icon: XCircle, label: "Pas d'eau" },
 };
-const ELEC_INFO: Record<string, { icon: string; label: string }> = {
-  edg:     { icon: "⚡", label: "Courant EDG" },
-  solaire: { icon: "☀️", label: "Panneau solaire" },
-  groupe:  { icon: "🔋", label: "Groupe électro." },
-  none:    { icon: "❌", label: "Pas d'électricité" },
+const ELEC_INFO: Record<string, { Icon: typeof Zap; label: string }> = {
+  edg:     { Icon: Zap, label: "Courant EDG" },
+  solaire: { Icon: Sun, label: "Panneau solaire" },
+  groupe:  { Icon: Battery, label: "Groupe électro." },
+  none:    { Icon: XCircle, label: "Pas d'électricité" },
 };
-const INET_INFO: Record<string, { icon: string; label: string }> = {
-  wifi: { icon: "📶", label: "WiFi / Fibre" },
-  none: { icon: "❌", label: "Pas d'internet" },
+const INET_INFO: Record<string, { Icon: typeof Wifi; label: string }> = {
+  wifi: { Icon: Wifi, label: "WiFi / Fibre" },
+  none: { Icon: XCircle, label: "Pas d'internet" },
 };
 
 
@@ -250,18 +250,21 @@ export default async function PropertyDetailPage({ params }: Props) {
   const waterAvail = waterKey !== "none";
   const elecAvail  = elecKey !== "none";
   const inetAvail  = inetKey !== "none";
+  const WaterIcon = WATER_INFO[waterKey]?.Icon ?? Droplets;
+  const ElecIcon = ELEC_INFO[elecKey]?.Icon ?? Zap;
+  const InetIcon = INET_INFO[inetKey]?.Icon ?? Wifi;
 
   // ── Other equipment pills ──────────────────────────────────────────────────
-  const otherEquip: { icon: string; label: string }[] = [];
-  if (property.has_parking)      otherEquip.push({ icon: "🚗", label: "Parking" });
-  if (property.has_security)     otherEquip.push({ icon: "👮", label: "Gardien" });
-  if (property.has_fence)        otherEquip.push({ icon: "🧱", label: "Clôture" });
-  if (property.has_ac)           otherEquip.push({ icon: "❄️", label: "Climatisation" });
-  if (property.kitchen_equipped) otherEquip.push({ icon: "🍳", label: "Cuisine équipée" });
+  const otherEquip: { Icon: typeof Car; label: string }[] = [];
+  if (property.has_parking)      otherEquip.push({ Icon: Car, label: "Parking" });
+  if (property.has_security)     otherEquip.push({ Icon: Shield, label: "Gardien" });
+  if (property.has_fence)        otherEquip.push({ Icon: BrickWall, label: "Clôture" });
+  if (property.has_ac)           otherEquip.push({ Icon: Snowflake, label: "Climatisation" });
+  if (property.kitchen_equipped) otherEquip.push({ Icon: Utensils, label: "Cuisine équipée" });
   if ((property.floor_number ?? 0) > 0)
-    otherEquip.push({ icon: "🏢", label: `Étage ${property.floor_number}` });
+    otherEquip.push({ Icon: Building2, label: `Étage ${property.floor_number}` });
   else
-    otherEquip.push({ icon: "🏠", label: "RDC" });
+    otherEquip.push({ Icon: Home, label: "RDC" });
 
   const CARD_AVAIL = { background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.20)" };
   const CARD_NONE  = { background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.20)" };
@@ -293,7 +296,10 @@ export default async function PropertyDetailPage({ params }: Props) {
         <div style={{ background: "var(--bg-secondary)" }}>
           <div style={{ maxWidth: 900, margin: "0 auto", padding: "56px 0 0" }}>
             <p style={{ color: "var(--text-primary)", fontSize: 14, fontWeight: 600, padding: "12px 16px 8px" }}>
-              🎥 Visite vidéo
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                <Video style={{ width: 16, height: 16 }} strokeWidth={2.4} />
+                Visite vidéo
+              </span>
             </p>
             <video
               src={videoUrl}
@@ -339,7 +345,7 @@ export default async function PropertyDetailPage({ params }: Props) {
           {/* ── Admin uniquement : bandeau annonce suspendue / inactive ── */}
           {isSuspended && isAdmin && (
             <div className="mb-4 rounded-2xl px-4 py-3 flex items-center gap-3" style={{ background: "rgba(239,68,68,0.12)", border: "2px solid rgba(239,68,68,0.50)" }}>
-              <span className="text-2xl flex-shrink-0">⚠️</span>
+              <AlertTriangle className="h-6 w-6 flex-shrink-0 text-red-400" strokeWidth={2.4} />
               <div className="flex-1 min-w-0">
                 <p className="text-red-400 font-black text-sm">
                   Cette annonce est {rowStatus === "suspended" ? "suspendue" : "inactive"} — visible uniquement par les admins
@@ -416,8 +422,9 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <span style={{ color: "var(--text-secondary)" }}>{neighborhoodLabel}, {property.city}</span>
                   </div>
                   {(property.views ?? 0) > 0 && (
-                    <span className="text-xs" style={{ color: "var(--text-muted)" }}>
-                      👁 {property.views} vue{(property.views ?? 0) > 1 ? "s" : ""}
+                    <span className="inline-flex items-center gap-1 text-xs" style={{ color: "var(--text-muted)" }}>
+                      <Eye className="h-3.5 w-3.5" strokeWidth={2.4} />
+                      {property.views} vue{(property.views ?? 0) > 1 ? "s" : ""}
                     </span>
                   )}
                 </div>
@@ -429,7 +436,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     {availabilityInfo.label}
                   </span>
                   <span className="rounded-2xl px-3 py-3 text-xs font-black" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
-                    {publishedInfo?.label ?? "⚪ Date non renseignée"}
+                    {publishedInfo?.label ?? "Date non renseignée"}
                   </span>
                   <span className="rounded-2xl px-3 py-3 text-xs font-black" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
                     {advanceInfo}
@@ -470,7 +477,11 @@ export default async function PropertyDetailPage({ params }: Props) {
                   </div>
                 )}
                 <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-                  <span className="text-2xl block mb-1">{property.furnished ? "🛋️" : "🪑"}</span>
+                  {property.furnished ? (
+                    <Sofa className="mx-auto mb-1 h-6 w-6" style={{ color: "var(--text-secondary)" }} strokeWidth={2.2} />
+                  ) : (
+                    <Armchair className="mx-auto mb-1 h-6 w-6" style={{ color: "var(--text-secondary)" }} strokeWidth={2.2} />
+                  )}
                   <p className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>
                     {property.furnished ? "Meublé" : "Non meublé"}
                   </p>
@@ -483,9 +494,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
                   {/* Eau */}
                   <div style={{ ...(waterAvail ? CARD_AVAIL : CARD_NONE), borderRadius: 12, padding: 16, textAlign: "center" }}>
-                    <span style={{ fontSize: 28, display: "block", marginBottom: 8 }}>
-                      {WATER_INFO[waterKey]?.icon ?? "💧"}
-                    </span>
+                    <WaterIcon style={{ width: 28, height: 28, display: "block", margin: "0 auto 8px", color: "var(--accent-gold)" }} strokeWidth={2.2} />
                     <p style={{ fontSize: 10, fontWeight: 700, color: "var(--bl-cream-dim)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 4 }}>EAU</p>
                     <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>
                       {WATER_INFO[waterKey]?.label ?? waterKey}
@@ -493,9 +502,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   </div>
                   {/* Électricité */}
                   <div style={{ ...(elecAvail ? CARD_AVAIL : CARD_NONE), borderRadius: 12, padding: 16, textAlign: "center" }}>
-                    <span style={{ fontSize: 28, display: "block", marginBottom: 8 }}>
-                      {ELEC_INFO[elecKey]?.icon ?? "⚡"}
-                    </span>
+                    <ElecIcon style={{ width: 28, height: 28, display: "block", margin: "0 auto 8px", color: "var(--accent-gold)" }} strokeWidth={2.2} />
                     <p style={{ fontSize: 10, fontWeight: 700, color: "var(--bl-cream-dim)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 4 }}>ÉLECTRICITÉ</p>
                     <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>
                       {ELEC_INFO[elecKey]?.label ?? elecKey}
@@ -503,9 +510,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   </div>
                   {/* Internet */}
                   <div style={{ ...(inetAvail ? CARD_AVAIL : CARD_NONE), borderRadius: 12, padding: 16, textAlign: "center" }}>
-                    <span style={{ fontSize: 28, display: "block", marginBottom: 8 }}>
-                      {INET_INFO[inetKey]?.icon ?? "📶"}
-                    </span>
+                    <InetIcon style={{ width: 28, height: 28, display: "block", margin: "0 auto 8px", color: "var(--accent-gold)" }} strokeWidth={2.2} />
                     <p style={{ fontSize: 10, fontWeight: 700, color: "var(--bl-cream-dim)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 4 }}>INTERNET</p>
                     <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>
                       {INET_INFO[inetKey]?.label ?? inetKey}
@@ -524,8 +529,10 @@ export default async function PropertyDetailPage({ params }: Props) {
                         background: "var(--bg-card)", border: "1px solid var(--border)",
                         color: "var(--bl-cream-dim)", borderRadius: 999,
                         padding: "6px 14px", fontSize: 12,
+                        display: "inline-flex", alignItems: "center", gap: 6,
                       }}>
-                        {eq.icon} {eq.label}
+                        <eq.Icon style={{ width: 14, height: 14 }} strokeWidth={2.3} />
+                        {eq.label}
                       </span>
                     ))}
                   </div>
@@ -542,12 +549,15 @@ export default async function PropertyDetailPage({ params }: Props) {
                   {(property.has_edg || property.has_generator || property.has_solar) && (
                     <div style={{ marginBottom: 14 }}>
                       <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
-                        ⚡ Électricité
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                          <Zap style={{ width: 13, height: 13 }} strokeWidth={2.4} />
+                          Électricité
+                        </span>
                       </p>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                        {property.has_edg && <span style={EQUIP_PILL}>⚡ EDG</span>}
-                        {property.has_generator && <span style={EQUIP_PILL}>🔋 Groupe électrogène</span>}
-                        {property.has_solar && <span style={EQUIP_PILL}>☀️ Panneau solaire</span>}
+                        {property.has_edg && <span style={EQUIP_PILL}><Zap style={{ width: 14, height: 14 }} /> EDG</span>}
+                        {property.has_generator && <span style={EQUIP_PILL}><Battery style={{ width: 14, height: 14 }} /> Groupe électrogène</span>}
+                        {property.has_solar && <span style={EQUIP_PILL}><Sun style={{ width: 14, height: 14 }} /> Panneau solaire</span>}
                       </div>
                     </div>
                   )}
@@ -555,12 +565,15 @@ export default async function PropertyDetailPage({ params }: Props) {
                   {(property.has_tap_water || property.has_borehole || property.has_running_water) && (
                     <div style={{ marginBottom: 14 }}>
                       <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
-                        💧 Eau
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                          <Droplets style={{ width: 13, height: 13 }} strokeWidth={2.4} />
+                          Eau
+                        </span>
                       </p>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                        {property.has_tap_water && <span style={EQUIP_PILL}>🚰 Robinet</span>}
-                        {property.has_borehole && <span style={EQUIP_PILL}>💧 Forage</span>}
-                        {property.has_running_water && <span style={EQUIP_PILL}>🌊 Eau courante</span>}
+                        {property.has_tap_water && <span style={EQUIP_PILL}><Droplets style={{ width: 14, height: 14 }} /> Robinet</span>}
+                        {property.has_borehole && <span style={EQUIP_PILL}><Droplets style={{ width: 14, height: 14 }} /> Forage</span>}
+                        {property.has_running_water && <span style={EQUIP_PILL}><Droplets style={{ width: 14, height: 14 }} /> Eau courante</span>}
                       </div>
                     </div>
                   )}
@@ -568,11 +581,14 @@ export default async function PropertyDetailPage({ params }: Props) {
                   {(property.is_furnished || property.has_pool) && (
                     <div>
                       <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
-                        🏠 Confort
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                          <Home style={{ width: 13, height: 13 }} strokeWidth={2.4} />
+                          Confort
+                        </span>
                       </p>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                        {property.is_furnished && <span style={EQUIP_PILL}>🪑 Meublé</span>}
-                        {property.has_pool && <span style={EQUIP_PILL}>🏊 Piscine</span>}
+                        {property.is_furnished && <span style={EQUIP_PILL}><Sofa style={{ width: 14, height: 14 }} /> Meublé</span>}
+                        {property.has_pool && <span style={EQUIP_PILL}><Droplets style={{ width: 14, height: 14 }} /> Piscine</span>}
                       </div>
                     </div>
                   )}
@@ -613,7 +629,10 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* ── Carte de localisation ── */}
               <div>
-                <h2 className="font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>📍 Localisation</h2>
+                <h2 className="inline-flex items-center gap-2 font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>
+                  <MapPin className="h-4 w-4" strokeWidth={2.4} />
+                  Localisation
+                </h2>
                 <PropertyMapWrapper
                   neighborhood={property.neighborhood}
                   lat={property.lat ?? property.latitude}
@@ -635,22 +654,22 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <div className="flex flex-wrap gap-2">
                     {(profileData as {is_verified?: boolean} | null)?.is_verified && (
                       <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(212,175,55,0.12)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.30)" }}>
-                        ✓ Propriétaire vérifié LogerBien
+                        <CheckCircle className="h-3.5 w-3.5" strokeWidth={2.4} /> Propriétaire vérifié LogerBien
                       </span>
                     )}
                     {(property.property_images?.length ?? 0) > 0 && (
                       <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.25)" }}>
-                        📷 Photos réelles
+                        <Camera className="h-3.5 w-3.5" strokeWidth={2.4} /> Photos réelles
                       </span>
                     )}
                     {property.contact_phone && (
                       <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(37,211,102,0.12)", color: "#25D366", border: "1px solid rgba(37,211,102,0.25)" }}>
-                        💬 Contact direct WhatsApp
+                        <MessageCircle className="h-3.5 w-3.5" strokeWidth={2.4} /> Contact direct WhatsApp
                       </span>
                     )}
                     {videoUrl && (
                       <span className="text-[13px] font-bold px-3 py-1.5 rounded-full" style={{ background: "rgba(139,92,246,0.15)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.25)" }}>
-                        🎥 Visite vidéo disponible
+                        <Video className="h-3.5 w-3.5" strokeWidth={2.4} /> Visite vidéo disponible
                       </span>
                     )}
                   </div>
@@ -713,7 +732,8 @@ export default async function PropertyDetailPage({ params }: Props) {
                     className="flex items-center justify-center gap-2 w-full font-bold py-4 px-4 rounded-2xl transition-all text-sm"
                     style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
                   >
-                    ✏️ Gérer cette annonce
+                    <Edit3 className="h-4 w-4" strokeWidth={2.4} />
+                    Gérer cette annonce
                   </Link>
                 ) : !isLoggedIn ? (
                   <>
@@ -723,7 +743,8 @@ export default async function PropertyDetailPage({ params }: Props) {
                       className="flex items-center justify-center gap-2 w-full font-bold py-4 px-4 rounded-2xl transition-all text-sm"
                       style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
                     >
-                      🔑 Se connecter
+                      <KeyRound className="h-4 w-4" strokeWidth={2.4} />
+                      Se connecter
                     </Link>
                     <Link
                       href={`/inscription?redirect=/annonces/${property.id}`}
@@ -739,7 +760,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
                       className="flex items-center justify-center gap-3 w-full bg-[#25D366] hover:bg-[#1ebe5d] active:scale-95 text-white font-bold py-4 px-4 rounded-2xl transition-all shadow-[0_8px_32px_rgba(37,211,102,0.3)]">
                       <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current flex-shrink-0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                      💬 Contacter sur WhatsApp
+                      Contacter sur WhatsApp
                     </a>
 
                     {/* Visit — opens VisitRequestModal (form → DB insert) */}
@@ -754,7 +775,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                       className="flex items-center justify-center gap-2 w-full font-semibold py-3 px-4 rounded-xl transition-colors text-sm hover:bg-black/5"
                       style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
                       <Phone className="w-4 h-4" />
-                      📞 Appeler le propriétaire
+                      Appeler le propriétaire
                     </a>
 
                     <MessageButton propertyId={property.id} ownerId={property.owner_id} propertyTitle={property.title} />
@@ -765,7 +786,10 @@ export default async function PropertyDetailPage({ params }: Props) {
 
                 <div className="pt-3 border-t" style={{ borderColor: "var(--border)" }}>
                   <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
-                    🔒 Ne payez jamais avant de visiter le logement. LogerBien ne demande aucun paiement direct.
+                    <span className="inline-flex items-start gap-2">
+                      <Lock className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" strokeWidth={2.4} />
+                      <span>Ne payez jamais avant de visiter le logement. LogerBien ne demande aucun paiement direct.</span>
+                    </span>
                   </p>
                 </div>
               </div>
@@ -783,7 +807,8 @@ export default async function PropertyDetailPage({ params }: Props) {
             className="flex items-center justify-center gap-2 w-full font-bold rounded-2xl text-sm"
             style={{ background: "var(--accent-gold)", color: "var(--bg-primary)", minHeight: "52px" }}
           >
-            ✏️ Gérer cette annonce
+            <Edit3 className="h-4 w-4" strokeWidth={2.4} />
+            Gérer cette annonce
           </Link>
         ) : !isLoggedIn ? (
           <div className="flex gap-2">
@@ -792,7 +817,8 @@ export default async function PropertyDetailPage({ params }: Props) {
               className="flex-1 flex items-center justify-center gap-2 font-bold rounded-2xl text-sm"
               style={{ background: "var(--accent-gold)", color: "var(--bg-primary)", minHeight: "52px" }}
             >
-              🔑 Se connecter
+              <KeyRound className="h-4 w-4" strokeWidth={2.4} />
+              Se connecter
             </Link>
             <Link
               href={`/inscription?redirect=/annonces/${property.id}`}
@@ -808,7 +834,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               className="flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#1ebe5d] active:scale-[0.99] text-white font-bold rounded-2xl text-sm shadow-[0_4px_20px_rgba(37,211,102,0.35)]"
               style={{ minHeight: "52px" }}>
               <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current flex-shrink-0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-              💬 WhatsApp
+              WhatsApp
             </a>
             <div className="flex gap-2">
               <VisitButton

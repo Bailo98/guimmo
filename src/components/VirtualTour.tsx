@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { X } from "lucide-react";
+import { DoorOpen, Home, X } from "lucide-react";
 
 export interface VTRoom {
   id: string;
@@ -85,7 +85,8 @@ export function VirtualTour({ rooms }: Props) {
     const dx = touchStartX.current - e.changedTouches[0].clientX;
     const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current);
     if (Math.abs(dx) > 60 && Math.abs(dx) > dy) {
-      dx > 0 ? goNext() : goPrev();
+      if (dx > 0) goNext();
+      else goPrev();
     }
   }
 
@@ -135,9 +136,9 @@ export function VirtualTour({ rooms }: Props) {
             width: 44, height: 44, borderRadius: 12,
             background: "rgba(212,175,55,0.15)",
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 22, flexShrink: 0,
+            flexShrink: 0,
           }}>
-            🏠
+            <Home className="h-5 w-5 text-[var(--accent-gold)]" />
           </div>
           <div>
             <p style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: 15, marginBottom: 2 }}>
@@ -181,7 +182,8 @@ export function VirtualTour({ rooms }: Props) {
             justifyContent: "center", gap: 8, minHeight: 48,
           }}
         >
-          🚪 Commencer la visite →
+          <DoorOpen className="h-4 w-4" />
+          Commencer la visite
         </button>
       </div>
 

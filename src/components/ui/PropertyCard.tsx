@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Heart, ChevronLeft, ChevronRight, Home, Phone } from "lucide-react";
+import { Bed, Flame, Heart, MapPin, ChevronLeft, ChevronRight, Home, Phone, Zap } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth-context";
@@ -32,10 +32,10 @@ const NEIGHBORHOOD_LABELS: Record<string, string> = {
 };
 
 // ── Feature 1: Availability mode badge config ──────────────────────────────────
-const AVAIL_CONFIG: Record<string, { label: string; color: string; bg: string; border: string }> = {
-  urgent:    { label: "⚡ Urgent",               color: "#ff4d4d", bg: "rgba(255,77,77,0.18)",    border: "rgba(255,77,77,0.45)" },
-  today:     { label: "🔥 Dispo aujourd'hui",     color: "#ff8c00", bg: "rgba(255,140,0,0.18)",    border: "rgba(255,140,0,0.45)" },
-  immediate: { label: "🏃 Libre immédiatement",   color: "#25D366", bg: "rgba(37,211,102,0.18)",  border: "rgba(37,211,102,0.45)" },
+const AVAIL_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; Icon?: typeof Zap }> = {
+  urgent:    { label: "Urgent",               color: "#ff4d4d", bg: "rgba(255,77,77,0.18)",    border: "rgba(255,77,77,0.45)", Icon: Zap },
+  today:     { label: "Dispo aujourd'hui",     color: "#ff8c00", bg: "rgba(255,140,0,0.18)",    border: "rgba(255,140,0,0.45)", Icon: Flame },
+  immediate: { label: "Libre immédiatement",   color: "#25D366", bg: "rgba(37,211,102,0.18)",  border: "rgba(37,211,102,0.45)", Icon: Zap },
   flexible:  { label: "", color: "", bg: "", border: "" }, // no badge for default
 };
 
@@ -109,7 +109,7 @@ export function PropertyCard({
     if (!user) { setShowAuthModal(true); return; }
     const willBeFav = !fav;
     toggleFavorite(property.id);
-    toast(willBeFav ? "❤️ Ajouté aux favoris" : "Retiré des favoris", willBeFav ? "success" : "info");
+    toast(willBeFav ? "Ajouté aux favoris" : "Retiré des favoris", willBeFav ? "success" : "info");
     if (isSupabaseConfigured && supabase) {
       try {
         if (willBeFav) {
@@ -319,7 +319,11 @@ export function PropertyCard({
             fontSize: 16, fontWeight: 800, padding: "4px 10px",
             borderRadius: 20, whiteSpace: "nowrap",
             backdropFilter: "blur(6px)",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 5,
           }}>
+            {availCfg.Icon && <availCfg.Icon style={{ width: 15, height: 15 }} strokeWidth={2.4} />}
             {availCfg.label}
           </span>
         </div>
@@ -405,8 +409,16 @@ export function PropertyCard({
             overflow: "hidden",
             textOverflow: "ellipsis",
           }}>
-            📍 {neighborhoodLabel}
-            {(property.rooms ?? 0) > 0 && ` · 🛏 ${property.rooms}`}
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+              <MapPin style={{ width: 17, height: 17 }} strokeWidth={2.4} />
+              {neighborhoodLabel}
+            </span>
+            {(property.rooms ?? 0) > 0 && (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, marginLeft: 8 }}>
+                <Bed style={{ width: 17, height: 17 }} strokeWidth={2.4} />
+                {property.rooms}
+              </span>
+            )}
             {distanceStr && ` · ${distanceStr}`}
           </span>
         </div>

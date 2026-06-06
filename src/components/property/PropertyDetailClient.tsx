@@ -1,7 +1,7 @@
 ﻿"use client";
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { Heart, ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
+import { Heart, ChevronLeft, ChevronRight, X, Zap, ZoomIn } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
@@ -32,7 +32,10 @@ export function PropertyDetailClient({ property }: Props) {
   function handleTouchEnd(e: React.TouchEvent) {
     if (touchStartX.current === null) return;
     const delta = e.changedTouches[0].clientX - touchStartX.current;
-    if (Math.abs(delta) > 40) delta < 0 ? next() : prev();
+    if (Math.abs(delta) > 40) {
+      if (delta < 0) next();
+      else prev();
+    }
     touchStartX.current = null;
   }
 
@@ -88,7 +91,7 @@ export function PropertyDetailClient({ property }: Props) {
             <button
               onClick={() => {
                 toggleFavorite(property.id);
-                toast(fav ? "Retiré des favoris" : "Ajouté aux favoris ❤️", fav ? "info" : "success");
+                toast(fav ? "Retiré des favoris" : "Ajouté aux favoris", fav ? "info" : "success");
               }}
               className={cn(
                 "w-9 h-9 rounded-full flex items-center justify-center backdrop-blur transition-colors",
@@ -109,7 +112,8 @@ export function PropertyDetailClient({ property }: Props) {
           {/* Boosted badge */}
           {property.is_boosted && (
             <div className="absolute top-3 left-3 bg-[var(--accent-gold)] text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
-              ⚡ Annonce boostée
+              <Zap className="h-3.5 w-3.5" />
+              Annonce boostée
             </div>
           )}
         </div>

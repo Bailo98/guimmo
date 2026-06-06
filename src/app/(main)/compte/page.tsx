@@ -187,7 +187,7 @@ function ProfileForm({ user, profile, refreshProfile }: {
         .update({ account_type: "proprietaire", role: "proprietaire" })
         .eq("id", user.id);
       if (legacy.error) toast("Impossible de changer le type de compte", "error");
-      else { await refreshProfile(); toast("✅ Profil propriétaire activé", "success"); }
+      else { await refreshProfile(); toast("Profil propriétaire activé", "success"); }
       setSaving(false);
       return;
     }
@@ -197,14 +197,14 @@ function ProfileForm({ user, profile, refreshProfile }: {
         .update({ account_type: "chercheur", role: "chercheur" })
         .eq("id", user.id);
       if (legacy.error) toast("Impossible de changer le type de compte", "error");
-      else { await refreshProfile(); toast("✅ Profil chercheur activé", "success"); }
+      else { await refreshProfile(); toast("Profil chercheur activé", "success"); }
       setSaving(false);
       return;
     }
     if (error) toast("Impossible de changer le type de compte", "error");
     else {
       await refreshProfile();
-      toast(next === "owner" ? "✅ Profil propriétaire activé" : "✅ Profil chercheur activé", "success");
+      toast(next === "owner" ? "Profil propriétaire activé" : "Profil chercheur activé", "success");
     }
     setSaving(false);
   }
@@ -218,7 +218,7 @@ function ProfileForm({ user, profile, refreshProfile }: {
     if (isAgence && agencyName.trim()) updates.agency_name = agencyName.trim();
     const { error } = await supabase.from("profiles").update(updates).eq("id", user.id);
     if (error) toast("Erreur lors de la sauvegarde", "error");
-    else { await refreshProfile(); toast("✅ Profil sauvegardé", "success"); }
+    else { await refreshProfile(); toast("Profil sauvegardé", "success"); }
     setSaving(false);
   }
 
@@ -256,8 +256,8 @@ function ProfileForm({ user, profile, refreshProfile }: {
         <p className="bl-section-label mb-3">Type de compte</p>
         <div className="grid grid-cols-2 gap-3">
           {([
-            { id: "seeker" as const, icon: "🔍", title: "Je cherche", sub: "Logement" },
-            { id: "owner" as const, icon: "🏠", title: "Je publie", sub: "Mes biens" },
+            { id: "seeker" as const, icon: <Search className="h-5 w-5" strokeWidth={2.4} />, title: "Je cherche", sub: "Logement" },
+            { id: "owner" as const, icon: <Home className="h-5 w-5" strokeWidth={2.4} />, title: "Je publie", sub: "Mes biens" },
           ]).map((item) => {
             const active = accountMode === item.id;
             return (
@@ -455,7 +455,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
       error = fallback.error;
     }
     if (error) toast("Erreur lors de la mise à jour", "error");
-    else { setListings((p) => p.map((l) => l.id === listing.id ? { ...l, available_now: newVal } : l)); toast(newVal ? "✅ Remise disponible" : "✅ Marquée comme louée", "success"); }
+    else { setListings((p) => p.map((l) => l.id === listing.id ? { ...l, available_now: newVal } : l)); toast(newVal ? "Remise disponible" : "Marquée comme louée", "success"); }
     setActionLoading(null);
   }
 
@@ -465,7 +465,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
     setActionLoading(listing.id + "-delete");
     const { error } = await supabase.from("properties").delete().eq("id", listing.id);
     if (error) toast("Erreur lors de la suppression", "error");
-    else { setListings((p) => p.filter((l) => l.id !== listing.id)); toast("✅ Annonce supprimée", "success"); }
+    else { setListings((p) => p.filter((l) => l.id !== listing.id)); toast("Annonce supprimée", "success"); }
     setActionLoading(null);
   }
 
@@ -479,7 +479,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
 
   if (listings.length === 0) return (
     <div className="text-center py-14 rounded-2xl" style={{ border: "2px dashed var(--border)" }}>
-      <div className="text-4xl mb-3">🏠</div>
+      <Home className="mx-auto mb-3 h-10 w-10 text-[var(--accent-gold)]" strokeWidth={1.8} />
       <p className="font-bold mb-1" style={{ color: "var(--text-primary)" }}>Aucune annonce</p>
       <p className="text-sm mb-4" style={{ color: "var(--text-primary-faint)" }}>Publiez votre premier bien en quelques minutes.</p>
       <Link href="/publier" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors" style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}>
@@ -509,7 +509,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
                 <Link href={`/annonces/${listing.id}`} className="relative w-24 h-20 flex-shrink-0 rounded-xl overflow-hidden" style={{ background: "var(--bg-secondary)" }}>
                   {listing.primary_image
                     ? <Image src={listing.primary_image} alt={listing.title} fill className="object-cover" sizes="96px" />
-                    : <div className="w-full h-full flex items-center justify-center text-2xl">🏠</div>}
+                    : <div className="w-full h-full flex items-center justify-center"><Home className="h-6 w-6 text-[var(--text-muted)]" strokeWidth={1.8} /></div>}
                 </Link>
                 <div className="flex-1 min-w-0">
                   <Link href={`/annonces/${listing.id}`}><p className="font-bold text-sm leading-snug line-clamp-2" style={{ color: "var(--text-primary)" }}>{listing.title}</p></Link>
@@ -553,7 +553,7 @@ function ListingsManager({ userId, limit }: { userId: string; limit?: number }) 
                         const newExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
                         const { error } = await supabase.from("properties").update({ expires_at: newExpiry }).eq("id", listing.id);
                         if (error) toast("Erreur renouvellement", "error");
-                        else { setListings((p) => p.map((l) => l.id === listing.id ? { ...l, expires_at: newExpiry } : l)); toast("✅ Annonce renouvelée 30 jours", "success"); }
+                        else { setListings((p) => p.map((l) => l.id === listing.id ? { ...l, expires_at: newExpiry } : l)); toast("Annonce renouvelée 30 jours", "success"); }
                         setActionLoading(null);
                       }}
                       disabled={busy || isRenewBusy}
@@ -796,7 +796,7 @@ function VisitRequestsManager({ userId, onPendingCount }: {
       onPendingCount?.(next.filter((v) => v.status === "pending").length);
       return next;
     });
-    const msgs = { confirmed: "✅ Visite confirmée", cancelled: "Demande annulée", completed: "✅ Visite marquée terminée" };
+    const msgs = { confirmed: "Visite confirmée", cancelled: "Demande annulée", completed: "Visite marquée terminée" };
     const types = { confirmed: "success" as const, cancelled: "error" as const, completed: "success" as const };
     toast(msgs[status], types[status]);
   }
@@ -806,12 +806,12 @@ function VisitRequestsManager({ userId, onPendingCount }: {
     await supabase.from("visits").update({ owner_note: noteText.trim() || null }).eq("id", id);
     setVisits((prev) => prev.map((v) => v.id === id ? { ...v, owner_note: noteText.trim() || null } : v));
     setNoteId(null);
-    toast("✅ Note sauvegardée", "success");
+    toast("Note sauvegardée", "success");
   }
 
   const statusBadge = (s: string) => {
-    if (s === "confirmed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e" }}>✅ Confirmée</span>;
-    if (s === "cancelled") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "#ef4444" }}>❌ Annulée</span>;
+    if (s === "confirmed") return <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e" }}><CheckCircle className="h-3 w-3" />Confirmée</span>;
+    if (s === "cancelled") return <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "#ef4444" }}><XCircle className="h-3 w-3" />Annulée</span>;
     if (s === "completed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(160,160,160,0.15)", color: "#aaa" }}>✓ Terminée</span>;
     return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)" }}>⏳ En attente</span>;
   };
@@ -953,8 +953,8 @@ function VisitorVisitsSection({ userId }: { userId: string }) {
   }, [userId, load]);
 
   const statusBadge = (s: string) => {
-    if (s === "confirmed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e" }}>✅ Confirmée</span>;
-    if (s === "cancelled") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "#ef4444" }}>❌ Annulée</span>;
+    if (s === "confirmed") return <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(34,197,94,0.15)", color: "#22c55e" }}><CheckCircle className="h-3 w-3" />Confirmée</span>;
+    if (s === "cancelled") return <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(239,68,68,0.15)", color: "#ef4444" }}><XCircle className="h-3 w-3" />Annulée</span>;
     if (s === "completed") return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(160,160,160,0.15)", color: "#aaa" }}>✓ Terminée</span>;
     return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)" }}>⏳ En attente</span>;
   };
@@ -1069,7 +1069,7 @@ function BuyerProfile({ user, profile, refreshProfile }: {
       .update({ role: "proprietaire", account_type: "proprietaire" })
       .eq("id", user.id);
     if (error) { toast("Erreur lors de la mise à jour", "error"); setBecomingPro(false); return; }
-    toast("✅ Compte annonceur activé !", "success");
+    toast("Compte annonceur activé !", "success");
     window.location.reload();
   }
 
@@ -1178,7 +1178,7 @@ function BuyerProfile({ user, profile, refreshProfile }: {
                 <div className="relative h-28" style={{ background: "var(--bg-secondary)" }}>
                   {fav.primary_image
                     ? <Image src={fav.primary_image} alt={fav.title} fill className="object-cover" sizes="50vw" />
-                    : <div className="w-full h-full flex items-center justify-center text-2xl">🏠</div>}
+                    : <div className="w-full h-full flex items-center justify-center"><Home className="h-6 w-6 text-[var(--text-muted)]" strokeWidth={1.8} /></div>}
                 </div>
                 <div className="p-2.5">
                   <p className="font-bold text-xs line-clamp-1" style={{ color: "var(--text-primary)" }}>{fav.title}</p>
@@ -1415,7 +1415,7 @@ function DashboardListingCard({ listing }: { listing: Listing }) {
       <div className="relative" style={{ aspectRatio: "16/10" }}>
         {listing.primary_image
           ? <Image src={listing.primary_image} alt={listing.title} fill className="object-cover" sizes="(max-width:768px) 50vw,25vw" />
-          : <div className="w-full h-full flex items-center justify-center text-3xl" style={{ background: "var(--bg-secondary)" }}>🏠</div>}
+          : <div className="w-full h-full flex items-center justify-center" style={{ background: "var(--bg-secondary)" }}><Home className="h-8 w-8 text-[var(--text-muted)]" strokeWidth={1.8} /></div>}
         <span className="absolute top-2 left-2 text-[11px] font-bold px-2 py-0.5 rounded-full"
           style={{ background: statusInfo.bg, color: statusInfo.color }}>{statusInfo.label}</span>
         <div ref={menuRef} className="absolute top-2 right-2">
@@ -1784,7 +1784,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                   </div>
                 ) : dashListings.length === 0 ? (
                   <div className="text-center py-10 rounded-2xl" style={{ border: "2px dashed var(--border)" }}>
-                    <p className="text-3xl mb-2">🏠</p>
+                    <Home className="mx-auto mb-2 h-8 w-8 text-[var(--text-muted)]" strokeWidth={1.8} />
                     <p className="font-bold mb-3" style={{ color: "var(--text-primary)" }}>Aucune annonce</p>
                     <Link href="/publier" className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm"
                       style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}>
@@ -2060,7 +2060,7 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
     if (!supabase) return;
     await supabase.from("saved_searches").delete().eq("id", id);
     setSearches((p) => p.filter((s) => s.id !== id));
-    toast("✅ Recherche supprimée", "success");
+    toast("Recherche supprimée", "success");
   }
   async function toggleNotify(s: SavedSearch) {
     if (!supabase) return;
@@ -2074,7 +2074,7 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
     const { data } = await supabase.from("saved_searches").insert({ user_id: user.id, label: newLabel.trim(), neighborhood: newNeighborhood || null, type: newType || null, transaction_type: newTx || null }).select().single();
     if (data) setSearches((p) => [data as SavedSearch, ...p]);
     setNewLabel(""); setNewNeighborhood(""); setNewType(""); setNewTx(""); setShowNew(false); setSaving(false);
-    toast("✅ Recherche sauvegardée", "success");
+    toast("Recherche sauvegardée", "success");
   }
   function buildUrl(s: SavedSearch) {
     const p = new URLSearchParams();

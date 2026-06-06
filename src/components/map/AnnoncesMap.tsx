@@ -1,4 +1,5 @@
 ﻿"use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState, useCallback, useRef } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -6,7 +7,7 @@ import type { Property } from "@/types";
 import { formatPrice } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { LocateFixed, X } from "lucide-react";
+import { LocateFixed, MapPin, X } from "lucide-react";
 
 // Verified Conakry neighbourhood centroids
 const QUARTIERS_COORDS: Record<string, [number, number]> = {
@@ -249,8 +250,9 @@ export default function AnnoncesMap({ properties }: AnnoncesMapProps) {
             >
               {selected.title}
             </p>
-            <p style={{ color: "var(--text-primary-faint)", fontSize: 11 }}>
-              📍 {neighbourhoodLabel(selected.neighborhood)}
+            <p className="inline-flex items-center gap-1" style={{ color: "var(--text-primary-faint)", fontSize: 11 }}>
+              <MapPin className="h-3 w-3" />
+              {neighbourhoodLabel(selected.neighborhood)}
             </p>
           </div>
 

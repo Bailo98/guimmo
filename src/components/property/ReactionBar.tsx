@@ -1,14 +1,16 @@
 ﻿"use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { Banknote, Eye, Flame, Heart } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 
 const REACTIONS = [
-  { key: "love",      emoji: "❤️",  label: "J'adore"     },
-  { key: "fire",      emoji: "🔥",  label: "Intéressant" },
-  { key: "eyes",      emoji: "👀",  label: "À voir"      },
-  { key: "expensive", emoji: "💰",  label: "Trop cher"   },
+  { key: "love",      Icon: Heart,    label: "J'adore"     },
+  { key: "fire",      Icon: Flame,    label: "Intéressant" },
+  { key: "eyes",      Icon: Eye,      label: "À voir"      },
+  { key: "expensive", Icon: Banknote, label: "Trop cher"   },
 ] as const;
 
 type ReactionKey = (typeof REACTIONS)[number]["key"];
@@ -109,7 +111,7 @@ export function ReactionBar({ propertyId, compact = false }: ReactionBarProps) {
         alignItems: "center",
       }}
     >
-      {REACTIONS.map(({ key, emoji, label }) => {
+      {REACTIONS.map(({ key, Icon, label }) => {
         const isActive = userReaction === key;
         const count = counts[key] ?? 0;
         const isAnim = animating === key;
@@ -142,7 +144,7 @@ export function ReactionBar({ propertyId, compact = false }: ReactionBarProps) {
               whiteSpace: "nowrap",
             }}
           >
-            <span style={{ lineHeight: 1 }}>{emoji}</span>
+            <Icon style={{ width: compact ? 14 : 16, height: compact ? 14 : 16 }} />
             {count > 0 && (
               <span style={{ fontSize: compact ? 11 : 13, lineHeight: 1 }}>
                 {count}

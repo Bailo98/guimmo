@@ -25,7 +25,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
 
   const [visitorName,  setVisitorName]  = useState(profile?.full_name ?? "");
   const [visitorPhone, setVisitorPhone] = useState(profile?.phone ?? "");
-  const [visitorEmail, setVisitorEmail] = useState(user?.email ?? "");
+  const [visitorEmail] = useState(user?.email ?? "");
   const [preferredDate, setPreferredDate] = useState("");
   const [preferredTime, setPreferredTime] = useState("");
   const [message,      setMessage]      = useState("");
@@ -57,7 +57,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
         status:           "pending",
       });
       if (!error) {
-        toast("📅 Demande de visite envoyée ! L'agent vous contactera pour confirmer.", "success");
+        toast("Demande de visite envoyée ! L'agent vous contactera pour confirmer.", "success");
       }
       setDone(true);
     } catch {
@@ -220,7 +220,7 @@ export function VisitRequestModal({ propertyId, ownerId, propertyTitle, onClose 
                 color: canSubmit && !loading ? "var(--bg-primary)" : "rgba(255,255,255,0.30)",
               }}
             >
-              {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Envoi…</> : "📅 Envoyer la demande"}
+              {loading ? <><Loader2 className="w-4 h-4 animate-spin" />Envoi…</> : <><Calendar className="w-4 h-4" />Envoyer la demande</>}
             </button>
           </>
         )}

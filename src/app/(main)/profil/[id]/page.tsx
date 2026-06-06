@@ -2,11 +2,22 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
-import { MapPin, CheckCircle, Phone } from "lucide-react";
+import { Home, MapPin, CheckCircle, Phone } from "lucide-react";
 import type { Metadata } from "next";
 import { formatPrice } from "@/lib/utils";
 
 interface Props { params: Promise<{ id: string }> }
+
+type ProfileListingRow = {
+  id: string;
+  title: string;
+  neighborhood: string;
+  price: number;
+  price_period: string | null;
+  available_now: boolean | null;
+  views: number | null;
+  property_images?: Array<{ url: string; is_primary?: boolean | null }>;
+};
 
 const NEIGHBORHOOD_LABELS: Record<string, string> = {
   kipe: "Kipé", lambanyi: "Lambanyi", ratoma: "Ratoma Centre",
@@ -62,10 +73,9 @@ export default async function ProfilPage({ params }: Props) {
     ? `https://wa.me/${profile.phone.replace(/\D/g, "")}`
     : null;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const mappedListings = (listings ?? []).map((row: any) => {
+  const mappedListings = ((listings ?? []) as ProfileListingRow[]).map((row) => {
     const imgs = row.property_images ?? [];
-    const primary = imgs.find((i: any) => i.is_primary) ?? imgs[0];
+    const primary = imgs.find((i) => i.is_primary) ?? imgs[0];
     return { ...row, primaryImage: primary?.url ?? null };
   });
 
@@ -132,7 +142,9 @@ export default async function ProfilPage({ params }: Props) {
                   {l.primaryImage ? (
                     <Image src={l.primaryImage} alt={l.title} fill className="object-cover" sizes="96px" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-2xl">🏠</div>
+                    <div className="w-full h-full flex items-center justify-center text-[var(--accent-gold)]">
+                      <Home className="h-6 w-6" />
+                    </div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -153,7 +165,7 @@ export default async function ProfilPage({ params }: Props) {
 
       {mappedListings.length === 0 && (
         <div className="text-center py-16 text-slate-400">
-          <p className="text-4xl mb-3">🏠</p>
+          <Home className="mx-auto mb-3 h-10 w-10 text-[var(--accent-gold)]" />
           <p className="font-medium">Aucune annonce active pour le moment.</p>
         </div>
       )}

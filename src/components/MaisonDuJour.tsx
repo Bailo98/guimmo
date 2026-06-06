@@ -1,6 +1,7 @@
 ﻿import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
+import { Bed, Flame, MapPin, Ruler, Trophy } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { isPubliclyAvailable } from "@/lib/property-signals";
 import { getNeighborhoodName } from "@/data/neighborhoods";
@@ -68,7 +69,9 @@ export async function MaisonDuJour() {
     <section className="py-10">
       <div className="max-w-7xl mx-auto px-4">
         <div className="mb-5 flex items-center gap-3">
-          <span className="text-2xl">🏆</span>
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[rgba(212,175,55,0.14)] text-[var(--accent-gold)]">
+            <Trophy className="h-5 w-5" />
+          </span>
           <div>
             <h2
               className="text-xl md:text-2xl font-black"
@@ -125,7 +128,8 @@ export async function MaisonDuJour() {
                     backdropFilter: "blur(8px)",
                   }}
                 >
-                  🏆 Maison du jour
+                  <Trophy className="h-3.5 w-3.5" />
+                  Maison du jour
                 </span>
                 {(property.fav_count ?? 0) > 0 && (
                   <span
@@ -137,7 +141,8 @@ export async function MaisonDuJour() {
                       backdropFilter: "blur(8px)",
                     }}
                   >
-                    🔥 {property.fav_count} personne{property.fav_count > 1 ? "s" : ""} intéressée{property.fav_count > 1 ? "s" : ""}
+                    <Flame className="h-3.5 w-3.5" />
+                    {property.fav_count} personne{property.fav_count > 1 ? "s" : ""} intéressée{property.fav_count > 1 ? "s" : ""}
                   </span>
                 )}
               </div>
@@ -156,8 +161,9 @@ export async function MaisonDuJour() {
                 <p className="text-white font-bold text-lg leading-tight">
                   {property.title}
                 </p>
-                <p className="text-white/70 text-sm mt-0.5">
-                  📍 {neighborhoodLabel}, Conakry
+                <p className="text-white/70 text-sm mt-0.5 inline-flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5" />
+                  {neighborhoodLabel}, Conakry
                 </p>
               </div>
             </div>
@@ -169,13 +175,15 @@ export async function MaisonDuJour() {
             >
               <div className="flex items-center gap-3 flex-wrap">
                 {(property.rooms ?? 0) > 0 && (
-                  <span className="text-sm text-white/60">
-                    🛏 {property.rooms} ch.
+                  <span className="inline-flex items-center gap-1.5 text-sm text-white/60">
+                    <Bed className="h-4 w-4" />
+                    {property.rooms} ch.
                   </span>
                 )}
                 {(property.surface ?? 0) > 0 && (
-                  <span className="text-sm text-white/60">
-                    📐 {property.surface} m²
+                  <span className="inline-flex items-center gap-1.5 text-sm text-white/60">
+                    <Ruler className="h-4 w-4" />
+                    {property.surface} m²
                   </span>
                 )}
                 <span

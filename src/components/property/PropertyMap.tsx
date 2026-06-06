@@ -1,5 +1,6 @@
 ﻿"use client";
 import { useEffect } from "react";
+import { MapPin } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -122,10 +123,14 @@ export default function PropertyMap({ neighborhood, lat, lng, title }: PropertyM
       {/* Accuracy label */}
       <p style={{ fontSize: 11, marginTop: 6, lineHeight: 1.4 }}>
         {isExact ? (
-          <span style={{ color: "#22c55e", fontWeight: 600 }}>📍 Position exacte</span>
+          <span className="inline-flex items-center gap-1.5" style={{ color: "#22c55e", fontWeight: 600 }}>
+            <MapPin className="h-3.5 w-3.5" />
+            Position exacte
+          </span>
         ) : (
-          <span style={{ color: "#f59e0b", fontWeight: 600 }}>
-            📍 Localisation approximative — quartier {neighborhoodLabel}
+          <span className="inline-flex items-center gap-1.5" style={{ color: "#f59e0b", fontWeight: 600 }}>
+            <MapPin className="h-3.5 w-3.5" />
+            Localisation approximative — quartier {neighborhoodLabel}
           </span>
         )}
       </p>

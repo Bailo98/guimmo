@@ -1,7 +1,7 @@
 ﻿"use client";
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ChevronLeft, Save } from "lucide-react";
+import { CheckCircle, ChevronLeft, MessageCircle, Phone, Save } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
@@ -97,7 +97,7 @@ export default function ModifierAnnoncePage() {
       <div className="bg-[var(--bg-card-light)] rounded-2xl p-6 border border-[var(--border)] space-y-5">
         {/* Title */}
         <div>
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">
+          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-1.5">
             Titre de l&apos;annonce *
           </label>
           <input
@@ -164,13 +164,19 @@ export default function ModifierAnnoncePage() {
                 : "bg-[var(--bg-card-light)] border-slate-200 dark:border-[var(--border)] text-slate-500 dark:text-slate-400"
             )}
           >
-            {form.availableNow ? "✅ Disponible maintenant" : "Non disponible"}
+            <span className="inline-flex items-center justify-center gap-1.5">
+              {form.availableNow && <CheckCircle className="h-4 w-4" />}
+              {form.availableNow ? "Disponible maintenant" : "Non disponible"}
+            </span>
           </button>
         </div>
 
         {/* Phone */}
         <div>
-          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">📞 Téléphone *</label>
+          <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-1.5">
+            <Phone className="h-4 w-4" />
+            Téléphone *
+          </label>
           <input
             type="tel"
             value={form.phone}
@@ -187,7 +193,8 @@ export default function ModifierAnnoncePage() {
         {/* WhatsApp */}
         <div>
           <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">
-            💬 WhatsApp <span className="font-normal text-slate-400">(si différent)</span>
+            <MessageCircle className="h-4 w-4" />
+            WhatsApp <span className="font-normal text-slate-400">(si différent)</span>
           </label>
           <input
             type="tel"

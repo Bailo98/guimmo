@@ -4,6 +4,7 @@ import TinderCard from "react-tinder-card";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { BadgeCheck, Bed, Heart, Home, Loader2, MapPin, MessageCircle, Phone, Plane, Star, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useAppStore } from "@/lib/store";
 import { toast } from "@/lib/toast";
@@ -218,7 +219,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         return;
       }
       toggleFavorite(property.id);
-      toast("❤️ Ajouté aux favoris", "success");
+      toast("Ajouté aux favoris", "success");
       if (isSupabaseConfigured && supabase) {
         try {
           const { error } = await supabase
@@ -263,7 +264,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         display: "flex", flexDirection: "column", alignItems: "center",
         justifyContent: "center", padding: "0 32px",
       }}>
-        <p style={{ fontSize: 52, marginBottom: 16, animation: "spin 1s linear infinite" }}>🔄</p>
+        <Loader2 style={{ width: 52, height: 52, marginBottom: 16, color: "var(--accent-gold)" }} className="animate-spin" strokeWidth={2.2} />
         <p style={{ color: "var(--accent-gold)", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
           On recommence depuis le début…
         </p>
@@ -283,7 +284,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         display: "flex", flexDirection: "column", alignItems: "center",
         justifyContent: "center", padding: "0 32px",
       }}>
-        <p style={{ fontSize: 52, marginBottom: 16 }}>🏠</p>
+        <Home style={{ width: 52, height: 52, marginBottom: 16, color: "var(--accent-gold)" }} strokeWidth={1.8} />
         <p style={{ color: "var(--accent-gold)", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
           Aucune annonce disponible
         </p>
@@ -325,7 +326,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         display: "flex", flexDirection: "column", alignItems: "center",
         justifyContent: "center", padding: "0 32px",
       }}>
-        <p style={{ fontSize: 52, marginBottom: 16, animation: "spin 1s linear infinite" }}>🔄</p>
+        <Loader2 style={{ width: 52, height: 52, marginBottom: 16, color: "var(--accent-gold)" }} className="animate-spin" strokeWidth={2.2} />
         <p style={{ color: "var(--accent-gold)", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
           On recommence depuis le début…
         </p>
@@ -349,7 +350,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         padding: "32px",
         textAlign: "center",
       }}>
-        <p style={{ fontSize: 56, marginBottom: 16 }}>🏠</p>
+        <Home style={{ width: 56, height: 56, marginBottom: 16, color: "var(--accent-gold)" }} strokeWidth={1.8} />
         <h1 style={{ color: "var(--text-primary)", fontSize: 28, fontWeight: 800, marginBottom: 8 }}>
           Aucune annonce à découvrir
         </h1>
@@ -518,7 +519,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 background: "linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%)",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
-                <span style={{ fontSize: 96, opacity: 0.10 }}>🏠</span>
+                <Home style={{ width: 96, height: 96, opacity: 0.10, color: "#ffffff" }} strokeWidth={1.4} />
               </div>
             )}
 
@@ -528,7 +529,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               background: "linear-gradient(transparent 30%, rgba(0,0,0,0.30) 52%, rgba(0,0,0,0.92) 100%)",
             }} />
 
-            {/* ── ❤️ INTÉRESSÉ overlay (swipe right) ──────────────────────────── */}
+            {/* ── Interested overlay (swipe right) ──────────────────────────── */}
             <div
               ref={overlayRightRef}
               style={{ position: "absolute", top: 108, left: 24, pointerEvents: "none", opacity: 0 }}
@@ -540,11 +541,14 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 textTransform: "uppercase", transform: "rotate(-15deg)",
                 textShadow: "0 2px 8px rgba(0,0,0,0.6)", whiteSpace: "nowrap",
               }}>
-                ❤️ INTÉRESSÉ
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                  <Heart style={{ width: 30, height: 30 }} strokeWidth={2.6} />
+                  INTÉRESSÉ
+                </span>
               </div>
             </div>
 
-            {/* ── ✕ PASSÉ overlay (swipe left) ────────────────────────────────── */}
+            {/* ── Passed overlay (swipe left) ────────────────────────────────── */}
             <div
               ref={overlayLeftRef}
               style={{ position: "absolute", top: 108, right: 24, pointerEvents: "none", opacity: 0 }}
@@ -556,7 +560,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 textTransform: "uppercase", transform: "rotate(15deg)",
                 textShadow: "0 2px 8px rgba(0,0,0,0.6)", whiteSpace: "nowrap",
               }}>
-                ✕ PASSÉ
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                  <X style={{ width: 30, height: 30 }} strokeWidth={2.8} />
+                  PASSÉ
+                </span>
               </div>
             </div>
 
@@ -573,7 +580,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                   padding: "3px 10px", fontSize: 11, fontWeight: 600,
                   backdropFilter: "blur(8px)",
                 }}>
-                  ⭐ Premium
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                    <Star style={{ width: 13, height: 13 }} strokeWidth={2.4} />
+                    Premium
+                  </span>
                 </span>
               )}
               {topCard.is_diaspora && (
@@ -583,7 +593,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                   padding: "3px 10px", fontSize: 11, fontWeight: 600,
                   backdropFilter: "blur(8px)",
                 }}>
-                  ✈️ Diaspora
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                    <Plane style={{ width: 13, height: 13 }} strokeWidth={2.4} />
+                    Diaspora
+                  </span>
                 </span>
               )}
             </div>
@@ -596,7 +609,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                   color: "rgba(255,255,255,0.85)", borderRadius: 20,
                   padding: "3px 10px", fontSize: 11, fontWeight: 600,
                 }}>
-                  📍 {topDistStr}
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                    <MapPin style={{ width: 13, height: 13 }} strokeWidth={2.4} />
+                    {topDistStr}
+                  </span>
                 </span>
               </div>
             )}
@@ -633,7 +649,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                     fontWeight: 800,
                     backdropFilter: "blur(10px)",
                   }}>
-                    ✓ Vérifié
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                      <BadgeCheck style={{ width: 13, height: 13 }} strokeWidth={2.4} />
+                      Vérifié
+                    </span>
                   </span>
                 )}
                 <span style={{
@@ -695,7 +714,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 overflow: "hidden",
               }}>
                 <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, whiteSpace: "nowrap" }}>
-                  📍 {getNeighborhoodName(topCard.neighborhood)}
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                    <MapPin style={{ width: 14, height: 14 }} strokeWidth={2.4} />
+                    {getNeighborhoodName(topCard.neighborhood)}
+                  </span>
                 </span>
                 <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>·</span>
                 <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, whiteSpace: "nowrap" }}>
@@ -705,7 +727,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                   <>
                     <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>·</span>
                     <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, whiteSpace: "nowrap" }}>
-                      🛏 {topCard.rooms}
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        <Bed style={{ width: 14, height: 14 }} strokeWidth={2.4} />
+                        {topCard.rooms}
+                      </span>
                     </span>
                   </>
                 )}
@@ -726,7 +751,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
         {/* ══════════════════════════════════════════════════════════════════════
             ACTION BUTTONS — right side, column layout
-            Order top→bottom: ✕ (pass) · ❤️ (like, bigger)
+            Order top to bottom: pass, like, call, WhatsApp
         ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
           position: "absolute",
@@ -738,7 +763,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           gap: 20,
           alignItems: "center",
         }}>
-          {/* ✕ Passer */}
+          {/* Passer */}
           <button
             onClick={() => triggerSwipe("left")}
             aria-label="Passer"
@@ -762,7 +787,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             </svg>
           </button>
 
-          {/* ❤️ J'adore — plus grand, fond doré */}
+          {/* J'adore — plus grand, fond doré */}
           <button
             onClick={() => triggerSwipe("right")}
             aria-label="J'adore"
@@ -784,7 +809,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             </svg>
           </button>
 
-          {/* 📞 Appeler */}
+          {/* Appeler */}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -803,10 +828,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               flexShrink: 0,
             }}
           >
-            📞
+            <Phone style={{ width: 22, height: 22 }} strokeWidth={2.4} />
           </button>
 
-          {/* 💬 WhatsApp */}
+          {/* WhatsApp */}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -826,7 +851,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               boxShadow: "0 4px 18px rgba(37,211,102,0.45)",
             }}
           >
-            💬
+            <MessageCircle style={{ width: 24, height: 24 }} strokeWidth={2.4} />
           </button>
         </div>
 

@@ -1,7 +1,8 @@
 ﻿"use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Download, X } from "lucide-react";
+import { Download, Home, Smartphone, X } from "lucide-react";
 
 const VISIT_KEY     = "LogerBien_visit_count";
 const DISMISSED_KEY = "LogerBien_pwa_dismissed";
@@ -94,13 +95,16 @@ export function PWAInstallBanner() {
           className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-lg"
           style={{ background: "rgba(212,175,55,0.20)", border: "1px solid rgba(212,175,55,0.30)" }}
         >
-          🏠
+          <Home className="h-4 w-4" />
         </div>
 
         {/* Text */}
         <div className="flex-1 min-w-0">
           <p className="text-white font-bold text-xs leading-tight">
-            📱 Installer LogerBien sur votre téléphone
+            <span className="inline-flex items-center gap-1.5">
+              <Smartphone className="h-3.5 w-3.5" />
+              Installer LogerBien sur votre téléphone
+            </span>
           </p>
           <p className="text-white/50 text-[10px] mt-0.5">
             {isIos ? "Ajouter à l'écran d'accueil depuis Safari" : "Accès rapide depuis l'écran d'accueil"}

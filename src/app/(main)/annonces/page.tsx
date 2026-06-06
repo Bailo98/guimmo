@@ -715,10 +715,11 @@ function AnnoncesContent() {
         {/* GPS message */}
         {gpsMessage && (
           <div
-            className="mb-4 rounded-xl px-4 py-3 text-sm font-semibold text-[var(--text-secondary)]"
+            className="mb-4 flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-[var(--text-secondary)]"
             style={{ background: "var(--border-subtle)", border: "1px solid var(--border)" }}
           >
-            📍 {gpsMessage}
+            <MapPin className="h-4 w-4" strokeWidth={2.4} />
+            {gpsMessage}
           </div>
         )}
 
@@ -762,7 +763,7 @@ function AnnoncesContent() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-24">
-            <p className="text-5xl mb-4">🏠</p>
+            <Home className="mx-auto mb-4 h-12 w-12 text-[var(--text-muted)]" strokeWidth={1.8} />
             <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">Aucune annonce trouvée</h3>
             <p className="text-[var(--text-secondary)] text-sm mb-6">Essayez d&apos;élargir vos filtres.</p>
             <button

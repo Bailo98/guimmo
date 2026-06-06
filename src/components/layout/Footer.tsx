@@ -1,6 +1,6 @@
 ﻿import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
-import { MessageCircle } from "lucide-react";
+import { Home, MessageCircle } from "lucide-react";
 
 export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
   return (
@@ -31,7 +31,7 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
             <ul className="space-y-1.5">
               {[
                 { label: "Toutes les annonces", href: "/annonces" },
-                { label: "Je cherche 🔍", href: "/je-cherche" },
+                { label: "Je cherche", href: "/je-cherche" },
                 { label: "Publication rapide", href: "/publier/rapide" },
               ].map((l) => (
                 <li key={l.href}>
@@ -82,7 +82,10 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
 
         <div className="pt-2.5 text-center" style={{ borderTop: "1px solid var(--border)" }}>
           <p className="text-base" style={{ color: "var(--text-secondary)" }}>
-            🏠 LogerBien — Conakry © 2025
+            <span className="inline-flex items-center justify-center gap-2">
+              <Home className="h-4 w-4" strokeWidth={2.4} />
+              LogerBien — Conakry © 2025
+            </span>
           </p>
         </div>
       </div>

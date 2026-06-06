@@ -1,4 +1,5 @@
 ﻿"use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 
 import { useState, useEffect } from "react";
 import { Bell, Sparkles, Clock, RefreshCw } from "lucide-react";
@@ -62,7 +63,11 @@ export default function NouveautesPage() {
             Nouveautés
           </h1>
           <p className="text-white/80 text-lg max-w-xl mb-6">
-            🔔 Soyez le premier à voir les nouvelles annonces. Toutes les
+            <span className="inline-flex items-center gap-2">
+              <Bell className="h-5 w-5" />
+              Soyez le premier à voir les nouvelles annonces.
+            </span>{" "}
+            Toutes les
             propriétés ajoutées au cours des {DAYS_THRESHOLD} derniers jours.
           </p>
 

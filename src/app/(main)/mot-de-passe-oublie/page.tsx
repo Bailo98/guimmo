@@ -1,7 +1,7 @@
 ﻿"use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Mail, CheckCircle } from "lucide-react";
+import { Mail, CheckCircle, Phone } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 import { supabase } from "@/lib/supabase";
@@ -71,7 +71,10 @@ export default function MotDePasseOubliePage() {
                   }`}
                   style={tab !== t ? { background: "var(--border-subtle)" } : {}}
                 >
-                  {t === "phone" ? "📱 Par téléphone" : "✉️ Par email"}
+                  <span className="inline-flex items-center justify-center gap-1.5">
+                    {t === "phone" ? <Phone className="h-4 w-4" /> : <Mail className="h-4 w-4" />}
+                    {t === "phone" ? "Par téléphone" : "Par email"}
+                  </span>
                 </button>
               ))}
             </div>

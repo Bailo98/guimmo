@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Home, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 
@@ -28,7 +29,10 @@ export function HomePublishCTA() {
               className="text-[30px] md:text-[42px] font-black leading-tight mb-2"
               style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
             >
-              {isOwner ? "➕ Publier un logement" : "🏠 Tu as un logement ?"}
+              <span className="inline-flex items-center gap-3">
+                {isOwner ? <Plus className="h-8 w-8" strokeWidth={2.4} /> : <Home className="h-8 w-8" strokeWidth={2.4} />}
+                {isOwner ? "Publier un logement" : "Tu as un logement ?"}
+              </span>
             </h2>
             <p className="text-base md:text-lg font-bold" style={{ color: "var(--text-secondary)" }}>
               {isOwner ? "Ajoute une annonce. Reçois les contacts sur WhatsApp." : "Passe propriétaire et publie simplement."}

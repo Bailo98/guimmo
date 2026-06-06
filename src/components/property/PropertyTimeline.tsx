@@ -1,11 +1,12 @@
 ﻿import { History } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import { Banknote, CheckCircle, ClipboardList, Eye, type LucideIcon } from "lucide-react";
 
 interface TimelineEvent {
   date: Date;
   label: string;
   type: "publish" | "milestone" | "price" | "available";
-  icon: string;
+  Icon: LucideIcon;
 }
 
 function buildTimeline(
@@ -21,7 +22,7 @@ function buildTimeline(
     date: createdAt,
     label: "Annonce publiée",
     type: "publish",
-    icon: "📋",
+    Icon: ClipboardList,
   });
 
   // Views milestone (7 days after)
@@ -31,7 +32,7 @@ function buildTimeline(
       date: viewsDate,
       label: "100 vues atteintes",
       type: "milestone",
-      icon: "👁️",
+      Icon: Eye,
     });
 
   // Price reduction (14 days after, 10% less)
@@ -42,7 +43,7 @@ function buildTimeline(
       date: priceDate,
       label: `Prix réduit de ${formatPrice(oldPrice)} → ${formatPrice(price)}`,
       type: "price",
-      icon: "💰",
+      Icon: Banknote,
     });
   }
 
@@ -54,7 +55,7 @@ function buildTimeline(
         date: availDate,
         label: "Logement disponible immédiatement",
         type: "available",
-        icon: "✅",
+        Icon: CheckCircle,
       });
   }
 
@@ -123,7 +124,7 @@ export function PropertyTimeline({ price, createdAt, availableNow }: Props) {
               {/* Right column: content */}
               <div className={`pb-5 ${isLast ? "pb-0" : ""}`}>
                 <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-base leading-none">{event.icon}</span>
+                  <event.Icon className="h-4 w-4 text-[var(--accent-gold)]" />
                   <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">
                     {event.label}
                   </span>

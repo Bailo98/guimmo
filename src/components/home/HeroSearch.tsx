@@ -1,7 +1,7 @@
 ﻿"use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
+import { Banknote, Home, KeyRound, MapPin, Search } from "lucide-react";
 import { VoiceSearchButton } from "@/components/ui/VoiceSearchButton";
 
 const QUARTIERS = [
@@ -94,7 +94,10 @@ export function HeroSearch() {
                 : { color: "var(--text-secondary)" }),
             }}
           >
-            {t === "rent" ? "🔑 Location" : "💰 Achat"}
+            <span className="inline-flex items-center justify-center gap-2">
+              {t === "rent" ? <KeyRound className="h-4 w-4" strokeWidth={2.4} /> : <Banknote className="h-4 w-4" strokeWidth={2.4} />}
+              {t === "rent" ? "Location" : "Achat"}
+            </span>
           </button>
         ))}
       </div>
@@ -107,7 +110,10 @@ export function HeroSearch() {
             className="block text-xs font-semibold mb-1.5"
             style={{ color: "var(--text-secondary)" }}
           >
-            📍 Quartier
+            <span className="inline-flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5" strokeWidth={2.4} />
+              Quartier
+            </span>
           </label>
           <div className="relative">
             <select
@@ -134,7 +140,10 @@ export function HeroSearch() {
             className="block text-xs font-semibold mb-1.5"
             style={{ color: "var(--text-secondary)" }}
           >
-            💰 Budget
+            <span className="inline-flex items-center gap-1.5">
+              <Banknote className="h-3.5 w-3.5" strokeWidth={2.4} />
+              Budget
+            </span>
           </label>
           <input
             id="hs-budget"
@@ -151,7 +160,10 @@ export function HeroSearch() {
             className="block text-xs font-semibold mb-1.5"
             style={{ color: "var(--text-secondary)" }}
           >
-            🏠 Type
+            <span className="inline-flex items-center gap-1.5">
+              <Home className="h-3.5 w-3.5" strokeWidth={2.4} />
+              Type
+            </span>
           </label>
           <div className="relative">
             <select
