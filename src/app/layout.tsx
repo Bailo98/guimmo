@@ -104,7 +104,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" suppressHydrationWarning className={`${manrope.variable} ${fraunces.variable} ${playfair.variable} ${spaceGrotesk.variable}`}>
+    <html
+      lang="fr"
+      suppressHydrationWarning
+      className={`${manrope.variable} ${fraunces.variable} ${playfair.variable} ${spaceGrotesk.variable} light`}
+      style={{ colorScheme: "light" }}
+    >
       <head>
         <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="preconnect" href="https://kqshknfrtlbjaufkdeeg.supabase.co" />
