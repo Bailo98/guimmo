@@ -7,6 +7,8 @@ import { Onboarding } from "@/components/Onboarding";
 import { ChatbotWidget } from "@/components/ui/ChatbotWidget";
 import BudgetEstimator from "@/components/BudgetEstimator";
 import { CompareBar } from "@/components/compare/CompareBar";
+import { LowConnectionMode } from "@/components/LowConnectionMode";
+import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { getContactWhatsApp } from "@/lib/site-config";
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
@@ -24,6 +26,8 @@ export default async function MainLayout({ children }: { children: React.ReactNo
       <Onboarding />
       <ChatbotWidget whatsappNumber={whatsappNumber} />
       <BudgetEstimator />
+      <LowConnectionMode />
+      <ScrollToTop />
     </>
   );
 }
