@@ -1,13 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 
 export function HomePublishCTA() {
   const { user, profile } = useAuth();
-  const account = profile?.account_type ?? profile?.role ?? "";
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => setMounted(true), 0);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  const account = mounted ? profile?.account_type ?? profile?.role ?? "" : "";
   const isOwner = ["owner", "proprietaire", "agent", "agence", "agency"].includes(account);
-  const href = isOwner ? "/publier/rapide" : user ? "/compte" : "/connexion?redirect=/compte";
+  const href = isOwner ? "/publier/rapide" : mounted && user ? "/compte" : "/connexion?redirect=/compte";
 
   return (
     <section className="pt-5 pb-4 md:pt-6 md:pb-5" style={{ background: "var(--bg-secondary)" }}>

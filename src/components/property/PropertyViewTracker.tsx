@@ -29,9 +29,10 @@ export function PropertyViewTracker({ propertyId }: Props) {
       viewer_id: user?.id ?? null,
       fingerprint: null,
     }).then(() => {
-      // Also increment the denormalized views column on properties (best-effort; RPC may not exist)
-      db.rpc("increment_property_views", { pid: propertyId }).then(() => {/* silent */});
-    });
+      // The detailed view event is enough for analytics. Avoid calling optional
+      // RPC functions from the browser because missing migrations surface as
+      // noisy 404s in production consoles.
+    }, () => {/* silent */});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propertyId]);
 

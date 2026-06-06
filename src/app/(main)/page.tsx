@@ -78,6 +78,7 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
   const primaryImg = property?.property_images?.find((i) => i.is_primary) ?? property?.property_images?.[0];
   const [gradFrom, gradTo] = TYPE_GRADIENTS[property?.type ?? "apartment"] ?? HERO_GRADIENTS[0];
   const priceStr = property ? formatPrice(property.price, "GNF", property.price_period) : "Découvre les annonces";
+  const neighborhood = property ? NL[property.neighborhood] ?? property.neighborhood : "Conakry";
 
   return (
     <section className="py-5 md:py-6" style={{ background: "var(--bg-card-light)" }}>
@@ -109,40 +110,57 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
           </Link>
         </div>
 
-        <Link href={property ? `/annonces/${property.id}` : "/decouvrir"} className="mx-auto block w-full max-w-[430px]">
+        <div className="relative mx-auto w-full max-w-[480px] py-5">
           <div
-            className="relative overflow-hidden rounded-[28px]"
-            style={{
-              aspectRatio: "0.68",
-              background: `linear-gradient(135deg, ${gradFrom}, ${gradTo})`,
-              boxShadow: "0 22px 70px rgba(24,21,16,0.18)",
-            }}
+            className="absolute left-0 top-[32%] z-10 hidden sm:flex -translate-x-2 -rotate-6 items-center gap-2 rounded-2xl px-4 py-3 text-base font-black"
+            style={{ background: "rgba(255,255,255,0.92)", color: "#b91c1c", border: "1px solid rgba(185,28,28,0.18)", boxShadow: "0 16px 40px rgba(24,21,16,0.12)" }}
           >
-            {primaryImg ? (
-              <Image src={primaryImg.url} alt={property?.title ?? "Découvrir les logements"} fill className="object-cover" sizes="330px" quality={75} />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-7xl opacity-20">🏠</div>
-            )}
-            <div className="absolute inset-0" style={{ background: "linear-gradient(transparent 28%, rgba(0,0,0,0.88) 100%)" }} />
-            <div className="absolute left-4 right-4 bottom-4">
-              <div className="mb-3 flex flex-wrap gap-2">
-                <span className="rounded-full px-3 py-1 text-base font-black" style={{ background: "rgba(255,255,255,0.18)", color: "#fff" }}>
-                  {property?.transaction_type === "sale" ? "Achat" : "Location"}
-                </span>
-                {property?.is_verified && (
-                  <span className="rounded-full px-3 py-1 text-base font-black" style={{ background: "rgba(34,197,94,0.2)", color: "#fff" }}>
-                    ✓ Vérifié
-                  </span>
-                )}
-              </div>
-              <p className="text-[32px] font-black leading-tight text-white">{priceStr}</p>
-              <p className="mt-1 text-lg font-black text-white">📍 {property ? NL[property.neighborhood] ?? property.neighborhood : "Conakry"}</p>
-              <p className="mt-2 inline-flex rounded-full px-3 py-1 text-base font-black text-white" style={{ background: "rgba(34,197,94,0.24)", border: "1px solid rgba(255,255,255,0.18)" }}>
-                🟢 Disponible
-              </p>
-            </div>
+            ← ❌ Passer
           </div>
-        </Link>
+          <div
+            className="absolute right-0 top-[32%] z-10 hidden sm:flex translate-x-2 rotate-6 items-center gap-2 rounded-2xl px-4 py-3 text-base font-black"
+            style={{ background: "rgba(255,255,255,0.92)", color: "#be8a2e", border: "1px solid rgba(185,138,46,0.22)", boxShadow: "0 16px 40px rgba(24,21,16,0.12)" }}
+          >
+            ❤️ J’aime →
+          </div>
+
+          <div className="absolute left-9 right-9 top-8 h-[88%] rotate-[-8deg] rounded-[30px]" style={{ background: "rgba(185,138,46,0.18)", border: "1px solid rgba(185,138,46,0.20)" }} />
+          <div className="absolute left-9 right-9 top-8 h-[88%] rotate-[8deg] rounded-[30px]" style={{ background: "rgba(31,86,61,0.16)", border: "1px solid rgba(31,86,61,0.18)" }} />
+
+          <Link href={property ? `/annonces/${property.id}` : "/decouvrir"} className="relative z-20 mx-auto block w-full max-w-[360px]">
+            <div
+              className="relative overflow-hidden rounded-[30px]"
+              style={{
+                aspectRatio: "0.68",
+                background: `linear-gradient(135deg, ${gradFrom}, ${gradTo})`,
+                boxShadow: "0 22px 70px rgba(24,21,16,0.22)",
+              }}
+            >
+              {primaryImg ? (
+                <Image src={primaryImg.url} alt={property?.title ?? "Découvrir les logements"} fill className="object-cover" sizes="360px" quality={75} />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-7xl opacity-20">🏠</div>
+              )}
+              <div className="absolute inset-0" style={{ background: "linear-gradient(transparent 28%, rgba(0,0,0,0.9) 100%)" }} />
+              <div className="absolute left-4 right-4 bottom-4">
+                <p className="mb-3 inline-flex rounded-full px-3 py-1 text-base font-black text-white" style={{ background: "rgba(255,255,255,0.18)", border: "1px solid rgba(255,255,255,0.18)" }}>
+                  Glisse. Choisis. Contacte.
+                </p>
+                <p className="text-[32px] font-black leading-tight text-white">{priceStr}</p>
+                <p className="mt-1 text-lg font-black text-white">📍 {neighborhood}</p>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <span className="rounded-2xl px-3 py-2 text-center text-base font-black text-white" style={{ background: "#25D366" }}>💬 WhatsApp</span>
+                  <span className="rounded-2xl px-3 py-2 text-center text-base font-black" style={{ background: "rgba(255,255,255,0.92)", color: "#17120a" }}>📞 Appeler</span>
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:hidden">
+            <span className="rounded-2xl px-3 py-3 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#b91c1c" }}>← ❌ Passer</span>
+            <span className="rounded-2xl px-3 py-3 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--accent-gold)" }}>❤️ J’aime →</span>
+          </div>
+        </div>
       </div>
     </section>
   );
