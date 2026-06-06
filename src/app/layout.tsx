@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/Toaster";
 import { AuthProvider } from "@/lib/auth-context";
 import { PWAInstallBanner } from "@/components/ui/PWAInstallBanner";
 import { ServiceWorkerRegister } from "@/components/ui/ServiceWorkerRegister";
+import { StoreHydrator } from "@/components/providers/StoreHydrator";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -112,6 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange={false}>
           <QueryProvider>
             <AuthProvider>
+              <StoreHydrator />
               <ZustandThemeSync />
               {children}
               <Toaster />

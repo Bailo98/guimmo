@@ -462,6 +462,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: "LogerBien-store",
+      skipHydration: true,
       partialize: (s) => ({
         theme: s.theme,
         lang: s.lang,
