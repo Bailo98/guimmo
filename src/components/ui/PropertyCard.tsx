@@ -389,43 +389,23 @@ export function PropertyCard({
           </p>
         )}
 
-        {/* Titre */}
-        <p style={{
-          margin: "4px 0 0",
-          fontSize: 16,
-          fontWeight: 800,
-          color: "var(--photo-text)",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          lineHeight: 1.3,
-        }}>
-          {property.title}
-        </p>
-
         {/* Quartier + distance */}
         <div style={{
           display: "flex",
           alignItems: "center",
           gap: 3,
-          marginTop: 2,
+          marginTop: 6,
           overflow: "hidden",
         }}>
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none"
-            stroke="var(--photo-text-dim)" strokeWidth="2"
-            strokeLinecap="round" strokeLinejoin="round"
-            style={{ flexShrink: 0 }}>
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
           <span style={{
-            fontSize: 16,
-            color: "var(--photo-text-dim)",
+            fontSize: 18,
+            fontWeight: 900,
+            color: "var(--photo-text)",
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
           }}>
-            {neighborhoodLabel}
+            📍 {neighborhoodLabel}
             {(property.rooms ?? 0) > 0 && ` · 🛏 ${property.rooms}`}
             {distanceStr && ` · ${distanceStr}`}
           </span>

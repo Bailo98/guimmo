@@ -1,0 +1,41 @@
+"use client";
+
+import Link from "next/link";
+import { useAuth } from "@/lib/auth-context";
+
+export function HomePublishCTA() {
+  const { user, profile } = useAuth();
+  const account = profile?.account_type ?? profile?.role ?? "";
+  const isOwner = ["owner", "proprietaire", "agent", "agence", "agency"].includes(account);
+  const href = isOwner ? "/publier/rapide" : user ? "/compte" : "/connexion?redirect=/compte";
+
+  return (
+    <section className="py-7 md:py-9" style={{ background: "var(--bg-secondary)" }}>
+      <div className="content-fluid">
+        <div
+          className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-center rounded-[28px] p-5 md:p-7"
+          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}
+        >
+          <div>
+            <h2
+              className="text-[30px] md:text-[42px] font-black leading-tight mb-2"
+              style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
+            >
+              {isOwner ? "➕ Publier un logement" : "🏠 Tu as un logement ?"}
+            </h2>
+            <p className="text-base md:text-lg font-bold" style={{ color: "var(--text-secondary)" }}>
+              {isOwner ? "Ajoute une annonce. Reçois les contacts sur WhatsApp." : "Passe propriétaire et publie simplement."}
+            </p>
+          </div>
+          <Link
+            href={href}
+            className="inline-flex min-h-14 items-center justify-center rounded-2xl px-7 text-base font-black transition-opacity hover:opacity-90"
+            style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
+          >
+            {isOwner ? "Publier" : "Passer propriétaire"}
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}

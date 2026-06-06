@@ -1,12 +1,9 @@
-﻿import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
-import { RecentlyViewedSection } from "@/components/ui/RecentlyViewedSection";
 import { HeroSearch } from "@/components/home/HeroSearch";
-import { MaisonDuJour } from "@/components/MaisonDuJour";
-import { PWAInstallButton } from "@/components/home/PWAInstallButton";
+import { HomePublishCTA } from "@/components/home/HomePublishCTA";
 import { formatPrice } from "@/lib/utils";
 import { isPubliclyAvailable } from "@/lib/property-signals";
 import { createClient } from "@supabase/supabase-js";
@@ -35,28 +32,6 @@ const NL: Record<string, string> = {
   taouyah: "Taouyah", sonfonia: "Sonfonia", lambanyi: "Lambanyi", kaloum: "Kaloum",
   matam: "Matam", madina: "Madina", nongo: "Nongo", cosa: "Cosa",
 };
-
-const AVAIL_CONFIG: Record<string, { label: string; color: string; bg: string; border: string }> = {
-  urgent:    { label: "⚡ Urgent",              color: "#ff4d4d", bg: "rgba(255,77,77,0.20)",   border: "rgba(255,77,77,0.50)"   },
-  today:     { label: "🔥 Dispo aujourd'hui",   color: "#ff8c00", bg: "rgba(255,140,0,0.20)",   border: "rgba(255,140,0,0.50)"   },
-  immediate: { label: "🏃 Libre immédiatement", color: "#25D366", bg: "rgba(37,211,102,0.20)",  border: "rgba(37,211,102,0.50)"  },
-};
-
-const POPULAR_NEIGHBORHOODS = [
-  { id: "kipe",       name: "Kipé"       },
-  { id: "hamdallaye", name: "Hamdallaye" },
-  { id: "dixinn",     name: "Dixinn"     },
-  { id: "ratoma",     name: "Ratoma"     },
-  { id: "taouyah",    name: "Taouyah"   },
-  { id: "sonfonia",   name: "Sonfonia"   },
-];
-
-const TRUST_ITEMS = [
-  { icon: "🏠", title: "Direct propriétaire", desc: "Sans intermédiaire." },
-  { icon: "✅", title: "Vérifié", desc: "Annonces contrôlées." },
-  { icon: "💬", title: "WhatsApp", desc: "Contact en un clic." },
-  { icon: "⚡", title: "Réponse rapide", desc: "Moins d’attente." },
-];
 
 const TYPE_GRADIENTS: Record<string, [string, string]> = {
   apartment: ["var(--bg-secondary)", "var(--bg-secondary)"],
@@ -97,37 +72,6 @@ async function fetchHomeProperties(): Promise<Property[]> {
   } catch { return []; }
 }
 
-async function fetchUrgentProperties(): Promise<Property[]> {
-  try {
-    const db = getDB();
-    if (!db) return [];
-    const { data } = await db
-      .from("properties")
-      .select("*, property_images(*)")
-      .eq("status", "active")
-      .in("availability_mode", ["urgent", "today", "immediate"])
-      .order("created_at", { ascending: false })
-      .limit(10);
-    return ((data ?? []) as Property[]).filter(isPubliclyAvailable);
-  } catch { return []; }
-}
-
-async function fetchNeighborhoodCounts(): Promise<Record<string, number>> {
-  try {
-    const db = getDB();
-    if (!db) return {};
-    const { data } = await db
-      .from("properties")
-      .select("neighborhood")
-      .eq("status", "active");
-    const counts: Record<string, number> = {};
-    for (const row of data ?? []) {
-      counts[row.neighborhood] = (counts[row.neighborhood] ?? 0) + 1;
-    }
-    return counts;
-  } catch { return {}; }
-}
-
 // ─── Discover preview ──────────────────────────────────────────────────────────
 
 function DiscoverPreview({ property }: { property: Property | undefined }) {
@@ -137,16 +81,16 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
 
   return (
     <section className="py-6 md:py-8" style={{ background: "var(--bg-card-light)" }}>
-      <div className="content-fluid grid grid-cols-1 lg:grid-cols-[minmax(0,0.65fr)_minmax(380px,0.8fr)] gap-5 lg:gap-7 items-center">
-        <div>
-          <p className="text-base font-black uppercase tracking-[0.08em] mb-2" style={{ color: "var(--accent-gold)" }}>
-            ❤️ Découvrir
-          </p>
-          <h2 className="text-[30px] md:text-[40px] font-black mb-3" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
-            Swipe les logements
+      <div className="content-fluid grid grid-cols-1 lg:grid-cols-[minmax(0,0.75fr)_minmax(320px,0.7fr)] gap-5 lg:gap-8 items-center">
+        <div className="text-center lg:text-left">
+          <h2 className="text-[32px] md:text-[46px] font-black mb-3 leading-tight" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
+            ❤️ Découvre les logements
           </h2>
-          <div className="grid grid-cols-3 gap-2 max-w-md mb-5">
-            {["❌ Passer", "❤️ J’aime", "📞 Contacter"].map((label) => (
+          <p className="mb-4 text-lg font-black" style={{ color: "var(--text-secondary)" }}>
+            Swipe. Aime. Contacte.
+          </p>
+          <div className="grid grid-cols-2 gap-2 max-w-md mx-auto lg:mx-0 mb-5">
+            {["❌ Passer", "❤️ J’aime", "💬 WhatsApp", "📞 Appeler"].map((label) => (
               <div
                 key={label}
                 className="rounded-2xl px-3 py-4 text-center text-base font-black"
@@ -161,11 +105,11 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
             className="inline-flex min-h-12 items-center justify-center rounded-2xl px-6 text-base font-black transition-opacity hover:opacity-90"
             style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
           >
-            Commencer à découvrir
+            Commencer
           </Link>
         </div>
 
-        <Link href={property ? `/annonces/${property.id}` : "/decouvrir"} className="mx-auto block w-full max-w-[430px]">
+        <Link href={property ? `/annonces/${property.id}` : "/decouvrir"} className="mx-auto block w-full max-w-[360px]">
           <div
             className="relative overflow-hidden rounded-[28px]"
             style={{
@@ -191,9 +135,11 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
                   </span>
                 )}
               </div>
-              <p className="text-[30px] font-black leading-tight text-white">{priceStr}</p>
-              <p className="mt-1 line-clamp-2 text-base font-bold text-white">{property?.title ?? "Swipe les logements disponibles"}</p>
-              <p className="mt-1 text-base text-white/80">📍 {property ? NL[property.neighborhood] ?? property.neighborhood : "Conakry"}</p>
+              <p className="text-[32px] font-black leading-tight text-white">{priceStr}</p>
+              <p className="mt-1 text-lg font-black text-white">📍 {property ? NL[property.neighborhood] ?? property.neighborhood : "Conakry"}</p>
+              <p className="mt-2 inline-flex rounded-full px-3 py-1 text-base font-black text-white" style={{ background: "rgba(34,197,94,0.24)", border: "1px solid rgba(255,255,255,0.18)" }}>
+                🟢 Disponible
+              </p>
             </div>
           </div>
         </Link>
@@ -202,65 +148,13 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
   );
 }
 
-// ─── Urgency mini-card ─────────────────────────────────────────────────────────
-
-function UrgencyCard({ property }: { property: Property }) {
-  const primaryImg = property.property_images?.find((i) => i.is_primary) ?? property.property_images?.[0];
-  const mode = (property as Property & { availability_mode?: string }).availability_mode ?? "immediate";
-  const cfg  = AVAIL_CONFIG[mode] ?? AVAIL_CONFIG.immediate;
-  const priceStr = formatPrice(property.price, "GNF", property.price_period);
-
-  return (
-    <Link
-      href={`/annonces/${property.id}`}
-      className="flex-shrink-0 rounded-xl overflow-hidden"
-      style={{ width: 230, background: "var(--bg-card)", border: `1px solid ${cfg.border}` }}
-    >
-      <div className="relative" style={{ height: 128 }}>
-        {primaryImg ? (
-          <Image src={primaryImg.url} alt={property.title} fill className="object-cover" sizes="176px" loading="lazy" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center" style={{ background: cfg.bg }}>
-            <span className="text-3xl">🏠</span>
-          </div>
-        )}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%)" }} />
-        <div className="absolute top-2 left-2">
-          <span className="text-base font-black px-3 py-1 rounded-full" style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}>
-            {cfg.label}
-          </span>
-        </div>
-      </div>
-      <div className="p-2.5">
-        <p className="font-black text-base line-clamp-2 leading-snug mb-1" style={{ color: "var(--text-primary)" }}>
-          {property.title}
-        </p>
-        <p className="text-base flex items-center gap-1 mb-1" style={{ color: "var(--text-secondary)" }}>
-          <MapPin className="w-4 h-4 flex-shrink-0" />
-          {NL[property.neighborhood] ?? property.neighborhood}
-        </p>
-        <p className="font-black text-lg" style={{ color: "var(--accent-gold)" }}>{priceStr}</p>
-      </div>
-    </Link>
-  );
-}
-
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  const [properties, urgentProps, neighborhoodCounts] = await Promise.all([
-    fetchHomeProperties(),
-    fetchUrgentProperties(),
-    fetchNeighborhoodCounts(),
-  ]);
+  const properties = await fetchHomeProperties();
 
   const discoverPreview = properties[0];
-  const recent      = properties.slice(0, 6);
-  const popularWithListings = POPULAR_NEIGHBORHOODS.filter((n) => (neighborhoodCounts[n.id] ?? 0) > 0);
-  const popularSoon = POPULAR_NEIGHBORHOODS.filter((n) => (neighborhoodCounts[n.id] ?? 0) === 0);
-  const verifiedOwners = new Set(properties.filter((p) => p.is_verified && p.owner_id).map((p) => p.owner_id)).size;
-  const totalListings = properties.length;
-  const coveredNeighborhoods = Object.values(neighborhoodCounts).filter((count) => count > 0).length;
+  const recent      = properties.slice(0, 3);
 
   return (
     <>
@@ -286,14 +180,14 @@ export default async function HomePage() {
               📍 Où cherches-tu ?
             </h1>
             <p className="mx-auto mb-4 max-w-[560px] text-base md:text-lg font-bold leading-snug" style={{ color: "var(--text-secondary)" }}>
-              Logement sans démarcheur.
+              Sans démarcheur. Sans commission.
             </p>
 
-            <div className="mb-4 grid grid-cols-3 gap-2 max-w-2xl mx-auto">
+            <div className="mb-4 grid grid-cols-3 gap-2 max-w-xl mx-auto">
               {[
-                `🏠 ${totalListings || "10+"} logements`,
-                `📍 ${coveredNeighborhoods || "10"} quartiers`,
-                `✅ ${verifiedOwners || "5+"} vérifiés`,
+                "🔍 Je cherche",
+                "❤️ Je découvre",
+                "💬 Je contacte",
               ].map((label) => (
                 <span
                   key={label}
@@ -337,132 +231,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section className="py-8 md:py-10" style={{ background: "var(--bg-secondary)" }}>
-        <div className="content-fluid text-center">
-          <h2
-            className="text-[30px] md:text-[40px] font-black mb-3"
-            style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
-          >
-            ➕ Tu as un logement ?
-          </h2>
-          <p className="mb-6 max-w-xl mx-auto text-base md:text-lg font-bold" style={{ color: "var(--text-secondary)" }}>
-            Publie vite. Contacts WhatsApp.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link
-              href="/publier/rapide"
-              className="inline-flex items-center gap-2 font-black px-8 py-4 rounded-2xl transition-opacity hover:opacity-90 text-base"
-              style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
-            >
-              ➕ Publie vite
-            </Link>
-            <Link
-              href="/publier"
-              className="inline-flex items-center gap-2 font-black px-8 py-4 rounded-2xl text-base transition-all hover:border-[var(--accent-gold)]"
-              style={{ background: "transparent", border: "1px solid rgba(212,175,55,0.35)", color: "var(--accent-gold)" }}
-            >
-              Publication complète
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {urgentProps.length > 0 && (
-        <section className="py-5" style={{ background: "var(--bg-primary)", borderBottom: "1px solid var(--border)" }}>
-          <div className="content-fluid">
-            <div className="flex items-center gap-3 mb-4">
-              <h2 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
-                ⚡ Disponibles maintenant
-              </h2>
-              <span className="text-base px-3 py-1 rounded-full font-black" style={{ background: "rgba(255,77,77,0.15)", color: "#ff6b6b" }}>
-                {urgentProps.length} annonce{urgentProps.length > 1 ? "s" : ""}
-              </span>
-              <Link href="/annonces?recent=1" className="ml-auto text-base font-bold hover:underline" style={{ color: "var(--accent-gold)" }}>
-                Voir toutes →
-              </Link>
-            </div>
-            <div className="flex gap-3 pb-1 no-scrollbar" style={{ overflowX: "auto" }}>
-              {urgentProps.map((p) => (
-                <UrgencyCard key={p.id} property={p} />
-              ))}
-              <div className="flex-shrink-0 w-4" />
-            </div>
-          </div>
-        </section>
-      )}
-
-      <div style={{ background: "var(--bg-primary)" }}>
-        <MaisonDuJour />
-      </div>
-
-      <div style={{ background: "var(--bg-primary)" }}>
-        <RecentlyViewedSection />
-      </div>
-
-      <section className="py-7 md:py-9" style={{ background: "var(--bg-card-light)" }}>
-        <div className="content-fluid">
-          <div className="mb-5 md:mb-6">
-            <h2 className="text-[30px] md:text-[40px] font-black" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
-              Quartiers populaires
-            </h2>
-          </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] md:grid-cols-[repeat(auto-fit,minmax(190px,1fr))] gap-3 md:gap-4">
-            {(popularWithListings.length > 0 ? popularWithListings : popularSoon).map((n) => {
-              const count = neighborhoodCounts[n.id] ?? 0;
-              return (
-                <Link
-                  key={n.id}
-                  href={`/annonces?neighborhood=${n.id}`}
-                  className="group rounded-2xl p-4 md:p-5 transition-all duration-200 hover:-translate-y-0.5"
-                  style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}
-                >
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style={{ background: "rgba(212,175,55,0.12)" }}>
-                    <MapPin className="w-4 h-4" style={{ color: "var(--accent-gold)" }} />
-                  </div>
-                  <p className="font-black text-lg mb-1" style={{ color: "var(--text-primary)" }}>{n.name}</p>
-                  <p className="text-base font-bold" style={{ color: count > 0 ? "#22c55e" : "var(--text-muted)" }}>
-                    {count > 0 ? `${count} annonce${count > 1 ? "s" : ""}` : "Bientôt"}
-                  </p>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-7 md:py-9" style={{ background: "var(--bg-primary)" }}>
-        <div className="content-fluid grid grid-cols-1 md:grid-cols-[0.65fr_1fr] gap-5 items-center">
-          <div>
-            <h2 className="text-[30px] md:text-[40px] font-black" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
-              Pourquoi LogerBien ?
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {TRUST_ITEMS.map((item) => (
-              <div key={item.title} className="rounded-2xl p-4" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}>
-                <span className="text-3xl block mb-2">{item.icon}</span>
-                <h3 className="font-black text-xl mb-1" style={{ color: "var(--text-primary)" }}>{item.title}</h3>
-                <p className="text-base leading-snug" style={{ color: "var(--text-secondary)" }}>{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section
-        className="py-5"
-        style={{ background: "var(--bg-card-light)", borderTop: "1px solid var(--border)" }}
-      >
-        <div className="content-fluid text-center">
-          <div className="text-3xl mb-2">📱</div>
-          <h2 className="text-[26px] font-black mb-4" style={{ color: "var(--text-primary)" }}>
-            LogerBien sur ton téléphone
-          </h2>
-          <Suspense fallback={null}>
-            <PWAInstallButton />
-          </Suspense>
-        </div>
-      </section>
+      <HomePublishCTA />
     </>
   );
 }

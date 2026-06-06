@@ -130,6 +130,23 @@ export function HeroSearch() {
         </div>
         <div>
           <label
+            htmlFor="hs-budget"
+            className="block text-xs font-semibold mb-1.5"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            💰 Budget
+          </label>
+          <input
+            id="hs-budget"
+            type="number"
+            value={budgetMax}
+            onChange={(e) => setBudgetMax(e.target.value)}
+            placeholder="Ex : 2 000 000"
+            style={{ ...SELECT_BASE, color: budgetMax ? "var(--text-primary)" : "var(--text-muted)" }}
+          />
+        </div>
+        <div>
+          <label
             htmlFor="hs-type"
             className="block text-xs font-semibold mb-1.5"
             style={{ color: "var(--text-secondary)" }}
@@ -154,23 +171,6 @@ export function HeroSearch() {
               ))}
             </select>
           </div>
-        </div>
-        <div>
-          <label
-            htmlFor="hs-budget"
-            className="block text-xs font-semibold mb-1.5"
-            style={{ color: "var(--text-secondary)" }}
-          >
-            💰 Budget
-          </label>
-          <input
-            id="hs-budget"
-            type="number"
-            value={budgetMax}
-            onChange={(e) => setBudgetMax(e.target.value)}
-            placeholder="Ex : 2 000 000"
-            style={{ ...SELECT_BASE, color: budgetMax ? "var(--text-primary)" : "var(--text-muted)" }}
-          />
         </div>
       </div>
 
