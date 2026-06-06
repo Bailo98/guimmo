@@ -36,7 +36,10 @@ export function Onboarding() {
     const alreadySeen =
       localStorage.getItem("logerbien_onboarded") ||
       localStorage.getItem("LogerBien-onboarded");
-    if (!alreadySeen) setShow(true);
+    if (!alreadySeen) {
+      const id = window.setTimeout(() => setShow(true), 1200);
+      return () => window.clearTimeout(id);
+    }
   }, []);
 
   function finish() {
