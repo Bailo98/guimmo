@@ -9,13 +9,14 @@ import BudgetEstimator from "@/components/BudgetEstimator";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { LowConnectionMode } from "@/components/LowConnectionMode";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
+import { ToastProvider } from "@/components/ui/Toast";
 import { getContactWhatsApp } from "@/lib/site-config";
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const whatsappNumber = await getContactWhatsApp();
 
   return (
-    <>
+    <ToastProvider>
       <Header />
       <main className="pt-[72px]">
         <PageTransition>{children}</PageTransition>
@@ -28,6 +29,6 @@ export default async function MainLayout({ children }: { children: React.ReactNo
       <CompareBar />
       <LowConnectionMode />
       <ScrollToTop />
-    </>
+    </ToastProvider>
   );
 }
