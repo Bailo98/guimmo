@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronRight, Flame, Heart, Home, MapPin, MessageCircle, Phone, Search, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronRight, Flame, Heart, Home, MapPin, MessageCircle, Phone, Search, X } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { HomePublishCTA } from "@/components/home/HomePublishCTA";
@@ -15,18 +15,16 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: "LogerBien — Trouvez votre logement à Conakry",
+  title: "LogerBien - Trouvez votre logement à Conakry",
   description:
     "Trouvez votre logement à Conakry sans commission. Appartements, maisons, villas. Contact direct propriétaire en Guinée.",
   openGraph: {
-    title: "LogerBien — Trouvez votre logement à Conakry",
+    title: "LogerBien - Trouvez votre logement à Conakry",
     description: "Trouvez votre logement à Conakry sans commission. Direct propriétaire.",
     url: "https://logerbien.gn",
     siteName: "LogerBien",
   },
 };
-
-// ─── Constants ─────────────────────────────────────────────────────────────────
 
 const NL: Record<string, string> = {
   kipe: "Kipé", hamdallaye: "Hamdallaye", dixinn: "Dixinn", ratoma: "Ratoma",
@@ -36,11 +34,11 @@ const NL: Record<string, string> = {
 
 const TYPE_GRADIENTS: Record<string, [string, string]> = {
   apartment: ["var(--bg-secondary)", "var(--bg-secondary)"],
-  villa:     ["var(--bg-secondary)", "var(--bg-primary)"],
-  house:     ["var(--bg-primary)", "var(--bg-secondary)"],
-  studio:    ["var(--bg-primary)", "var(--bg-secondary)"],
-  room:      ["var(--bg-secondary)", "var(--bg-secondary)"],
-  land:      ["var(--bg-primary)", "var(--bg-secondary)"],
+  villa: ["var(--bg-secondary)", "var(--bg-primary)"],
+  house: ["var(--bg-primary)", "var(--bg-secondary)"],
+  studio: ["var(--bg-primary)", "var(--bg-secondary)"],
+  room: ["var(--bg-secondary)", "var(--bg-secondary)"],
+  land: ["var(--bg-primary)", "var(--bg-secondary)"],
 };
 
 const HERO_GRADIENTS: [string, string][] = [
@@ -48,8 +46,6 @@ const HERO_GRADIENTS: [string, string][] = [
   ["var(--bg-primary)", "var(--bg-secondary)"],
   ["var(--bg-primary)", "var(--bg-secondary)"],
 ];
-
-// ─── Data fetching ─────────────────────────────────────────────────────────────
 
 function getDB() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -73,23 +69,15 @@ async function fetchHomeProperties(): Promise<Property[]> {
   } catch { return []; }
 }
 
-// ─── Discover preview ──────────────────────────────────────────────────────────
-
 function DiscoverPreview({ property }: { property: Property | undefined }) {
   const primaryImg = property?.property_images?.find((i) => i.is_primary) ?? property?.property_images?.[0];
   const [gradFrom, gradTo] = TYPE_GRADIENTS[property?.type ?? "apartment"] ?? HERO_GRADIENTS[0];
   const priceStr = property ? formatPrice(property.price, "GNF", property.price_period) : "Découvre les annonces";
   const neighborhood = property ? NL[property.neighborhood] ?? property.neighborhood : "Conakry";
-  const actions = [
-    { label: "Passer", Icon: X },
-    { label: "J'aime", Icon: Heart },
-    { label: "WhatsApp", Icon: MessageCircle },
-    { label: "Appeler", Icon: Phone },
-  ];
 
   return (
     <section className="py-5 md:py-6" style={{ background: "var(--bg-card-light)" }}>
-      <div className="content-fluid max-w-[1240px] grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.9fr)] gap-4 lg:gap-5 items-center">
+      <div className="content-fluid max-w-[1240px] grid grid-cols-1 lg:grid-cols-[0.8fr_1fr] gap-4 lg:gap-5 items-center">
         <div className="text-center lg:text-left">
           <h2 className="text-[32px] md:text-[46px] font-black mb-3 leading-tight" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
             <span className="inline-flex items-center justify-center gap-3">
@@ -97,20 +85,15 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
               Découvre les logements
             </span>
           </h2>
-          <p className="mb-4 text-lg font-black" style={{ color: "var(--text-secondary)" }}>
-            Swipe. Aime. Contacte.
-          </p>
-          <div className="grid grid-cols-2 gap-2 max-w-md mx-auto lg:mx-0 mb-5">
-            {actions.map(({ label, Icon }) => (
-              <div
-                key={label}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-4 text-center text-base font-black"
-                style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
-              >
-                <Icon className="h-5 w-5" strokeWidth={2.3} />
-                {label}
-              </div>
-            ))}
+          <div className="grid grid-cols-2 gap-2 max-w-sm mx-auto lg:mx-0 mb-5">
+            <div className="rounded-2xl px-3 py-4 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#b91c1c" }}>
+              <X className="mx-auto mb-1 h-7 w-7" strokeWidth={2.5} />
+              Passer
+            </div>
+            <div className="rounded-2xl px-3 py-4 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--accent-gold)" }}>
+              <Heart className="mx-auto mb-1 h-7 w-7" strokeWidth={2.5} />
+              J&apos;aime
+            </div>
           </div>
           <Link
             href="/decouvrir"
@@ -121,20 +104,22 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
           </Link>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[480px] py-5">
+        <div className="relative mx-auto w-full max-w-[560px] py-5">
           <div
-            className="absolute left-0 top-[32%] z-10 hidden sm:flex -translate-x-2 -rotate-6 items-center gap-2 rounded-2xl px-4 py-3 text-base font-black"
+            className="absolute left-0 top-[34%] z-30 hidden sm:flex -translate-x-2 -rotate-6 items-center gap-2 rounded-2xl px-4 py-3 text-base font-black"
             style={{ background: "rgba(255,255,255,0.92)", color: "#b91c1c", border: "1px solid rgba(185,28,28,0.18)", boxShadow: "0 16px 40px rgba(24,21,16,0.12)" }}
           >
+            <ArrowLeft className="h-5 w-5" strokeWidth={2.5} />
             <X className="h-5 w-5" strokeWidth={2.5} />
             Passer
           </div>
           <div
-            className="absolute right-0 top-[32%] z-10 hidden sm:flex translate-x-2 rotate-6 items-center gap-2 rounded-2xl px-4 py-3 text-base font-black"
+            className="absolute right-0 top-[34%] z-30 hidden sm:flex translate-x-2 rotate-6 items-center gap-2 rounded-2xl px-4 py-3 text-base font-black"
             style={{ background: "rgba(255,255,255,0.92)", color: "#be8a2e", border: "1px solid rgba(185,138,46,0.22)", boxShadow: "0 16px 40px rgba(24,21,16,0.12)" }}
           >
             <Heart className="h-5 w-5" strokeWidth={2.5} />
             J&apos;aime
+            <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
           </div>
 
           <div className="absolute left-9 right-9 top-8 h-[88%] rotate-[-8deg] rounded-[30px]" style={{ background: "rgba(185,138,46,0.18)", border: "1px solid rgba(185,138,46,0.20)" }} />
@@ -182,12 +167,14 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
 
           <div className="mt-3 grid grid-cols-2 gap-2 sm:hidden">
             <span className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#b91c1c" }}>
+              <ArrowLeft className="h-5 w-5" strokeWidth={2.5} />
               <X className="h-5 w-5" strokeWidth={2.5} />
               Passer
             </span>
             <span className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--accent-gold)" }}>
               <Heart className="h-5 w-5" strokeWidth={2.5} />
               J&apos;aime
+              <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
             </span>
           </div>
         </div>
@@ -196,13 +183,11 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
   );
 }
 
-// ─── Page ──────────────────────────────────────────────────────────────────────
-
 export default async function HomePage() {
   const properties = await fetchHomeProperties();
 
   const discoverPreview = properties[0];
-  const recent      = properties.slice(0, 3);
+  const recent = properties.slice(0, 3);
 
   return (
     <>
@@ -222,11 +207,11 @@ export default async function HomePage() {
         <div className="content-fluid max-w-[1240px] relative">
           <div className="mx-auto max-w-[1120px] text-center">
             <h1
-              className="mx-auto mb-3 max-w-[820px] text-[clamp(2.375rem,6vw,3.5rem)] font-black leading-[0.98]"
+              className="mx-auto mb-3 max-w-[820px] text-[clamp(2rem,8vw,3.5rem)] font-black leading-[0.98]"
               style={{ color: "var(--text-primary)", fontFamily: "var(--font-manrope), sans-serif", letterSpacing: 0 }}
             >
-              <span className="inline-flex items-center justify-center gap-3">
-                <MapPin className="h-9 w-9 md:h-11 md:w-11" strokeWidth={2.5} />
+              <span className="inline-flex items-center justify-center gap-2 md:gap-3 whitespace-nowrap">
+                <MapPin className="h-8 w-8 md:h-11 md:w-11" strokeWidth={2.5} />
                 Où cherches-tu ?
               </span>
             </h1>

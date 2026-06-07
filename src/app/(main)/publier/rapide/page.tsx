@@ -283,13 +283,13 @@ export default function PublierRapidePage() {
         <p className="text-sm" style={helpTextStyle}>Sans compte — en moins de 2 minutes</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
 
         {/* Photos */}
-        <div>
+        <section className="rounded-3xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}>
           <label className="block text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>
-            <span className="inline-flex items-center gap-2">
-              1. <Camera className="h-4 w-4" strokeWidth={2.4} /> Photos <span className="text-red-400">*</span>
+            <span className="inline-flex items-center gap-2 text-base">
+              <Camera className="h-6 w-6 text-[var(--accent-gold)]" strokeWidth={2.4} /> Photos <span className="text-red-400">*</span>
             </span>
             <span className="font-normal ml-1" style={helpTextStyle}>(min. 1, max. 4)</span>
           </label>
@@ -323,12 +323,12 @@ export default function PublierRapidePage() {
           )}
           <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" multiple hidden onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }} />
           <input ref={cameraRef} type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden onChange={(e) => { addPhotos(e.target.files); e.target.value = ""; }} />
-        </div>
+        </section>
 
         {/* Type de bien */}
-        <div>
+        <section className="rounded-3xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}>
           <label className="flex items-center gap-2 text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>
-            2. <Home className="h-4 w-4" strokeWidth={2.4} /> Type
+            <Home className="h-6 w-6 text-[var(--accent-gold)]" strokeWidth={2.4} /> Type
           </label>
           <div className="grid grid-cols-3 gap-2">
             {TYPE_OPTIONS.map((t) => {
@@ -347,12 +347,12 @@ export default function PublierRapidePage() {
               </button>
             )})}
           </div>
-        </div>
+        </section>
 
         {/* Transaction type */}
-        <div>
+        <section className="rounded-3xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}>
           <label className="flex items-center gap-2 text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>
-            <KeyRound className="h-4 w-4" strokeWidth={2.4} />
+            <KeyRound className="h-6 w-6 text-[var(--accent-gold)]" strokeWidth={2.4} />
             Offre
           </label>
           <div className="grid grid-cols-2 gap-3">
@@ -372,12 +372,12 @@ export default function PublierRapidePage() {
               </button>
             ))}
           </div>
-        </div>
+        </section>
 
         {/* Quartier */}
-        <div>
+        <section className="rounded-3xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}>
           <label className="block text-sm font-bold mb-2" style={{ color: "var(--text-primary)" }}>
-            3. <MapPin className="w-4 h-4 inline mr-1" />Quartier <span className="text-red-400">*</span>
+            <MapPin className="w-6 h-6 inline mr-2 text-[var(--accent-gold)]" />Quartier <span className="text-red-400">*</span>
           </label>
           <select
             value={form.neighborhood}
@@ -394,13 +394,13 @@ export default function PublierRapidePage() {
               </optgroup>
             ))}
           </select>
-        </div>
+        </section>
 
         {/* Price */}
-        <div>
+        <section className="rounded-3xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}>
           <label className="block text-sm font-bold mb-2" style={{ color: "var(--text-primary)" }}>
             <span className="inline-flex items-center gap-2">
-              4. <Banknote className="h-4 w-4" strokeWidth={2.4} /> Prix {form.txType === "rent" ? "/ mois" : ""} <span className="text-red-400">*</span>
+              <Banknote className="h-6 w-6 text-[var(--accent-gold)]" strokeWidth={2.4} /> Prix {form.txType === "rent" ? "/ mois" : ""} <span className="text-red-400">*</span>
             </span>
           </label>
           <input
@@ -411,12 +411,12 @@ export default function PublierRapidePage() {
             style={fieldStyle}
           />
           {priceLabel && <p className="text-[var(--accent-gold)] font-bold text-sm mt-1.5 ml-1">{priceLabel}{form.txType === "rent" ? "/mois" : ""}</p>}
-        </div>
+        </section>
 
         {/* Phone / WhatsApp */}
-        <div>
+        <section className="rounded-3xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}>
           <label className="block text-sm font-bold mb-2" style={{ color: "var(--text-primary)" }}>
-            5. <Phone className="w-4 h-4 inline mr-1" />WhatsApp <span className="text-red-400">*</span>
+            <Phone className="w-6 h-6 inline mr-2 text-[var(--accent-gold)]" />Téléphone <span className="text-red-400">*</span>
           </label>
           <input
             type="tel" placeholder="+224 6XX XX XX XX"
@@ -426,7 +426,7 @@ export default function PublierRapidePage() {
             style={fieldStyle}
           />
           <p className="text-xs mt-1.5 ml-1" style={helpTextStyle}>Les acheteurs vous contacteront via ce numéro</p>
-        </div>
+        </section>
 
         {/* Submit */}
         <button

@@ -11,7 +11,7 @@ import {
   Map,
   List,
   MapPin,
-  CircleDollarSign,
+  Banknote,
   Home,
   Building2,
   DoorOpen,
@@ -485,7 +485,7 @@ function AnnoncesContent() {
               {BUDGET_CHIPS.map((c) => {
                 const isAll = c.min === 0 && c.max === Infinity;
                 const active = isAll ? !hasPriceFilter : priceMin === c.min && priceMax === c.max;
-                return <VisualChip key={c.label} active={active} onClick={() => setPriceRange(c.min, c.max)} icon={<CircleDollarSign className="h-4 w-4" />} label={c.label} compact />;
+                return <VisualChip key={c.label} active={active} onClick={() => setPriceRange(c.min, c.max)} icon={<Banknote className="h-4 w-4" />} label={c.label} compact />;
               })}
               <VisualChip active={availability === "now"} onClick={() => setParam("availability", availability === "now" ? "" : "now")} icon={<CheckCircle2 className="h-4 w-4" />} label="Dispo" compact />
               <VisualChip active={recentOnly} onClick={() => setParam("recent", recentOnly ? "" : "1")} icon={<CalendarClock className="h-4 w-4" />} label="Recent" compact />
@@ -501,12 +501,12 @@ function AnnoncesContent() {
               </div>
             </FilterGroup>
 
-            <FilterGroup title="Budget" icon={<CircleDollarSign className="h-4 w-4" />}>
+            <FilterGroup title="Budget" icon={<Banknote className="h-4 w-4" />}>
               <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-2 gap-2">
                 {BUDGET_CHIPS.map((c) => {
                   const isAll = c.min === 0 && c.max === Infinity;
                   const active = isAll ? !hasPriceFilter : priceMin === c.min && priceMax === c.max;
-                  return <VisualChip key={c.label} active={active} onClick={() => setPriceRange(c.min, c.max)} icon={<CircleDollarSign className="h-4 w-4" />} label={c.label} compact />;
+                  return <VisualChip key={c.label} active={active} onClick={() => setPriceRange(c.min, c.max)} icon={<Banknote className="h-4 w-4" />} label={c.label} compact />;
                 })}
               </div>
             </FilterGroup>
@@ -584,13 +584,13 @@ function AnnoncesContent() {
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <FilterGroup title="Transaction" icon={<Home className="h-4 w-4" />}>
                   <div className="grid grid-cols-3 gap-2">
-                    {[{ id: "", label: "Toutes", Icon: Home }, { id: "rent", label: "Location", Icon: Home }, { id: "sale", label: "Achat", Icon: CircleDollarSign }].map((c) => (
+                    {[{ id: "", label: "Toutes", Icon: Home }, { id: "rent", label: "Location", Icon: Home }, { id: "sale", label: "Achat", Icon: Banknote }].map((c) => (
                       <VisualChip key={c.id} active={tx === c.id} onClick={() => setParam("tx", c.id)} icon={<c.Icon className="h-4 w-4" />} label={c.label} compact />
                     ))}
                   </div>
                 </FilterGroup>
 
-                <FilterGroup title="Prix exact" icon={<CircleDollarSign className="h-4 w-4" />}>
+                <FilterGroup title="Prix" icon={<Banknote className="h-4 w-4" />}>
                   <div className="flex gap-2 items-center">
                     <input
                       type="number"
