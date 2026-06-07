@@ -4,7 +4,7 @@ import TinderCard from "react-tinder-card";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BadgeCheck, Bed, Heart, Home, Loader2, MapPin, MessageCircle, Phone, Plane, Star, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgeCheck, Bed, Heart, Home, Loader2, MapPin, MessageCircle, Phone, Plane, Star, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useAppStore } from "@/lib/store";
 import { toast } from "@/lib/toast";
@@ -428,7 +428,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           aria-label="Retour"
           style={{
             pointerEvents: "auto",
-            width: 32, height: 32,
+            width: 40, height: 40,
             background: "rgba(255,255,255,0.12)",
             border: "none",
             borderRadius: "50%",
@@ -438,19 +438,16 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             flexShrink: 0,
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
+            <ArrowLeft style={{ width: 20, height: 20 }} strokeWidth={2.6} />
         </button>
 
         {/* Title + sub-title */}
         <div style={{ textAlign: "center", flex: 1 }}>
-          <p style={{ margin: 0, color: "#ffffff", fontSize: 15, fontWeight: 600, lineHeight: 1.3 }}>
+          <p style={{ margin: 0, color: "#ffffff", fontSize: 18, fontWeight: 900, lineHeight: 1.2 }}>
             Découvrir
           </p>
-          <p style={{ margin: 0, color: "rgba(255,255,255,0.70)", fontSize: 11, lineHeight: 1.4 }}>
-            Conakry, Guinée
+          <p style={{ margin: 0, color: "rgba(255,255,255,0.82)", fontSize: 13, lineHeight: 1.35, fontWeight: 700 }}>
+            Glisse. Choisis. Contacte.
           </p>
         </div>
 
@@ -537,13 +534,13 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               <div style={{
                 border: "3px solid var(--accent-gold)", borderRadius: 8,
                 padding: "8px 16px", color: "#ffffff",
-                fontSize: 32, fontWeight: 900, letterSpacing: 2,
+                fontSize: 30, fontWeight: 900, letterSpacing: 1,
                 textTransform: "uppercase", transform: "rotate(-15deg)",
                 textShadow: "0 2px 8px rgba(0,0,0,0.6)", whiteSpace: "nowrap",
               }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
                   <Heart style={{ width: 30, height: 30 }} strokeWidth={2.6} />
-                  INTÉRESSÉ
+                  J&apos;AIME
                 </span>
               </div>
             </div>
@@ -556,13 +553,13 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               <div style={{
                 border: "3px solid #FF4D4D", borderRadius: 8,
                 padding: "8px 16px", color: "#ffffff",
-                fontSize: 32, fontWeight: 900, letterSpacing: 2,
+                fontSize: 30, fontWeight: 900, letterSpacing: 1,
                 textTransform: "uppercase", transform: "rotate(15deg)",
                 textShadow: "0 2px 8px rgba(0,0,0,0.6)", whiteSpace: "nowrap",
               }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
                   <X style={{ width: 30, height: 30 }} strokeWidth={2.8} />
-                  PASSÉ
+                  PASSER
                 </span>
               </div>
             </div>
@@ -577,7 +574,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 <span style={{
                   background: "rgba(212,175,55,0.20)", color: "var(--accent-gold)",
                   border: "1px solid rgba(212,175,55,0.5)", borderRadius: 20,
-                  padding: "3px 10px", fontSize: 11, fontWeight: 600,
+                  padding: "5px 11px", fontSize: 13, fontWeight: 900,
                   backdropFilter: "blur(8px)",
                 }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
@@ -590,7 +587,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 <span style={{
                   background: "rgba(74,158,255,0.25)", color: "#4A9EFF",
                   border: "1px solid rgba(74,158,255,0.5)", borderRadius: 20,
-                  padding: "3px 10px", fontSize: 11, fontWeight: 600,
+                  padding: "5px 11px", fontSize: 13, fontWeight: 900,
                   backdropFilter: "blur(8px)",
                 }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
@@ -607,7 +604,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 <span style={{
                   background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)",
                   color: "rgba(255,255,255,0.85)", borderRadius: 20,
-                  padding: "3px 10px", fontSize: 11, fontWeight: 600,
+                   padding: "5px 11px", fontSize: 13, fontWeight: 900,
                 }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
                     <MapPin style={{ width: 13, height: 13 }} strokeWidth={2.4} />
@@ -632,7 +629,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                   border: "1px solid rgba(255,255,255,0.22)",
                   borderRadius: 999,
                   padding: "5px 10px",
-                  fontSize: 11,
+                  fontSize: 13,
                   fontWeight: 800,
                   backdropFilter: "blur(10px)",
                 }}>
@@ -645,7 +642,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                     border: "1px solid rgba(34,197,94,0.42)",
                     borderRadius: 999,
                     padding: "5px 10px",
-                    fontSize: 11,
+                    fontSize: 13,
                     fontWeight: 800,
                     backdropFilter: "blur(10px)",
                   }}>
@@ -661,7 +658,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                   border: `1px solid ${availability.border}`,
                   borderRadius: 999,
                   padding: "5px 10px",
-                  fontSize: 11,
+                   fontSize: 13,
                   fontWeight: 800,
                   backdropFilter: "blur(10px)",
                 }}>
@@ -672,8 +669,8 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               {/* Prix */}
               <p style={{
                 margin: 0,
-                fontSize: 24,
-                fontWeight: 800,
+                fontSize: 32,
+                fontWeight: 900,
                 color: "#ffffff",
                 lineHeight: 1.1,
                 textShadow: "0 2px 8px rgba(0,0,0,0.5)",
@@ -683,7 +680,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               {topCard.price_period === "month" && (
                 <p style={{
                   margin: "2px 0 8px",
-                  fontSize: 13,
+                   fontSize: 16,
                   color: "rgba(255,255,255,0.75)",
                   lineHeight: 1,
                 }}>
@@ -696,8 +693,8 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 margin: "0 0 5px",
                 color: "#ffffff",
                 fontWeight: 700,
-                fontSize: 17,
-                lineHeight: 1.3,
+                fontSize: 18,
+                lineHeight: 1.25,
                 textShadow: "0 1px 6px rgba(0,0,0,0.6)",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -713,20 +710,20 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 alignItems: "center",
                 overflow: "hidden",
               }}>
-                <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, whiteSpace: "nowrap" }}>
+                <span style={{ color: "rgba(255,255,255,0.86)", fontSize: 16, fontWeight: 800, whiteSpace: "nowrap" }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                     <MapPin style={{ width: 14, height: 14 }} strokeWidth={2.4} />
                     {getNeighborhoodName(topCard.neighborhood)}
                   </span>
                 </span>
-                <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>·</span>
-                <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, whiteSpace: "nowrap" }}>
+                <span style={{ color: "rgba(255,255,255,0.48)", fontSize: 16 }}>·</span>
+                <span style={{ color: "rgba(255,255,255,0.86)", fontSize: 16, fontWeight: 800, whiteSpace: "nowrap" }}>
                   {topCard.type === "apartment" ? "Appartement" : topCard.type === "house" ? "Maison" : topCard.type === "villa" ? "Villa" : topCard.type === "studio" ? "Studio" : topCard.type}
                 </span>
                 {(topCard.rooms ?? 0) > 0 && (
                   <>
-                    <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>·</span>
-                    <span style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, whiteSpace: "nowrap" }}>
+                    <span style={{ color: "rgba(255,255,255,0.48)", fontSize: 16 }}>·</span>
+                    <span style={{ color: "rgba(255,255,255,0.86)", fontSize: 16, fontWeight: 800, whiteSpace: "nowrap" }}>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                         <Bed style={{ width: 14, height: 14 }} strokeWidth={2.4} />
                         {topCard.rooms}
@@ -737,11 +734,11 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               </div>
               <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
                 {published && (
-                  <span style={{ color: "rgba(255,255,255,0.86)", fontSize: 12, fontWeight: 800 }}>
+                   <span style={{ color: "rgba(255,255,255,0.9)", fontSize: 14, fontWeight: 900 }}>
                     {published.label}
                   </span>
                 )}
-                <span style={{ color: "rgba(255,255,255,0.86)", fontSize: 12, fontWeight: 800 }}>
+                 <span style={{ color: "rgba(255,255,255,0.9)", fontSize: 14, fontWeight: 900 }}>
                   {advance}
                 </span>
               </div>
@@ -760,7 +757,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           zIndex: 20,
           display: "flex",
           flexDirection: "column",
-          gap: 20,
+          gap: 18,
           alignItems: "center",
         }}>
           {/* Passer */}
@@ -768,7 +765,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             onClick={() => triggerSwipe("left")}
             aria-label="Passer"
             style={{
-              width: 48, height: 48,
+              width: 54, height: 54,
               borderRadius: "50%",
               background: "rgba(255,255,255,0.12)",
               border: "1.5px solid rgba(255,255,255,0.25)",
@@ -779,12 +776,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               flexShrink: 0,
             }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" strokeWidth="2.5"
-              strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6"  y1="6" x2="18" y2="18" />
-            </svg>
+            <X style={{ width: 24, height: 24 }} strokeWidth={2.8} />
           </button>
 
           {/* J'adore — plus grand, fond doré */}
@@ -792,7 +784,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             onClick={() => triggerSwipe("right")}
             aria-label="J'adore"
             style={{
-              width: 54, height: 54,
+              width: 62, height: 62,
               borderRadius: "50%",
               background: "#C8973A",
               border: "none",
@@ -804,9 +796,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               boxShadow: "0 4px 16px rgba(200,151,58,0.50)",
             }}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-            </svg>
+            <Heart style={{ width: 28, height: 28, fill: "currentColor" }} strokeWidth={2.4} />
           </button>
 
           {/* Appeler */}
@@ -817,7 +807,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             }}
             aria-label="Contacter"
             style={{
-              width: 48, height: 48,
+              width: 54, height: 54,
               borderRadius: "50%",
               background: "rgba(255,255,255,0.14)",
               border: "1.5px solid rgba(255,255,255,0.25)",
@@ -839,7 +829,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             }}
             aria-label="WhatsApp"
             style={{
-              width: 52, height: 52,
+              width: 58, height: 58,
               borderRadius: "50%",
               background: "#25D366",
               border: "none",
@@ -853,6 +843,29 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           >
             <MessageCircle style={{ width: 24, height: 24 }} strokeWidth={2.4} />
           </button>
+        </div>
+
+        <div style={{
+          position: "absolute",
+          left: 64,
+          right: 18,
+          bottom: 44,
+          zIndex: 21,
+          display: "flex",
+          justifyContent: "space-between",
+          pointerEvents: "none",
+          color: "rgba(255,255,255,0.86)",
+          fontSize: 14,
+          fontWeight: 900,
+        }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <ArrowLeft style={{ width: 17, height: 17 }} strokeWidth={2.6} />
+            Passer
+          </span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            J&apos;aime
+            <ArrowRight style={{ width: 17, height: 17 }} strokeWidth={2.6} />
+          </span>
         </div>
 
         {/* ══════════════════════════════════════════════════════════════════════

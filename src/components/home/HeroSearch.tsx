@@ -187,7 +187,7 @@ export function HeroSearch() {
       </div>
 
       {/* Bouton Rechercher + micro — flex row pleine largeur */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 px-16 sm:px-0">
         <button
           onClick={handleSearch}
           className="flex-1 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-colors"

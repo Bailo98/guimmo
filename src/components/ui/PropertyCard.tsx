@@ -155,8 +155,8 @@ export function PropertyCard({
   if (variant === "horizontal") {
     return (
       <div
-        className={cn("group flex gap-3 rounded-2xl overflow-hidden transition-all hover:-translate-y-0.5", className)}
-        style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
+        className={cn("group flex gap-3 overflow-hidden transition-all hover:-translate-y-0.5", className)}
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 24, boxShadow: "var(--shadow-soft)" }}
       >
         <Link href={`/annonces/${property.id}`} className="relative w-28 flex-shrink-0">
           <div className="relative w-full h-full min-h-[100px]">
@@ -192,20 +192,20 @@ export function PropertyCard({
       className={cn("group property-card-default", className)}
       style={{
         position: "relative",
-        borderRadius: 20,
+        borderRadius: 24,
         overflow: "hidden",
-        boxShadow: "0 8px 24px rgba(0,0,0,0.30)",
+        boxShadow: "0 16px 42px rgba(24,21,16,0.22)",
         background: "#111820",
         flexShrink: 0,
         transition: "transform 0.22s ease, box-shadow 0.22s ease",
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLDivElement).style.transform  = "translateY(-4px)";
-        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 20px 44px rgba(0,0,0,0.55)";
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 22px 56px rgba(24,21,16,0.34)";
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLDivElement).style.transform  = "";
-        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 24px rgba(0,0,0,0.30)";
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 16px 42px rgba(24,21,16,0.22)";
       }}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
@@ -237,7 +237,7 @@ export function PropertyCard({
       {/* ── Bottom-only gradient scrim ────────────────────────────────────────── */}
       <div style={{
         position: "absolute", inset: 0, zIndex: 1,
-        background: "linear-gradient(transparent 45%, rgba(0,0,0,0.88) 100%)",
+        background: "linear-gradient(transparent 36%, rgba(0,0,0,0.42) 62%, rgba(0,0,0,0.92) 100%)",
         pointerEvents: "none",
       }} />
 
@@ -313,7 +313,7 @@ export function PropertyCard({
           <span style={{
             background: availCfg.bg, color: availCfg.color,
             border: `1px solid ${availCfg.border}`,
-            fontSize: 16, fontWeight: 800, padding: "4px 10px",
+            fontSize: 14, fontWeight: 900, padding: "5px 10px",
             borderRadius: 20, whiteSpace: "nowrap",
             backdropFilter: "blur(6px)",
             display: "inline-flex",
@@ -364,7 +364,7 @@ export function PropertyCard({
         <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
           <Banknote style={{ width: 22, height: 22, color: "var(--photo-text)", alignSelf: "center" }} strokeWidth={2.4} />
           <span style={{
-            fontSize: 34,
+            fontSize: 32,
             fontWeight: 900,
             color: "var(--photo-text)",
             lineHeight: 1.1,
@@ -400,7 +400,7 @@ export function PropertyCard({
           overflow: "hidden",
         }}>
           <span style={{
-            fontSize: 18,
+             fontSize: 17,
             fontWeight: 900,
             color: "var(--photo-text)",
             whiteSpace: "nowrap",
@@ -423,7 +423,7 @@ export function PropertyCard({
 
         <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginTop: 7 }}>
           <span style={{
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: 900,
             color: availability.color,
             background: availability.bg,
@@ -437,7 +437,7 @@ export function PropertyCard({
             {availability.label}
           </span>
           <span style={{
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: 900,
             color: "#ffffff",
             background: "rgba(0,0,0,0.45)",
@@ -460,8 +460,8 @@ export function PropertyCard({
           bottom: 68,
           right: 16,
           zIndex: 6,
-          width: 42,
-          height: 42,
+          width: 46,
+          height: 46,
           borderRadius: "50%",
           background: "rgba(255,255,255,0.94)",
           color: "#17120a",
@@ -487,8 +487,8 @@ export function PropertyCard({
           bottom: 16,
           right: 16,
           zIndex: 6,
-          width: 46,
-          height: 46,
+          width: 50,
+          height: 50,
           borderRadius: "50%",
           background: "#25D366",
           border: "none",

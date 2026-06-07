@@ -79,7 +79,7 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
     <section className="py-5 md:py-6" style={{ background: "var(--bg-card-light)" }}>
       <div className="content-fluid max-w-[1240px] grid grid-cols-1 lg:grid-cols-[0.8fr_1fr] gap-4 lg:gap-5 items-center">
         <div className="text-center lg:text-left">
-          <h2 className="text-[32px] md:text-[46px] font-black mb-3 leading-tight" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
+          <h2 className="text-[28px] md:text-[40px] font-bold mb-3 leading-tight" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
             <span className="inline-flex items-center justify-center gap-3">
               <Heart className="h-8 w-8 md:h-10 md:w-10" strokeWidth={2.4} />
               Découvre les logements
@@ -97,7 +97,7 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
           </div>
           <Link
             href="/decouvrir"
-            className="inline-flex min-h-12 items-center justify-center rounded-2xl px-6 text-base font-black transition-opacity hover:opacity-90"
+            className="inline-flex min-h-12 items-center justify-center rounded-2xl px-6 text-base font-black transition-all hover:-translate-y-0.5 hover:opacity-95"
             style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
           >
             Commencer
@@ -207,10 +207,10 @@ export default async function HomePage() {
         <div className="content-fluid max-w-[1240px] relative">
           <div className="mx-auto max-w-[1120px] text-center">
             <h1
-              className="mx-auto mb-3 max-w-[820px] text-[clamp(2rem,8vw,3.5rem)] font-black leading-[0.98]"
+              className="mx-auto mb-3 max-w-[820px] text-[clamp(2rem,8vw,3.5rem)] font-bold leading-[0.98]"
               style={{ color: "var(--text-primary)", fontFamily: "var(--font-manrope), sans-serif", letterSpacing: 0 }}
             >
-              <span className="inline-flex items-center justify-center gap-2 md:gap-3 whitespace-nowrap">
+              <span className="inline-flex items-center justify-center gap-2 md:gap-3">
                 <MapPin className="h-8 w-8 md:h-11 md:w-11" strokeWidth={2.5} />
                 Où cherches-tu ?
               </span>
@@ -249,7 +249,7 @@ export default async function HomePage() {
             <div className="flex items-center justify-between gap-4 mb-5">
               <div>
                 <h2
-                  className="text-[30px] md:text-[40px] font-black"
+                  className="text-[28px] md:text-[40px] font-bold"
                   style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
                 >
                   <span className="inline-flex items-center gap-3">
