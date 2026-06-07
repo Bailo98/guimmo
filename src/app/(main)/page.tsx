@@ -187,7 +187,7 @@ export default async function HomePage() {
   const properties = await fetchHomeProperties();
 
   const discoverPreview = properties[0];
-  const recent = properties.slice(0, 3);
+  const recent = properties.slice(0, 4);
 
   return (
     <>
@@ -262,7 +262,7 @@ export default async function HomePage() {
                 Voir tout <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-5 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 xl:gap-6 items-stretch">
               {recent.map((p, i) => (
                 <PropertyCard key={p.id} property={p} index={i + 10} />
               ))}

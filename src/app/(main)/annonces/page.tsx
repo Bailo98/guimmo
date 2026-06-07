@@ -758,7 +758,7 @@ function AnnoncesContent() {
 
         {/* ── Map or Grid ── */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 xl:gap-6">
             {Array.from({ length: pageSize }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : filtered.length === 0 ? (
@@ -782,7 +782,7 @@ function AnnoncesContent() {
           /* LIST VIEW */
           <>
             {!hasFilters && <NearbySection properties={allProperties} />}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 xl:gap-6">
               {pageItems.map((p, i) => (
                 <PropertyCard key={p.id} property={p} index={i} showDiasporaPrice={diaspora} />
               ))}
@@ -838,7 +838,7 @@ export default function AnnoncesPage() {
   return (
     <Suspense
       fallback={
-        <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-2 gap-5 xl:gap-6">
           {Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)}
         </div>
       }

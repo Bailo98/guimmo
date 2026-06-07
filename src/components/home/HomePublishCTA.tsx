@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Home, Plus } from "lucide-react";
+import { Home, MessageCircle, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 
@@ -18,33 +18,48 @@ export function HomePublishCTA() {
   const href = isOwner ? "/publier/rapide" : mounted && user ? "/compte" : "/connexion?redirect=/compte";
 
   return (
-    <section className="pt-5 pb-4 md:pt-6 md:pb-5" style={{ background: "var(--bg-secondary)" }}>
+    <section className="py-5 md:py-8" style={{ background: "var(--bg-secondary)" }}>
       <div className="content-fluid max-w-[1240px]">
         <div
-          className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-center rounded-[24px] p-5 md:p-6"
-          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}
+          className="relative overflow-hidden rounded-[28px] p-5 md:p-8"
+          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "0 22px 64px rgba(24,21,16,0.14)" }}
         >
-          <div>
-            <h2
-              className="text-[30px] md:text-[42px] font-black leading-tight mb-2"
-              style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
+          <div className="grid grid-cols-1 md:grid-cols-[220px_1fr_auto] gap-5 md:gap-7 items-center">
+            <div
+              className="mx-auto flex h-32 w-32 md:h-40 md:w-40 items-center justify-center rounded-[32px]"
+              style={{ background: "linear-gradient(135deg, rgba(185,138,46,0.22), rgba(31,86,61,0.14))", border: "1px solid rgba(185,138,46,0.22)" }}
+              aria-hidden="true"
             >
-              <span className="inline-flex items-center gap-3">
-                {isOwner ? <Plus className="h-8 w-8" strokeWidth={2.4} /> : <Home className="h-8 w-8" strokeWidth={2.4} />}
-                {isOwner ? "Publier un logement" : "Tu as un logement ?"}
-              </span>
-            </h2>
-            <p className="text-base md:text-lg font-bold" style={{ color: "var(--text-secondary)" }}>
-              {isOwner ? "Ajoute une annonce. Reçois les contacts sur WhatsApp." : "Passe propriétaire et publie simplement."}
-            </p>
+              <div className="relative flex h-20 w-20 md:h-24 md:w-24 items-center justify-center rounded-[26px]" style={{ background: "var(--accent-gold)", color: "var(--bg-primary)", boxShadow: "0 18px 38px rgba(185,138,46,0.28)" }}>
+                {isOwner ? <Plus className="h-11 w-11" strokeWidth={2.6} /> : <Home className="h-11 w-11" strokeWidth={2.6} />}
+              </div>
+            </div>
+
+            <div className="text-center md:text-left">
+              <p className="mb-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-base font-black" style={{ background: "var(--surface-soft)", color: "var(--accent-gold)", border: "1px solid var(--border)" }}>
+                <MessageCircle className="h-4 w-4" strokeWidth={2.4} />
+                Contacts directs
+              </p>
+              <h2
+                className="text-[30px] md:text-[44px] font-bold leading-tight"
+                style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}
+              >
+                {isOwner ? "Publier un logement" : "Vous louez un logement ?"}
+              </h2>
+              <p className="mt-2 text-base md:text-lg font-bold leading-snug" style={{ color: "var(--text-secondary)" }}>
+                {isOwner ? "Ajoutez une annonce et recevez les contacts directement." : "Publiez gratuitement et recevez des contacts directement."}
+              </p>
+            </div>
+
+            <Link
+              href={href}
+              className="inline-flex min-h-14 w-full md:w-auto items-center justify-center gap-2 rounded-2xl px-8 text-base font-black transition-all hover:-translate-y-0.5 hover:opacity-95"
+              style={{ background: "var(--accent-gold)", color: "var(--bg-primary)", boxShadow: "0 14px 34px rgba(185,138,46,0.24)" }}
+            >
+              <Plus className="h-5 w-5" strokeWidth={2.6} />
+              Publier maintenant
+            </Link>
           </div>
-          <Link
-            href={href}
-            className="inline-flex min-h-14 items-center justify-center rounded-2xl px-7 text-base font-black transition-opacity hover:opacity-90"
-            style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
-          >
-            {isOwner ? "Publier" : "Passer propriétaire"}
-          </Link>
         </div>
       </div>
     </section>

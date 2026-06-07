@@ -577,9 +577,9 @@ html:not(.dark) .agents-page-light [style*="rgba(255,255,255,0.08)"] {
 /* ─────────────────────────────────────────────────────────────────
    PropertyCard responsive height
 ───────────────────────────────────────────────────────────────── */
-.property-card-default { height: clamp(360px, 92vw, 440px); }
-@media (min-width: 768px)  { .property-card-default { height: 420px; } }
-@media (min-width: 1024px) { .property-card-default { height: 460px; } }
+.property-card-default { height: clamp(390px, 104vw, 500px); }
+@media (min-width: 768px)  { .property-card-default { height: 480px; } }
+@media (min-width: 1024px) { .property-card-default { height: 520px; } }
 
 .premium-card {
   border-radius: 24px;

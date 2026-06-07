@@ -4,7 +4,7 @@ import TinderCard from "react-tinder-card";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, BadgeCheck, Banknote, Bed, Heart, Home, Loader2, MapPin, MessageCircle, Phone, Plane, Star, X } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Banknote, Bed, Heart, Home, Loader2, MapPin, MessageCircle, Phone, Plane, Star, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useAppStore } from "@/lib/store";
 import { toast } from "@/lib/toast";
@@ -468,6 +468,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           background: "#000",
           touchAction: "none",
           paddingTop: "env(safe-area-inset-top, 0px)",
+          paddingBottom: "calc(136px + env(safe-area-inset-bottom, 0px))",
         }}
       >
         {/* ── TinderCard ─────────────────────────────────────────────────────── */}
@@ -630,9 +631,9 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             {/* ── Property info — bottom left ──────────────────────────────────── */}
             <div style={{
               position: "absolute",
-              bottom: 82,
+              bottom: 190,
               left: 18,
-              right: 72,
+              right: 18,
               pointerEvents: "none",
             }}>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 }}>
@@ -761,82 +762,57 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           </div>
         </TinderCard>
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            ACTION BUTTONS — right side, column layout
-            Order top to bottom: pass, like, call, WhatsApp
-        ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
           position: "absolute",
-          right: 16,
-          bottom: 120,
+          left: 18,
+          right: 18,
+          bottom: "calc(28px + env(safe-area-inset-bottom, 0px))",
           zIndex: 20,
-          display: "flex",
-          flexDirection: "column",
-          gap: 18,
-          alignItems: "center",
+          display: "grid",
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+          gap: 10,
         }}>
-          {/* Passer */}
           <button
             onClick={() => triggerSwipe("left")}
             aria-label="Passer"
             style={{
-              width: 54, height: 54,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.12)",
-              border: "1.5px solid rgba(255,255,255,0.25)",
-              color: "#ffffff",
-              cursor: "pointer",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              WebkitTapHighlightColor: "transparent",
-              flexShrink: 0,
-            }}
-          >
-            <X style={{ width: 24, height: 24 }} strokeWidth={2.8} />
-          </button>
-
-          {/* J'adore — plus grand, fond doré */}
-          <button
-            onClick={() => triggerSwipe("right")}
-            aria-label="J'adore"
-            style={{
-              width: 62, height: 62,
-              borderRadius: "50%",
-              background: "#C8973A",
-              border: "none",
-              color: "#ffffff",
-              cursor: "pointer",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              WebkitTapHighlightColor: "transparent",
-              flexShrink: 0,
-              boxShadow: "0 4px 16px rgba(200,151,58,0.50)",
-            }}
-          >
-            <Heart style={{ width: 28, height: 28, fill: "currentColor" }} strokeWidth={2.4} />
-          </button>
-
-          {/* Appeler */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              requireLoginOrRun(() => { window.location.href = phoneUrl; });
-            }}
-            aria-label="Contacter"
-            style={{
-              width: 54, height: 54,
-              borderRadius: "50%",
+              minHeight: 58,
+              borderRadius: 22,
               background: "rgba(255,255,255,0.14)",
               border: "1.5px solid rgba(255,255,255,0.25)",
               color: "#ffffff",
               cursor: "pointer",
-              display: "flex", alignItems: "center", justifyContent: "center",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              fontSize: 16,
+              fontWeight: 900,
               WebkitTapHighlightColor: "transparent",
-              flexShrink: 0,
             }}
           >
-            <Phone style={{ width: 22, height: 22 }} strokeWidth={2.4} />
+            <X style={{ width: 24, height: 24 }} strokeWidth={2.8} />
+            Passer
           </button>
 
-          {/* WhatsApp */}
+          <button
+            onClick={() => triggerSwipe("right")}
+            aria-label="J'adore"
+            style={{
+              minHeight: 58,
+              borderRadius: 22,
+              background: "#C8973A",
+              border: "none",
+              color: "#ffffff",
+              cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              fontSize: 16,
+              fontWeight: 900,
+              WebkitTapHighlightColor: "transparent",
+              boxShadow: "0 4px 16px rgba(200,151,58,0.50)",
+            }}
+          >
+            <Heart style={{ width: 28, height: 28, fill: "currentColor" }} strokeWidth={2.4} />
+            J&apos;aime
+          </button>
+
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -844,43 +820,45 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             }}
             aria-label="WhatsApp"
             style={{
-              width: 58, height: 58,
-              borderRadius: "50%",
+              minHeight: 58,
+              borderRadius: 22,
               background: "#25D366",
               border: "none",
               color: "#ffffff",
               cursor: "pointer",
-              display: "flex", alignItems: "center", justifyContent: "center",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              fontSize: 16,
+              fontWeight: 900,
               WebkitTapHighlightColor: "transparent",
-              flexShrink: 0,
               boxShadow: "0 4px 18px rgba(37,211,102,0.45)",
             }}
           >
             <MessageCircle style={{ width: 24, height: 24 }} strokeWidth={2.4} />
+            WhatsApp
           </button>
-        </div>
 
-        <div style={{
-          position: "absolute",
-          left: 64,
-          right: 18,
-          bottom: 44,
-          zIndex: 21,
-          display: "flex",
-          justifyContent: "space-between",
-          pointerEvents: "none",
-          color: "rgba(255,255,255,0.86)",
-          fontSize: 14,
-          fontWeight: 900,
-        }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            <ArrowLeft style={{ width: 17, height: 17 }} strokeWidth={2.6} />
-            Passer
-          </span>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            J&apos;aime
-            <ArrowRight style={{ width: 17, height: 17 }} strokeWidth={2.6} />
-          </span>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              requireLoginOrRun(() => { window.location.href = phoneUrl; });
+            }}
+            aria-label="Contacter"
+            style={{
+              minHeight: 58,
+              borderRadius: 22,
+              background: "rgba(255,255,255,0.16)",
+              border: "1.5px solid rgba(255,255,255,0.25)",
+              color: "#ffffff",
+              cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              fontSize: 16,
+              fontWeight: 900,
+              WebkitTapHighlightColor: "transparent",
+            }}
+          >
+            <Phone style={{ width: 22, height: 22 }} strokeWidth={2.4} />
+            Appeler
+          </button>
         </div>
 
         {/* ══════════════════════════════════════════════════════════════════════
@@ -889,7 +867,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         ══════════════════════════════════════════════════════════════════════ */}
         <div style={{
           position: "absolute",
-          bottom: 68,
+          bottom: "calc(168px + env(safe-area-inset-bottom, 0px))",
           left: 0,
           right: 0,
           display: "flex",
