@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Banknote, Bed, CheckCircle2, Flame, Heart, MapPin, ChevronLeft, ChevronRight, Home, MessageCircle, Phone, Zap } from "lucide-react";
+import { Banknote, Bed, Calendar, CheckCircle2, Flame, Heart, MapPin, ChevronLeft, ChevronRight, Home, MessageCircle, Phone, ShieldCheck, Zap } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth-context";
@@ -13,7 +13,7 @@ import { AuthPromptModal } from "@/components/AuthPromptModal";
 import { TypeBadge, PropertyBadge } from "@/components/PropertyBadge";
 import { haversineKm, formatDistance } from "@/lib/haversine";
 import { NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
-import { advanceSignal, availabilitySignal } from "@/lib/property-signals";
+import { advanceSignal, availabilitySignal, publishedSignal } from "@/lib/property-signals";
 import type { Property } from "@/types";
 
 interface PropertyCardProps {
@@ -33,9 +33,9 @@ const NEIGHBORHOOD_LABELS: Record<string, string> = {
 
 // ── Feature 1: Availability mode badge config ──────────────────────────────────
 const AVAIL_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; Icon?: typeof Zap }> = {
-  urgent:    { label: "Urgent",               color: "#ff4d4d", bg: "rgba(255,77,77,0.18)",    border: "rgba(255,77,77,0.45)", Icon: Zap },
-  today:     { label: "Dispo aujourd'hui",     color: "#ff8c00", bg: "rgba(255,140,0,0.18)",    border: "rgba(255,140,0,0.45)", Icon: Flame },
-  immediate: { label: "Libre immédiatement",   color: "#25D366", bg: "rgba(37,211,102,0.18)",  border: "rgba(37,211,102,0.45)", Icon: Zap },
+  urgent:    { label: "Urgent",      color: "#ff4d4d", bg: "rgba(255,77,77,0.18)",    border: "rgba(255,77,77,0.45)", Icon: Zap },
+  today:     { label: "Aujourd'hui", color: "#ff8c00", bg: "rgba(255,140,0,0.18)",    border: "rgba(255,140,0,0.45)", Icon: Flame },
+  immediate: { label: "Libre",       color: "#25D366", bg: "rgba(37,211,102,0.18)",  border: "rgba(37,211,102,0.45)", Icon: Zap },
   flexible:  { label: "", color: "", bg: "", border: "" }, // no badge for default
 };
 
@@ -65,6 +65,7 @@ export function PropertyCard({
   const neighborhoodLabel = NEIGHBORHOOD_LABELS[property.neighborhood] ?? property.neighborhood;
   const availability = availabilitySignal(property);
   const advance = advanceSignal(property);
+  const published = publishedSignal(property.created_at);
 
   // Distance from user location
   let distanceStr: string | null = null;
@@ -303,6 +304,24 @@ export function PropertyCard({
         <TypeBadge propertyType={property.type} />
         {property.is_verified && <PropertyBadge type="verified" />}
         {!property.is_verified && property.is_featured && <PropertyBadge type="premium" />}
+        {property.contact_phone && (
+          <span style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+            background: "rgba(37,211,102,0.18)",
+            color: "#ffffff",
+            border: "1px solid rgba(37,211,102,0.38)",
+            borderRadius: 999,
+            padding: "4px 8px",
+            fontSize: 12,
+            fontWeight: 900,
+            backdropFilter: "blur(6px)",
+          }}>
+            <Phone style={{ width: 13, height: 13 }} strokeWidth={2.4} />
+            Tél.
+          </span>
+        )}
       </div>
 
       {/* ── Urgency badge — below type badges ───────────────────────────────── */}
@@ -436,6 +455,36 @@ export function PropertyCard({
             <CheckCircle2 style={{ width: 14, height: 14, display: "inline", marginRight: 4, verticalAlign: "-2px" }} strokeWidth={2.4} />
             {availability.label}
           </span>
+          {property.is_verified && (
+            <span style={{
+              fontSize: 14,
+              fontWeight: 900,
+              color: "#ffffff",
+              background: "rgba(34,197,94,0.30)",
+              border: "1px solid rgba(34,197,94,0.36)",
+              padding: "4px 9px",
+              borderRadius: 14,
+              whiteSpace: "nowrap",
+            }}>
+              <ShieldCheck style={{ width: 14, height: 14, display: "inline", marginRight: 4, verticalAlign: "-2px" }} strokeWidth={2.4} />
+              Vérifié
+            </span>
+          )}
+          {published && (
+            <span style={{
+              fontSize: 14,
+              fontWeight: 900,
+              color: "#ffffff",
+              background: "rgba(0,0,0,0.45)",
+              border: "1px solid rgba(255,255,255,0.20)",
+              padding: "4px 9px",
+              borderRadius: 14,
+              whiteSpace: "nowrap",
+            }}>
+              <Calendar style={{ width: 14, height: 14, display: "inline", marginRight: 4, verticalAlign: "-2px" }} strokeWidth={2.4} />
+              {published.label}
+            </span>
+          )}
           <span style={{
             fontSize: 14,
             fontWeight: 900,

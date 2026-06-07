@@ -26,7 +26,7 @@ export function availabilitySignal(
 
   if (status === "available_soon") {
     return {
-      label: "Bientot dispo",
+      label: "Bientôt",
       color: "#ca8a04",
       bg: "rgba(250,204,21,0.16)",
       border: "rgba(250,204,21,0.38)",
@@ -35,7 +35,7 @@ export function availabilitySignal(
 
   if (status === "rented") {
     return {
-      label: "Deja loue",
+      label: "Loué",
       color: "#ef4444",
       bg: "rgba(239,68,68,0.16)",
       border: "rgba(239,68,68,0.38)",
@@ -64,12 +64,13 @@ export function publishedSignal(createdAt?: string) {
   const created = new Date(createdAt).getTime();
   if (!Number.isFinite(created)) return null;
   const days = Math.max(0, Math.floor((Date.now() - created) / 86_400_000));
-  if (days === 0) return { label: "Aujourd'hui", color: "#22c55e" };
+  if (days === 0) return { label: "Récent", color: "#22c55e" };
   if (days === 1) return { label: "Hier", color: "#ca8a04" };
-  return { label: `Il y a ${days} jours`, color: "#e5e7eb" };
+  if (days <= 7) return { label: "Récent", color: "#22c55e" };
+  return { label: `${days} j`, color: "#e5e7eb" };
 }
 
 export function advanceSignal(property: Pick<Property, "advance_required" | "advance_months">) {
   if (!property.advance_required) return "Sans avance";
-  return "Avance demandee";
+  return "Avance";
 }

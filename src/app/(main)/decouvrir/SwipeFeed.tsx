@@ -4,7 +4,7 @@ import TinderCard from "react-tinder-card";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, BadgeCheck, Bed, Heart, Home, Loader2, MapPin, MessageCircle, Phone, Plane, Star, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgeCheck, Banknote, Bed, Heart, Home, Loader2, MapPin, MessageCircle, Phone, Plane, Star, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useAppStore } from "@/lib/store";
 import { toast } from "@/lib/toast";
@@ -566,7 +566,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
             {/* ── Badges — top left (below header) ────────────────────────────── */}
             <div style={{
-              position: "absolute", top: 72, left: 14,
+              position: "absolute", top: 112, left: 14,
               display: "flex", flexDirection: "column", gap: 6,
               pointerEvents: "none",
             }}>
@@ -580,6 +580,19 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
                     <Star style={{ width: 13, height: 13 }} strokeWidth={2.4} />
                     Premium
+                  </span>
+                </span>
+              )}
+              {topCard.contact_phone && (
+                <span style={{
+                  background: "rgba(37,211,102,0.22)", color: "#ffffff",
+                  border: "1px solid rgba(37,211,102,0.48)", borderRadius: 20,
+                  padding: "5px 11px", fontSize: 13, fontWeight: 900,
+                  backdropFilter: "blur(8px)",
+                }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                    <Phone style={{ width: 13, height: 13 }} strokeWidth={2.4} />
+                    Tél.
                   </span>
                 </span>
               )}
@@ -600,7 +613,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
             {/* ── Distance badge — top right ───────────────────────────────────── */}
             {topDistStr && (
-              <div style={{ position: "absolute", top: 72, right: 14, pointerEvents: "none" }}>
+              <div style={{ position: "absolute", top: 112, right: 14, pointerEvents: "none" }}>
                 <span style={{
                   background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)",
                   color: "rgba(255,255,255,0.85)", borderRadius: 20,
@@ -675,6 +688,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 lineHeight: 1.1,
                 textShadow: "0 2px 8px rgba(0,0,0,0.5)",
               }}>
+                <Banknote style={{ width: 26, height: 26, display: "inline", marginRight: 8, verticalAlign: "-3px" }} strokeWidth={2.4} />
                 {formatPrice(topCard.price)}
               </p>
               {topCard.price_period === "month" && (
@@ -738,10 +752,11 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                     {published.label}
                   </span>
                 )}
-                 <span style={{ color: "rgba(255,255,255,0.9)", fontSize: 14, fontWeight: 900 }}>
-                  {advance}
-                </span>
-              </div>
+                   <span style={{ color: "rgba(255,255,255,0.9)", fontSize: 14, fontWeight: 900 }}>
+                    <BadgeCheck style={{ width: 15, height: 15, display: "inline", marginRight: 4, verticalAlign: "-2px" }} strokeWidth={2.5} />
+                    {advance}
+                  </span>
+                </div>
             </div>
           </div>
         </TinderCard>
