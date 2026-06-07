@@ -10,8 +10,9 @@ import { createClient } from "@supabase/supabase-js";
 import type { Metadata } from "next";
 import type { Property } from "@/types";
 
-// Revalidate every 60s for a near-live feel without re-fetching every request
-export const revalidate = 60;
+// Avoid serving stale HTML/RSC with newer client chunks on Vercel.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "LogerBien — Trouvez votre logement à Conakry",
