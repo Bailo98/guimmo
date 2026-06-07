@@ -18,15 +18,15 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   return (
     <ToastProvider>
       <Header />
-      <main className="pt-[72px]">
+      <main className="min-h-screen pt-[72px]">
         <PageTransition>{children}</PageTransition>
       </main>
       <Footer whatsappNumber={whatsappNumber} />
       <BottomNav />
+      <CompareBar />
       <Onboarding />
       <ChatbotWidget whatsappNumber={whatsappNumber} />
       <BudgetEstimator />
-      <CompareBar />
       <LowConnectionMode />
       <ScrollToTop />
     </ToastProvider>
