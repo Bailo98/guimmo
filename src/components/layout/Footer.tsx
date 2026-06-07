@@ -87,9 +87,6 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
               LogerBien — Conakry © 2025
             </span>
           </p>
-          <p className="mt-1 text-xs font-semibold tracking-wide" style={{ color: "var(--text-secondary)" }}>
-            Build 7622681
-          </p>
         </div>
       </div>
     </footer>
