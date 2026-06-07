@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { PageTransition } from "@/components/ui/PageTransition";
 import { Onboarding } from "@/components/Onboarding";
+import { ChatbotWidget } from "@/components/ui/ChatbotWidget";
 import { getContactWhatsApp } from "@/lib/site-config";
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
@@ -18,6 +19,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
       <Footer whatsappNumber={whatsappNumber} />
       <BottomNav />
       <Onboarding />
+      <ChatbotWidget whatsappNumber={whatsappNumber} />
     </>
   );
 }
