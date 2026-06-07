@@ -6,6 +6,7 @@ import { PageTransition } from "@/components/ui/PageTransition";
 import { Onboarding } from "@/components/Onboarding";
 import { ChatbotWidget } from "@/components/ui/ChatbotWidget";
 import BudgetEstimator from "@/components/BudgetEstimator";
+import { CompareBar } from "@/components/compare/CompareBar";
 import { getContactWhatsApp } from "@/lib/site-config";
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
@@ -22,6 +23,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
       <Onboarding />
       <ChatbotWidget whatsappNumber={whatsappNumber} />
       <BudgetEstimator />
+      <CompareBar />
     </>
   );
 }
