@@ -7,7 +7,6 @@ import { ToastProvider } from "@/components/ui/Toast";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { PageTransition } from "@/components/ui/PageTransition";
 import { ChatbotWidget } from "@/components/ui/ChatbotWidget";
-import BudgetEstimator from "@/components/BudgetEstimator";
 import { Onboarding } from "@/components/Onboarding";
 import { LowConnectionMode } from "@/components/LowConnectionMode";
 import { getContactWhatsApp } from "@/lib/site-config";
@@ -28,7 +27,6 @@ export default async function MainLayout({ children }: { children: React.ReactNo
       <LowConnectionMode />
       <ScrollToTop />
       <ChatbotWidget whatsappNumber={whatsappNumber} />
-      <BudgetEstimator />
     </ToastProvider>
   );
 }

@@ -66,17 +66,11 @@ const TYPE_CHIPS = [
 
 const QUARTIER_CHIPS = [
   { id: "", label: "Tous" },
-  { id: "kipe", label: "Kipe" },
-  { id: "lambanyi", label: "Lambanyi" },
-  { id: "sonfonia", label: "Sonfonia" },
-  { id: "ratoma", label: "Ratoma" },
-  { id: "hamdallaye", label: "Hamdallaye" },
-  { id: "dixinn", label: "Dixinn" },
-  { id: "taouyah", label: "Taouyah" },
   { id: "kaloum", label: "Kaloum" },
+  { id: "dixinn", label: "Dixinn" },
   { id: "matam", label: "Matam" },
-  { id: "madina", label: "Madina" },
-  { id: "cosa", label: "Cosa" },
+  { id: "ratoma", label: "Ratoma" },
+  { id: "matoto", label: "Matoto" },
 ];
 
 const BUDGET_CHIPS = [
@@ -493,7 +487,7 @@ function AnnoncesContent() {
           </div>
 
           <div className="hidden md:grid gap-3 lg:grid-cols-4">
-            <FilterGroup title="Quartier" icon={<MapPin className="h-4 w-4" />}>
+            <FilterGroup title="Commune" icon={<MapPin className="h-4 w-4" />}>
               <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-2 gap-2">
                 {QUARTIER_CHIPS.slice(0, 5).map((c) => (
                   <VisualChip key={c.id} active={neighborhood === c.id} onClick={() => setParam("neighborhood", c.id)} icon={<MapPin className="h-4 w-4" />} label={c.label} compact />

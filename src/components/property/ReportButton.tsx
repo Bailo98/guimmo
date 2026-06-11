@@ -214,15 +214,15 @@ export function ReportButton({ propertyId, propertyTitle = "", isLoggedIn = fals
         onClick={openModal}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs transition-all"
+        className="flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-black transition-all"
         style={{
-          border:     hovered ? "1px solid rgba(239,68,68,0.3)" : "1px solid rgba(255,255,255,0.12)",
-          background: "var(--border-subtle)",
-          color:      hovered ? "#ef4444" : "#aaaaaa",
+          border: hovered ? "1px solid rgba(220,38,38,0.40)" : "1px solid rgba(220,38,38,0.22)",
+          background: hovered ? "rgba(220,38,38,0.14)" : "rgba(220,38,38,0.08)",
+          color: "#dc2626",
         }}
       >
-        <Flag className="w-3.5 h-3.5" />
-        Signaler cette annonce
+        <Flag className="w-4 h-4" strokeWidth={2.5} />
+        Signaler
       </button>
 
       {open && typeof document !== "undefined" && createPortal(modal, document.body)}

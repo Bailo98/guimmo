@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
-import { MessageCircle } from "lucide-react";
+import { Flag, MessageCircle, ShieldAlert } from "lucide-react";
+
+const footerLinkStyle = {
+  color: "var(--text-secondary)",
+  border: "1px solid var(--border)",
+  background: "var(--bg-card)",
+} as const;
 
 export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
   return (
@@ -20,11 +26,23 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
               <MessageCircle className="w-4 h-4" strokeWidth={2.4} />
               WhatsApp
             </a>
-            <Link href="/contact" className="inline-flex min-h-11 items-center rounded-2xl px-4 text-base font-black transition-colors hover:text-[var(--accent-gold)]" style={{ color: "var(--text-secondary)", border: "1px solid var(--border)", background: "var(--bg-card)" }}>
-              Contact
+            <Link href="/cgv" className="inline-flex min-h-11 items-center rounded-2xl px-4 text-base font-black transition-colors hover:text-[var(--accent-gold)]" style={footerLinkStyle}>
+              Conditions
             </Link>
-            <Link href="/confidentialite" className="inline-flex min-h-11 items-center rounded-2xl px-4 text-base font-black transition-colors hover:text-[var(--accent-gold)]" style={{ color: "var(--text-secondary)", border: "1px solid var(--border)", background: "var(--bg-card)" }}>
-              Confidentialité
+            <Link href="/confidentialite" className="inline-flex min-h-11 items-center rounded-2xl px-4 text-base font-black transition-colors hover:text-[var(--accent-gold)]" style={footerLinkStyle}>
+              Confidentialite
+            </Link>
+            <Link href="/guide" className="inline-flex min-h-11 items-center gap-2 rounded-2xl px-4 text-base font-black transition-colors hover:text-[var(--accent-gold)]" style={footerLinkStyle}>
+              <ShieldAlert className="w-4 h-4" strokeWidth={2.4} />
+              Anti-arnaque
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex min-h-11 items-center gap-2 rounded-2xl px-4 text-base font-black transition-colors hover:text-red-600"
+              style={{ color: "#dc2626", border: "1px solid rgba(220,38,38,0.24)", background: "rgba(220,38,38,0.08)" }}
+            >
+              <Flag className="w-4 h-4" strokeWidth={2.4} />
+              Signalement
             </Link>
           </div>
         </div>

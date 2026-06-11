@@ -47,6 +47,8 @@ const HERO_GRADIENTS: [string, string][] = [
   ["var(--bg-primary)", "var(--bg-secondary)"],
 ];
 
+const SHOW_HOME_SECONDARY_SECTIONS = false;
+
 function getDB() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -188,7 +190,6 @@ export default async function HomePage() {
 
   const discoverPreview = properties[0];
   const recent = properties.slice(0, 4);
-
   return (
     <>
       <section className="hero-section relative overflow-hidden py-4 sm:py-5 lg:py-6">
@@ -243,7 +244,7 @@ export default async function HomePage() {
 
       <DiscoverPreview property={discoverPreview} />
 
-      {recent.length > 0 && (
+      {SHOW_HOME_SECONDARY_SECTIONS && recent.length > 0 && (
         <section className="py-5 md:py-7" style={{ background: "var(--bg-primary)" }}>
           <div className="content-fluid max-w-[1240px]">
             <div className="flex items-center justify-between gap-4 mb-5">
@@ -271,7 +272,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      <HomePublishCTA />
+      {SHOW_HOME_SECONDARY_SECTIONS && <HomePublishCTA />}
     </>
   );
 }

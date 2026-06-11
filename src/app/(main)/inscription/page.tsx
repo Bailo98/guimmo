@@ -261,7 +261,7 @@ function InscriptionForm() {
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {USER_ROLES.map((r) => {
+                  {USER_ROLES.filter((r) => r.value === "buyer" || r.value === "owner").map((r) => {
                     const Icon = r.Icon;
                     return (
                     <button

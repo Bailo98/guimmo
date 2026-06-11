@@ -4,17 +4,12 @@ import { useRouter } from "next/navigation";
 import { Banknote, Home, KeyRound, MapPin, Search } from "lucide-react";
 import { VoiceSearchButton } from "@/components/ui/VoiceSearchButton";
 
-const QUARTIERS = [
-  { id: "kipe",       name: "Kipé" },
-  { id: "hamdallaye", name: "Hamdallaye" },
-  { id: "dixinn",     name: "Dixinn" },
-  { id: "ratoma",     name: "Ratoma" },
-  { id: "taouyah",    name: "Taouyah" },
-  { id: "sonfonia",   name: "Sonfonia" },
-  { id: "lambanyi",   name: "Lambanyi" },
-  { id: "kaloum",     name: "Kaloum" },
-  { id: "matam",      name: "Matam" },
-  { id: "madina",     name: "Madina" },
+const COMMUNES = [
+  { id: "kaloum", name: "Kaloum" },
+  { id: "dixinn", name: "Dixinn" },
+  { id: "matam", name: "Matam" },
+  { id: "ratoma", name: "Ratoma" },
+  { id: "matoto", name: "Matoto" },
 ];
 
 const TYPES = [
@@ -51,7 +46,7 @@ export function HeroSearch() {
 
   function handleVoiceResult(text: string) {
     const lower = text.toLowerCase();
-    const match = QUARTIERS.find((q) => lower.includes(q.name.toLowerCase()));
+    const match = COMMUNES.find((q) => lower.includes(q.name.toLowerCase()));
     if (match) { setNeighborhood(match.id); return; }
     const typeMatch = TYPES.find((t) => lower.includes(t.name.toLowerCase()));
     if (typeMatch) { setType(typeMatch.id); return; }
@@ -106,18 +101,18 @@ export function HeroSearch() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
         <div>
           <label
-            htmlFor="hs-quartier"
+            htmlFor="hs-commune"
             className="block text-xs font-semibold mb-1.5"
             style={{ color: "var(--text-secondary)" }}
           >
             <span className="inline-flex items-center gap-1.5">
               <MapPin className="h-3.5 w-3.5" strokeWidth={2.4} />
-              Quartier
+              Commune
             </span>
           </label>
           <div className="relative">
             <select
-              id="hs-quartier"
+              id="hs-commune"
               value={neighborhood}
               onChange={(e) => {
                 setNeighborhood(e.target.value);
@@ -126,7 +121,7 @@ export function HeroSearch() {
               style={SELECT_BASE}
             >
               <option value="" style={{ color: "var(--text-primary)" }}>Tous</option>
-              {QUARTIERS.map((q) => (
+              {COMMUNES.map((q) => (
                 <option key={q.id} value={q.id} style={{ color: "var(--text-primary)" }}>
                   {q.name}
                 </option>
