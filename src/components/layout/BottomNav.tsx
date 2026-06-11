@@ -48,14 +48,14 @@ export function BottomNav() {
       ? [
           { href: "/compte/annonces", icon: List, label: "Mes biens", authRequired: true },
           { href: "/publier/rapide", icon: Plus, label: "Publier", authRequired: true },
-          { href: "/annonces?recent=1", icon: Home, label: "Récentes", authRequired: false },
+          { href: "/", icon: Home, label: "Accueil", authRequired: false },
           { href: "/messages", icon: MessageCircle, label: "Contacts", authRequired: true },
           { href: "/compte", icon: User, label: "Profil", authRequired: true },
         ]
       : [
           { href: "/annonces", icon: Search, label: "Chercher", authRequired: false },
           { href: "/decouvrir", icon: Compass, label: "Voir", authRequired: true },
-          { href: "/annonces?recent=1", icon: Home, label: "Récentes", authRequired: false },
+          { href: "/", icon: Home, label: "Accueil", authRequired: false },
           { href: "/favoris", icon: Heart, label: "Favoris", authRequired: true },
           { href: "/compte", icon: User, label: "Profil", authRequired: true },
         ]

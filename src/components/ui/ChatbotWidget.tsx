@@ -43,13 +43,33 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
   const pathname  = usePathname();
   const [mounted, setMounted]   = useState(false);
   const [open,    setOpen]      = useState(false);
+  const [showTip, setShowTip]   = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input,   setInput]     = useState("");
   const [loading, setLoading]   = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLInputElement>(null);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      setMounted(true);
+      try {
+        setShowTip(window.localStorage.getItem("lb-assistant-tip-seen") !== "1");
+      } catch {
+        setShowTip(false);
+      }
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  const dismissTip = () => {
+    setShowTip(false);
+    try {
+      window.localStorage.setItem("lb-assistant-tip-seen", "1");
+    } catch {
+      // localStorage can be unavailable in private contexts.
+    }
+  };
 
   useEffect(() => {
     if (open) setTimeout(() => inputRef.current?.focus(), 120);
@@ -330,32 +350,75 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
         </div>
       )}
 
+      {showTip && !open && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "calc(132px + env(safe-area-inset-bottom, 0px) + 16px)",
+            left: 12,
+            zIndex: 52,
+            width: "min(210px, calc(50vw - 18px))",
+            borderRadius: 18,
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
+            boxShadow: "0 14px 34px rgba(15, 23, 42, 0.18)",
+            padding: "12px",
+          }}
+        >
+          <p style={{ margin: 0, color: "var(--text-primary)", fontSize: 14, fontWeight: 900, lineHeight: 1.25 }}>
+            Pose tes questions ici
+          </p>
+          <button
+            onClick={dismissTip}
+            style={{
+              marginTop: 9,
+              minHeight: 34,
+              borderRadius: 999,
+              border: "none",
+              background: "var(--accent-gold)",
+              color: "var(--bg-primary)",
+              padding: "0 14px",
+              fontSize: 13,
+              fontWeight: 900,
+              cursor: "pointer",
+            }}
+          >
+            Compris
+          </button>
+        </div>
+      )}
+
       {/* ── FAB toggle ───────────────────────────────────────────────── */}
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          dismissTip();
+          setOpen((v) => !v);
+        }}
         aria-label="Ouvrir l'assistant LogerBien"
         style={{
           position: "fixed",
           bottom: "calc(76px + env(safe-area-inset-bottom, 0px) + 16px)",
-          left: 16,
+          left: 12,
           zIndex: 50,
-          width: 52, height: 52,
-          borderRadius: "50%",
+          minHeight: 48,
+          borderRadius: 999,
           background: "var(--accent-gold)",
           border: "none",
           cursor: "pointer",
-          display: "flex", alignItems: "center", justifyContent: "center",
+          display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7,
+          padding: "0 14px",
           boxShadow: "0 4px 20px rgba(212,175,55,0.4)",
           transition: "transform 0.2s, background 0.2s",
-          minHeight: "auto",
+          color: "var(--bg-primary)",
         }}
-        onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "scale(1.1)"; }}
+        onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-2px)"; }}
         onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = ""; }}
       >
         {open
-          ? <X style={{ width: 22, height: 22, color: "var(--bg-primary)" }} />
-          : <MessageSquare style={{ width: 22, height: 22, color: "var(--bg-primary)" }} />
+          ? <X style={{ width: 20, height: 20, color: "var(--bg-primary)" }} />
+          : <MessageSquare style={{ width: 20, height: 20, color: "var(--bg-primary)" }} />
         }
+        <span style={{ fontSize: 13, fontWeight: 900, lineHeight: 1 }}>Assistant</span>
       </button>
 
       {/* Bounce keyframes for typing indicator */}
