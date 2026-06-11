@@ -122,7 +122,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
             // Panel sits above the FAB (52 px) + gap (8 px), itself above the pill nav
             bottom: "calc(76px + env(safe-area-inset-bottom, 0px) + 16px + 60px)",
             left: 16,
-            zIndex: 51,
+            zIndex: 61,
             width: "min(320px, calc(100vw - 32px))",
           }}
         >
@@ -356,7 +356,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
             position: "fixed",
             bottom: "calc(132px + env(safe-area-inset-bottom, 0px) + 16px)",
             left: 12,
-            zIndex: 52,
+            zIndex: 62,
             width: "min(210px, calc(50vw - 18px))",
             borderRadius: 18,
             background: "var(--bg-card)",
@@ -399,7 +399,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
           position: "fixed",
           bottom: "calc(76px + env(safe-area-inset-bottom, 0px) + 16px)",
           left: 12,
-          zIndex: 50,
+          zIndex: 60,
           minHeight: 48,
           borderRadius: 999,
           background: "var(--accent-gold)",

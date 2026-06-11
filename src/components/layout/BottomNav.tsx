@@ -26,10 +26,10 @@ export function BottomNav() {
     return () => window.clearTimeout(id);
   }, []);
 
-  const isLight = mounted && resolvedTheme === "light";
-  const MUTED   = isLight ? "#5A4A2A" : "#8A8FA8";
-  const pillBg  = isLight ? "rgba(245,235,215,0.95)" : "rgba(22,27,38,0.96)";
-  const pillBorder = isLight ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.08)";
+  const isDark = mounted && resolvedTheme === "dark";
+  const MUTED = isDark ? "rgba(255,255,255,0.66)" : "#4f4535";
+  const pillBg = isDark ? "rgba(15,15,15,0.62)" : "rgba(255,255,255,0.72)";
+  const pillBorder = isDark ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.35)";
 
   // Hidden on /decouvrir (full-screen swipe), /admin and /auth routes
   if (pathname === "/decouvrir") return null;
@@ -69,31 +69,31 @@ export function BottomNav() {
       className="md:hidden"
       style={{
         position: "fixed",
-        bottom: "calc(16px + env(safe-area-inset-bottom, 0px))",
+        bottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: 50,
 
         /* Pill geometry */
-        height: 60,
-        maxWidth: 360,
-        width: "auto",
-        padding: "0 8px",
-        borderRadius: 40,
+        height: 64,
+        width: "min(92vw, 420px)",
+        padding: "6px 8px",
+        borderRadius: 999,
 
         /* Glass surface */
         background: pillBg,
-        backdropFilter: "blur(20px) saturate(180%)",
-        WebkitBackdropFilter: "blur(20px) saturate(180%)",
+        backdropFilter: "blur(18px) saturate(150%)",
+        WebkitBackdropFilter: "blur(18px) saturate(150%)",
         border: `1px solid ${pillBorder}`,
-        boxShadow: isLight
-          ? "0 4px 20px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08)"
-          : "0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.20)",
+        boxShadow: isDark
+          ? "0 18px 40px rgba(0,0,0,0.35)"
+          : "0 18px 40px rgba(0,0,0,0.18)",
 
         /* Layout */
         display: "flex",
         alignItems: "center",
-        gap: 4,
+        justifyContent: "space-between",
+        gap: 2,
       }}
     >
       {navItems.filter((item) => !item.authRequired || !!user).map(({ href, icon: Icon, label, authRequired, unauthHref }) => {
@@ -114,29 +114,34 @@ export function BottomNav() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: 2,
-              padding: navItems.length >= 5 ? "6px 10px" : "6px 14px",
-              borderRadius: 30,
+              justifyContent: "center",
+              gap: 3,
+              height: 50,
+              flex: "1 1 0",
+              padding: "5px 6px",
+              borderRadius: 999,
               textDecoration: "none",
-              background: active ? "rgba(212,175,55,0.15)" : "transparent",
-              transition: "all 0.2s ease",
+              background: active ? "rgba(191,141,38,0.16)" : "transparent",
+              boxShadow: active ? "inset 0 0 0 1px rgba(191,141,38,0.12)" : "none",
+              transition: "background 0.2s ease, color 0.2s ease, transform 0.2s ease",
               minHeight: "auto",
+              overflow: "hidden",
             }}
           >
             <Icon
               style={{
-                width: 22,
-                height: 22,
+                width: 20,
+                height: 20,
                 color: active ? GOLD : MUTED,
-                strokeWidth: active ? 2.2 : 1.8,
+                strokeWidth: active ? 2.45 : 2,
                 transition: "color 0.2s ease",
                 flexShrink: 0,
               }}
             />
             <span
               style={{
-                fontSize: 10,
-                fontWeight: 600,
+                fontSize: 10.5,
+                fontWeight: active ? 800 : 700,
                 color: active ? GOLD : MUTED,
                 lineHeight: 1,
                 whiteSpace: "nowrap",
