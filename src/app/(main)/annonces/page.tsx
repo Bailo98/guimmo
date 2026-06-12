@@ -420,7 +420,7 @@ function AnnoncesContent() {
           borderBottom: "1px solid var(--border)",
         }}
       >
-        <div className="mx-auto max-w-7xl space-y-3">
+        <div className="mx-auto max-w-[1440px] space-y-3">
           <div className="flex items-center gap-2">
             <div
               className="flex-1 flex items-center gap-3 rounded-2xl px-4"
@@ -562,7 +562,7 @@ function AnnoncesContent() {
             className="fixed inset-0 z-50 md:static md:inset-auto md:z-auto overflow-y-auto"
             style={{ background: "var(--bg-primary)" }}
           >
-            <div className="mx-auto max-w-7xl px-4 py-4 md:px-0 md:py-3 space-y-4">
+            <div className="mx-auto max-w-[1440px] px-4 py-4 md:px-0 md:py-3 space-y-4">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-lg font-black" style={{ color: "var(--text-primary)" }}>Plus de filtres</h2>
                 <button
@@ -703,7 +703,7 @@ function AnnoncesContent() {
       </div>
 
       <div
-        className="max-w-7xl mx-auto px-4 py-6"
+        className="max-w-[1440px] mx-auto px-4 py-6"
         style={{ paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))" }}
       >
         {/* GPS message */}
@@ -752,7 +752,7 @@ function AnnoncesContent() {
 
         {/* ── Map or Grid ── */}
         {loading ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 xl:gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5 xl:gap-6">
             {Array.from({ length: pageSize }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : filtered.length === 0 ? (
@@ -776,7 +776,7 @@ function AnnoncesContent() {
           /* LIST VIEW */
           <>
             {!hasFilters && <NearbySection properties={allProperties} />}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 xl:gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5 xl:gap-6">
               {pageItems.map((p, i) => (
                 <PropertyCard key={p.id} property={p} index={i} showDiasporaPrice={diaspora} />
               ))}
@@ -832,7 +832,7 @@ export default function AnnoncesPage() {
   return (
     <Suspense
       fallback={
-        <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-2 gap-5 xl:gap-6">
+        <div className="max-w-[1440px] mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5 xl:gap-6">
           {Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)}
         </div>
       }

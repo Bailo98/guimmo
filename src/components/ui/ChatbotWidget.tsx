@@ -1,7 +1,7 @@
 ﻿"use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
-import { MessageSquare, X, Send } from "lucide-react";
+import { Headset, MessageCircle, X, Send } from "lucide-react";
 
 interface Message {
   role: "user" | "assistant";
@@ -400,13 +400,15 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
           bottom: "calc(76px + env(safe-area-inset-bottom, 0px) + 16px)",
           left: 12,
           zIndex: 60,
-          minHeight: 48,
-          borderRadius: 999,
+          width: 56,
+          height: 56,
+          minHeight: 56,
+          borderRadius: "50%",
           background: "var(--accent-gold)",
           border: "none",
           cursor: "pointer",
-          display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7,
-          padding: "0 14px",
+          display: "inline-flex", alignItems: "center", justifyContent: "center",
+          padding: 0,
           boxShadow: "0 4px 20px rgba(212,175,55,0.4)",
           transition: "transform 0.2s, background 0.2s",
           color: "var(--bg-primary)",
@@ -415,10 +417,14 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
         onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = ""; }}
       >
         {open
-          ? <X style={{ width: 20, height: 20, color: "var(--bg-primary)" }} />
-          : <MessageSquare style={{ width: 20, height: 20, color: "var(--bg-primary)" }} />
+          ? <X style={{ width: 23, height: 23, color: "var(--bg-primary)" }} />
+          : (
+            <span style={{ position: "relative", width: 27, height: 27, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+              <Headset style={{ width: 25, height: 25, color: "var(--bg-primary)" }} strokeWidth={2.6} />
+              <MessageCircle style={{ position: "absolute", right: -5, bottom: -4, width: 13, height: 13, color: "var(--bg-primary)" }} strokeWidth={3} />
+            </span>
+          )
         }
-        <span style={{ fontSize: 13, fontWeight: 900, lineHeight: 1 }}>Assistant</span>
       </button>
 
       {/* Bounce keyframes for typing indicator */}

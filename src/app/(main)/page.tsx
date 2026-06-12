@@ -3,7 +3,6 @@ import Image from "next/image";
 import { ArrowLeft, ArrowRight, ChevronRight, Flame, Heart, Home, MapPin, MessageCircle, Phone, Search, X } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { HeroSearch } from "@/components/home/HeroSearch";
-import { HomePublishCTA } from "@/components/home/HomePublishCTA";
 import { formatPrice } from "@/lib/utils";
 import { isPubliclyAvailable } from "@/lib/property-signals";
 import { createClient } from "@supabase/supabase-js";
@@ -47,7 +46,7 @@ const HERO_GRADIENTS: [string, string][] = [
   ["var(--bg-primary)", "var(--bg-secondary)"],
 ];
 
-const SHOW_HOME_SECONDARY_SECTIONS = false;
+const SHOW_HOME_SECONDARY_SECTIONS = true;
 
 function getDB() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -272,7 +271,6 @@ export default async function HomePage() {
         </section>
       )}
 
-      {SHOW_HOME_SECONDARY_SECTIONS && <HomePublishCTA />}
     </>
   );
 }

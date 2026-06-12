@@ -51,11 +51,12 @@ function score(property: Property, now: number) {
     : 999;
 
   return (
-    (availability === "available_now" ? 10000 : 0) +
-    (availability === "available_soon" ? 4000 : 0) +
-    (property.is_verified ? 1000 : 0) +
-    Math.max(0, 800 - ageDays * 80) +
-    (property.is_boosted ? 500 : 0)
+    (property.is_verified ? 20000 : 0) +
+    (property.contact_phone ? 12000 : 0) +
+    (availability === "available_now" ? 8000 : 0) +
+    (availability === "available_soon" ? 3000 : 0) +
+    (property.is_boosted ? 2500 : 0) +
+    Math.max(0, 1800 - ageDays * 80)
   );
 }
 

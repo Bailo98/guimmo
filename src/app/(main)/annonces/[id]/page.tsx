@@ -282,12 +282,12 @@ export default async function PropertyDetailPage({ params }: Props) {
         >
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <nav className="flex items-center gap-2 text-xs text-white/80 drop-shadow overflow-hidden">
-          <Link href="/" className="hover:text-white whitespace-nowrap">Accueil</Link>
+        <nav className="flex items-center gap-2 text-xs overflow-hidden" style={{ color: "var(--text-secondary)" }}>
+          <Link href="/" className="hover:text-[var(--accent-gold)] whitespace-nowrap">Accueil</Link>
           <span>/</span>
-          <Link href="/annonces" className="hover:text-white whitespace-nowrap">Annonces</Link>
+          <Link href="/annonces" className="hover:text-[var(--accent-gold)] whitespace-nowrap">Annonces</Link>
           <span>/</span>
-          <span className="text-white/60 truncate">{property.title}</span>
+          <span className="truncate">{property.title}</span>
         </nav>
       </div>
 
@@ -314,17 +314,17 @@ export default async function PropertyDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* Hero gallery */}
-      <div className="relative h-72 md:h-96 overflow-hidden">
+      {/* Premium gallery */}
+      <div className="relative mx-auto max-w-[1440px] px-4 pt-20 md:pt-24">
         <PhotoGallery
           images={(property.property_images ?? []).map((i) => ({ url: i.url, alt: property.title }))}
           title={property.title}
         />
       </div>
 
-      {/* Floating content card */}
-      <div className="relative z-10 -mt-8 rounded-t-[28px]" style={{ background: "var(--bg-primary)", boxShadow: "0 -4px 24px rgba(0,0,0,0.4)" }}>
-        <div className="max-w-5xl mx-auto px-4 pt-6">
+      {/* Content card */}
+      <div className="relative z-10 mt-0 rounded-t-[28px]" style={{ background: "var(--bg-primary)" }}>
+        <div className="max-w-[1440px] mx-auto px-4 pt-6">
 
           {/* Déjà loué banner */}
           {isHiddenAvailability && (
@@ -431,17 +431,17 @@ export default async function PropertyDetailPage({ params }: Props) {
                 <p className="text-2xl md:text-3xl font-black mt-3" style={{ color: "var(--accent-gold)" }}>
                   {formatPrice(property.price, "GNF", property.price_period)}
                 </p>
-                <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  <span className="inline-flex items-center gap-2 rounded-2xl px-3 py-3 text-base font-black" style={{ background: availabilityInfo.bg, border: `1px solid ${availabilityInfo.border}`, color: availabilityInfo.color }}>
-                    <CircleCheck className="h-4 w-4" strokeWidth={2.5} />
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-black" style={{ background: availabilityInfo.bg, border: `1px solid ${availabilityInfo.border}`, color: availabilityInfo.color }}>
+                    <CircleCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
                     {availabilityInfo.label}
                   </span>
-                  <span className="inline-flex items-center gap-2 rounded-2xl px-3 py-3 text-base font-black" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
-                    <Calendar className="h-4 w-4" strokeWidth={2.5} />
+                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-black" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                    <Calendar className="h-3.5 w-3.5" strokeWidth={2.5} />
                     {publishedInfo?.label ?? "Date non renseignée"}
                   </span>
-                  <span className="inline-flex items-center gap-2 rounded-2xl px-3 py-3 text-base font-black" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
-                    <ShieldCheck className="h-4 w-4" strokeWidth={2.5} />
+                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-black" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                    <ShieldCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
                     {advanceInfo}
                   </span>
                 </div>
@@ -803,7 +803,7 @@ export default async function PropertyDetailPage({ params }: Props) {
       </div>
 
       {/* Mobile sticky CTA */}
-      <div className="lg:hidden fixed bottom-16 left-0 right-0 z-[40] px-4 pt-3 space-y-2" style={{ background: "var(--nav-bg)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderTop: "1px solid var(--border)", paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}>
+      <div className="lg:hidden fixed left-0 right-0 z-[40] px-4 pt-3 space-y-2" style={{ bottom: "calc(88px + env(safe-area-inset-bottom,0px))", background: "var(--nav-bg)", backdropFilter: "blur(20px) saturate(180%)", WebkitBackdropFilter: "blur(20px) saturate(180%)", borderTop: "1px solid var(--border)", paddingBottom: 12 }}>
         {isOwner ? (
           <Link
             href={`/compte/annonces/${property.id}/modifier`}

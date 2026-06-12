@@ -1,7 +1,7 @@
 ﻿"use client";
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Home } from "lucide-react";
+import { ChevronLeft, ChevronRight, Home, Maximize2, X } from "lucide-react";
 
 interface Props {
   images: { url: string; alt: string }[];
@@ -10,6 +10,7 @@ interface Props {
 
 export function PhotoGallery({ images, title }: Props) {
   const [current, setCurrent] = useState(0);
+  const [fullscreen, setFullscreen] = useState(false);
   const touchStartX = useRef(0);
 
   if (!images.length) {
@@ -28,10 +29,15 @@ export function PhotoGallery({ images, title }: Props) {
     setCurrent((c) => (c === images.length - 1 ? 0 : c + 1));
   }
 
+  const activeImage = images[current];
+  const visibleThumbs = images.slice(0, 4);
+  const remaining = Math.max(0, images.length - visibleThumbs.length);
+
   return (
-    <div className="relative rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 select-none">
+    <>
+    <div className="relative overflow-hidden rounded-[28px] bg-slate-200 shadow-[0_22px_60px_rgba(24,21,16,0.16)] dark:bg-slate-800 select-none">
       <div
-        className="relative aspect-[4/3]"
+        className="relative aspect-[4/3] md:aspect-[16/10] xl:aspect-[16/9]"
         onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           const diff = touchStartX.current - e.changedTouches[0].clientX;
@@ -40,8 +46,8 @@ export function PhotoGallery({ images, title }: Props) {
         }}
       >
         <Image
-          src={images[current].url}
-          alt={images[current].alt || title}
+          src={activeImage.url}
+          alt={activeImage.alt || title}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 66vw"
@@ -53,9 +59,18 @@ export function PhotoGallery({ images, title }: Props) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
 
         {/* Counter */}
-        <div className="absolute bottom-3 right-3 bg-black/50 text-white text-xs font-semibold px-2 py-1 rounded-full pointer-events-none">
+        <div className="absolute bottom-3 right-3 bg-black/55 text-white text-sm font-black px-3 py-1.5 rounded-full pointer-events-none">
           {current + 1} / {images.length}
         </div>
+
+        <button
+          type="button"
+          onClick={() => setFullscreen(true)}
+          className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur transition-colors hover:bg-black/65"
+          aria-label="Voir la photo en grand"
+        >
+          <Maximize2 className="h-5 w-5" strokeWidth={2.4} />
+        </button>
 
         {/* Dot indicators — inside image overlay */}
         {images.length > 1 && (
@@ -94,20 +109,54 @@ export function PhotoGallery({ images, title }: Props) {
 
       {/* Thumbnail strip — desktop only */}
       {images.length > 1 && (
-        <div className="hidden md:flex gap-2 px-3 pb-3 overflow-x-auto scrollbar-hide">
-          {images.map((img, i) => (
+        <div className="flex gap-2 px-3 py-3 overflow-x-auto scrollbar-hide">
+          {visibleThumbs.map((img, i) => (
             <button
               key={i}
               onClick={() => setCurrent(i)}
-              className={`relative flex-none w-16 h-12 rounded-lg overflow-hidden border-2 transition-colors ${
+              className={`relative flex-none h-16 w-20 overflow-hidden rounded-xl border-2 transition-colors ${
                 i === current ? "border-[var(--accent-gold)]" : "border-transparent opacity-60 hover:opacity-100"
               }`}
             >
               <Image src={img.url} alt={img.alt || `Photo ${i + 1}`} fill className="object-cover" sizes="64px" quality={50} loading="lazy" />
+              {remaining > 0 && i === visibleThumbs.length - 1 && (
+                <span className="absolute inset-0 flex items-center justify-center bg-black/55 text-lg font-black text-white">
+                  +{remaining}
+                </span>
+              )}
             </button>
           ))}
         </div>
       )}
     </div>
+    {fullscreen && (
+      <div className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-black/95 p-3 md:p-8">
+        <button
+          type="button"
+          onClick={() => setFullscreen(false)}
+          className="absolute right-4 top-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur transition-colors hover:bg-white/20"
+          aria-label="Fermer"
+        >
+          <X className="h-6 w-6" strokeWidth={2.6} />
+        </button>
+        {images.length > 1 && (
+          <button type="button" onClick={prev} className="absolute left-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-white/20" aria-label="Photo précédente">
+            <ChevronLeft className="h-7 w-7" />
+          </button>
+        )}
+        <div className="relative h-[82vh] w-full max-w-6xl">
+          <Image src={activeImage.url} alt={activeImage.alt || title} fill className="object-contain" sizes="100vw" quality={90} />
+        </div>
+        {images.length > 1 && (
+          <button type="button" onClick={next} className="absolute right-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-white/20" aria-label="Photo suivante">
+            <ChevronRight className="h-7 w-7" />
+          </button>
+        )}
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm font-black text-white backdrop-blur">
+          {current + 1} / {images.length}
+        </div>
+      </div>
+    )}
+    </>
   );
 }

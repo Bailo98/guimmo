@@ -19,17 +19,18 @@ export function ScrollToTop() {
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       aria-label="Retour en haut"
       className={cn(
-        "fixed z-[55] w-10 h-10 rounded-full bg-[var(--accent-gold)] shadow-lg flex items-center justify-center transition-all duration-300",
-        visible ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"
+        "fixed z-[55] h-16 w-16 rounded-full bg-[var(--accent-gold)] flex items-center justify-center transition-all duration-300 hover:-translate-y-1 active:scale-95",
+        visible ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-5 pointer-events-none"
       )}
       style={{
         // Mobile : au-dessus du bouton 💰 (lui-même à +16px au-dessus de la pill nav)
         // 76px (nav) + 16px (gap nav→💰) + 52px (💰 height) + 12px (gap 💰→↑)
         bottom: "calc(76px + env(safe-area-inset-bottom, 0px) + 80px)",
         right: 16,
+        boxShadow: "0 18px 38px rgba(24,21,16,0.22), 0 8px 22px rgba(185,138,46,0.32)",
       }}
     >
-      <ArrowUp className="w-5 h-5" color="var(--bg-primary)" />
+      <ArrowUp className="w-7 h-7" color="var(--bg-primary)" strokeWidth={2.8} />
     </button>
   );
 }
