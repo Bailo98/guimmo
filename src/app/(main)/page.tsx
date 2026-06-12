@@ -77,16 +77,16 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
   const neighborhood = property ? NL[property.neighborhood] ?? property.neighborhood : "Conakry";
 
   return (
-    <section className="py-5 md:py-6" style={{ background: "var(--bg-card-light)" }}>
-      <div className="content-fluid max-w-[1240px] grid grid-cols-1 lg:grid-cols-[0.8fr_1fr] gap-4 lg:gap-5 items-center">
-        <div className="text-center lg:text-left">
+    <section className="py-5 md:py-7" style={{ background: "var(--bg-card-light)" }}>
+      <div className="content-fluid max-w-[1240px]">
+        <div className="mx-auto max-w-[720px] text-center">
           <h2 className="text-[28px] md:text-[40px] font-bold mb-3 leading-tight" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
             <span className="inline-flex items-center justify-center gap-3">
               <Heart className="h-8 w-8 md:h-10 md:w-10" strokeWidth={2.4} />
               Découvre les logements
             </span>
           </h2>
-          <div className="grid grid-cols-2 gap-2 max-w-sm mx-auto lg:mx-0 mb-5">
+          <div className="hidden">
             <div className="rounded-2xl px-3 py-4 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#b91c1c" }}>
               <X className="mx-auto mb-1 h-7 w-7" strokeWidth={2.5} />
               Passer
@@ -98,14 +98,14 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
           </div>
           <Link
             href="/decouvrir"
-            className="inline-flex min-h-12 items-center justify-center rounded-2xl px-6 text-base font-black transition-all hover:-translate-y-0.5 hover:opacity-95"
+            className="mb-5 inline-flex min-h-12 items-center justify-center rounded-2xl px-6 text-base font-black transition-all hover:-translate-y-0.5 hover:opacity-95"
             style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
           >
             Commencer
           </Link>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[560px] py-5">
+        <div className="relative mx-auto w-full max-w-[600px] py-3">
           <div
             className="absolute left-0 top-[34%] z-30 hidden sm:flex -translate-x-2 -rotate-6 items-center gap-2 rounded-2xl px-4 py-3 text-base font-black"
             style={{ background: "rgba(255,255,255,0.92)", color: "#b91c1c", border: "1px solid rgba(185,28,28,0.18)", boxShadow: "0 16px 40px rgba(24,21,16,0.12)" }}
@@ -166,7 +166,7 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
             </div>
           </Link>
 
-          <div className="mt-3 grid grid-cols-2 gap-2 sm:hidden">
+          <div className="mt-4 grid grid-cols-2 gap-2">
             <span className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#b91c1c" }}>
               <ArrowLeft className="h-5 w-5" strokeWidth={2.5} />
               <X className="h-5 w-5" strokeWidth={2.5} />

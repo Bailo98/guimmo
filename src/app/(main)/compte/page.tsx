@@ -1734,6 +1734,46 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
         <div style={{ flex: 1, display: "flex", flexDirection: "row", minHeight: 0, alignItems: "flex-start" }}>
           {/* Main tab content */}
           <div style={{ flex: 1, minWidth: 0, padding: "24px" }}>
+            <div className="mb-6 grid grid-cols-2 gap-3 xl:grid-cols-6">
+              {[
+                { label: "Mes logements", Icon: Home, onClick: () => setTab("annonces"), tone: "soft" },
+                { label: "Publier", Icon: Plus, href: "/publier/rapide", tone: "gold" },
+                { label: "Demandes", Icon: Phone, onClick: () => setTab("visites"), tone: "soft" },
+                { label: "Mettre en avant", Icon: Star, onClick: () => setTab("abonnement"), tone: "soft" },
+                { label: "Messages", Icon: MessageCircle, onClick: () => setTab("messages"), tone: "soft" },
+                { label: "Profil", Icon: User, onClick: () => setTab("profil"), tone: "soft" },
+              ].map(({ label, Icon, href, onClick, tone }) => {
+                const style = tone === "gold"
+                  ? { background: "var(--accent-gold)", color: "var(--bg-primary)", border: "1px solid rgba(123,84,24,0.18)" }
+                  : { background: "var(--bg-card)", color: "var(--text-primary)", border: "1px solid var(--border)" };
+                const content = (
+                  <>
+                    <Icon className="mb-3 h-8 w-8" strokeWidth={2.4} />
+                    <span className="text-base font-black leading-tight">{label}</span>
+                  </>
+                );
+                return href ? (
+                  <Link
+                    key={label}
+                    href={href}
+                    className="flex min-h-[118px] flex-col items-center justify-center rounded-[24px] p-3 text-center shadow-sm transition-transform hover:-translate-y-0.5"
+                    style={style}
+                  >
+                    {content}
+                  </Link>
+                ) : (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={onClick}
+                    className="flex min-h-[118px] flex-col items-center justify-center rounded-[24px] p-3 text-center shadow-sm transition-transform hover:-translate-y-0.5"
+                    style={style}
+                  >
+                    {content}
+                  </button>
+                );
+              })}
+            </div>
 
             {/* ── TABLEAU DE BORD ── */}
             {tab === "dashboard" && (

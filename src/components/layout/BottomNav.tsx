@@ -66,7 +66,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="md:hidden"
+      className="mobile-bottom-nav flex md:hidden"
       style={{
         position: "fixed",
         bottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
@@ -89,8 +89,6 @@ export function BottomNav() {
           ? "0 18px 40px rgba(0,0,0,0.35)"
           : "0 18px 40px rgba(0,0,0,0.18)",
 
-        /* Layout */
-        display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         gap: 2,

@@ -182,6 +182,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   if (isSuspended && !isAdmin) notFound();
 
   let profileData: Record<string, unknown> | null = null;
+  let ownerListingsCount: number | null = null;
   if (finalRow.owner_id) {
     const { data } = await db
       .from("profiles")
@@ -189,6 +190,12 @@ export default async function PropertyDetailPage({ params }: Props) {
       .eq("id", finalRow.owner_id)
       .maybeSingle();
     profileData = data;
+    const { count } = await db
+      .from("properties")
+      .select("id", { count: "exact", head: true })
+      .eq("owner_id", finalRow.owner_id)
+      .eq("status", "active");
+    ownerListingsCount = count;
   }
 
   const property = finalRow as Property;
@@ -215,7 +222,7 @@ export default async function PropertyDetailPage({ params }: Props) {
     .gte("price", Math.round(finalRow.price * 0.5))
     .lte("price", Math.round(finalRow.price * 1.5))
     .not("title", "is", null)
-    .limit(3);
+    .limit(6);
   const similar = ((similarRows ?? []) as Property[]).filter(isPubliclyAvailable);
 
   // Virtual tour images (table added via migration; handle missing gracefully)
@@ -241,6 +248,9 @@ export default async function PropertyDetailPage({ params }: Props) {
   );
   const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${contactMsg}`;
   const phoneUrl    = `tel:${phone}`;
+  const ownerSince = (profileData as { created_at?: string | null } | null)?.created_at
+    ? new Date((profileData as { created_at: string }).created_at).getFullYear()
+    : null;
 
   // ── Derived essentials ──────────────────────────────────────────────────────
   const waterKey = (property.water_source ?? "robinet") as string;
@@ -315,7 +325,7 @@ export default async function PropertyDetailPage({ params }: Props) {
       )}
 
       {/* Premium gallery */}
-      <div className="relative mx-auto w-[95%] max-w-[1600px] pt-20 md:pt-24">
+      <div className="relative mx-auto w-[95vw] max-w-[1600px] pt-20 md:pt-24">
         <PhotoGallery
           images={(property.property_images ?? []).map((i) => ({ url: i.url, alt: property.title }))}
           title={property.title}
@@ -324,7 +334,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
       {/* Content card */}
       <div className="relative z-10 mt-0 rounded-t-[28px]" style={{ background: "var(--bg-primary)" }}>
-        <div className="mx-auto w-[95%] max-w-[1600px] pt-5">
+        <div className="mx-auto w-[95vw] max-w-[1600px] pt-5">
 
           {/* Déjà loué banner */}
           {isHiddenAvailability && (
@@ -360,10 +370,10 @@ export default async function PropertyDetailPage({ params }: Props) {
             </div>
           )}
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px]">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
 
             {/* ── Main column ── */}
-            <div className="space-y-5">
+            <div className="space-y-5 lg:col-span-8">
 
               {/* Status + type badges */}
               <div className="flex items-center gap-2 flex-wrap">
@@ -685,7 +695,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <h2 className="font-bold mb-4 text-lg" style={{ color: "var(--text-primary)" }}>
                     Annonces similaires à {neighborhoodLabel}
                   </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                     {similar.map((p) => (
                       <PropertyCard key={p.id} property={p} />
                     ))}
@@ -701,7 +711,7 @@ export default async function PropertyDetailPage({ params }: Props) {
             </div>
 
             {/* ── Sidebar (desktop) ── */}
-            <div className="hidden lg:block">
+            <div className="hidden lg:col-span-4 lg:block">
               <div className="sticky top-20 rounded-2xl p-5 space-y-3" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                 {profileData && (
                   <div className="flex items-center gap-3 pb-3 border-b" style={{ borderColor: "var(--border)" }}>
@@ -710,26 +720,43 @@ export default async function PropertyDetailPage({ params }: Props) {
                       name={(profileData as { full_name?: string | null }).full_name ?? undefined}
                       size="sm"
                     />
-                    <div className="min-w-0">
-                      <p className="font-semibold text-sm truncate" style={{ color: "var(--text-primary)" }}>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-black text-base truncate" style={{ color: "var(--text-primary)" }}>
                         {(profileData as { full_name?: string | null }).full_name ?? "Propriétaire"}
                       </p>
-                      {(profileData as { is_verified?: boolean }).is_verified && (
-                        <p className="inline-flex items-center gap-1 text-[var(--accent-gold)] text-xs font-bold">
-                          <BadgeCheck className="h-3 w-3" strokeWidth={2.5} />
-                          Vérifié
-                        </p>
-                      )}
+                      <p className="text-xs font-bold" style={{ color: "var(--text-secondary)" }}>Propriétaire LogerBien</p>
                     </div>
                   </div>
                 )}
-                <div className="text-center pb-3 border-b" style={{ borderColor: "var(--border)" }}>
-                  <p className="text-3xl font-black" style={{ color: "var(--text-primary)" }}>
-                    {formatPrice(property.price, "GNF", property.price_period)}
-                  </p>
-                  <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
-                    {neighborhoodLabel} · {TYPE_LABELS[property.type] ?? property.type}
-                  </p>
+                <div className="grid grid-cols-2 gap-2 pb-3 border-b" style={{ borderColor: "var(--border)" }}>
+                  {property.contact_phone && (
+                    <span className="inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "rgba(37,211,102,0.12)", border: "1px solid rgba(37,211,102,0.24)", color: "#15803d" }}>
+                      <Phone className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      Téléphone vérifié
+                    </span>
+                  )}
+                  {(profileData as { is_verified?: boolean } | null)?.is_verified && (
+                    <span className="inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "rgba(185,138,46,0.14)", border: "1px solid rgba(185,138,46,0.28)", color: "var(--accent-gold)" }}>
+                      <BadgeCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      Compte vérifié
+                    </span>
+                  )}
+                  {ownerListingsCount !== null && (
+                    <span className="inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                      <Home className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      {ownerListingsCount} annonce{ownerListingsCount > 1 ? "s" : ""}
+                    </span>
+                  )}
+                  {ownerSince && (
+                    <span className="inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                      <Calendar className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      Depuis {ownerSince}
+                    </span>
+                  )}
+                  <span className="col-span-2 inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                    <MapPin className="h-3.5 w-3.5" strokeWidth={2.5} />
+                    {neighborhoodLabel}
+                  </span>
                 </div>
 
                 {isOwner ? (
@@ -785,6 +812,15 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </a>
 
                     <MessageButton propertyId={property.id} ownerId={property.owner_id} propertyTitle={property.title} />
+
+                    <Link
+                      href="/contact"
+                      className="flex items-center justify-center gap-2 w-full font-bold py-3 px-4 rounded-xl transition-colors text-sm hover:bg-red-50"
+                      style={{ background: "rgba(220,38,38,0.08)", border: "1px solid rgba(220,38,38,0.24)", color: "#dc2626" }}
+                    >
+                      <AlertTriangle className="h-4 w-4" strokeWidth={2.4} />
+                      Signaler le compte
+                    </Link>
 
                     <p className="text-[11px] text-center" style={{ color: "var(--text-muted)" }}>Mentionnez LogerBien lors de votre contact</p>
                   </>
