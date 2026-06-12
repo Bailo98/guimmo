@@ -315,7 +315,7 @@ export default async function PropertyDetailPage({ params }: Props) {
       )}
 
       {/* Premium gallery */}
-      <div className="relative mx-auto max-w-[1440px] px-4 pt-20 md:pt-24">
+      <div className="relative mx-auto w-[95%] max-w-[1600px] pt-20 md:pt-24">
         <PhotoGallery
           images={(property.property_images ?? []).map((i) => ({ url: i.url, alt: property.title }))}
           title={property.title}
@@ -324,7 +324,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
       {/* Content card */}
       <div className="relative z-10 mt-0 rounded-t-[28px]" style={{ background: "var(--bg-primary)" }}>
-        <div className="max-w-[1440px] mx-auto px-4 pt-6">
+        <div className="mx-auto w-[95%] max-w-[1600px] pt-5">
 
           {/* Déjà loué banner */}
           {isHiddenAvailability && (
@@ -360,10 +360,10 @@ export default async function PropertyDetailPage({ params }: Props) {
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px]">
 
             {/* ── Main column ── */}
-            <div className="lg:col-span-2 space-y-5">
+            <div className="space-y-5">
 
               {/* Status + type badges */}
               <div className="flex items-center gap-2 flex-wrap">
@@ -701,7 +701,7 @@ export default async function PropertyDetailPage({ params }: Props) {
             </div>
 
             {/* ── Sidebar (desktop) ── */}
-            <div className="hidden lg:block lg:col-span-1">
+            <div className="hidden lg:block">
               <div className="sticky top-20 rounded-2xl p-5 space-y-3" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                 {profileData && (
                   <div className="flex items-center gap-3 pb-3 border-b" style={{ borderColor: "var(--border)" }}>
@@ -715,7 +715,10 @@ export default async function PropertyDetailPage({ params }: Props) {
                         {(profileData as { full_name?: string | null }).full_name ?? "Propriétaire"}
                       </p>
                       {(profileData as { is_verified?: boolean }).is_verified && (
-                        <p className="text-[var(--accent-gold)] text-xs">✓ Vérifié</p>
+                        <p className="inline-flex items-center gap-1 text-[var(--accent-gold)] text-xs font-bold">
+                          <BadgeCheck className="h-3 w-3" strokeWidth={2.5} />
+                          Vérifié
+                        </p>
                       )}
                     </div>
                   </div>

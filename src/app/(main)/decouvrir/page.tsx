@@ -1,5 +1,4 @@
-﻿import { SwipeFeed } from "./SwipeFeed";
-import { MaisonDuJour } from "@/components/MaisonDuJour";
+import { SwipeFeed } from "./SwipeFeed";
 import { createClient } from "@supabase/supabase-js";
 import { isPubliclyAvailable } from "@/lib/property-signals";
 import type { Property } from "@/types";
@@ -47,13 +46,7 @@ export default async function DecouvrirPage() {
   const properties = await fetchSwipeProperties();
 
   return (
-    <div className="bg-[var(--bg-primary)] min-h-screen">
-      {/* Maison du jour en haut */}
-      <div className="pt-20">
-        <MaisonDuJour />
-      </div>
-
-      {/* Feed swipe */}
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       <SwipeFeed properties={properties} />
     </div>
   );

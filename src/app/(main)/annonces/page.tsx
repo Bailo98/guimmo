@@ -420,7 +420,7 @@ function AnnoncesContent() {
           borderBottom: "1px solid var(--border)",
         }}
       >
-        <div className="mx-auto max-w-[1440px] space-y-3">
+        <div className="mx-auto w-[95%] max-w-[1600px] space-y-3">
           <div className="flex items-center gap-2">
             <div
               className="flex-1 flex items-center gap-3 rounded-2xl px-4"
@@ -562,7 +562,7 @@ function AnnoncesContent() {
             className="fixed inset-0 z-50 md:static md:inset-auto md:z-auto overflow-y-auto"
             style={{ background: "var(--bg-primary)" }}
           >
-            <div className="mx-auto max-w-[1440px] px-4 py-4 md:px-0 md:py-3 space-y-4">
+            <div className="mx-auto w-[95%] max-w-[1600px] px-0 py-4 md:py-3 space-y-4">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-lg font-black" style={{ color: "var(--text-primary)" }}>Plus de filtres</h2>
                 <button
@@ -703,7 +703,7 @@ function AnnoncesContent() {
       </div>
 
       <div
-        className="max-w-[1440px] mx-auto px-4 py-6"
+        className="mx-auto w-[95%] max-w-[1600px] px-0 py-6"
         style={{ paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))" }}
       >
         {/* GPS message */}
@@ -832,7 +832,7 @@ export default function AnnoncesPage() {
   return (
     <Suspense
       fallback={
-        <div className="max-w-[1440px] mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5 xl:gap-6">
+        <div className="mx-auto grid w-[95%] max-w-[1600px] grid-cols-1 gap-5 px-0 py-6 lg:grid-cols-2 2xl:grid-cols-3 xl:gap-6">
           {Array.from({ length: 12 }).map((_, i) => <SkeletonCard key={i} />)}
         </div>
       }

@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Bed, Building2, DoorOpen, FileText, Leaf, Phone, Search, Plus, X, MapPin, Home, DollarSign } from "lucide-react";
+import { Bed, Bell, Building2, DoorOpen, FileText, Leaf, Phone, Search, Plus, X, MapPin, Home, DollarSign } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
@@ -124,13 +124,13 @@ export default function JeCharchePage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg-primary)", paddingTop: 88, paddingBottom: 40 }}>
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 16px" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg-primary)", paddingTop: 84, paddingBottom: 28 }}>
+      <div style={{ width: "95%", maxWidth: 1600, margin: "0 auto", padding: "0 12px" }}>
 
         {/* Header */}
-        <div style={{ marginBottom: 28 }}>
+        <div style={{ marginBottom: 18 }}>
           <h1 style={{
-            fontSize: 28, fontWeight: 800, color: "var(--text-primary)",
+            fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 900, color: "var(--text-primary)",
             fontFamily: "var(--font-display), sans-serif", marginBottom: 8,
           }}>
             <span className="inline-flex items-center gap-2">
@@ -138,9 +138,46 @@ export default function JeCharchePage() {
               <Search className="h-6 w-6" strokeWidth={2.4} />
             </span>
           </h1>
-          <p style={{ color: "var(--text-primary-faint)", fontSize: 15 }}>
-            Décrivez ce que vous cherchez. Les propriétaires qui ont le bien vous contacteront directement.
+          <p style={{ color: "var(--text-secondary)", fontSize: 18, fontWeight: 800, maxWidth: 620 }}>
+            Commune, type, budget. Les propriétaires peuvent vous contacter.
           </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4" style={{ marginBottom: 18 }}>
+          {[
+            { label: "Commune", value: form.neighborhood ? (NL[form.neighborhood] ?? form.neighborhood) : "Choisir", Icon: MapPin },
+            { label: "Type", value: form.property_type ? (TYPES.find((t) => t.id === form.property_type)?.label ?? "Choisi") : "Maison", Icon: Home },
+            { label: "Budget", value: form.budget_max ? formatPrice(Number(form.budget_max.replace(/\D/g, ""))) : "Prix max", Icon: DollarSign },
+            { label: "Alerte", value: "Créer", Icon: Bell },
+          ].map(({ label, value, Icon }) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => {
+                if (!user) { router.push("/connexion?redirect=/je-cherche"); return; }
+                setShowForm(true);
+              }}
+              className="text-left"
+              style={{
+                minHeight: 112,
+                borderRadius: 22,
+                border: "1px solid var(--border)",
+                background: "var(--bg-card)",
+                color: "var(--text-primary)",
+                boxShadow: "var(--shadow-soft)",
+                padding: 16,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <Icon className="h-7 w-7 text-[var(--accent-gold)]" strokeWidth={2.4} />
+              <span>
+                <span className="block text-sm font-black" style={{ color: "var(--text-secondary)" }}>{label}</span>
+                <span className="block text-lg font-black leading-tight">{value}</span>
+              </span>
+            </button>
+          ))}
         </div>
 
         {/* Publish button */}
@@ -155,11 +192,11 @@ export default function JeCharchePage() {
               background: "var(--accent-gold)", color: "var(--text-primary)",
               fontWeight: 700, fontSize: 15, cursor: "pointer",
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              marginBottom: 28,
+              marginBottom: 18,
             }}
           >
             <Plus style={{ width: 18, height: 18 }} />
-            Publier ma recherche
+            Créer une alerte
           </button>
         )}
 
@@ -168,7 +205,8 @@ export default function JeCharchePage() {
           <form onSubmit={handleSubmit}
             style={{
               background: "var(--bg-card)", border: "1px solid var(--border)",
-              borderRadius: 20, padding: 20, marginBottom: 28,
+              borderRadius: 24, padding: 20, marginBottom: 20,
+              boxShadow: "var(--shadow-soft)",
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
@@ -217,13 +255,13 @@ export default function JeCharchePage() {
 
               {/* Quartier */}
               <div>
-                <label style={labelStyle}><MapPin className="mr-1 inline h-3.5 w-3.5" />Quartier souhaité</label>
+                <label style={labelStyle}><MapPin className="mr-1 inline h-3.5 w-3.5" />Commune souhaitée</label>
                 <select
                   value={form.neighborhood}
                   onChange={(e) => setForm((f) => ({ ...f, neighborhood: e.target.value }))}
                   style={{ ...inputStyle, appearance: "none" }}
                 >
-                  <option value="">Tous les quartiers</option>
+                  <option value="">Toutes les communes</option>
                   {NEIGHBORHOODS.map((n) => (
                     <option key={n.id} value={n.id}>{n.name}</option>
                   ))}
@@ -296,24 +334,39 @@ export default function JeCharchePage() {
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
           </div>
         ) : requests.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "40px 0" }}>
-            <Search className="mx-auto mb-3 h-10 w-10 text-[var(--accent-gold)]" strokeWidth={2.2} />
-            <p style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: 18, marginBottom: 8 }}>
-              Aucune demande active
+          <div style={{
+            textAlign: "center",
+            padding: "36px 18px",
+            borderRadius: 28,
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
+            boxShadow: "var(--shadow-soft)",
+          }}>
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-[28px]" style={{ background: "rgba(185,138,46,0.14)" }}>
+              <Search className="h-10 w-10 text-[var(--accent-gold)]" strokeWidth={2.2} />
+            </div>
+            <p style={{ color: "var(--text-primary)", fontWeight: 900, fontSize: 22, marginBottom: 8 }}>
+              Aucune recherche active
             </p>
-            <p style={{ color: "var(--text-primary-faint)", fontSize: 14 }}>
-              Soyez le premier à publier votre recherche !
+            <p style={{ color: "var(--text-secondary)", fontSize: 16, fontWeight: 700 }}>
+              Choisissez une commune, un type et un budget.
             </p>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <p style={{ color: "var(--text-primary-faint)", fontSize: 13, marginBottom: 4 }}>
-              {requests.length} demande{requests.length > 1 ? "s" : ""} active{requests.length > 1 ? "s" : ""}
-            </p>
+          <div>
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h2 className="text-2xl font-black" style={{ color: "var(--text-primary)" }}>
+                Mes recherches actives
+              </h2>
+              <p className="rounded-full px-3 py-1 text-sm font-black" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}>
+                {requests.length}
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3">
             {requests.map((req) => (
               <div key={req.id} style={{
                 background: "var(--bg-card)", border: "1px solid var(--border)",
-                borderRadius: 16, padding: "16px",
+                borderRadius: 22, padding: "18px", boxShadow: "var(--shadow-soft)",
               }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -404,6 +457,7 @@ export default function JeCharchePage() {
                 </div>
               </div>
             ))}
+            </div>
           </div>
         )}
       </div>

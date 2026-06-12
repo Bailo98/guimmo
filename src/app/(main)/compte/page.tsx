@@ -2249,7 +2249,7 @@ export default function ComptePage() {
   // ── Acheteur simple ──────────────────────────────────────────────────────────
   if (role === "buyer") {
     return (
-      <div className="max-w-xl mx-auto">
+      <div className="mx-auto w-[95%] max-w-[900px]">
         <div className="lg:rounded-2xl lg:overflow-hidden" style={{ border: "1px solid var(--border)" }}>
           <BuyerProfile user={user} profile={profile} refreshProfile={refreshProfile} />
         </div>
@@ -2260,7 +2260,7 @@ export default function ComptePage() {
   // ── Chercheur ────────────────────────────────────────────────────────────────
   if (role === "chercheur") {
     return (
-      <div className="max-w-3xl lg:max-w-5xl mx-auto lg:px-0">
+      <div className="mx-auto w-[95%] max-w-[1600px] lg:px-0">
         <div className="lg:rounded-2xl lg:overflow-hidden" style={{ border: "1px solid var(--border)" }}>
           <ChercheurDashboard {...dashProps} />
         </div>
@@ -2270,7 +2270,7 @@ export default function ComptePage() {
 
   // ── Annonceur (proprietaire / owner / agent / agence / agency) ───────────────
   return (
-    <div className="max-w-3xl lg:max-w-6xl mx-auto lg:px-0">
+    <div className="mx-auto w-[95%] max-w-[1600px] lg:px-0">
       <div style={{ border: "1px solid var(--border)", borderRadius: "0 0 16px 16px", overflow: "hidden" }}>
         <AnnonceurDashboard {...dashProps} />
       </div>

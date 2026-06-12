@@ -4,7 +4,7 @@ import TinderCard from "react-tinder-card";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, BadgeCheck, Banknote, Bed, Heart, Home, Loader2, MapPin, MessageCircle, Phone, Plane, Star, X } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Banknote, Heart, Home, Loader2, MapPin, MessageCircle, Phone, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useAppStore } from "@/lib/store";
 import { toast } from "@/lib/toast";
@@ -12,8 +12,8 @@ import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { fetchProperties } from "@/lib/properties";
 import { formatPrice } from "@/lib/utils";
 import { getNeighborhoodName, NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
-import { haversineKm, formatDistance } from "@/lib/haversine";
-import { advanceSignal, availabilitySignal, publishedSignal } from "@/lib/property-signals";
+import { haversineKm } from "@/lib/haversine";
+import { availabilitySignal } from "@/lib/property-signals";
 import type { Property } from "@/types";
 
 const SEEN_KEY = "lb_swipe_seen";
@@ -382,24 +382,13 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   const whatsappUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${whatsappMessage}` : `/annonces/${topCard.id}`;
   const phoneUrl = cleanPhone ? `tel:${cleanPhone}` : `/annonces/${topCard.id}`;
   const availability = availabilitySignal(topCard);
-  const published = publishedSignal(topCard.created_at);
-  const advance = advanceSignal(topCard);
-
-  // Distance string
-  let topDistStr: string | null = null;
-  if (userLocation) {
-    const pLat = topCard.lat ?? topCard.latitude;
-    const pLng = topCard.lng ?? topCard.longitude;
-    if (pLat && pLng) {
-      topDistStr = formatDistance(haversineKm(userLocation.lat, userLocation.lng, pLat, pLng));
-    } else {
-      const coords = NEIGHBORHOOD_COORDINATES[topCard.neighborhood];
-      if (coords) topDistStr = `~${formatDistance(haversineKm(userLocation.lat, userLocation.lng, coords[0], coords[1]))}`;
-    }
-  }
-
-  // Remaining-card dots (max 15)
-  const dotsTotal = Math.min(cards.length, 15);
+  const typeLabel =
+    topCard.type === "apartment" ? "Appartement" :
+    topCard.type === "house" ? "Maison" :
+    topCard.type === "villa" ? "Villa" :
+    topCard.type === "studio" ? "Studio" :
+    topCard.type === "room" ? "Chambre" :
+    topCard.type;
 
   return (
     <>
@@ -565,125 +554,17 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               </div>
             </div>
 
-            {/* ── Badges — top left (below header) ────────────────────────────── */}
-            <div style={{
-              position: "absolute", top: 112, left: 14,
-              display: "flex", flexDirection: "column", gap: 6,
-              pointerEvents: "none",
-            }}>
-              {topCard.is_featured && (
-                <span style={{
-                  background: "rgba(212,175,55,0.20)", color: "var(--accent-gold)",
-                  border: "1px solid rgba(212,175,55,0.5)", borderRadius: 20,
-                  padding: "5px 11px", fontSize: 13, fontWeight: 900,
-                  backdropFilter: "blur(8px)",
-                }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-                    <Star style={{ width: 13, height: 13 }} strokeWidth={2.4} />
-                    Premium
-                  </span>
-                </span>
-              )}
-              {topCard.contact_phone && (
-                <span style={{
-                  background: "rgba(37,211,102,0.22)", color: "#ffffff",
-                  border: "1px solid rgba(37,211,102,0.48)", borderRadius: 20,
-                  padding: "5px 11px", fontSize: 13, fontWeight: 900,
-                  backdropFilter: "blur(8px)",
-                }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-                    <Phone style={{ width: 13, height: 13 }} strokeWidth={2.4} />
-                    Tél.
-                  </span>
-                </span>
-              )}
-              {topCard.is_diaspora && (
-                <span style={{
-                  background: "rgba(74,158,255,0.25)", color: "#4A9EFF",
-                  border: "1px solid rgba(74,158,255,0.5)", borderRadius: 20,
-                  padding: "5px 11px", fontSize: 13, fontWeight: 900,
-                  backdropFilter: "blur(8px)",
-                }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-                    <Plane style={{ width: 13, height: 13 }} strokeWidth={2.4} />
-                    Diaspora
-                  </span>
-                </span>
-              )}
-            </div>
-
-            {/* ── Distance badge — top right ───────────────────────────────────── */}
-            {topDistStr && (
-              <div style={{ position: "absolute", top: 112, right: 14, pointerEvents: "none" }}>
-                <span style={{
-                  background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)",
-                  color: "rgba(255,255,255,0.85)", borderRadius: 20,
-                   padding: "5px 11px", fontSize: 13, fontWeight: 900,
-                }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-                    <MapPin style={{ width: 13, height: 13 }} strokeWidth={2.4} />
-                    {topDistStr}
-                  </span>
-                </span>
-              </div>
-            )}
-
             {/* ── Property info — bottom left ──────────────────────────────────── */}
             <div style={{
               position: "absolute",
-              bottom: 190,
+              bottom: 162,
               left: 18,
               right: 18,
               pointerEvents: "none",
             }}>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 }}>
-                <span style={{
-                  background: "rgba(255,255,255,0.16)",
-                  color: "#ffffff",
-                  border: "1px solid rgba(255,255,255,0.22)",
-                  borderRadius: 999,
-                  padding: "5px 10px",
-                  fontSize: 13,
-                  fontWeight: 800,
-                  backdropFilter: "blur(10px)",
-                }}>
-                  {topCard.transaction_type === "rent" ? "Location" : "Vente"}
-                </span>
-                {topCard.is_verified && (
-                  <span style={{
-                    background: "rgba(34,197,94,0.18)",
-                    color: "#ffffff",
-                    border: "1px solid rgba(34,197,94,0.42)",
-                    borderRadius: 999,
-                    padding: "5px 10px",
-                    fontSize: 13,
-                    fontWeight: 800,
-                    backdropFilter: "blur(10px)",
-                  }}>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-                      <BadgeCheck style={{ width: 13, height: 13 }} strokeWidth={2.4} />
-                      Vérifié
-                    </span>
-                  </span>
-                )}
-                <span style={{
-                  background: availability.bg,
-                  color: "#ffffff",
-                  border: `1px solid ${availability.border}`,
-                  borderRadius: 999,
-                  padding: "5px 10px",
-                   fontSize: 13,
-                  fontWeight: 800,
-                  backdropFilter: "blur(10px)",
-                }}>
-                  {availability.label}
-                </span>
-              </div>
-
-              {/* Prix */}
               <p style={{
                 margin: 0,
-                fontSize: 32,
+                fontSize: "clamp(32px, 8vw, 48px)",
                 fontWeight: 900,
                 color: "#ffffff",
                 lineHeight: 1.1,
@@ -703,61 +584,50 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 </p>
               )}
 
-              {/* Titre */}
-              <p style={{
-                margin: "0 0 5px",
-                color: "#ffffff",
-                fontWeight: 700,
-                fontSize: 18,
-                lineHeight: 1.25,
-                textShadow: "0 1px 6px rgba(0,0,0,0.6)",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}>
-                {topCard.title}
-              </p>
-
-              {/* Quartier · Type · Chambres */}
-              <div style={{
-                display: "flex",
-                gap: 5,
-                alignItems: "center",
-                overflow: "hidden",
-              }}>
-                <span style={{ color: "rgba(255,255,255,0.86)", fontSize: 16, fontWeight: 800, whiteSpace: "nowrap" }}>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginTop: 10 }}>
+                <span style={{
+                  color: "#ffffff",
+                  fontSize: 16,
+                  fontWeight: 900,
+                  borderRadius: 999,
+                  padding: "8px 12px",
+                  background: "rgba(255,255,255,0.14)",
+                  border: "1px solid rgba(255,255,255,0.20)",
+                  backdropFilter: "blur(10px)",
+                }}>
+                  {typeLabel}
+                </span>
+                <span style={{
+                  color: "#ffffff",
+                  fontSize: 16,
+                  fontWeight: 900,
+                  borderRadius: 999,
+                  padding: "8px 12px",
+                  background: "rgba(255,255,255,0.14)",
+                  border: "1px solid rgba(255,255,255,0.20)",
+                  backdropFilter: "blur(10px)",
+                }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                     <MapPin style={{ width: 14, height: 14 }} strokeWidth={2.4} />
                     {getNeighborhoodName(topCard.neighborhood)}
                   </span>
                 </span>
-                <span style={{ color: "rgba(255,255,255,0.48)", fontSize: 16 }}>·</span>
-                <span style={{ color: "rgba(255,255,255,0.86)", fontSize: 16, fontWeight: 800, whiteSpace: "nowrap" }}>
-                  {topCard.type === "apartment" ? "Appartement" : topCard.type === "house" ? "Maison" : topCard.type === "villa" ? "Villa" : topCard.type === "studio" ? "Studio" : topCard.type}
+                <span style={{
+                  background: availability.bg,
+                  color: "#ffffff",
+                  border: `1px solid ${availability.border}`,
+                  borderRadius: 999,
+                  padding: "8px 12px",
+                  fontSize: 16,
+                  fontWeight: 900,
+                  backdropFilter: "blur(10px)",
+                }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                    <BadgeCheck style={{ width: 15, height: 15 }} strokeWidth={2.5} />
+                    {availability.label}
+                  </span>
                 </span>
-                {(topCard.rooms ?? 0) > 0 && (
-                  <>
-                    <span style={{ color: "rgba(255,255,255,0.48)", fontSize: 16 }}>·</span>
-                    <span style={{ color: "rgba(255,255,255,0.86)", fontSize: 16, fontWeight: 800, whiteSpace: "nowrap" }}>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        <Bed style={{ width: 14, height: 14 }} strokeWidth={2.4} />
-                        {topCard.rooms}
-                      </span>
-                    </span>
-                  </>
-                )}
               </div>
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
-                {published && (
-                   <span style={{ color: "rgba(255,255,255,0.9)", fontSize: 14, fontWeight: 900 }}>
-                    {published.label}
-                  </span>
-                )}
-                   <span style={{ color: "rgba(255,255,255,0.9)", fontSize: 14, fontWeight: 900 }}>
-                    <BadgeCheck style={{ width: 15, height: 15, display: "inline", marginRight: 4, verticalAlign: "-2px" }} strokeWidth={2.5} />
-                    {advance}
-                  </span>
-                </div>
             </div>
           </div>
         </TinderCard>
@@ -861,35 +731,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           </button>
         </div>
 
-        {/* ══════════════════════════════════════════════════════════════════════
-            PROGRESS DOTS — bottom center
-            Active: white pill 16×5px · Inactive: round 5×5 rgba(255,255,255,0.3)
-        ══════════════════════════════════════════════════════════════════════ */}
-        <div style={{
-          position: "absolute",
-          bottom: "calc(168px + env(safe-area-inset-bottom, 0px))",
-          left: 0,
-          right: 0,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 5,
-          zIndex: 20,
-          pointerEvents: "none",
-        }}>
-          {Array.from({ length: dotsTotal }, (_, i) => (
-            <div
-              key={i}
-              style={{
-                width:        i === 0 ? 16 : 5,
-                height:       5,
-                borderRadius: i === 0 ? 3 : "50%",
-                background:   i === 0 ? "#ffffff" : "rgba(255,255,255,0.30)",
-                transition:   "width 0.2s ease, background 0.2s ease",
-              }}
-            />
-          ))}
-        </div>
       </div>
     </>
   );

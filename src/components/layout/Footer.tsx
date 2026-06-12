@@ -11,7 +11,7 @@ const footerLinkStyle = {
 export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
   return (
     <footer style={{ background: "var(--bg-secondary)", borderTop: "1px solid var(--border)" }} className="mt-0">
-      <div className="content-fluid max-w-[1240px] py-3 md:py-4 pb-[calc(82px+env(safe-area-inset-bottom,0px))] md:pb-4">
+      <div className="mx-auto w-[95%] max-w-[1600px] py-3 pb-[calc(92px+env(safe-area-inset-bottom,0px))] md:pb-3">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <Logo size="md" />
 

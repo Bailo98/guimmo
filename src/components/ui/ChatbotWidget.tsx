@@ -96,12 +96,12 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
         const data = await res.json();
         setMessages((prev) => [
           ...prev,
-          { role: "assistant", content: data.message ?? "Je n'ai pas pu répondre. Réessayez 🙏" },
+          { role: "assistant", content: data.message ?? "Je n'ai pas pu répondre. Réessayez." },
         ]);
       } catch {
         setMessages((prev) => [
           ...prev,
-          { role: "assistant", content: "Désolé, je rencontre un problème. Contactez-nous sur WhatsApp 📱" },
+          { role: "assistant", content: "Désolé, je rencontre un problème. Contactez-nous sur WhatsApp." },
         ]);
       } finally {
         setLoading(false);
@@ -119,8 +119,8 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
         <div
           style={{
             position: "fixed",
-            // Panel sits above the FAB (52 px) + gap (8 px), itself above the pill nav
-            bottom: "calc(76px + env(safe-area-inset-bottom, 0px) + 16px + 60px)",
+            // Panel sits above the 64px FAB + gap, itself above the pill nav.
+            bottom: "calc(76px + env(safe-area-inset-bottom, 0px) + 16px + 72px)",
             left: 16,
             zIndex: 61,
             width: "min(320px, calc(100vw - 32px))",
@@ -205,7 +205,7 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
                       maxWidth: "88%",
                     }}
                   >
-                    Bonjour ! 👋 Je suis l&apos;assistant LogerBien. Comment puis-je vous aider à trouver votre logement à Conakry ?
+                    Bonjour ! Je suis l&apos;assistant LogerBien. Comment puis-je vous aider à trouver votre logement à Conakry ?
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
                     {QUICK_SUGGESTIONS.map((s) => (
@@ -400,16 +400,16 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
           bottom: "calc(76px + env(safe-area-inset-bottom, 0px) + 16px)",
           left: 12,
           zIndex: 60,
-          width: 56,
-          height: 56,
-          minHeight: 56,
+          width: 64,
+          height: 64,
+          minHeight: 64,
           borderRadius: "50%",
           background: "var(--accent-gold)",
           border: "none",
           cursor: "pointer",
           display: "inline-flex", alignItems: "center", justifyContent: "center",
           padding: 0,
-          boxShadow: "0 4px 20px rgba(212,175,55,0.4)",
+          boxShadow: "0 12px 30px rgba(185,138,46,0.34)",
           transition: "transform 0.2s, background 0.2s",
           color: "var(--bg-primary)",
         }}
@@ -417,11 +417,11 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
         onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = ""; }}
       >
         {open
-          ? <X style={{ width: 23, height: 23, color: "var(--bg-primary)" }} />
+          ? <X style={{ width: 25, height: 25, color: "var(--bg-primary)" }} />
           : (
             <span style={{ position: "relative", width: 27, height: 27, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-              <Headset style={{ width: 25, height: 25, color: "var(--bg-primary)" }} strokeWidth={2.6} />
-              <MessageCircle style={{ position: "absolute", right: -5, bottom: -4, width: 13, height: 13, color: "var(--bg-primary)" }} strokeWidth={3} />
+              <Headset style={{ width: 29, height: 29, color: "var(--bg-primary)" }} strokeWidth={2.6} />
+              <MessageCircle style={{ position: "absolute", right: -7, bottom: -5, width: 15, height: 15, color: "var(--bg-primary)" }} strokeWidth={3} />
             </span>
           )
         }
