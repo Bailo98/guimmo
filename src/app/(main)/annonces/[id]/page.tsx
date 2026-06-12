@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { AlertTriangle, ArrowLeft, Armchair, BadgeCheck, Battery, Bed, Bath, BrickWall, Building2, Calendar, Camera, Car, CheckCircle, CircleCheck, Droplets, Edit3, Eye, Home, KeyRound, Lock, MapPin, MessageCircle, Phone, Shield, ShieldCheck, Snowflake, Sofa, Square, Sun, Utensils, Video, Wifi, XCircle, Zap } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Armchair, BadgeCheck, Battery, Bed, Bath, BrickWall, Calendar, Camera, Car, CheckCircle, CircleCheck, Droplets, Edit3, Eye, Home, KeyRound, Lock, MapPin, MessageCircle, Phone, Shield, ShieldCheck, Snowflake, Sofa, Square, Sun, Video, Wifi, XCircle, Zap } from "lucide-react";
 import { ListingScore } from "@/components/ListingScore";
 import { Avatar } from "@/components/ui/Avatar";
 import { PhotoGallery } from "./PhotoGallery";
@@ -54,20 +54,6 @@ const INET_INFO: Record<string, { Icon: typeof Wifi; label: string }> = {
 
 
 export const revalidate = 60;
-
-// Shared pill style for the amenity section
-const EQUIP_PILL: React.CSSProperties = {
-  background: "var(--bg-card)",
-  border: "1px solid var(--border)",
-  color: "var(--text-primary)",
-  borderRadius: 999,
-  padding: "8px 14px",
-  fontSize: 16,
-  fontWeight: 800,
-  display: "inline-flex",
-  alignItems: "center",
-  gap: 4,
-};
 
 async function getDB() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -264,20 +250,20 @@ export default async function PropertyDetailPage({ params }: Props) {
   const ElecIcon = ELEC_INFO[elecKey]?.Icon ?? Zap;
   const InetIcon = INET_INFO[inetKey]?.Icon ?? Wifi;
 
-  // ── Other equipment pills ──────────────────────────────────────────────────
-  const otherEquip: { Icon: typeof Car; label: string }[] = [];
-  if (property.has_parking)      otherEquip.push({ Icon: Car, label: "Parking" });
-  if (property.has_security)     otherEquip.push({ Icon: Shield, label: "Gardien" });
-  if (property.has_fence)        otherEquip.push({ Icon: BrickWall, label: "Clôture" });
-  if (property.has_ac)           otherEquip.push({ Icon: Snowflake, label: "Climatisation" });
-  if (property.kitchen_equipped) otherEquip.push({ Icon: Utensils, label: "Cuisine équipée" });
-  if ((property.floor_number ?? 0) > 0)
-    otherEquip.push({ Icon: Building2, label: `Étage ${property.floor_number}` });
-  else
-    otherEquip.push({ Icon: Home, label: "RDC" });
-
-  const CARD_AVAIL = { background: "rgba(212,175,55,0.06)", border: "1px solid rgba(212,175,55,0.20)" };
   const CARD_NONE  = { background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.20)" };
+  const compactEquipment: { Icon: typeof Bed; label: string; tone?: "muted" | "warn" }[] = [
+    ...(property.rooms ? [{ Icon: Bed, label: `${property.rooms} ch.` }] : []),
+    ...(property.bathrooms ? [{ Icon: Bath, label: `${property.bathrooms} douche${property.bathrooms > 1 ? "s" : ""}` }] : []),
+    ...(property.surface ? [{ Icon: Square, label: `${property.surface} m²` }] : []),
+    { Icon: WaterIcon, label: WATER_INFO[waterKey]?.label ?? waterKey, tone: waterAvail ? "muted" as const : "warn" as const },
+    { Icon: ElecIcon, label: ELEC_INFO[elecKey]?.label ?? elecKey, tone: elecAvail ? "muted" as const : "warn" as const },
+    { Icon: InetIcon, label: INET_INFO[inetKey]?.label ?? inetKey, tone: inetAvail ? "muted" as const : "warn" as const },
+    { Icon: property.furnished ? Sofa : Armchair, label: property.furnished ? "Meublé" : "Non meublé" },
+    ...(property.has_parking ? [{ Icon: Car, label: "Parking" }] : []),
+    ...(property.has_ac ? [{ Icon: Snowflake, label: "Clim" }] : []),
+    ...(property.has_security ? [{ Icon: Shield, label: "Gardien" }] : []),
+    ...(property.has_fence ? [{ Icon: BrickWall, label: "Clôture" }] : []),
+  ];
 
   return (
     <div className="bg-[var(--bg-primary)] pb-32 md:pb-12">
@@ -466,147 +452,25 @@ export default async function PropertyDetailPage({ params }: Props) {
                 rooms={property.rooms}
               />
 
-              {/* Specs row */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {(property.rooms ?? 0) > 0 && (
-                  <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-                    <Bed className="w-6 h-6 mx-auto mb-1" style={{ color: "var(--text-secondary)" }} />
-                    <p className="font-bold text-lg" style={{ color: "var(--text-primary)" }}>{property.rooms}</p>
-                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Chambre{(property.rooms ?? 0) > 1 ? "s" : ""}</p>
-                  </div>
-                )}
-                {(property.bathrooms ?? 0) > 0 && (
-                  <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-                    <Bath className="w-6 h-6 text-blue-500 mx-auto mb-1" />
-                    <p className="font-bold text-lg" style={{ color: "var(--text-primary)" }}>{property.bathrooms}</p>
-                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Salle{(property.bathrooms ?? 0) > 1 ? "s" : ""} de bain</p>
-                  </div>
-                )}
-                {(property.surface ?? 0) > 0 && (
-                  <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-                    <Square className="w-6 h-6 text-green-500 mx-auto mb-1" />
-                    <p className="font-bold text-lg" style={{ color: "var(--text-primary)" }}>{property.surface}</p>
-                    <p className="text-xs" style={{ color: "var(--text-secondary)" }}>m²</p>
-                  </div>
-                )}
-                <div className="rounded-2xl p-4 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-                  {property.furnished ? (
-                    <Sofa className="mx-auto mb-1 h-6 w-6" style={{ color: "var(--text-secondary)" }} strokeWidth={2.2} />
-                  ) : (
-                    <Armchair className="mx-auto mb-1 h-6 w-6" style={{ color: "var(--text-secondary)" }} strokeWidth={2.2} />
-                  )}
-                  <p className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>
-                    {property.furnished ? "Meublé" : "Non meublé"}
-                  </p>
+              <div className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+                <h2 className="font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>Équipements</h2>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4">
+                  {compactEquipment.map(({ Icon, label, tone }) => (
+                    <span
+                      key={label}
+                      className="inline-flex min-h-11 items-center gap-2 rounded-2xl px-3 text-sm font-black"
+                      style={{
+                        background: tone === "warn" ? CARD_NONE.background : "var(--bg-secondary)",
+                        border: tone === "warn" ? CARD_NONE.border : "1px solid var(--border)",
+                        color: "var(--text-primary)",
+                      }}
+                    >
+                      <Icon className="h-4 w-4 flex-shrink-0 text-[var(--accent-gold)]" strokeWidth={2.4} />
+                      <span className="truncate">{label}</span>
+                    </span>
+                  ))}
                 </div>
               </div>
-
-              {/* ── Équipements essentiels ── */}
-              <div>
-                <h2 className="font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>Équipements essentiels</h2>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
-                  {/* Eau */}
-                  <div style={{ ...(waterAvail ? CARD_AVAIL : CARD_NONE), borderRadius: 12, padding: 16, textAlign: "center" }}>
-                    <WaterIcon style={{ width: 28, height: 28, display: "block", margin: "0 auto 8px", color: "var(--accent-gold)" }} strokeWidth={2.2} />
-                    <p style={{ fontSize: 10, fontWeight: 700, color: "var(--bl-cream-dim)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 4 }}>EAU</p>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>
-                      {WATER_INFO[waterKey]?.label ?? waterKey}
-                    </p>
-                  </div>
-                  {/* Électricité */}
-                  <div style={{ ...(elecAvail ? CARD_AVAIL : CARD_NONE), borderRadius: 12, padding: 16, textAlign: "center" }}>
-                    <ElecIcon style={{ width: 28, height: 28, display: "block", margin: "0 auto 8px", color: "var(--accent-gold)" }} strokeWidth={2.2} />
-                    <p style={{ fontSize: 10, fontWeight: 700, color: "var(--bl-cream-dim)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 4 }}>ÉLECTRICITÉ</p>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>
-                      {ELEC_INFO[elecKey]?.label ?? elecKey}
-                    </p>
-                  </div>
-                  {/* Internet */}
-                  <div style={{ ...(inetAvail ? CARD_AVAIL : CARD_NONE), borderRadius: 12, padding: 16, textAlign: "center" }}>
-                    <InetIcon style={{ width: 28, height: 28, display: "block", margin: "0 auto 8px", color: "var(--accent-gold)" }} strokeWidth={2.2} />
-                    <p style={{ fontSize: 10, fontWeight: 700, color: "var(--bl-cream-dim)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 4 }}>INTERNET</p>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>
-                      {INET_INFO[inetKey]?.label ?? inetKey}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* ── Autres équipements pills ── */}
-              {otherEquip.length > 0 && (
-                <div>
-                  <h2 className="font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>Autres équipements</h2>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    {otherEquip.map((eq) => (
-                      <span key={eq.label} style={{
-                        background: "var(--bg-card)", border: "1px solid var(--border)",
-                        color: "var(--bl-cream-dim)", borderRadius: 999,
-                        padding: "6px 14px", fontSize: 12,
-                        display: "inline-flex", alignItems: "center", gap: 6,
-                      }}>
-                        <eq.Icon style={{ width: 14, height: 14 }} strokeWidth={2.3} />
-                        {eq.label}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* ── Équipements détaillés (nouvelles colonnes migration 017) ── */}
-              {(property.has_edg || property.has_generator || property.has_solar ||
-                property.has_tap_water || property.has_borehole || property.has_running_water ||
-                property.is_furnished || property.has_pool) && (
-                <div>
-                  <h2 className="font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>Équipements détaillés</h2>
-                  {/* Electricity */}
-                  {(property.has_edg || property.has_generator || property.has_solar) && (
-                    <div style={{ marginBottom: 14 }}>
-                      <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                          <Zap style={{ width: 13, height: 13 }} strokeWidth={2.4} />
-                          Électricité
-                        </span>
-                      </p>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                        {property.has_edg && <span style={EQUIP_PILL}><Zap style={{ width: 14, height: 14 }} /> EDG</span>}
-                        {property.has_generator && <span style={EQUIP_PILL}><Battery style={{ width: 14, height: 14 }} /> Groupe électrogène</span>}
-                        {property.has_solar && <span style={EQUIP_PILL}><Sun style={{ width: 14, height: 14 }} /> Panneau solaire</span>}
-                      </div>
-                    </div>
-                  )}
-                  {/* Water */}
-                  {(property.has_tap_water || property.has_borehole || property.has_running_water) && (
-                    <div style={{ marginBottom: 14 }}>
-                      <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                          <Droplets style={{ width: 13, height: 13 }} strokeWidth={2.4} />
-                          Eau
-                        </span>
-                      </p>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                        {property.has_tap_water && <span style={EQUIP_PILL}><Droplets style={{ width: 14, height: 14 }} /> Robinet</span>}
-                        {property.has_borehole && <span style={EQUIP_PILL}><Droplets style={{ width: 14, height: 14 }} /> Forage</span>}
-                        {property.has_running_water && <span style={EQUIP_PILL}><Droplets style={{ width: 14, height: 14 }} /> Eau courante</span>}
-                      </div>
-                    </div>
-                  )}
-                  {/* Comfort */}
-                  {(property.is_furnished || property.has_pool) && (
-                    <div>
-                      <p style={{ fontSize: 10, fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8 }}>
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                          <Home style={{ width: 13, height: 13 }} strokeWidth={2.4} />
-                          Confort
-                        </span>
-                      </p>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                        {property.is_furnished && <span style={EQUIP_PILL}><Sofa style={{ width: 14, height: 14 }} /> Meublé</span>}
-                        {property.has_pool && <span style={EQUIP_PILL}><Droplets style={{ width: 14, height: 14 }} /> Piscine</span>}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
 
               {/* ── Réactions rapides ── */}
               <div>
@@ -756,6 +620,20 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <span className="col-span-2 inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
                     <MapPin className="h-3.5 w-3.5" strokeWidth={2.5} />
                     {neighborhoodLabel}
+                  </span>
+                  <span className="col-span-2 inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "rgba(34,197,94,0.10)", border: "1px solid rgba(34,197,94,0.24)", color: "#15803d" }}>
+                    <ShieldCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
+                    Fiabilité élevée
+                  </span>
+                  {(property.views ?? 0) > 0 && (
+                    <span className="inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                      <Eye className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      {property.views} vue{(property.views ?? 0) > 1 ? "s" : ""}
+                    </span>
+                  )}
+                  <span className="inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                    <MessageCircle className="h-3.5 w-3.5" strokeWidth={2.5} />
+                    Répond rapidement
                   </span>
                 </div>
 

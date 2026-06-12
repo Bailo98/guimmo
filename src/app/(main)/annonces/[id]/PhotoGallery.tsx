@@ -37,7 +37,7 @@ export function PhotoGallery({ images, title }: Props) {
     <>
     <div className="relative overflow-hidden rounded-[28px] bg-slate-200 shadow-[0_22px_60px_rgba(24,21,16,0.16)] dark:bg-slate-800 select-none">
       <div
-        className="relative aspect-[4/3] md:aspect-[16/10] xl:aspect-[16/9]"
+        className="relative aspect-[4/3] md:aspect-auto md:h-[500px] xl:h-[540px]"
         onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           const diff = touchStartX.current - e.changedTouches[0].clientX;
