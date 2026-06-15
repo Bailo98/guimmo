@@ -1112,6 +1112,53 @@ function BuyerProfile({ user, profile, refreshProfile }: {
         </div>
       </div>
 
+      <div className="mx-4 mt-4 grid grid-cols-2 gap-3 lg:hidden">
+        <button
+          type="button"
+          onClick={() => setEditing(true)}
+          className="flex min-h-[104px] flex-col items-center justify-center rounded-[22px] p-3 text-center"
+          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+        >
+          <Pencil className="mb-2 h-7 w-7" strokeWidth={2.4} />
+          <span className="text-base font-black">Modifier profil</span>
+        </button>
+        <button
+          type="button"
+          onClick={becomePro}
+          disabled={becomingPro}
+          className="flex min-h-[104px] flex-col items-center justify-center rounded-[22px] p-3 text-center disabled:opacity-60"
+          style={{ background: "var(--accent-gold)", border: "1px solid rgba(123,84,24,0.18)", color: "var(--bg-primary)" }}
+        >
+          <RotateCcw className="mb-2 h-7 w-7" strokeWidth={2.4} />
+          <span className="text-base font-black">Passer propriétaire</span>
+        </button>
+        <Link
+          href="/je-cherche"
+          className="flex min-h-[104px] flex-col items-center justify-center rounded-[22px] p-3 text-center"
+          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+        >
+          <Search className="mb-2 h-7 w-7" strokeWidth={2.4} />
+          <span className="text-base font-black">Mes recherches</span>
+        </Link>
+        <Link
+          href="/favoris"
+          className="flex min-h-[104px] flex-col items-center justify-center rounded-[22px] p-3 text-center"
+          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+        >
+          <Heart className="mb-2 h-7 w-7" strokeWidth={2.4} />
+          <span className="text-base font-black">Favoris</span>
+        </Link>
+        <button
+          type="button"
+          onClick={async () => { if (supabase) await supabase.auth.signOut(); window.location.href = "/"; }}
+          className="col-span-2 flex min-h-[58px] items-center justify-center gap-2 rounded-[20px] text-base font-black"
+          style={{ background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.24)", color: "#dc2626" }}
+        >
+          <LogOut className="h-5 w-5" strokeWidth={2.4} />
+          Déconnexion
+        </button>
+      </div>
+
       {/* Formulaire d'édition */}
       {editing && (
         <div className="px-4 py-6 border-b" style={{ borderColor: "var(--border)" }}>
@@ -1527,6 +1574,102 @@ function AnnonceurSidebarContent({
   );
 }
 
+function MobileAccountHome({
+  user,
+  profile,
+  mode,
+  initials,
+  displayName,
+  accountTypeLabel,
+  onTab,
+  onSignOut,
+}: {
+  user: { id: string; email?: string };
+  profile: ReturnType<typeof useAuth>["profile"];
+  mode: "seeker" | "owner";
+  initials: string;
+  displayName: string;
+  accountTypeLabel: string;
+  onTab: (tab: string) => void;
+  onSignOut: () => Promise<void>;
+}) {
+  const actions = mode === "owner"
+    ? [
+        { label: "Mes logements", Icon: Home, tab: "annonces" },
+        { label: "Publier", Icon: Plus, href: "/publier/rapide", primary: true },
+        { label: "Demandes", Icon: Phone, tab: "visites" },
+        { label: "Messages", Icon: MessageCircle, tab: "messages" },
+        { label: "Profil", Icon: User, tab: "profil" },
+        { label: "Passer chercheur", Icon: RotateCcw, tab: "profil" },
+      ]
+    : [
+        { label: "Modifier profil", Icon: Pencil, tab: "profil" },
+        { label: "Changer type", Icon: RotateCcw, tab: "profil", primary: true },
+        { label: "Mes recherches", Icon: Search, tab: "recherches" },
+        { label: "Favoris", Icon: Heart, href: "/favoris" },
+        { label: "Mes visites", Icon: Calendar, tab: "visites" },
+      ];
+
+  return (
+    <section className="mb-4 rounded-[28px] p-4 lg:hidden" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}>
+      <div className="mb-4 flex items-center gap-3">
+        <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full">
+          {profile?.avatar_url ? (
+            <Image src={profile.avatar_url} alt={displayName} fill className="object-cover" sizes="64px" />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-xl font-black" style={{ background: "rgba(185,138,46,0.16)", color: "var(--accent-gold)", border: "2px solid rgba(185,138,46,0.24)" }}>
+              {initials}
+            </div>
+          )}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-xl font-black leading-tight" style={{ color: "var(--text-primary)" }}>Mon compte</p>
+          <p className="truncate text-base font-black" style={{ color: "var(--text-primary)" }}>{displayName}</p>
+          <p className="truncate text-sm font-bold" style={{ color: "var(--text-secondary)" }}>{user.email}</p>
+          <span className="mt-2 inline-flex rounded-full px-3 py-1 text-xs font-black" style={{ background: "rgba(185,138,46,0.14)", color: "var(--accent-gold)", border: "1px solid rgba(185,138,46,0.25)" }}>
+            {accountTypeLabel}
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        {actions.map(({ label, Icon, tab, href, primary }) => {
+          const style = primary
+            ? { background: "var(--accent-gold)", color: "var(--bg-primary)", border: "1px solid rgba(123,84,24,0.18)" }
+            : { background: "var(--bg-secondary)", color: "var(--text-primary)", border: "1px solid var(--border)" };
+          const content = (
+            <>
+              <Icon className="mb-2 h-7 w-7" strokeWidth={2.4} />
+              <span className="text-base font-black leading-tight">{label}</span>
+            </>
+          );
+          return href ? (
+            <Link key={label} href={href} className="flex min-h-[104px] flex-col items-center justify-center rounded-[22px] p-3 text-center" style={style}>
+              {content}
+            </Link>
+          ) : (
+            <button key={label} type="button" onClick={() => tab && onTab(tab)} className="flex min-h-[104px] flex-col items-center justify-center rounded-[22px] p-3 text-center" style={style}>
+              {content}
+            </button>
+          );
+        })}
+        <button
+          type="button"
+          onClick={async () => {
+            await onSignOut();
+            window.location.href = "/";
+          }}
+          className="col-span-2 flex min-h-[58px] items-center justify-center gap-2 rounded-[20px] text-base font-black"
+          style={{ background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.24)", color: "#dc2626" }}
+        >
+          <LogOut className="h-5 w-5" strokeWidth={2.4} />
+          Déconnexion
+        </button>
+      </div>
+    </section>
+  );
+}
+
 // ─── DASHBOARD ANNONCEUR (unified) ────────────────────────────────────────────
 
 function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
@@ -1734,6 +1877,16 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
         <div style={{ flex: 1, display: "flex", flexDirection: "row", minHeight: 0, alignItems: "flex-start" }}>
           {/* Main tab content */}
           <div style={{ flex: 1, minWidth: 0, padding: "24px" }}>
+            <MobileAccountHome
+              user={user}
+              profile={profile}
+              mode="owner"
+              initials={initials}
+              displayName={displayName}
+              accountTypeLabel={accountTypeLabel}
+              onTab={setTab}
+              onSignOut={signOut}
+            />
             <div className="mb-6 grid grid-cols-2 gap-3 xl:grid-cols-6">
               {[
                 { label: "Mes logements", Icon: Home, onClick: () => setTab("annonces"), tone: "soft" },
@@ -2142,6 +2295,16 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
   return (
     <DashboardLayout tabs={tabs} active={tab} onChange={setTab} signOut={signOut}
       userName={profile?.full_name ?? user.email ?? "Utilisateur"} userInitials={initials}>
+      <MobileAccountHome
+        user={user}
+        profile={profile}
+        mode="seeker"
+        initials={initials}
+        displayName={profile?.full_name ?? user.email ?? "Utilisateur"}
+        accountTypeLabel="Chercheur"
+        onTab={setTab}
+        onSignOut={signOut}
+      />
       {tab === "recherches" && (
         <div>
           <SectionHeader title="Votre espace recherche" subtitle="Gérez vos critères et alertes" action={
