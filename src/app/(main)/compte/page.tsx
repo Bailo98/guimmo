@@ -178,31 +178,19 @@ function ProfileForm({ user, profile, refreshProfile }: {
     if (!supabase) return;
     setSaving(true);
     const payload = next === "owner"
-      ? { account_type: "owner", role: "owner" }
-      : { account_type: "seeker", role: "seeker" };
+      ? { account_type: "proprietaire", role: "proprietaire" }
+      : { account_type: "chercheur", role: "chercheur" };
     const { error } = await supabase.from("profiles").update(payload).eq("id", user.id);
-    if (error && next === "owner") {
-      const legacy = await supabase
-        .from("profiles")
-        .update({ account_type: "proprietaire", role: "proprietaire" })
-        .eq("id", user.id);
-      if (legacy.error) toast("Impossible de changer le type de compte", "error");
-      else { await refreshProfile(); toast("Profil propriétaire activé", "success"); }
-      setSaving(false);
-      return;
-    }
-    if (error && next === "seeker") {
-      const legacy = await supabase
-        .from("profiles")
-        .update({ account_type: "chercheur", role: "chercheur" })
-        .eq("id", user.id);
-      if (legacy.error) toast("Impossible de changer le type de compte", "error");
-      else { await refreshProfile(); toast("Profil chercheur activé", "success"); }
-      setSaving(false);
-      return;
-    }
-    if (error) toast("Impossible de changer le type de compte", "error");
-    else {
+    if (error) {
+      console.error("[compte] Impossible de changer le type de compte", {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        payload,
+      });
+      toast("Impossible de changer le type de compte", "error");
+    } else {
       await refreshProfile();
       toast(next === "owner" ? "Profil propriétaire activé" : "Profil chercheur activé", "success");
     }
