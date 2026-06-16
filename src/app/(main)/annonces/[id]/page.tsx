@@ -359,7 +359,7 @@ export default async function PropertyDetailPage({ params }: Props) {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
 
             {/* ── Main column ── */}
-            <div className="space-y-5 lg:col-span-8">
+            <div className="space-y-4 lg:col-span-8 lg:space-y-3">
 
               {/* Status + type badges */}
               <div className="flex items-center gap-2 flex-wrap">
@@ -393,7 +393,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               {/* Title + location + price + SHARE (visible) */}
               <div>
                 <div className="flex items-start justify-between gap-3 flex-wrap">
-                  <h1 className="text-xl md:text-2xl font-black leading-tight flex-1" style={{ color: "var(--text-primary)" }}>
+                  <h1 className="text-xl md:text-3xl font-black leading-tight flex-1" style={{ color: "var(--text-primary)" }}>
                     {property.title}
                   </h1>
                   {/* Favorite + Share — visible near title */}
@@ -424,10 +424,10 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </span>
                   )}
                 </div>
-                <p className="mt-3 text-[28px] font-black leading-tight md:text-[40px]" style={{ color: "var(--accent-gold)" }}>
+                <p className="mt-2 text-3xl font-black leading-tight md:text-5xl" style={{ color: "var(--accent-gold)" }}>
                   {formatPrice(property.price, "GNF", property.price_period)}
                 </p>
-                <div className="mt-4 flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-black" style={{ background: availabilityInfo.bg, border: `1px solid ${availabilityInfo.border}`, color: availabilityInfo.color }}>
                     <CircleCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
                     {availabilityInfo.label}
@@ -452,20 +452,20 @@ export default async function PropertyDetailPage({ params }: Props) {
                 rooms={property.rooms}
               />
 
-              <div className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-                <h2 className="font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>Équipements</h2>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-4">
+              <div className="rounded-2xl p-3" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+                <h2 className="font-bold text-sm mb-2" style={{ color: "var(--text-primary)" }}>Équipements</h2>
+                <div className="flex flex-wrap gap-2">
                   {compactEquipment.map(({ Icon, label, tone }) => (
                     <span
                       key={label}
-                      className="inline-flex min-h-11 items-center gap-2 rounded-2xl px-3 text-sm font-black"
+                      className="inline-flex min-h-8 items-center gap-1.5 rounded-full px-3 text-xs font-black sm:text-sm"
                       style={{
                         background: tone === "warn" ? CARD_NONE.background : "var(--bg-secondary)",
                         border: tone === "warn" ? CARD_NONE.border : "1px solid var(--border)",
                         color: "var(--text-primary)",
                       }}
                     >
-                      <Icon className="h-4 w-4 flex-shrink-0 text-[var(--accent-gold)]" strokeWidth={2.4} />
+                      <Icon className="h-3.5 w-3.5 flex-shrink-0 text-[var(--accent-gold)]" strokeWidth={2.4} />
                       <span className="truncate">{label}</span>
                     </span>
                   ))}
@@ -576,71 +576,71 @@ export default async function PropertyDetailPage({ params }: Props) {
 
             {/* ── Sidebar (desktop) ── */}
             <div className="hidden lg:col-span-4 lg:block">
-              <div className="sticky top-20 rounded-2xl p-5 space-y-3" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+              <div className="sticky top-20 rounded-2xl p-4 space-y-2.5" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
                 {profileData && (
-                  <div className="flex items-center gap-3 pb-3 border-b" style={{ borderColor: "var(--border)" }}>
+                  <div className="flex items-center gap-3 pb-2.5 border-b" style={{ borderColor: "var(--border)" }}>
                     <Avatar
                       url={(profileData as { avatar_url?: string | null }).avatar_url}
                       name={(profileData as { full_name?: string | null }).full_name ?? undefined}
                       size="sm"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="font-black text-base truncate" style={{ color: "var(--text-primary)" }}>
+                      <p className="font-black text-base leading-tight truncate" style={{ color: "var(--text-primary)" }}>
                         {(profileData as { full_name?: string | null }).full_name ?? "Propriétaire"}
                       </p>
                       <p className="text-xs font-bold" style={{ color: "var(--text-secondary)" }}>Propriétaire LogerBien</p>
                     </div>
                   </div>
                 )}
-                <div className="grid grid-cols-2 gap-2 pb-3 border-b" style={{ borderColor: "var(--border)" }}>
+                <div className="grid grid-cols-2 gap-1.5 pb-2.5 border-b" style={{ borderColor: "var(--border)" }}>
                   {property.contact_phone && (
-                    <span className="inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "rgba(37,211,102,0.12)", border: "1px solid rgba(37,211,102,0.24)", color: "#15803d" }}>
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "rgba(37,211,102,0.12)", border: "1px solid rgba(37,211,102,0.24)", color: "#15803d" }}>
                       <Phone className="h-3.5 w-3.5" strokeWidth={2.5} />
-                      Téléphone vérifié
+                      Téléphone
                     </span>
                   )}
                   {(profileData as { is_verified?: boolean } | null)?.is_verified && (
-                    <span className="inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "rgba(185,138,46,0.14)", border: "1px solid rgba(185,138,46,0.28)", color: "var(--accent-gold)" }}>
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "rgba(185,138,46,0.14)", border: "1px solid rgba(185,138,46,0.28)", color: "var(--accent-gold)" }}>
                       <BadgeCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
-                      Compte vérifié
+                      Compte
                     </span>
                   )}
                   {ownerListingsCount !== null && (
-                    <span className="inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
                       <Home className="h-3.5 w-3.5" strokeWidth={2.5} />
                       {ownerListingsCount} annonce{ownerListingsCount > 1 ? "s" : ""}
                     </span>
                   )}
                   {ownerSince && (
-                    <span className="inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
                       <Calendar className="h-3.5 w-3.5" strokeWidth={2.5} />
                       Depuis {ownerSince}
                     </span>
                   )}
-                  <span className="col-span-2 inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
                     <MapPin className="h-3.5 w-3.5" strokeWidth={2.5} />
                     {neighborhoodLabel}
                   </span>
-                  <span className="col-span-2 inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "rgba(34,197,94,0.10)", border: "1px solid rgba(34,197,94,0.24)", color: "#15803d" }}>
+                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "rgba(34,197,94,0.10)", border: "1px solid rgba(34,197,94,0.24)", color: "#15803d" }}>
                     <ShieldCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
-                    Fiabilité élevée
+                    Fiabilité
                   </span>
                   {(property.views ?? 0) > 0 && (
-                    <span className="inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
                       <Eye className="h-3.5 w-3.5" strokeWidth={2.5} />
                       {property.views} vue{(property.views ?? 0) > 1 ? "s" : ""}
                     </span>
                   )}
-                  <span className="inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
                     <MessageCircle className="h-3.5 w-3.5" strokeWidth={2.5} />
-                    Répond rapidement
+                    Rapide
                   </span>
                 </div>
 
                 {isOwner ? (
                   <Link
                     href={`/compte/annonces/${property.id}/modifier`}
-                    className="flex items-center justify-center gap-2 w-full font-bold py-4 px-4 rounded-2xl transition-all text-sm"
+                    className="flex items-center justify-center gap-2 w-full font-bold py-3 px-4 rounded-2xl transition-all text-sm"
                     style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
                   >
                     <Edit3 className="h-4 w-4" strokeWidth={2.4} />
@@ -651,7 +651,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <p className="text-xs text-center" style={{ color: "var(--text-secondary)" }}>Connectez-vous pour voir les coordonnées du propriétaire</p>
                     <Link
                       href={`/connexion?redirect=/annonces/${property.id}`}
-                      className="flex items-center justify-center gap-2 w-full font-bold py-4 px-4 rounded-2xl transition-all text-sm"
+                      className="flex items-center justify-center gap-2 w-full font-bold py-3 px-4 rounded-2xl transition-all text-sm"
                       style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
                     >
                       <KeyRound className="h-4 w-4" strokeWidth={2.4} />
@@ -659,7 +659,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </Link>
                     <Link
                       href={`/inscription?redirect=/annonces/${property.id}`}
-                      className="flex items-center justify-center gap-2 w-full font-semibold py-3 px-4 rounded-xl transition-colors text-sm"
+                      className="flex items-center justify-center gap-2 w-full font-semibold py-2.5 px-4 rounded-xl transition-colors text-sm"
                       style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
                     >
                       Créer un compte
@@ -669,7 +669,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                   <>
                     {/* WhatsApp */}
                     <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-3 w-full bg-[#25D366] hover:bg-[#1ebe5d] active:scale-95 text-white font-bold py-4 px-4 rounded-2xl transition-all shadow-[0_8px_32px_rgba(37,211,102,0.3)]">
+                      className="flex items-center justify-center gap-3 w-full bg-[#25D366] hover:bg-[#1ebe5d] active:scale-95 text-white font-bold py-3 px-4 rounded-2xl transition-all shadow-[0_8px_32px_rgba(37,211,102,0.3)]">
                       <MessageCircle className="h-5 w-5" strokeWidth={2.6} />
                       WhatsApp
                     </a>
@@ -683,7 +683,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
                     {/* Phone */}
                     <a href={phoneUrl}
-                      className="flex items-center justify-center gap-2 w-full font-semibold py-3 px-4 rounded-xl transition-colors text-sm hover:bg-black/5"
+                      className="flex items-center justify-center gap-2 w-full font-semibold py-2.5 px-4 rounded-xl transition-colors text-sm hover:bg-black/5"
                       style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
                       <Phone className="w-4 h-4" />
                       Appeler
@@ -693,19 +693,19 @@ export default async function PropertyDetailPage({ params }: Props) {
 
                     <Link
                       href="/contact"
-                      className="flex items-center justify-center gap-2 w-full font-bold py-3 px-4 rounded-xl transition-colors text-sm hover:bg-red-50"
+                      className="flex items-center justify-center gap-2 w-full font-bold py-2.5 px-4 rounded-xl transition-colors text-sm hover:bg-red-50"
                       style={{ background: "rgba(220,38,38,0.08)", border: "1px solid rgba(220,38,38,0.24)", color: "#dc2626" }}
                     >
                       <AlertTriangle className="h-4 w-4" strokeWidth={2.4} />
                       Signaler le compte
                     </Link>
 
-                    <p className="text-[11px] text-center" style={{ color: "var(--text-muted)" }}>Mentionnez LogerBien lors de votre contact</p>
+                    <p className="text-[11px] text-center" style={{ color: "var(--text-muted)" }}>Mentionnez LogerBien lors du contact</p>
                   </>
                 )}
 
-                <div className="pt-3 border-t" style={{ borderColor: "var(--border)" }}>
-                  <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+                <div className="pt-2.5 border-t" style={{ borderColor: "var(--border)" }}>
+                  <p className="text-[11px] leading-snug" style={{ color: "var(--text-muted)" }}>
                     <span className="inline-flex items-start gap-2">
                       <Lock className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" strokeWidth={2.4} />
                       <span>Ne payez jamais avant de visiter le logement. LogerBien ne demande aucun paiement direct.</span>
