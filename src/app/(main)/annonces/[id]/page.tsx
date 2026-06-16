@@ -209,7 +209,22 @@ export default async function PropertyDetailPage({ params }: Props) {
     .lte("price", Math.round(finalRow.price * 1.5))
     .not("title", "is", null)
     .limit(6);
-  const similar = ((similarRows ?? []) as Property[]).filter(isPubliclyAvailable);
+  let similar = ((similarRows ?? []) as Property[]).filter(isPubliclyAvailable);
+  if (similar.length < 4) {
+    const { data: fallbackRows } = await db
+      .from("properties")
+      .select("*, property_images(*)")
+      .eq("neighborhood", finalRow.neighborhood)
+      .eq("status", "active")
+      .neq("id", id)
+      .not("title", "is", null)
+      .limit(6);
+    const seen = new Set(similar.map((p) => p.id));
+    similar = [
+      ...similar,
+      ...((fallbackRows ?? []) as Property[]).filter((p) => !seen.has(p.id) && isPubliclyAvailable(p)),
+    ].slice(0, 6);
+  }
 
   // Virtual tour images (table added via migration; handle missing gracefully)
   let vtRooms: VTRoom[] = [];
@@ -234,9 +249,9 @@ export default async function PropertyDetailPage({ params }: Props) {
   );
   const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${contactMsg}`;
   const phoneUrl    = `tel:${phone}`;
-  const ownerSince = (profileData as { created_at?: string | null } | null)?.created_at
-    ? new Date((profileData as { created_at: string }).created_at).getFullYear()
-    : null;
+  const formattedPrice = formatPrice(property.price, "GNF", property.price_period);
+  const [priceMain, pricePeriodRaw] = formattedPrice.split("/");
+  const pricePeriod = pricePeriodRaw ? `/${pricePeriodRaw}` : "";
 
   // ── Derived essentials ──────────────────────────────────────────────────────
   const waterKey = (property.water_source ?? "robinet") as string;
@@ -402,7 +417,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     <PropertyShareButton
                       title={property.title}
                       neighborhood={neighborhoodLabel}
-                      price={formatPrice(property.price, "GNF", property.price_period)}
+                      price={formattedPrice}
                       rooms={property.rooms}
                       bathrooms={property.bathrooms}
                       surface={property.surface}
@@ -424,9 +439,12 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </span>
                   )}
                 </div>
-                <p className="mt-2 text-3xl font-black leading-tight md:text-5xl" style={{ color: "var(--accent-gold)" }}>
-                  {formatPrice(property.price, "GNF", property.price_period)}
-                </p>
+                <div className="mt-2 leading-none" style={{ color: "var(--accent-gold)" }}>
+                  <p className="text-[34px] font-black leading-none md:text-[56px]">{priceMain.trim()}</p>
+                  {pricePeriod && (
+                    <p className="mt-1 text-lg font-black leading-none md:text-2xl">{pricePeriod}</p>
+                  )}
+                </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-black" style={{ background: availabilityInfo.bg, border: `1px solid ${availabilityInfo.border}`, color: availabilityInfo.color }}>
                     <CircleCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
@@ -553,20 +571,6 @@ export default async function PropertyDetailPage({ params }: Props) {
                 </div>
               )}
 
-              {/* Similar listings */}
-              {similar.length > 0 && (
-                <div className="pt-2 pb-6">
-                  <h2 className="font-bold mb-4 text-lg" style={{ color: "var(--text-primary)" }}>
-                    Annonces similaires à {neighborhoodLabel}
-                  </h2>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                    {similar.map((p) => (
-                      <PropertyCard key={p.id} property={p} />
-                    ))}
-                  </div>
-                </div>
-              )}
-
               {/* Report — discreet at bottom */}
               <div className="flex justify-center pb-4">
                 <ReportButton propertyId={property.id} propertyTitle={property.title} isLoggedIn={isLoggedIn} />
@@ -596,13 +600,13 @@ export default async function PropertyDetailPage({ params }: Props) {
                   {property.contact_phone && (
                     <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "rgba(37,211,102,0.12)", border: "1px solid rgba(37,211,102,0.24)", color: "#15803d" }}>
                       <Phone className="h-3.5 w-3.5" strokeWidth={2.5} />
-                      Téléphone
+                      Téléphone vérifié
                     </span>
                   )}
                   {(profileData as { is_verified?: boolean } | null)?.is_verified && (
                     <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "rgba(185,138,46,0.14)", border: "1px solid rgba(185,138,46,0.28)", color: "var(--accent-gold)" }}>
                       <BadgeCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
-                      Compte
+                      Compte vérifié
                     </span>
                   )}
                   {ownerListingsCount !== null && (
@@ -611,29 +615,17 @@ export default async function PropertyDetailPage({ params }: Props) {
                       {ownerListingsCount} annonce{ownerListingsCount > 1 ? "s" : ""}
                     </span>
                   )}
-                  {ownerSince && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
-                      <Calendar className="h-3.5 w-3.5" strokeWidth={2.5} />
-                      Depuis {ownerSince}
-                    </span>
-                  )}
                   <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
                     <MapPin className="h-3.5 w-3.5" strokeWidth={2.5} />
                     {neighborhoodLabel}
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "rgba(34,197,94,0.10)", border: "1px solid rgba(34,197,94,0.24)", color: "#15803d" }}>
                     <ShieldCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
-                    Fiabilité
+                    Fiabilité élevée
                   </span>
-                  {(property.views ?? 0) > 0 && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
-                      <Eye className="h-3.5 w-3.5" strokeWidth={2.5} />
-                      {property.views} vue{(property.views ?? 0) > 1 ? "s" : ""}
-                    </span>
-                  )}
                   <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
-                    <MessageCircle className="h-3.5 w-3.5" strokeWidth={2.5} />
-                    Rapide
+                    <Zap className="h-3.5 w-3.5" strokeWidth={2.5} />
+                    Répond vite
                   </span>
                 </div>
 
@@ -716,6 +708,22 @@ export default async function PropertyDetailPage({ params }: Props) {
             </div>
 
           </div>
+
+          {similar.length > 0 && (
+            <section className="mt-6 pb-6">
+              <h2 className="mb-4 flex items-center gap-2 text-xl font-black md:text-2xl" style={{ color: "var(--text-primary)" }}>
+                <Home className="h-5 w-5 text-[var(--accent-gold)]" strokeWidth={2.5} />
+                Logements similaires
+              </h2>
+              <div className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible xl:grid-cols-4 2xl:grid-cols-5">
+                {similar.map((p, i) => (
+                  <div key={p.id} className="min-w-[82vw] md:min-w-0">
+                    <PropertyCard property={p} index={i} />
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </div>
 

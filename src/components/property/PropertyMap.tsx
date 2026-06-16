@@ -82,7 +82,7 @@ export default function PropertyMap({ neighborhood, lat, lng, title }: PropertyM
       {/* Map */}
       <div
         style={{
-          height: 200,
+          height: 190,
           borderRadius: 16,
           overflow: "hidden",
           border: "1px solid rgba(255,255,255,0.08)",
