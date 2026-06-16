@@ -438,10 +438,25 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </span>
                   )}
                 </div>
-                <div className="mt-1 leading-none" style={{ color: "var(--accent-gold)" }}>
-                  <p className="text-[42px] font-black leading-none md:text-[72px]">{priceMain.trim()}</p>
+                <div className="mt-1 leading-none" aria-label={formattedPrice}>
+                  <div
+                    className="text-[42px] font-black leading-none md:text-[72px]"
+                    style={{
+                      color: "var(--accent-gold)",
+                      fontSize: "clamp(42px, 6.5vw, 72px)",
+                      fontWeight: 900,
+                      lineHeight: 0.9,
+                    }}
+                  >
+                    {priceMain.trim()}
+                  </div>
                   {pricePeriod && (
-                    <p className="mt-1 text-xl font-black leading-none md:text-3xl">{pricePeriod}</p>
+                    <div
+                      className="mt-1 text-lg font-black leading-none opacity-80 md:text-2xl"
+                      style={{ color: "var(--accent-gold)" }}
+                    >
+                      {pricePeriod}
+                    </div>
                   )}
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2">
