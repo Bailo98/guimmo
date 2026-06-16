@@ -24,13 +24,6 @@ function scoreColor(score: number): string {
   return "#f87171";
 }
 
-function scoreLabel(score: number): string {
-  if (score >= 80) return "Excellent";
-  if (score >= 60) return "Bon";
-  if (score >= 40) return "Moyen";
-  return "Incomplet";
-}
-
 export function ListingScore(props: Props) {
   const score = calcScore(props);
   const color = scoreColor(score);
@@ -50,21 +43,13 @@ export function ListingScore(props: Props) {
     <div style={{
       background: "var(--bg-card)",
       border: "1px solid var(--border)",
-      borderRadius: 16,
-      padding: "10px 12px",
+      borderRadius: 999,
+      padding: "8px 12px",
     }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 8 }}>
-        <p style={{ color: "var(--text-primary)", fontSize: 13, fontWeight: 900, margin: 0 }}>
-          Fiabilité {scoreLabel(score).toLowerCase()}
-        </p>
-        <p style={{ fontWeight: 900, fontSize: 18, color, margin: 0, fontFamily: "var(--font-display), sans-serif" }}>
-          {score}<span style={{ fontSize: 11, color: "var(--text-primary-faint)" }}>/100</span>
-        </p>
-      </div>
-
-      <div style={{ height: 6, background: "var(--border)", borderRadius: 999, overflow: "hidden" }}>
-        <div style={{ width: `${score}%`, height: "100%", background: color, borderRadius: 999, transition: "width 0.5s ease" }} />
-      </div>
+      <p style={{ color: "var(--text-primary)", fontSize: 13, fontWeight: 900, margin: 0, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+        <span>Score confiance</span>
+        <span style={{ color, fontSize: 15, flexShrink: 0 }}>{score}<span style={{ fontSize: 11, color: "var(--text-primary-faint)" }}>/100</span></span>
+      </p>
     </div>
   );
 }

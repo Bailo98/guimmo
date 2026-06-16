@@ -8,7 +8,6 @@ import { AlertTriangle, ArrowLeft, Armchair, BadgeCheck, Battery, Bed, Bath, Bri
 import { ListingScore } from "@/components/ListingScore";
 import { Avatar } from "@/components/ui/Avatar";
 import { PhotoGallery } from "./PhotoGallery";
-import { ReactionBar } from "@/components/property/ReactionBar";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { MessageButton } from "@/components/property/MessageButton";
 import { ReportButton } from "@/components/property/ReportButton";
@@ -439,13 +438,13 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </span>
                   )}
                 </div>
-                <div className="mt-2 leading-none" style={{ color: "var(--accent-gold)" }}>
-                  <p className="text-[34px] font-black leading-none md:text-[56px]">{priceMain.trim()}</p>
+                <div className="mt-1 leading-none" style={{ color: "var(--accent-gold)" }}>
+                  <p className="text-[42px] font-black leading-none md:text-[72px]">{priceMain.trim()}</p>
                   {pricePeriod && (
-                    <p className="mt-1 text-lg font-black leading-none md:text-2xl">{pricePeriod}</p>
+                    <p className="mt-1 text-xl font-black leading-none md:text-3xl">{pricePeriod}</p>
                   )}
                 </div>
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-2 flex flex-wrap gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-black" style={{ background: availabilityInfo.bg, border: `1px solid ${availabilityInfo.border}`, color: availabilityInfo.color }}>
                     <CircleCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
                     {availabilityInfo.label}
@@ -488,12 +487,6 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </span>
                   ))}
                 </div>
-              </div>
-
-              {/* ── Réactions rapides ── */}
-              <div>
-                <h2 className="font-bold text-sm mb-3" style={{ color: "var(--text-primary)" }}>Réactions</h2>
-                <ReactionBar propertyId={property.id} />
               </div>
 
               {/* Description */}
