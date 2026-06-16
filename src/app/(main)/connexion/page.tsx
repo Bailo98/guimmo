@@ -45,6 +45,7 @@ function ConnexionForm() {
   const [error, setError]             = useState<string | null>(null);
   const [form, setForm]               = useState({ phone: "", email: "", password: "" });
   const searchParams = useSearchParams();
+  const infoMessage = searchParams.get("message");
 
   /* Sanitize: never redirect back to an auth page (breaks loops) */
   const rawRedirect = searchParams.get("redirect") ?? "/compte";
@@ -220,6 +221,11 @@ function ConnexionForm() {
             </div>
 
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              {infoMessage && (
+                <div style={{ background: "rgba(212,175,55,0.12)", border: "1px solid rgba(212,175,55,0.30)", borderRadius: 12, padding: "12px 16px" }}>
+                  <p style={{ color: "var(--accent-gold)", fontSize: 13, fontWeight: 800, margin: 0 }}>{infoMessage}</p>
+                </div>
+              )}
 
               {/* Phone or Email */}
               {mode === "phone" ? (

@@ -116,8 +116,8 @@ export function Header() {
   const desktopNav = [
     { href: "/", label: "Accueil", Icon: Home, active: pathname === "/" },
     { href: "/annonces", label: "Chercher", Icon: Search, active: pathname.startsWith("/annonces") },
-    { href: "/decouvrir", label: "Découvrir", Icon: Compass, active: pathname === "/decouvrir" },
     ...(user ? [
+      { href: "/decouvrir", label: "Découvrir", Icon: Compass, active: pathname === "/decouvrir" },
       { href: "/favoris", label: "Favoris", Icon: Heart, active: pathname.startsWith("/favoris") },
       { href: "/compte", label: "Profil", Icon: User, active: pathname.startsWith("/compte") },
     ] : []),

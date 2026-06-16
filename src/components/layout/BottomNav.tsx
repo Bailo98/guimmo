@@ -53,7 +53,6 @@ export function BottomNav() {
     navItems = [
       { href: "/", icon: Home, label: "Accueil", authRequired: false },
       { href: "/annonces", icon: Search, label: "Chercher", authRequired: false },
-      { href: "/decouvrir", icon: Compass, label: "Voir", authRequired: false },
       { href: "/connexion", icon: LogIn, label: "Connexion", authRequired: false },
       { href: "/inscription", icon: User, label: "S'inscrire", authRequired: false },
     ];

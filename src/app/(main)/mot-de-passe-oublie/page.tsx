@@ -154,7 +154,7 @@ export default function MotDePasseOubliePage() {
                     )}
 
                     <Button type="submit" variant="brand" size="lg" loading={loading} className="w-full">
-                      Envoyer le lien de réinitialisation
+                      Recevoir le lien
                     </Button>
                   </form>
                 )}

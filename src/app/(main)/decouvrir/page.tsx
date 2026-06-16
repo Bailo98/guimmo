@@ -1,5 +1,7 @@
 import { SwipeFeed } from "./SwipeFeed";
 import { createClient } from "@supabase/supabase-js";
+import { redirect } from "next/navigation";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { isPubliclyAvailable } from "@/lib/property-signals";
 import type { Property } from "@/types";
 import type { Metadata } from "next";
@@ -43,6 +45,12 @@ async function fetchSwipeProperties(): Promise<Property[]> {
 }
 
 export default async function DecouvrirPage() {
+  const supabaseSsr = await createSupabaseServerClient();
+  const { data: { user } } = await supabaseSsr.auth.getUser();
+  if (!user) {
+    redirect("/connexion?redirect=/decouvrir&message=Connecte-toi%20pour%20d%C3%A9couvrir%20les%20logements");
+  }
+
   const properties = await fetchSwipeProperties();
 
   return (
