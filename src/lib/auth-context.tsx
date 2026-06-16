@@ -42,13 +42,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = useCallback(async (userId: string) => {
-    if (!supabase) return;
+    if (!supabase) return null;
     const { data } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", userId)
       .single();
-    if (data) setProfile(data as Profile);
+    const nextProfile = data ? (data as Profile) : null;
+    setProfile(nextProfile);
+    return nextProfile;
   }, []);
 
   const refreshProfile = useCallback(async () => {
@@ -84,7 +86,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession()
       .then(({ data: { session } }) => {
         setUser(session?.user ?? null);
-        if (session?.user) fetchProfile(session.user.id);
+        if (session?.user) return fetchProfile(session.user.id);
+        setProfile(null);
+        return null;
       })
       .catch(() => {
         // getSession rejected (network error, bad token) — treat as no session

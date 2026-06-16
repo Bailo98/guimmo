@@ -18,7 +18,7 @@ const GOLD = "var(--accent-gold)";
 
 export function BottomNav() {
   const pathname = usePathname();
-  const { user, profile }  = useAuth();
+  const { user, profile, loading }  = useAuth();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -34,6 +34,7 @@ export function BottomNav() {
   // Hidden on /decouvrir (full-screen swipe), /admin and /auth routes
   if (pathname === "/decouvrir") return null;
   if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
+  if (loading) return null;
 
   function isActive(href: string) {
     if (href === "/decouvrir") return pathname === "/decouvrir";
@@ -41,31 +42,38 @@ export function BottomNav() {
     return pathname.startsWith(href);
   }
 
-  const accountType = profile?.account_type ?? profile?.role ?? "";
-  const isOwner = ["owner", "proprietaire", "agent", "agence", "agency", "admin"].includes(accountType);
-  const navItems: NavItemDef[] = user
-    ? isOwner
-      ? [
-          { href: "/compte/annonces", icon: List, label: "Mes biens", authRequired: true },
-          { href: "/publier/rapide", icon: Plus, label: "Publier", authRequired: true },
-          { href: "/", icon: Home, label: "Accueil", authRequired: false },
-          { href: "/messages", icon: MessageCircle, label: "Contacts", authRequired: true },
-          { href: "/compte", icon: User, label: "Profil", authRequired: true },
-        ]
-      : [
-          { href: "/annonces", icon: Search, label: "Chercher", authRequired: false },
-          { href: "/decouvrir", icon: Compass, label: "Voir", authRequired: true },
-          { href: "/", icon: Home, label: "Accueil", authRequired: false },
-          { href: "/favoris", icon: Heart, label: "Favoris", authRequired: true },
-          { href: "/compte", icon: User, label: "Profil", authRequired: true },
-        ]
-    : [
-        { href: "/", icon: Home, label: "Accueil", authRequired: false },
-        { href: "/annonces", icon: Search, label: "Chercher", authRequired: false },
-        { href: "/decouvrir", icon: Compass, label: "Voir", authRequired: false },
-        { href: "/connexion", icon: LogIn, label: "Connexion", authRequired: false },
-        { href: "/inscription", icon: User, label: "S'inscrire", authRequired: false },
-      ];
+  const accountType = String(profile?.account_type ?? "");
+  const role = String(profile?.role ?? "");
+  const isOwner =
+    ["owner", "proprietaire", "agent", "agence", "agency", "admin"].includes(accountType)
+    || ["owner", "proprietaire", "agent", "agence", "agency", "admin"].includes(role);
+
+  let navItems: NavItemDef[];
+  if (!user) {
+    navItems = [
+      { href: "/", icon: Home, label: "Accueil", authRequired: false },
+      { href: "/annonces", icon: Search, label: "Chercher", authRequired: false },
+      { href: "/decouvrir", icon: Compass, label: "Voir", authRequired: false },
+      { href: "/connexion", icon: LogIn, label: "Connexion", authRequired: false },
+      { href: "/inscription", icon: User, label: "S'inscrire", authRequired: false },
+    ];
+  } else if (isOwner) {
+    navItems = [
+      { href: "/compte/annonces", icon: List, label: "Mes biens", authRequired: true },
+      { href: "/publier/rapide", icon: Plus, label: "Publier", authRequired: true },
+      { href: "/", icon: Home, label: "Accueil", authRequired: false },
+      { href: "/messages", icon: MessageCircle, label: "Contacts", authRequired: true },
+      { href: "/compte", icon: User, label: "Profil", authRequired: true },
+    ];
+  } else {
+    navItems = [
+      { href: "/annonces", icon: Search, label: "Chercher", authRequired: false },
+      { href: "/decouvrir", icon: Compass, label: "Voir", authRequired: true },
+      { href: "/", icon: Home, label: "Accueil", authRequired: false },
+      { href: "/favoris", icon: Heart, label: "Favoris", authRequired: true },
+      { href: "/compte", icon: User, label: "Profil", authRequired: true },
+    ];
+  }
 
   return (
     <nav
