@@ -399,7 +399,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
       <div
         style={{
           position: "fixed",
-          top: 72,
+          top: "calc(72px + env(safe-area-inset-top, 0px))",
           left: 0,
           right: 0,
           zIndex: 200,
@@ -704,7 +704,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             }}
           >
             <MessageCircle style={{ width: 24, height: 24 }} strokeWidth={2.4} />
-            WhatsApp
           </button>
 
           <button
@@ -727,7 +726,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             }}
           >
             <Phone style={{ width: 22, height: 22 }} strokeWidth={2.4} />
-            Appeler
           </button>
         </div>
 

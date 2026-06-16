@@ -37,9 +37,10 @@ export default function MotDePasseOubliePage() {
   const waUrl = `https://wa.me/${SUPPORT_WA.replace(/\D/g, "")}?text=${waText}`;
 
   const INPUT: React.CSSProperties = {
-    background: "var(--border-subtle)",
-    border: "1px solid rgba(255,255,255,0.10)",
+    background: "var(--bg-card)",
+    border: "1px solid var(--border)",
     fontSize: 16,
+    color: "var(--text-primary)",
   };
 
   return (
@@ -51,11 +52,11 @@ export default function MotDePasseOubliePage() {
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-sm">
           <div className="rounded-3xl p-8"
-            style={{ background: "var(--border-subtle)", border: "1px solid rgba(255,255,255,0.10)" }}>
+            style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}>
 
             <div className="text-center mb-6">
-              <h1 className="text-2xl font-black text-white">Mot de passe oublié</h1>
-              <p className="text-white/50 text-sm mt-1">Choisissez comment récupérer votre accès</p>
+              <h1 className="text-2xl font-black" style={{ color: "var(--text-primary)" }}>Mot de passe oublié</h1>
+              <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>Choisissez comment récupérer votre accès</p>
             </div>
 
             {/* Tab toggle */}
@@ -67,7 +68,7 @@ export default function MotDePasseOubliePage() {
                   type="button"
                   onClick={() => { setTab(t); setError(null); setSent(false); }}
                   className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
-                    tab === t ? "bg-[var(--accent-gold)] text-white" : "text-white/50 hover:text-white"
+                    tab === t ? "bg-[var(--accent-gold)] text-[var(--bg-primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                   }`}
                   style={tab !== t ? { background: "var(--border-subtle)" } : {}}
                 >
@@ -83,13 +84,13 @@ export default function MotDePasseOubliePage() {
             {tab === "phone" && (
               <div className="space-y-5">
                 <div className="rounded-2xl p-4 text-sm leading-relaxed"
-                  style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "rgba(255,255,255,0.75)" }}>
+                  style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}>
                   Pour réinitialiser votre mot de passe par téléphone, contactez notre équipe sur WhatsApp.
                   Nous vous aiderons en quelques minutes.
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-white/75 mb-2">
+                  <label className="block text-sm font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
                     Votre numéro (optionnel)
                   </label>
                   <input
@@ -98,7 +99,7 @@ export default function MotDePasseOubliePage() {
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+224 6XX XXX XXX"
                     style={{ ...INPUT, width: "100%", borderRadius: 12, padding: "12px 16px", color: "var(--text-primary)" }}
-                    className="focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)] placeholder:text-white/30"
+                    className="focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)] placeholder:text-[var(--text-muted)]"
                   />
                 </div>
 
@@ -123,17 +124,17 @@ export default function MotDePasseOubliePage() {
                 {sent ? (
                   <div className="text-center py-4">
                     <CheckCircle className="w-14 h-14 text-[var(--accent-gold)] mx-auto mb-4" />
-                    <h2 className="text-xl font-black text-white mb-2">Email envoyé !</h2>
-                    <p className="text-white/50 text-sm">Vérifiez votre boîte email et cliquez sur le lien de réinitialisation.</p>
+                    <h2 className="text-xl font-black mb-2" style={{ color: "var(--text-primary)" }}>Email envoyé !</h2>
+                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>Vérifiez votre boîte email et cliquez sur le lien de réinitialisation.</p>
                   </div>
                 ) : (
                   <form onSubmit={handleEmailReset} className="space-y-4">
                     <div>
-                      <label className="block text-sm font-semibold text-white/75 mb-2">
+                      <label className="block text-sm font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
                         Adresse email
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "var(--text-muted)" }} />
                         <input
                           type="email"
                           value={email}
@@ -141,7 +142,7 @@ export default function MotDePasseOubliePage() {
                           placeholder="vous@email.com"
                           required
                           style={{ ...INPUT, width: "100%" }}
-                          className="rounded-xl pl-10 pr-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
+                          className="rounded-xl pl-10 pr-4 py-3 placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
                         />
                       </div>
                     </div>
@@ -160,7 +161,7 @@ export default function MotDePasseOubliePage() {
               </>
             )}
 
-            <p className="text-center text-sm text-white/40 mt-6">
+            <p className="text-center text-sm mt-6" style={{ color: "var(--text-secondary)" }}>
               <Link href="/connexion" className="text-[var(--accent-gold)] hover:underline">
                 ← Retour à la connexion
               </Link>

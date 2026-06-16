@@ -13,7 +13,15 @@ import { markAllRead, type Notification } from "@/lib/notifications";
 
 export function Header() {
   const { resolvedTheme, setTheme } = useTheme();
-  const toggleTheme = () => setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  const toggleTheme = () => {
+    const nextTheme = resolvedTheme === "dark" ? "light" : "dark";
+    try {
+      window.localStorage.setItem("lb-theme-user-choice", nextTheme);
+    } catch {
+      // localStorage can be unavailable in private browsing.
+    }
+    setTheme(nextTheme);
+  };
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -109,16 +117,21 @@ export function Header() {
     { href: "/", label: "Accueil", Icon: Home, active: pathname === "/" },
     { href: "/annonces", label: "Chercher", Icon: Search, active: pathname.startsWith("/annonces") },
     { href: "/decouvrir", label: "Découvrir", Icon: Compass, active: pathname === "/decouvrir" },
-    { href: "/favoris", label: "Favoris", Icon: Heart, active: pathname.startsWith("/favoris") },
-    { href: "/compte", label: "Profil", Icon: User, active: pathname.startsWith("/compte") },
+    ...(user ? [
+      { href: "/favoris", label: "Favoris", Icon: Heart, active: pathname.startsWith("/favoris") },
+      { href: "/compte", label: "Profil", Icon: User, active: pathname.startsWith("/compte") },
+    ] : []),
   ];
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300"
+      className="fixed left-0 right-0 top-0 z-50 w-full transition-all duration-300"
       style={{ background: "var(--nav-bg)", backdropFilter: "blur(18px) saturate(1.3)", WebkitBackdropFilter: "blur(18px) saturate(1.3)", borderBottom: "1px solid var(--border)" }}
     >
-      <div className="content-fluid h-[72px] flex items-center justify-between gap-4">
+      <div
+        className="content-fluid flex h-[calc(72px+env(safe-area-inset-top,0px))] items-center justify-between gap-4"
+        style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+      >
         <Logo />
 
         <nav className="hidden md:flex items-center gap-1 lg:gap-2">

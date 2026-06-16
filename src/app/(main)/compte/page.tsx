@@ -8,7 +8,7 @@ import {
   CheckCircle, XCircle, RotateCcw, AlertTriangle, Search,
   Bell, BellOff, Heart, MessageCircle, BarChart2, Home,
   TrendingUp, Phone, ChevronRight, Calendar,
-  Star, CreditCard, Award, Menu, X, Mail,
+  Star, CreditCard, Award, Menu, X, Mail, ShieldCheck,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 
@@ -1587,8 +1587,8 @@ function MobileAccountHome({
         { label: "Publier", Icon: Plus, href: "/publier/rapide", primary: true },
         { label: "Demandes", Icon: Phone, tab: "visites" },
         { label: "Messages", Icon: MessageCircle, tab: "messages" },
+        { label: "Vérifier compte", Icon: ShieldCheck, href: "/compte/verification", primary: !profile?.is_verified },
         { label: "Profil", Icon: User, tab: "profil" },
-        { label: "Passer chercheur", Icon: RotateCcw, tab: "profil" },
       ]
     : [
         { label: "Modifier profil", Icon: Pencil, tab: "profil" },
@@ -1882,6 +1882,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                 { label: "Demandes", Icon: Phone, onClick: () => setTab("visites"), tone: "soft" },
                 { label: "Mettre en avant", Icon: Star, onClick: () => setTab("abonnement"), tone: "soft" },
                 { label: "Messages", Icon: MessageCircle, onClick: () => setTab("messages"), tone: "soft" },
+                { label: "Vérifier mon compte", Icon: ShieldCheck, href: "/compte/verification", tone: profile?.is_verified ? "soft" : "gold" },
                 { label: "Profil", Icon: User, onClick: () => setTab("profil"), tone: "soft" },
               ].map(({ label, Icon, href, onClick, tone }) => {
                 const style = tone === "gold"
@@ -2440,7 +2441,7 @@ export default function ComptePage() {
   // ── Acheteur simple ──────────────────────────────────────────────────────────
   if (role === "buyer") {
     return (
-      <div className="mx-auto w-[95%] max-w-[900px]">
+      <div className="mx-auto w-[95vw] max-w-[1600px]">
         <div className="lg:rounded-2xl lg:overflow-hidden" style={{ border: "1px solid var(--border)" }}>
           <BuyerProfile user={user} profile={profile} refreshProfile={refreshProfile} />
         </div>
@@ -2451,7 +2452,7 @@ export default function ComptePage() {
   // ── Chercheur ────────────────────────────────────────────────────────────────
   if (role === "chercheur") {
     return (
-      <div className="mx-auto w-[95%] max-w-[1600px] lg:px-0">
+      <div className="mx-auto w-[95vw] max-w-[1600px] lg:px-0">
         <div className="lg:rounded-2xl lg:overflow-hidden" style={{ border: "1px solid var(--border)" }}>
           <ChercheurDashboard {...dashProps} />
         </div>
@@ -2461,7 +2462,7 @@ export default function ComptePage() {
 
   // ── Annonceur (proprietaire / owner / agent / agence / agency) ───────────────
   return (
-    <div className="mx-auto w-[95%] max-w-[1600px] lg:px-0">
+    <div className="mx-auto w-[95vw] max-w-[1600px] lg:px-0">
       <div style={{ border: "1px solid var(--border)", borderRadius: "0 0 16px 16px", overflow: "hidden" }}>
         <AnnonceurDashboard {...dashProps} />
       </div>

@@ -24,6 +24,7 @@ const NAV_ITEMS = [
   { href: "/admin/annonces",          label: "Annonces",            icon: FileText },
   { href: "/admin/annonces/nouvelle", label: "Ajouter une annonce", icon: Plus },
   { href: "/admin/moderation",        label: "Modération",          icon: Shield,     badgeKey: "moderation" as const },
+  { href: "/admin/verifications",     label: "Vérifications",       icon: UserCheck },
   { href: "/admin/utilisateurs",      label: "Utilisateurs",        icon: Users },
   { href: "/admin/signalements",      label: "Signalements",        icon: Flag,       badgeKey: "reports" as const },
   { href: "/admin/agents",            label: "Agents",              icon: UserCheck },
@@ -231,7 +232,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [user]);
 
   // Close drawer on route change
-  useEffect(() => { setDrawerOpen(false); }, [pathname]);
+  useEffect(() => {
+    const id = window.setTimeout(() => setDrawerOpen(false), 0);
+    return () => window.clearTimeout(id);
+  }, [pathname]);
 
   async function handleSignOut() {
     await supabase?.auth.signOut();
