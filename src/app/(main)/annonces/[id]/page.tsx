@@ -424,7 +424,7 @@ export default async function PropertyDetailPage({ params }: Props) {
                     </span>
                   )}
                 </div>
-                <p className="text-2xl md:text-3xl font-black mt-3" style={{ color: "var(--accent-gold)" }}>
+                <p className="mt-3 text-[28px] font-black leading-tight md:text-[40px]" style={{ color: "var(--accent-gold)" }}>
                   {formatPrice(property.price, "GNF", property.price_period)}
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">

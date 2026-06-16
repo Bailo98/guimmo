@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo, Suspense } from "react";
+import { useState, useEffect, useMemo, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   Search,
@@ -55,57 +55,40 @@ function getPageSize() {
 
 const TYPE_CHIPS = [
   { id: "", label: "Tous", Icon: Home },
-  { id: "apartment", label: "Appart.", Icon: Building2 },
+  { id: "apartment", label: "Appartement", Icon: Building2 },
   { id: "house", label: "Maison", Icon: Home },
   { id: "room", label: "Chambre", Icon: DoorOpen },
   { id: "studio", label: "Studio", Icon: Sofa },
-  { id: "villa", label: "Villa", Icon: Home },
-  { id: "office", label: "Bureau", Icon: Building2 },
-  { id: "land", label: "Terrain", Icon: MapPin },
 ];
 
 const QUARTIER_CHIPS = [
   { id: "", label: "Tous" },
-  { id: "kaloum", label: "Kaloum" },
-  { id: "dixinn", label: "Dixinn" },
-  { id: "matam", label: "Matam" },
   { id: "ratoma", label: "Ratoma" },
   { id: "matoto", label: "Matoto" },
+  { id: "dixinn", label: "Dixinn" },
+  { id: "kaloum", label: "Kaloum" },
 ];
 
 const BUDGET_CHIPS = [
   { label: "Tous", min: 0, max: Infinity },
   { label: "< 1M", min: 0, max: 1_000_000 },
-  { label: "1M-2M", min: 1_000_000, max: 2_000_000 },
-  { label: "2M-5M", min: 2_000_000, max: 5_000_000 },
-  { label: "> 5M", min: 5_000_000, max: Infinity },
+  { label: "1M - 2M", min: 1_000_000, max: 2_000_000 },
+  { label: "2M - 5M", min: 2_000_000, max: 5_000_000 },
+  { label: "5M+", min: 5_000_000, max: Infinity },
 ];
 
 const AMENITY_GROUPS = [
   {
-    label: "Electricite",
+    label: "Options utiles",
     items: [
-      { key: "has_edg", Icon: Zap, label: "EDG" },
-      { key: "has_generator", Icon: Zap, label: "Groupe" },
-      { key: "has_solar", Icon: Zap, label: "Solaire" },
-    ],
-  },
-  {
-    label: "Eau",
-    items: [
-      { key: "has_tap_water", Icon: Droplets, label: "Robinet" },
-      { key: "has_borehole", Icon: Droplets, label: "Forage" },
-      { key: "has_running_water", Icon: Droplets, label: "Courante" },
-    ],
-  },
-  {
-    label: "Confort",
-    items: [
-      { key: "has_ac", Icon: Snowflake, label: "Clim" },
-      { key: "is_furnished", Icon: Sofa, label: "Meuble" },
       { key: "has_parking", Icon: Car, label: "Parking" },
       { key: "has_pool", Icon: Droplets, label: "Piscine" },
       { key: "has_security", Icon: CheckCircle2, label: "Gardien" },
+      { key: "has_ac", Icon: Snowflake, label: "Clim" },
+      { key: "is_furnished", Icon: Sofa, label: "Meuble" },
+      { key: "has_tap_water", Icon: Droplets, label: "Eau" },
+      { key: "has_edg", Icon: Zap, label: "EDG" },
+      { key: "has_borehole", Icon: Droplets, label: "Forage" },
     ],
   },
 ] as const;
@@ -206,6 +189,7 @@ function AmenityChip({ active, onClick, Icon, label }: {
 function AnnoncesContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const resultsRef = useRef<HTMLDivElement | null>(null);
   const [allProperties, setAllProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -229,11 +213,6 @@ function AnnoncesContent() {
   const whatsappDirect = searchParams.get("whatsapp") === "1";
   const sortOrder = (searchParams.get("sort") ?? "default") as "default" | "price_asc" | "price_desc" | "newest";
   const page = Number(searchParams.get("page") ?? "1");
-
-  // Local state for price inputs (typed values before committing)
-  const [priceMinInput, setPriceMinInput] = useState(priceMin > 0 ? String(priceMin) : "");
-  const [priceMaxInput, setPriceMaxInput] = useState(priceMax < Infinity ? String(priceMax) : "");
-  const [surfaceMinInput, setSurfaceMinInput] = useState(surfaceMin > 0 ? String(surfaceMin) : "");
 
   function handleVoiceResult(text: string) {
     const lower = text.toLowerCase();
@@ -314,6 +293,11 @@ function AnnoncesContent() {
     router.replace(`?${params.toString()}`, { scroll: true });
   }
 
+  function showListings() {
+    setFiltersOpen(false);
+    resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   function toggleAmenity(key: AmenityKey) {
     setAmenities((prev) => {
       const next = new Set(prev);
@@ -385,9 +369,6 @@ function AnnoncesContent() {
 
   function clearFilters() {
     setAmenities(new Set());
-    setPriceMinInput("");
-    setPriceMaxInput("");
-    setSurfaceMinInput("");
     router.replace("/annonces", { scroll: false });
   }
 
@@ -412,7 +393,7 @@ function AnnoncesContent() {
   return (
     <div className="bg-[var(--bg-primary)] min-h-screen">
       <div
-        className="sticky top-16 z-30 px-4 pt-3 pb-3 space-y-3"
+        className="z-30 px-4 pt-3 pb-3 space-y-3 md:sticky md:top-16"
         style={{
           background: "var(--nav-bg)",
           backdropFilter: "blur(20px) saturate(180%)",
@@ -462,72 +443,44 @@ function AnnoncesContent() {
             </button>
           </div>
 
-          <div className="md:hidden space-y-2">
-            <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-              {QUARTIER_CHIPS.slice(0, 5).map((c) => (
-                <VisualChip key={c.id} active={neighborhood === c.id} onClick={() => setParam("neighborhood", c.id)} icon={<MapPin className="h-4 w-4" />} label={c.label} compact />
-              ))}
+          <div className="rounded-[24px] p-3 md:p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}>
+            <div className="grid gap-3 lg:grid-cols-3">
+              <FilterGroup title="Commune" icon={<MapPin className="h-4 w-4" />}>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-5 lg:grid-cols-2">
+                  {QUARTIER_CHIPS.map((c) => (
+                    <VisualChip key={c.id} active={neighborhood === c.id} onClick={() => setParam("neighborhood", c.id)} icon={<MapPin className="h-4 w-4" />} label={c.label} compact />
+                  ))}
+                </div>
+              </FilterGroup>
+
+              <FilterGroup title="Type" icon={<Home className="h-4 w-4" />}>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-5 lg:grid-cols-2">
+                  {TYPE_CHIPS.map((c) => (
+                    <VisualChip key={c.id} active={type === c.id} onClick={() => setParam("type", c.id)} icon={<c.Icon className="h-4 w-4" />} label={c.label} compact />
+                  ))}
+                </div>
+              </FilterGroup>
+
+              <FilterGroup title="Budget" icon={<Banknote className="h-4 w-4" />}>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-5 lg:grid-cols-2">
+                  {BUDGET_CHIPS.map((c) => {
+                    const isAll = c.min === 0 && c.max === Infinity;
+                    const active = isAll ? !hasPriceFilter : priceMin === c.min && priceMax === c.max;
+                    return <VisualChip key={c.label} active={active} onClick={() => setPriceRange(c.min, c.max)} icon={<Banknote className="h-4 w-4" />} label={c.label} compact />;
+                  })}
+                </div>
+              </FilterGroup>
             </div>
 
-            <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-              {TYPE_CHIPS.slice(0, 5).map((c) => (
-                <VisualChip key={c.id} active={type === c.id} onClick={() => setParam("type", c.id)} icon={<c.Icon className="h-4 w-4" />} label={c.label} compact />
-              ))}
-            </div>
-
-            <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-              {BUDGET_CHIPS.map((c) => {
-                const isAll = c.min === 0 && c.max === Infinity;
-                const active = isAll ? !hasPriceFilter : priceMin === c.min && priceMax === c.max;
-                return <VisualChip key={c.label} active={active} onClick={() => setPriceRange(c.min, c.max)} icon={<Banknote className="h-4 w-4" />} label={c.label} compact />;
-              })}
-              <VisualChip active={availability === "now"} onClick={() => setParam("availability", availability === "now" ? "" : "now")} icon={<CheckCircle2 className="h-4 w-4" />} label="Dispo" compact />
-              <VisualChip active={recentOnly} onClick={() => setParam("recent", recentOnly ? "" : "1")} icon={<CalendarClock className="h-4 w-4" />} label="Recent" compact />
-            </div>
-          </div>
-
-          <div className="hidden md:grid gap-3 lg:grid-cols-4">
-            <FilterGroup title="Commune" icon={<MapPin className="h-4 w-4" />}>
-              <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-2 gap-2">
-                {QUARTIER_CHIPS.slice(0, 5).map((c) => (
-                  <VisualChip key={c.id} active={neighborhood === c.id} onClick={() => setParam("neighborhood", c.id)} icon={<MapPin className="h-4 w-4" />} label={c.label} compact />
-                ))}
-              </div>
-            </FilterGroup>
-
-            <FilterGroup title="Budget" icon={<Banknote className="h-4 w-4" />}>
-              <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-2 gap-2">
-                {BUDGET_CHIPS.map((c) => {
-                  const isAll = c.min === 0 && c.max === Infinity;
-                  const active = isAll ? !hasPriceFilter : priceMin === c.min && priceMax === c.max;
-                  return <VisualChip key={c.label} active={active} onClick={() => setPriceRange(c.min, c.max)} icon={<Banknote className="h-4 w-4" />} label={c.label} compact />;
-                })}
-              </div>
-            </FilterGroup>
-
-            <FilterGroup title="Type" icon={<Home className="h-4 w-4" />}>
-              <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-2 gap-2">
-                {TYPE_CHIPS.slice(0, 5).map((c) => (
-                  <VisualChip key={c.id} active={type === c.id} onClick={() => setParam("type", c.id)} icon={<c.Icon className="h-4 w-4" />} label={c.label} compact />
-                ))}
-              </div>
-            </FilterGroup>
-
-            <FilterGroup title="Dispo" icon={<CalendarClock className="h-4 w-4" />}>
-              <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-2">
-                <VisualChip active={availability === "now"} onClick={() => setParam("availability", availability === "now" ? "" : "now")} icon={<CheckCircle2 className="h-4 w-4" />} label="Maintenant" compact />
-                <VisualChip active={availability === "soon"} onClick={() => setParam("availability", availability === "soon" ? "" : "soon")} icon={<CalendarClock className="h-4 w-4" />} label="Bientot" compact />
-                <VisualChip active={recentOnly} onClick={() => setParam("recent", recentOnly ? "" : "1")} icon={<CalendarClock className="h-4 w-4" />} label="Recent" compact />
-              </div>
-            </FilterGroup>
-          </div>
-
-          <div className="hidden md:flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-            <VisualChip active={availability === "now"} onClick={() => setParam("availability", availability === "now" ? "" : "now")} icon={<CheckCircle2 className="h-4 w-4" />} label="Dispo" compact />
-            <VisualChip active={recentOnly} onClick={() => setParam("recent", recentOnly ? "" : "1")} icon={<CalendarClock className="h-4 w-4" />} label="Nouveau" compact />
-            <VisualChip active={whatsappDirect} onClick={() => setParam("whatsapp", whatsappDirect ? "" : "1")} icon={<MessageCircle className="h-4 w-4" />} label="WhatsApp" compact />
-            <VisualChip active={noAdvance} onClick={() => setParam("no_advance", noAdvance ? "" : "1")} icon={<CheckCircle2 className="h-4 w-4" />} label="Sans avance" compact />
-            <VisualChip active={furnished} onClick={() => setParam("furnished", furnished ? "" : "1")} icon={<Sofa className="h-4 w-4" />} label="Meuble" compact />
+            <button
+              type="button"
+              onClick={showListings}
+              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl text-base font-black transition-all"
+              style={{ minHeight: 54, background: "var(--accent-gold)", border: "1px solid var(--accent-gold)", color: "#17120a", boxShadow: "0 14px 30px rgba(185,138,46,0.20)" }}
+            >
+              <Search className="h-5 w-5" strokeWidth={2.5} />
+              Voir les logements
+            </button>
           </div>
 
           <div className="flex items-center gap-2">
@@ -540,7 +493,7 @@ function AnnoncesContent() {
                 : { minHeight: 48, background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
             >
               <SlidersHorizontal className="w-4 h-4" />
-              {activeFilterCount > 0 ? `Plus de filtres (${activeFilterCount})` : "Plus de filtres"}
+              {activeFilterCount > 0 ? `Plus d'options (${activeFilterCount})` : "Plus d'options"}
             </button>
 
             {hasFilters && (
@@ -564,7 +517,7 @@ function AnnoncesContent() {
           >
             <div className="mx-auto w-[95%] max-w-[1600px] px-0 py-4 md:py-3 space-y-4">
               <div className="flex items-center justify-between gap-3">
-                <h2 className="text-lg font-black" style={{ color: "var(--text-primary)" }}>Plus de filtres</h2>
+                <h2 className="text-lg font-black" style={{ color: "var(--text-primary)" }}>Plus d&apos;options</h2>
                 <button
                   type="button"
                   onClick={() => setFiltersOpen(false)}
@@ -575,109 +528,31 @@ function AnnoncesContent() {
                 </button>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                <FilterGroup title="Transaction" icon={<Home className="h-4 w-4" />}>
-                  <div className="grid grid-cols-3 gap-2">
-                    {[{ id: "", label: "Toutes", Icon: Home }, { id: "rent", label: "Location", Icon: Home }, { id: "sale", label: "Achat", Icon: Banknote }].map((c) => (
-                      <VisualChip key={c.id} active={tx === c.id} onClick={() => setParam("tx", c.id)} icon={<c.Icon className="h-4 w-4" />} label={c.label} compact />
-                    ))}
-                  </div>
-                </FilterGroup>
-
-                <FilterGroup title="Prix" icon={<Banknote className="h-4 w-4" />}>
-                  <div className="flex gap-2 items-center">
-                    <input
-                      type="number"
-                      inputMode="numeric"
-                      placeholder="Min"
-                      value={priceMinInput}
-                      onChange={(e) => setPriceMinInput(e.target.value)}
-                      onBlur={() => {
-                        const v = Number(priceMinInput.replace(/\D/g, ""));
-                        const params = new URLSearchParams(searchParams.toString());
-                        if (v > 0) params.set("price_min", String(v)); else params.delete("price_min");
-                        params.delete("page");
-                        router.replace(`?${params.toString()}`, { scroll: false });
-                      }}
-                      style={{ flex: 1, background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 14, padding: "12px 14px", color: "var(--text-primary)", fontSize: 15, outline: "none", minWidth: 0 }}
-                    />
-                    <input
-                      type="number"
-                      inputMode="numeric"
-                      placeholder="Max"
-                      value={priceMaxInput}
-                      onChange={(e) => setPriceMaxInput(e.target.value)}
-                      onBlur={() => {
-                        const v = Number(priceMaxInput.replace(/\D/g, ""));
-                        const params = new URLSearchParams(searchParams.toString());
-                        if (v > 0) params.set("price_max", String(v)); else params.delete("price_max");
-                        params.delete("page");
-                        router.replace(`?${params.toString()}`, { scroll: false });
-                      }}
-                      style={{ flex: 1, background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 14, padding: "12px 14px", color: "var(--text-primary)", fontSize: 15, outline: "none", minWidth: 0 }}
-                    />
-                  </div>
-                </FilterGroup>
-
-                <FilterGroup title="Surface" icon={<Map className="h-4 w-4" />}>
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    placeholder="Ex: 50 m2"
-                    value={surfaceMinInput}
-                    onChange={(e) => setSurfaceMinInput(e.target.value)}
-                    onBlur={() => {
-                      const v = Number(surfaceMinInput);
-                      const params = new URLSearchParams(searchParams.toString());
-                      if (v > 0) params.set("surface_min", String(v)); else params.delete("surface_min");
-                      params.delete("page");
-                      router.replace(`?${params.toString()}`, { scroll: false });
-                    }}
-                    style={{ width: "100%", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 14, padding: "12px 14px", color: "var(--text-primary)", fontSize: 15, outline: "none", boxSizing: "border-box" }}
-                  />
-                </FilterGroup>
-
-                <FilterGroup title="Tri" icon={<SlidersHorizontal className="h-4 w-4" />}>
-                  <div className="grid grid-cols-2 gap-2">
-                    {[
-                      { id: "default", label: "Defaut" },
-                      { id: "price_asc", label: "Prix +" },
-                      { id: "price_desc", label: "Prix -" },
-                      { id: "newest", label: "Recent" },
-                    ].map((c) => (
-                      <VisualChip key={c.id} active={sortOrder === c.id} onClick={() => setParam("sort", c.id === "default" ? "" : c.id)} icon={<SlidersHorizontal className="h-4 w-4" />} label={c.label} compact />
-                    ))}
-                  </div>
-                </FilterGroup>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-3">
-                {AMENITY_GROUPS.map((group) => (
-                  <FilterGroup key={group.label} title={group.label} icon={<CheckCircle2 className="h-4 w-4" />}>
-                    <div className="grid grid-cols-2 gap-2">
-                      {group.items.map((item) => (
-                        <AmenityChip
-                          key={item.key}
-                          active={amenities.has(item.key as AmenityKey)}
-                          onClick={() => toggleAmenity(item.key as AmenityKey)}
-                          Icon={item.Icon}
-                          label={item.label}
-                        />
-                      ))}
-                    </div>
-                  </FilterGroup>
-                ))}
-              </div>
-
-              <FilterGroup title="Autres" icon={<CheckCircle2 className="h-4 w-4" />}>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-                  <VisualChip active={diaspora} onClick={() => setParam("diaspora", diaspora ? "" : "1")} icon={<MapPin className="h-4 w-4" />} label="Diaspora" compact />
-                  <VisualChip active={furnished} onClick={() => setParam("furnished", furnished ? "" : "1")} icon={<Sofa className="h-4 w-4" />} label="Meuble" compact />
-                  <VisualChip active={noAdvance} onClick={() => setParam("no_advance", noAdvance ? "" : "1")} icon={<CheckCircle2 className="h-4 w-4" />} label="Sans avance" compact />
+              <FilterGroup title="Rapide" icon={<CheckCircle2 className="h-4 w-4" />}>
+                <div className="grid grid-cols-2 gap-2 md:grid-cols-5">
+                  <VisualChip active={availability === "now"} onClick={() => setParam("availability", availability === "now" ? "" : "now")} icon={<CheckCircle2 className="h-4 w-4" />} label="Disponible" compact />
                   <VisualChip active={whatsappDirect} onClick={() => setParam("whatsapp", whatsappDirect ? "" : "1")} icon={<MessageCircle className="h-4 w-4" />} label="WhatsApp" compact />
-                  <VisualChip active={recentOnly} onClick={() => setParam("recent", recentOnly ? "" : "1")} icon={<CalendarClock className="h-4 w-4" />} label="Recent" compact />
+                  <VisualChip active={noAdvance} onClick={() => setParam("no_advance", noAdvance ? "" : "1")} icon={<CheckCircle2 className="h-4 w-4" />} label="Sans avance" compact />
+                  <VisualChip active={furnished} onClick={() => setParam("furnished", furnished ? "" : "1")} icon={<Sofa className="h-4 w-4" />} label="Meublé" compact />
+                  <VisualChip active={availability === "soon"} onClick={() => setParam("availability", availability === "soon" ? "" : "soon")} icon={<CalendarClock className="h-4 w-4" />} label="Bientôt" compact />
                 </div>
               </FilterGroup>
+
+              {AMENITY_GROUPS.map((group) => (
+                <FilterGroup key={group.label} title={group.label} icon={<CheckCircle2 className="h-4 w-4" />}>
+                  <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+                    {group.items.map((item) => (
+                      <AmenityChip
+                        key={item.key}
+                        active={amenities.has(item.key as AmenityKey)}
+                        onClick={() => toggleAmenity(item.key as AmenityKey)}
+                        Icon={item.Icon}
+                        label={item.label}
+                      />
+                    ))}
+                  </div>
+                </FilterGroup>
+              ))}
 
               <div className="sticky bottom-0 md:static flex gap-2 py-3" style={{ background: "var(--bg-primary)" }}>
                 <button
@@ -703,6 +578,7 @@ function AnnoncesContent() {
       </div>
 
       <div
+        ref={resultsRef}
         className="mx-auto w-[95%] max-w-[1600px] px-0 py-6"
         style={{ paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))" }}
       >
