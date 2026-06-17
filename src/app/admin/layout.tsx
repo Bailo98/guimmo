@@ -16,7 +16,6 @@ const BORDER      = "var(--border)";
 const TEXT_PRI    = "var(--text-primary)";
 const TEXT_SEC    = "var(--text-primary-dim)";
 const ACCENT      = "var(--accent-gold)";
-const SEPARATOR   = "var(--border)";
 
 // ─── Nav items ────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
@@ -255,24 +254,93 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const sidebarProps = { pathname, pendingReports, pendingMod, user, profile, onSignOut: handleSignOut };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-primary)" }}>
+    <div className="admin-shell">
+      <style>{`
+        :root { --admin-nav-width: 248px; }
+
+        .admin-shell {
+          min-height: 100vh;
+          display: flex;
+          background: var(--bg-primary);
+          overflow-x: hidden;
+        }
+
+        .admin-sidebar {
+          width: var(--admin-nav-width);
+          flex-shrink: 0;
+          flex-direction: column;
+          min-height: 100vh;
+          height: 100vh;
+          position: sticky;
+          top: 0;
+          background: var(--bg-primary);
+          border-right: 1px solid var(--border);
+          z-index: 20;
+        }
+
+        .admin-body {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .admin-header {
+          height: 56px;
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          padding: 0 clamp(16px, 2vw, 32px);
+          background: var(--bg-primary);
+          border-bottom: 1px solid var(--border);
+          z-index: 10;
+        }
+
+        .admin-main {
+          flex: 1;
+          min-width: 0;
+          overflow-x: hidden;
+          padding: 32px clamp(16px, 2vw, 32px) 48px;
+          box-sizing: border-box;
+        }
+
+        .admin-page {
+          width: 100%;
+          max-width: none;
+          box-sizing: border-box;
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+          :root { --admin-nav-width: 220px; }
+        }
+
+        @media (max-width: 767px) {
+          .admin-shell {
+            display: block;
+          }
+
+          .admin-body {
+            min-height: 100vh;
+          }
+
+          .admin-header {
+            height: calc(60px + env(safe-area-inset-top, 0px));
+            padding-top: env(safe-area-inset-top, 0px);
+            box-sizing: border-box;
+          }
+
+          .admin-main {
+            padding: 24px 16px 40px;
+          }
+        }
+      `}</style>
 
       {/* ── Desktop sidebar ── */}
       <aside
-        className="hidden md:flex"
-        style={{
-          flexDirection: "column",
-          position: "fixed", top: 0, left: 0, bottom: 0,
-          width: "var(--sidebar-w, 248px)",
-          background: BG_SIDEBAR,
-          borderRight: `1px solid ${BORDER}`,
-          zIndex: 30,
-        }}
+        className="admin-sidebar hidden md:flex"
       >
-        <style>{`
-          @media (min-width: 768px) and (max-width: 1023px) { :root { --sidebar-w: 220px; } }
-          @media (min-width: 1024px) { :root { --sidebar-w: 248px; } }
-        `}</style>
         <SidebarContent {...sidebarProps} />
       </aside>
 
@@ -309,83 +377,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <SidebarContent {...sidebarProps} onNavClick={() => setDrawerOpen(false)} />
       </aside>
 
-      {/* ── Mobile header ── */}
-      <div
-        className="md:hidden"
-        style={{
-          position: "fixed", top: 0, left: 0, right: 0,
-          height: "calc(60px + env(safe-area-inset-top, 0px))",
-          boxSizing: "border-box",
-          paddingTop: "env(safe-area-inset-top, 0px)",
-          background: BG_SIDEBAR, borderBottom: `1px solid ${BORDER}`,
-          display: "flex", alignItems: "center",
-          justifyContent: "space-between",
-          paddingLeft: 16,
-          paddingRight: 16,
-          zIndex: 30,
-        }}
-      >
-        <button
-          onClick={() => setDrawerOpen(true)}
-          style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", color: TEXT_PRI, cursor: "pointer" }}
-        >
-          <Menu size={22} />
-        </button>
-        <Link href="/admin" style={{ textDecoration: "none" }}>
-          <span style={{ color: TEXT_PRI, fontWeight: 800, fontSize: 16, fontFamily: "var(--font-display), sans-serif" }}>
-            LogerBien
-          </span>
-        </Link>
-        <Link href="/" style={{ color: TEXT_SEC, fontSize: 12, textDecoration: "none" }}>
-          ← Site
-        </Link>
-      </div>
+      <div className="admin-body">
+        <header className="admin-header">
+          <button
+            className="md:hidden"
+            onClick={() => setDrawerOpen(true)}
+            style={{ padding: 8, borderRadius: 8, border: "none", background: "transparent", color: TEXT_PRI, cursor: "pointer" }}
+          >
+            <Menu size={22} />
+          </button>
+          <Link href="/admin" style={{ textDecoration: "none", minWidth: 0 }}>
+            <span style={{ color: TEXT_PRI, fontWeight: 850, fontSize: 16, fontFamily: "var(--font-display), sans-serif", whiteSpace: "nowrap" }}>
+              Administration LogerBien
+            </span>
+          </Link>
+          <Link href="/" style={{ color: TEXT_SEC, fontSize: 12, fontWeight: 750, textDecoration: "none", whiteSpace: "nowrap" }}>
+            ← Site
+          </Link>
+        </header>
 
-      {/* ── Main content ── */}
-      <main
-        className="admin-main flex-1"
-        style={{ paddingTop: 0, minWidth: 0 }}
-      >
-        <style>{`
-          @media (min-width: 768px) {
-            .admin-main {
-              margin-left: var(--sidebar-w, 248px);
-              width: calc(100vw - var(--sidebar-w, 248px));
-              max-width: calc(100vw - var(--sidebar-w, 248px));
-              overflow-x: clip;
-            }
-          }
-
-          .admin-content-shell {
-            width: 100%;
-            max-width: none;
-            padding-left: clamp(16px, 2vw, 32px);
-            padding-right: clamp(16px, 2vw, 32px);
-            padding-bottom: 48px;
-            box-sizing: border-box;
-          }
-
-          .admin-page,
-          .admin-content-shell > :first-child {
-            width: 100%;
-            box-sizing: border-box;
-            padding-top: 32px !important;
-          }
-
-          @media (max-width: 767px) {
-            .admin-page,
-            .admin-content-shell > :first-child {
-              padding-top: 24px !important;
-            }
-          }
-        `}</style>
-        {/* Spacer for mobile fixed header */}
-        <div className="md:hidden" style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
-        <div style={{ borderLeft: `1px solid ${SEPARATOR}` }} className="md:hidden" />
-        <div className="admin-content-shell">
+        <main className="admin-main">
           {children}
-        </div>
-      </main>
+        </main>
+      </div>
 
     </div>
   );
