@@ -340,14 +340,42 @@ export default function PublierPage() {
     );
   }
 
-  function handleVideoSelect(e: React.ChangeEvent<HTMLInputElement>) {
+  function getVideoDuration(file: File): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const video = document.createElement("video");
+      video.preload = "metadata";
+      video.onloadedmetadata = () => {
+        const duration = video.duration;
+        URL.revokeObjectURL(url);
+        resolve(duration);
+      };
+      video.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("video-metadata"));
+      };
+      video.src = url;
+    });
+  }
+
+  async function handleVideoSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    e.target.value = "";
     if (file.size > 50 * 1024 * 1024) { toast("Vidéo trop lourde (max 50 Mo)", "error"); return; }
+    try {
+      const duration = await getVideoDuration(file);
+      if (duration > 60.5) {
+        toast("Vidéo trop longue : 1 minute maximum.", "error");
+        return;
+      }
+    } catch {
+      toast("Impossible de vérifier la durée de la vidéo.", "error");
+      return;
+    }
     if (videoPreview) URL.revokeObjectURL(videoPreview);
     setVideoFile(file);
     setVideoPreview(URL.createObjectURL(file));
-    e.target.value = "";
   }
 
   function addTourRoom() {

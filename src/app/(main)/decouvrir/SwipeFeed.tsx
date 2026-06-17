@@ -389,7 +389,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "flex-start",
-          padding: "12px 16px",
+          paddingTop: 12,
+          paddingBottom: 12,
+          paddingLeft: "max(16px, env(safe-area-inset-left, 0px))",
+          paddingRight: "max(16px, env(safe-area-inset-right, 0px))",
           background: "linear-gradient(rgba(0,0,0,0.42) 0%, transparent 100%)",
           pointerEvents: "none",
         }}
@@ -427,6 +430,8 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           touchAction: "none",
           paddingTop: "env(safe-area-inset-top, 0px)",
           paddingBottom: "calc(164px + env(safe-area-inset-bottom, 0px))",
+          paddingLeft: "env(safe-area-inset-left, 0px)",
+          paddingRight: "env(safe-area-inset-right, 0px)",
         }}
       >
         {/* ── TinderCard ─────────────────────────────────────────────────────── */}
@@ -491,16 +496,15 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               style={{ position: "absolute", top: 108, left: 24, pointerEvents: "none", opacity: 0 }}
             >
               <div style={{
-                border: "3px solid var(--accent-gold)", borderRadius: 8,
-                padding: "8px 16px", color: "#ffffff",
-                fontSize: 30, fontWeight: 900, letterSpacing: 1,
-                textTransform: "uppercase", transform: "rotate(-15deg)",
-                textShadow: "0 2px 8px rgba(0,0,0,0.6)", whiteSpace: "nowrap",
+                width: 82, height: 82,
+                border: "3px solid var(--accent-gold)", borderRadius: "50%",
+                color: "#ffffff",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                transform: "rotate(-15deg)",
+                background: "rgba(0,0,0,0.32)",
+                backdropFilter: "blur(10px)",
               }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-                  <Heart style={{ width: 30, height: 30 }} strokeWidth={2.6} />
-                  J&apos;AIME
-                </span>
+                <Heart style={{ width: 40, height: 40, fill: "currentColor" }} strokeWidth={2.6} />
               </div>
             </div>
 
@@ -510,25 +514,24 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               style={{ position: "absolute", top: 108, right: 24, pointerEvents: "none", opacity: 0 }}
             >
               <div style={{
-                border: "3px solid #FF4D4D", borderRadius: 8,
-                padding: "8px 16px", color: "#ffffff",
-                fontSize: 30, fontWeight: 900, letterSpacing: 1,
-                textTransform: "uppercase", transform: "rotate(15deg)",
-                textShadow: "0 2px 8px rgba(0,0,0,0.6)", whiteSpace: "nowrap",
+                width: 82, height: 82,
+                border: "3px solid #FF4D4D", borderRadius: "50%",
+                color: "#ffffff",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                transform: "rotate(15deg)",
+                background: "rgba(0,0,0,0.32)",
+                backdropFilter: "blur(10px)",
               }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-                  <X style={{ width: 30, height: 30 }} strokeWidth={2.8} />
-                  PASSER
-                </span>
+                <X style={{ width: 42, height: 42 }} strokeWidth={2.8} />
               </div>
             </div>
 
             {/* ── Property info — bottom left ──────────────────────────────────── */}
             <div style={{
               position: "absolute",
-              bottom: 176,
-              left: 18,
-              right: 18,
+              bottom: 168,
+              left: "max(18px, env(safe-area-inset-left, 0px))",
+              right: "max(18px, env(safe-area-inset-right, 0px))",
               pointerEvents: "none",
             }}>
               <p style={{
@@ -587,8 +590,8 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
         <div style={{
           position: "absolute",
-          left: 18,
-          right: 18,
+          left: "max(18px, env(safe-area-inset-left, 0px))",
+          right: "max(18px, env(safe-area-inset-right, 0px))",
           bottom: "calc(96px + env(safe-area-inset-bottom, 0px))",
           zIndex: 20,
           display: "grid",

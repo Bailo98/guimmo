@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Users, Flag, UserCheck, Plus,
-  AlertTriangle, CheckCircle, ShieldCheck, Database,
+  AlertTriangle, CheckCircle, ShieldCheck, Database, Clock, Activity, FileText,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
@@ -18,6 +18,14 @@ const ACCENT   = "var(--accent-gold)";
 interface Stats {
   total: number; active: number; pending: number;
   users: number; thisWeek: number; pendingVerif: number; reports: number;
+}
+
+interface ActivityItem {
+  label: string;
+  detail: string;
+  href: string;
+  Icon: React.ElementType;
+  color: string;
 }
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
@@ -129,6 +137,7 @@ function ActionCard({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null);
+  const [activities, setActivities] = useState<ActivityItem[]>([]);
 
   useEffect(() => {
     if (!supabase) return;
@@ -145,6 +154,12 @@ export default function AdminDashboardPage() {
         db.from("owner_verification_requests").select("*", { count: "exact", head: true }).eq("status", "pending"),
         db.from("reports").select("*", { count: "exact", head: true }).eq("is_handled", false),
       ]);
+      const [lastProperty, lastReport, lastVerification, lastUser] = await Promise.all([
+        db.from("properties").select("title, created_at").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+        db.from("reports").select("reason, created_at").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+        db.from("owner_verification_requests").select("full_name, created_at").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+        db.from("profiles").select("full_name, email, created_at").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+      ]);
       setStats({
         total:       a.count ?? 0,
         active:      b.count ?? 0,
@@ -154,6 +169,45 @@ export default function AdminDashboardPage() {
         pendingVerif: f.count ?? 0,
         reports:     g.count ?? 0,
       });
+      const nextActivities: ActivityItem[] = [];
+      if (lastProperty.data) {
+        nextActivities.push({
+          label: "Nouvelle annonce",
+          detail: String((lastProperty.data as { title?: string | null }).title ?? "Annonce récente"),
+          href: "/admin/annonces",
+          Icon: FileText,
+          color: ACCENT,
+        });
+      }
+      if (lastReport.data) {
+        nextActivities.push({
+          label: "Nouveau signalement",
+          detail: String((lastReport.data as { reason?: string | null }).reason ?? "Signalement"),
+          href: "/admin/signalements",
+          Icon: Flag,
+          color: "#dc2626",
+        });
+      }
+      if (lastVerification.data) {
+        nextActivities.push({
+          label: "Demande de vérification",
+          detail: String((lastVerification.data as { full_name?: string | null }).full_name ?? "Propriétaire"),
+          href: "/admin/verifications",
+          Icon: UserCheck,
+          color: "#16a34a",
+        });
+      }
+      if (lastUser.data) {
+        const userRow = lastUser.data as { full_name?: string | null; email?: string | null };
+        nextActivities.push({
+          label: "Nouvel utilisateur",
+          detail: String(userRow.full_name ?? userRow.email ?? "Utilisateur"),
+          href: "/admin/utilisateurs",
+          Icon: Users,
+          color: "#2563eb",
+        });
+      }
+      setActivities(nextActivities);
     }
     const timer = window.setTimeout(() => {
       void load();
@@ -162,6 +216,12 @@ export default function AdminDashboardPage() {
   }, []);
 
   const v = stats;
+  const todoItems = [
+    { label: "Signalements", value: v?.reports ?? null, href: "/admin/signalements", Icon: Flag, color: "#dc2626" },
+    { label: "Vérifications", value: v?.pendingVerif ?? null, href: "/admin/verifications", Icon: UserCheck, color: "#16a34a" },
+    { label: "À modérer", value: v?.pending ?? null, href: "/admin/moderation", Icon: ShieldCheck, color: ACCENT },
+  ];
+  const allClear = !!v && todoItems.every((item) => (item.value ?? 0) === 0);
 
   return (
     <div
@@ -272,6 +332,74 @@ export default function AdminDashboardPage() {
           desc="Ajouter des annonces en masse depuis un fichier."
         />
       </div>
+
+      <div className="mt-7 grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <section style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 18, padding: 22, boxShadow: "0 14px 36px rgba(15, 23, 42, 0.06)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+            <Clock size={21} color={ACCENT} />
+            <h2 style={{ color: TEXT_PRI, fontSize: 20, fontWeight: 900 }}>À traiter aujourd&apos;hui</h2>
+          </div>
+          {allClear ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 10, minHeight: 78, color: "#16a34a", fontWeight: 850 }}>
+              <CheckCircle size={24} />
+              Tout est à jour
+            </div>
+          ) : (
+            <div style={{ display: "grid", gap: 10 }} className="grid-cols-1 sm:grid-cols-3">
+              {todoItems.map(({ label, value, href, Icon, color }) => (
+                <Link key={label} href={href} style={{ display: "flex", alignItems: "center", gap: 10, minHeight: 74, padding: "12px", borderRadius: 14, border: `1px solid ${BORDER}`, background: "var(--bg-primary)", textDecoration: "none" }}>
+                  <Icon size={20} color={color} />
+                  <span style={{ minWidth: 0 }}>
+                    <strong style={{ display: "block", color, fontSize: 24, lineHeight: 1 }}>{value ?? "…"}</strong>
+                    <span style={{ color: TEXT_SEC, fontSize: 12, fontWeight: 750 }}>{label}</span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 18, padding: 22, boxShadow: "0 14px 36px rgba(15, 23, 42, 0.06)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+            <Activity size={21} color={ACCENT} />
+            <h2 style={{ color: TEXT_PRI, fontSize: 20, fontWeight: 900 }}>Dernière activité</h2>
+          </div>
+          {activities.length === 0 ? (
+            <p style={{ color: TEXT_SEC, fontSize: 14, minHeight: 78, display: "flex", alignItems: "center" }}>Aucune activité récente disponible.</p>
+          ) : (
+            <div style={{ display: "grid", gap: 10 }}>
+              {activities.slice(0, 4).map(({ label, detail, href, Icon, color }) => (
+                <Link key={label} href={href} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", textDecoration: "none", borderBottom: `1px solid ${BORDER}` }}>
+                  <span style={{ width: 38, height: 38, borderRadius: 12, background: `${color}16`, color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <Icon size={18} />
+                  </span>
+                  <span style={{ minWidth: 0 }}>
+                    <strong style={{ display: "block", color: TEXT_PRI, fontSize: 14 }}>{label}</strong>
+                    <span style={{ display: "block", color: TEXT_SEC, fontSize: 13, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{detail}</span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+
+      <section className="mt-4" style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 18, padding: 22 }}>
+        <h2 style={{ color: TEXT_PRI, fontSize: 20, fontWeight: 900, marginBottom: 12 }}>Confiance & sécurité</h2>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+          {[
+            { href: "/admin/verifications", label: "Vérifications", Icon: UserCheck, color: "#16a34a" },
+            { href: "/admin/signalements", label: "Signalements", Icon: Flag, color: "#dc2626" },
+            { href: "/admin/moderation", label: "Annonces suspectes", Icon: AlertTriangle, color: ACCENT },
+            { href: "/admin/utilisateurs", label: "Comptes à surveiller", Icon: Users, color: "#2563eb" },
+          ].map(({ href, label, Icon, color }) => (
+            <Link key={href} href={href} style={{ display: "flex", alignItems: "center", gap: 10, minHeight: 58, padding: "0 14px", borderRadius: 14, border: `1px solid ${BORDER}`, color: TEXT_PRI, background: "var(--bg-primary)", textDecoration: "none", fontWeight: 850 }}>
+              <Icon size={19} color={color} />
+              {label}
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

@@ -284,45 +284,22 @@ export default async function PropertyDetailPage({ params }: Props) {
       {/* Silent view tracker (client component) */}
       <PropertyViewTracker propertyId={property.id} />
 
-      {/* Back nav */}
-      <div className="absolute top-[64px] left-0 right-0 z-20 flex items-center gap-3 px-4 pt-4">
+      {/* Back button */}
+      <div
+        className="absolute left-0 right-0 top-[64px] z-20 flex items-center px-4 pt-4"
+        style={{
+          paddingLeft: "max(16px, env(safe-area-inset-left, 0px))",
+          paddingRight: "max(16px, env(safe-area-inset-right, 0px))",
+        }}
+      >
         <Link
           href="/annonces"
-          className="w-9 h-9 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-md hover:bg-white transition-colors text-[#1A1A1A] flex-shrink-0"
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-md hover:bg-white transition-colors text-[#1A1A1A] flex-shrink-0"
+          aria-label="Retour aux annonces"
         >
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <nav className="flex items-center gap-2 text-xs overflow-hidden" style={{ color: "var(--text-secondary)" }}>
-          <Link href="/" className="hover:text-[var(--accent-gold)] whitespace-nowrap">Accueil</Link>
-          <span>/</span>
-          <Link href="/annonces" className="hover:text-[var(--accent-gold)] whitespace-nowrap">Annonces</Link>
-          <span>/</span>
-          <span className="truncate">{property.title}</span>
-        </nav>
       </div>
-
-      {/* Video — BEFORE gallery */}
-      {videoUrl && (
-        <div style={{ background: "var(--bg-secondary)" }}>
-          <div style={{ maxWidth: 900, margin: "0 auto", padding: "56px 0 0" }}>
-            <p style={{ color: "var(--text-primary)", fontSize: 14, fontWeight: 600, padding: "12px 16px 8px" }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                <Video style={{ width: 16, height: 16 }} strokeWidth={2.4} />
-                Visite vidéo
-              </span>
-            </p>
-            <video
-              src={videoUrl}
-              controls
-              muted
-              playsInline
-              preload="metadata"
-              poster={property.property_images?.[0]?.url}
-              style={{ width: "100%", borderRadius: 12, display: "block" }}
-            />
-          </div>
-        </div>
-      )}
 
       {/* Premium gallery */}
       <div className="relative mx-auto w-[95vw] max-w-[1600px] pt-20 md:pt-24">
@@ -596,6 +573,27 @@ export default async function PropertyDetailPage({ params }: Props) {
                       </div>
                     </div>
                   )}
+                </div>
+              )}
+
+              {videoUrl && (
+                <div className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+                  <h2 className="mb-3 inline-flex items-center gap-2 text-sm font-black" style={{ color: "var(--text-primary)" }}>
+                    <Video className="h-4 w-4 text-[var(--accent-gold)]" strokeWidth={2.4} />
+                    Vidéo du logement
+                  </h2>
+                  <video
+                    src={videoUrl}
+                    controls
+                    muted
+                    playsInline
+                    preload="metadata"
+                    poster={property.property_images?.[0]?.url}
+                    className="aspect-video w-full rounded-2xl object-cover"
+                  />
+                  <p className="mt-2 text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
+                    Les vidéos LogerBien doivent durer 1 minute maximum.
+                  </p>
                 </div>
               )}
 
