@@ -2,8 +2,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  FileText, Users, Flag, UserCheck, Plus, Upload,
-  TrendingUp, AlertTriangle, Clock, CheckCircle,
+  Users, Flag, UserCheck, Plus,
+  AlertTriangle, CheckCircle, ShieldCheck, Database,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
@@ -28,18 +28,26 @@ function StatCard({
 }) {
   return (
     <div style={{
-      background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 14,
-      padding: "20px 24px", position: "relative", overflow: "hidden",
+      background: SURFACE,
+      border: `1px solid ${BORDER}`,
+      borderRadius: 18,
+      padding: "22px 24px",
+      position: "relative",
+      overflow: "hidden",
+      boxShadow: "0 16px 38px rgba(15, 23, 42, 0.08)",
     }}>
       <div style={{
-        position: "absolute", top: 12, right: 12,
-        color: accentColor, opacity: 0.12,
+        position: "absolute", top: 14, right: 14,
+        width: 44, height: 44, borderRadius: 14,
+        background: `${accentColor}16`,
+        color: accentColor,
+        display: "flex", alignItems: "center", justifyContent: "center",
       }}>
-        <Icon size={40} />
+        <Icon size={24} />
       </div>
       <p style={{
-        fontSize: 11, fontWeight: 700, textTransform: "uppercase",
-        letterSpacing: "1.5px", color: TEXT_SEC, marginBottom: 8,
+        fontSize: 13, fontWeight: 800,
+        color: TEXT_SEC, marginBottom: 12,
       }}>
         {label}
       </p>
@@ -47,9 +55,9 @@ function StatCard({
         <div style={{ height: 36, width: 60, background: "var(--border)", borderRadius: 6, animation: "pulse 1.5s ease-in-out infinite" }} />
       ) : (
         <p style={{
-          fontSize: "clamp(22px, 4vw, 32px)",
+          fontSize: "clamp(30px, 4vw, 46px)",
           fontFamily: "var(--font-display), sans-serif",
-          fontWeight: 700, color: accentColor, lineHeight: 1,
+          fontWeight: 900, color: accentColor, lineHeight: 0.95,
         }}>
           {value.toLocaleString("fr-FR")}
         </p>
@@ -70,21 +78,34 @@ function ActionCard({
     <Link
       href={href}
       style={{
-        display: "flex", alignItems: "center", gap: 16,
-        background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 14,
-        padding: "18px 20px", textDecoration: "none",
-        transition: "border-color 0.15s",
+        display: "flex", alignItems: "center", gap: 18,
+        background: SURFACE,
+        border: `1px solid ${BORDER}`,
+        borderRadius: 18,
+        padding: "22px",
+        textDecoration: "none",
+        minHeight: 122,
+        boxShadow: "0 14px 36px rgba(15, 23, 42, 0.07)",
+        transition: "transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease",
       }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(212,175,55,0.35)"; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.borderColor = BORDER; }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(191,141,38,0.45)";
+        (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-2px)";
+        (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 18px 44px rgba(15, 23, 42, 0.10)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLAnchorElement).style.borderColor = BORDER;
+        (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)";
+        (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 14px 36px rgba(15, 23, 42, 0.07)";
+      }}
     >
       <div style={{
-        width: 44, height: 44, borderRadius: 12, flexShrink: 0,
+        width: 58, height: 58, borderRadius: 18, flexShrink: 0,
         background: `${iconColor}18`,
         display: "flex", alignItems: "center", justifyContent: "center",
         position: "relative",
       }}>
-        <Icon size={22} color={iconColor} />
+        <Icon size={28} color={iconColor} />
         {badge != null && badge > 0 && (
           <span style={{
             position: "absolute", top: -4, right: -4,
@@ -98,8 +119,8 @@ function ActionCard({
         )}
       </div>
       <div style={{ minWidth: 0 }}>
-        <p style={{ color: TEXT_PRI, fontWeight: 600, fontSize: 14, marginBottom: 2 }}>{title}</p>
-        <p style={{ color: TEXT_SEC, fontSize: 12 }}>{desc}</p>
+        <p style={{ color: TEXT_PRI, fontWeight: 850, fontSize: 17, marginBottom: 6 }}>{title}</p>
+        <p style={{ color: TEXT_SEC, fontSize: 14, lineHeight: 1.45 }}>{desc}</p>
       </div>
     </Link>
   );
@@ -113,13 +134,14 @@ export default function AdminDashboardPage() {
     if (!supabase) return;
     async function load() {
       const db = supabase!;
-      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
       const [a, b, c, d, e, f, g] = await Promise.all([
         db.from("properties").select("*", { count: "exact", head: true }),
         db.from("properties").select("*", { count: "exact", head: true }).eq("status", "active"),
         db.from("properties").select("*", { count: "exact", head: true }).eq("status", "pending"),
         db.from("profiles").select("*", { count: "exact", head: true }),
-        db.from("properties").select("*", { count: "exact", head: true }).gte("created_at", weekAgo),
+        db.from("properties").select("*", { count: "exact", head: true }).gte("created_at", weekAgo.toISOString()),
         db.from("profiles").select("*", { count: "exact", head: true }).eq("is_verified", false),
         db.from("reports").select("*", { count: "exact", head: true }),
       ]);
@@ -133,56 +155,100 @@ export default function AdminDashboardPage() {
         reports:     g.count ?? 0,
       });
     }
-    load();
+    const timer = window.setTimeout(() => {
+      void load();
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const v = stats;
 
   return (
-    <div style={{ padding: "28px 24px 40px", maxWidth: 1200 }} className="px-4 md:px-6">
+    <div
+      style={{ width: "95vw", maxWidth: 1600, margin: "0 auto", padding: "28px 0 48px" }}
+      className="px-4 md:px-6"
+    >
       {/* Header */}
-      <div style={{ marginBottom: 28 }}>
+      <div
+        style={{
+          marginBottom: 24,
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 18,
+          flexWrap: "wrap",
+        }}
+      >
+        <div>
         <h1 style={{
-          color: TEXT_PRI, fontWeight: 900, fontSize: "clamp(20px,4vw,28px)",
+          color: TEXT_PRI, fontWeight: 950, fontSize: "clamp(26px,4vw,42px)",
           fontFamily: "var(--font-display), sans-serif",
         }}>
-          Tableau de bord
+          Dashboard
         </h1>
-        <p style={{ color: TEXT_SEC, fontSize: 13, marginTop: 4 }}>
-          Vue d&apos;ensemble de la plateforme LogerBien
+        <p style={{ color: TEXT_SEC, fontSize: 16, marginTop: 6 }}>
+          Les priorités admin de LogerBien, sans bruit inutile.
         </p>
+        </div>
+        <Link
+          href="/admin/annonces/nouvelle"
+          style={{
+            display: "inline-flex", alignItems: "center", gap: 10,
+            minHeight: 46, padding: "0 18px",
+            borderRadius: 14, background: ACCENT,
+            color: "var(--bg-primary)", fontWeight: 850,
+            textDecoration: "none", boxShadow: "0 12px 28px rgba(191,141,38,0.24)",
+          }}
+        >
+          <Plus size={19} /> Ajouter une annonce
+        </Link>
       </div>
 
       {/* Stats grid */}
       <div
-        style={{ display: "grid", gap: 12, marginBottom: 28 }}
-        className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+        style={{ display: "grid", gap: 16, marginBottom: 28 }}
+        className="grid-cols-1 sm:grid-cols-2 xl:grid-cols-4"
       >
-        <StatCard label="Total annonces"    value={v?.total        ?? null} accentColor={TEXT_PRI}   icon={FileText} />
-        <StatCard label="Actives"           value={v?.active       ?? null} accentColor="var(--accent-gold)"    icon={CheckCircle} />
-        <StatCard label="En attente"        value={v?.pending      ?? null} accentColor={ACCENT}     icon={Clock} />
-        <StatCard label="Utilisateurs"      value={v?.users        ?? null} accentColor="#60a5fa"    icon={Users} />
-        <StatCard label="Cette semaine"     value={v?.thisWeek     ?? null} accentColor={ACCENT}     icon={TrendingUp} />
-        <StatCard label="À vérifier"        value={v?.pendingVerif ?? null} accentColor="var(--accent-gold)"    icon={Users} />
-        <StatCard label="Signalements"      value={v?.reports      ?? null} accentColor="#ef4444"    icon={AlertTriangle} />
+        <StatCard label="Annonces actives" value={v?.active ?? null} accentColor="var(--accent-gold)" icon={CheckCircle} />
+        <StatCard label="Utilisateurs" value={v?.users ?? null} accentColor="#2563eb" icon={Users} />
+        <StatCard label="Signalements" value={v?.reports ?? null} accentColor="#dc2626" icon={AlertTriangle} />
+        <StatCard label="Vérifications" value={v?.pendingVerif ?? null} accentColor="#16a34a" icon={ShieldCheck} />
       </div>
 
       {/* Section title */}
-      <p style={{ color: TEXT_SEC, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 12 }}>
-        Actions rapides
-      </p>
+      <div style={{ marginBottom: 14 }}>
+        <p style={{ color: TEXT_PRI, fontSize: 22, fontWeight: 900, marginBottom: 4 }}>Actions rapides</p>
+        <p style={{ color: TEXT_SEC, fontSize: 14 }}>Les tâches importantes restent visibles dès l’arrivée sur l’admin.</p>
+      </div>
 
       {/* Quick actions */}
       <div
-        style={{ display: "grid", gap: 10 }}
-        className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+        style={{ display: "grid", gap: 16 }}
+        className="grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
       >
         <ActionCard
-          href="/admin/annonces"
-          icon={FileText}
+          href="/admin/moderation"
+          icon={ShieldCheck}
           iconColor={ACCENT}
           title="Modérer les annonces"
-          desc="Approuver, suspendre, supprimer"
+          desc="Approuver ou refuser les annonces en attente."
+          badge={v?.pending}
+        />
+        <ActionCard
+          href="/admin/verifications"
+          icon={UserCheck}
+          iconColor="#16a34a"
+          title="Vérifier propriétaires"
+          desc="Contrôler les demandes de vérification de compte."
+          badge={v?.pendingVerif}
+        />
+        <ActionCard
+          href="/admin/signalements"
+          icon={Flag}
+          iconColor="#dc2626"
+          title="Gérer signalements"
+          desc="Traiter les annonces signalées par les utilisateurs."
+          badge={v?.reports}
         />
         <ActionCard
           href="/admin/annonces/nouvelle"
@@ -194,31 +260,16 @@ export default function AdminDashboardPage() {
         <ActionCard
           href="/admin/utilisateurs"
           icon={Users}
-          iconColor="#60a5fa"
+          iconColor="#2563eb"
           title="Gérer les utilisateurs"
-          desc="Rôles, vérification, comptes"
-        />
-        <ActionCard
-          href="/admin/signalements"
-          icon={Flag}
-          iconColor="#ef4444"
-          title="Signalements"
-          desc="Annonces signalées par les utilisateurs"
-          badge={v?.reports}
-        />
-        <ActionCard
-          href="/admin/agents"
-          icon={UserCheck}
-          iconColor="#a78bfa"
-          title="Gérer les agents"
-          desc="Agents certifiés LogerBien"
+          desc="Consulter les comptes, rôles et profils."
         />
         <ActionCard
           href="/admin/import"
-          icon={Upload}
+          icon={Database}
           iconColor="#38bdf8"
           title="Importer CSV"
-          desc="Import en masse d'annonces"
+          desc="Ajouter des annonces en masse depuis un fichier."
         />
       </div>
     </div>

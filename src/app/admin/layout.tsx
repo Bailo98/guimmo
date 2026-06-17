@@ -20,15 +20,15 @@ const SEPARATOR   = "var(--border)";
 
 // ─── Nav items ────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
-  { href: "/admin",                   label: "Tableau de bord",     icon: LayoutDashboard },
+  { href: "/admin",                   label: "Dashboard",           icon: LayoutDashboard },
   { href: "/admin/annonces",          label: "Annonces",            icon: FileText },
-  { href: "/admin/annonces/nouvelle", label: "Ajouter une annonce", icon: Plus },
+  { href: "/admin/annonces/nouvelle", label: "Ajouter",             icon: Plus },
   { href: "/admin/moderation",        label: "Modération",          icon: Shield,     badgeKey: "moderation" as const },
   { href: "/admin/verifications",     label: "Vérifications",       icon: UserCheck },
   { href: "/admin/utilisateurs",      label: "Utilisateurs",        icon: Users },
   { href: "/admin/signalements",      label: "Signalements",        icon: Flag,       badgeKey: "reports" as const },
   { href: "/admin/agents",            label: "Agents",              icon: UserCheck },
-  { href: "/admin/import",            label: "Importer CSV",        icon: Upload },
+  { href: "/admin/import",            label: "Import CSV",          icon: Upload },
 ] as const;
 
 // ─── Logo ─────────────────────────────────────────────────────────────────────
@@ -67,18 +67,18 @@ function NavLink({
       onClick={onClick}
       style={{
         display: "flex", alignItems: "center", gap: 10,
-        padding: "10px 16px",
-        borderRadius: 10,
-        borderLeft: `3px solid ${isActive ? ACCENT : "transparent"}`,
-        background: isActive ? "rgba(212,175,55,0.15)" : "transparent",
+        padding: "11px 14px",
+        borderRadius: 14,
+        border: `1px solid ${isActive ? "rgba(191,141,38,0.35)" : "transparent"}`,
+        background: isActive ? "rgba(191,141,38,0.16)" : "transparent",
         color: isActive ? ACCENT : TEXT_SEC,
-        fontSize: 14, fontWeight: 500,
+        fontSize: 14, fontWeight: isActive ? 850 : 650,
         textDecoration: "none",
-        transition: "background 0.15s, color 0.15s",
+        transition: "background 0.15s, color 0.15s, border-color 0.15s",
       }}
       onMouseEnter={(e) => {
         if (!isActive) {
-          (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.04)";
+          (e.currentTarget as HTMLAnchorElement).style.background = "rgba(191,141,38,0.08)";
           (e.currentTarget as HTMLAnchorElement).style.color = TEXT_PRI;
         }
       }}
@@ -131,7 +131,7 @@ function SidebarContent({
       </div>
 
       {/* Nav */}
-      <nav style={{ flex: 1, padding: "12px 10px", overflowY: "auto", display: "flex", flexDirection: "column", gap: 2 }}>
+      <nav style={{ flex: 1, padding: "14px 10px", overflowY: "auto", display: "flex", flexDirection: "column", gap: 5 }}>
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.href}
@@ -168,8 +168,8 @@ function SidebarContent({
           onClick={onSignOut}
           style={{
             width: "100%", display: "flex", alignItems: "center", gap: 10,
-            padding: "8px 10px", borderRadius: 10, border: "none", background: "transparent",
-            color: TEXT_SEC, fontSize: 13, fontWeight: 500, cursor: "pointer",
+            padding: "10px 12px", borderRadius: 12, border: "none", background: "transparent",
+            color: TEXT_SEC, fontSize: 13, fontWeight: 750, cursor: "pointer",
             transition: "color 0.15s, background 0.15s",
           }}
           onMouseEnter={(e) => {
@@ -263,7 +263,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         style={{
           flexDirection: "column",
           position: "fixed", top: 0, left: 0, bottom: 0,
-          width: "var(--sidebar-w, 260px)",
+          width: "var(--sidebar-w, 248px)",
           background: BG_SIDEBAR,
           borderRight: `1px solid ${BORDER}`,
           zIndex: 30,
@@ -271,7 +271,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       >
         <style>{`
           @media (min-width: 768px) and (max-width: 1023px) { :root { --sidebar-w: 220px; } }
-          @media (min-width: 1024px) { :root { --sidebar-w: 260px; } }
+          @media (min-width: 1024px) { :root { --sidebar-w: 248px; } }
         `}</style>
         <SidebarContent {...sidebarProps} />
       </aside>
@@ -336,8 +336,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* ── Main content ── */}
       <main
-        className="flex-1 md:ml-[var(--sidebar-w,260px)]"
-        style={{ paddingTop: 0 }}
+        className="flex-1 md:ml-[var(--sidebar-w,248px)]"
+        style={{ paddingTop: 0, minWidth: 0 }}
       >
         {/* Spacer for mobile fixed header */}
         <div className="md:hidden" style={{ height: 60 }} />
