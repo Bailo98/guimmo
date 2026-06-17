@@ -142,8 +142,8 @@ export default function AdminDashboardPage() {
         db.from("properties").select("*", { count: "exact", head: true }).eq("status", "pending"),
         db.from("profiles").select("*", { count: "exact", head: true }),
         db.from("properties").select("*", { count: "exact", head: true }).gte("created_at", weekAgo.toISOString()),
-        db.from("profiles").select("*", { count: "exact", head: true }).eq("is_verified", false),
-        db.from("reports").select("*", { count: "exact", head: true }),
+        db.from("owner_verification_requests").select("*", { count: "exact", head: true }).eq("status", "pending"),
+        db.from("reports").select("*", { count: "exact", head: true }).eq("is_handled", false),
       ]);
       setStats({
         total:       a.count ?? 0,

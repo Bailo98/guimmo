@@ -4,7 +4,7 @@ import TinderCard from "react-tinder-card";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, BadgeCheck, Banknote, Heart, Home, Loader2, MapPin, MessageCircle, Phone, X } from "lucide-react";
+import { ArrowLeft, Heart, Home, Loader2, MapPin, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useAppStore } from "@/lib/store";
 import { toast } from "@/lib/toast";
@@ -13,7 +13,6 @@ import { fetchProperties } from "@/lib/properties";
 import { formatPrice } from "@/lib/utils";
 import { getNeighborhoodName, NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
 import { haversineKm } from "@/lib/haversine";
-import { availabilitySignal } from "@/lib/property-signals";
 import type { Property } from "@/types";
 
 const SEEN_KEY = "lb_swipe_seen";
@@ -245,14 +244,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     await topCardRef.current?.swipe(dir);
   }, []);
 
-  const requireLoginOrRun = useCallback((action: () => void) => {
-    if (!user) {
-      router.push("/connexion?redirect=/decouvrir");
-      return;
-    }
-    action();
-  }, [router, user]);
-
   // ── Render ─────────────────────────────────────────────────────────────────
   if (!mounted) return null;
 
@@ -377,11 +368,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
   const topCard = cards[0];
   const topImg  = topCard.property_images?.find((i) => i.is_primary) ?? topCard.property_images?.[0];
-  const cleanPhone = topCard.contact_phone?.replace(/\D/g, "");
-  const whatsappMessage = encodeURIComponent(`Bonjour, je suis intéressé par "${topCard.title}" sur LogerBien`);
-  const whatsappUrl = cleanPhone ? `https://wa.me/${cleanPhone}?text=${whatsappMessage}` : `/annonces/${topCard.id}`;
-  const phoneUrl = cleanPhone ? `tel:${cleanPhone}` : `/annonces/${topCard.id}`;
-  const availability = availabilitySignal(topCard);
   const typeLabel =
     topCard.type === "apartment" ? "Appartement" :
     topCard.type === "house" ? "Maison" :
@@ -392,10 +378,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
   return (
     <>
-      {/* ══════════════════════════════════════════════════════════════════════
-          FIXED HEADER — z-200, above everything
-          Back (←) · "Découvrir / Conakry, Guinée" · placeholder (right)
-      ══════════════════════════════════════════════════════════════════════ */}
+      {/* Minimal overlay header: keep only the back action. */}
       <div
         style={{
           position: "fixed",
@@ -405,13 +388,12 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           zIndex: 200,
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: "flex-start",
           padding: "12px 16px",
-          background: "linear-gradient(rgba(0,0,0,0.50) 0%, transparent 100%)",
+          background: "linear-gradient(rgba(0,0,0,0.42) 0%, transparent 100%)",
           pointerEvents: "none",
         }}
       >
-        {/* Back button */}
         <button
           onClick={() => router.back()}
           aria-label="Retour"
@@ -429,19 +411,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         >
             <ArrowLeft style={{ width: 20, height: 20 }} strokeWidth={2.6} />
         </button>
-
-        {/* Title + sub-title */}
-        <div style={{ textAlign: "center", flex: 1 }}>
-          <p style={{ margin: 0, color: "#ffffff", fontSize: 18, fontWeight: 900, lineHeight: 1.2 }}>
-            Découvrir
-          </p>
-          <p style={{ margin: 0, color: "rgba(255,255,255,0.82)", fontSize: 13, lineHeight: 1.35, fontWeight: 700 }}>
-            Glisse. Choisis. Contacte.
-          </p>
-        </div>
-
-        {/* Placeholder — keeps title centred */}
-        <div style={{ width: 32, flexShrink: 0 }} />
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════
@@ -457,7 +426,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           background: "#000",
           touchAction: "none",
           paddingTop: "env(safe-area-inset-top, 0px)",
-          paddingBottom: "calc(136px + env(safe-area-inset-bottom, 0px))",
+          paddingBottom: "calc(164px + env(safe-area-inset-bottom, 0px))",
         }}
       >
         {/* ── TinderCard ─────────────────────────────────────────────────────── */}
@@ -557,7 +526,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             {/* ── Property info — bottom left ──────────────────────────────────── */}
             <div style={{
               position: "absolute",
-              bottom: 162,
+              bottom: 176,
               left: 18,
               right: 18,
               pointerEvents: "none",
@@ -570,7 +539,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 lineHeight: 1.1,
                 textShadow: "0 2px 8px rgba(0,0,0,0.5)",
               }}>
-                <Banknote style={{ width: 26, height: 26, display: "inline", marginRight: 8, verticalAlign: "-3px" }} strokeWidth={2.4} />
                 {formatPrice(topCard.price)}
               </p>
               {topCard.price_period === "month" && (
@@ -612,21 +580,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                     {getNeighborhoodName(topCard.neighborhood)}
                   </span>
                 </span>
-                <span style={{
-                  background: availability.bg,
-                  color: "#ffffff",
-                  border: `1px solid ${availability.border}`,
-                  borderRadius: 999,
-                  padding: "8px 12px",
-                  fontSize: 16,
-                  fontWeight: 900,
-                  backdropFilter: "blur(10px)",
-                }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-                    <BadgeCheck style={{ width: 15, height: 15 }} strokeWidth={2.5} />
-                    {availability.label}
-                  </span>
-                </span>
               </div>
             </div>
           </div>
@@ -636,7 +589,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           position: "absolute",
           left: 18,
           right: 18,
-          bottom: "calc(28px + env(safe-area-inset-bottom, 0px))",
+          bottom: "calc(96px + env(safe-area-inset-bottom, 0px))",
           zIndex: 20,
           display: "grid",
           gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
@@ -681,51 +634,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           >
             <Heart style={{ width: 28, height: 28, fill: "currentColor" }} strokeWidth={2.4} />
             J&apos;aime
-          </button>
-
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              requireLoginOrRun(() => { window.open(whatsappUrl, "_blank", "noopener"); });
-            }}
-            aria-label="WhatsApp"
-            style={{
-              minHeight: 58,
-              borderRadius: 22,
-              background: "#25D366",
-              border: "none",
-              color: "#ffffff",
-              cursor: "pointer",
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              fontSize: 16,
-              fontWeight: 900,
-              WebkitTapHighlightColor: "transparent",
-              boxShadow: "0 4px 18px rgba(37,211,102,0.45)",
-            }}
-          >
-            <MessageCircle style={{ width: 24, height: 24 }} strokeWidth={2.4} />
-          </button>
-
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              requireLoginOrRun(() => { window.location.href = phoneUrl; });
-            }}
-            aria-label="Contacter"
-            style={{
-              minHeight: 58,
-              borderRadius: 22,
-              background: "rgba(255,255,255,0.16)",
-              border: "1.5px solid rgba(255,255,255,0.25)",
-              color: "#ffffff",
-              cursor: "pointer",
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              fontSize: 16,
-              fontWeight: 900,
-              WebkitTapHighlightColor: "transparent",
-            }}
-          >
-            <Phone style={{ width: 22, height: 22 }} strokeWidth={2.4} />
           </button>
         </div>
 

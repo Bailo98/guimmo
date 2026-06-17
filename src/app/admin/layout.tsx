@@ -290,6 +290,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         className="md:hidden"
         style={{
           position: "fixed", top: 0, left: 0, bottom: 0, width: 280,
+          paddingTop: "env(safe-area-inset-top, 0px)",
           background: BG_SIDEBAR,
           borderRight: `1px solid ${BORDER}`,
           zIndex: 50,
@@ -312,10 +313,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div
         className="md:hidden"
         style={{
-          position: "fixed", top: 0, left: 0, right: 0, height: 60,
+          position: "fixed", top: 0, left: 0, right: 0,
+          height: "calc(60px + env(safe-area-inset-top, 0px))",
+          boxSizing: "border-box",
+          paddingTop: "env(safe-area-inset-top, 0px)",
           background: BG_SIDEBAR, borderBottom: `1px solid ${BORDER}`,
           display: "flex", alignItems: "center",
-          justifyContent: "space-between", padding: "0 16px", zIndex: 30,
+          justifyContent: "space-between",
+          paddingLeft: 16,
+          paddingRight: 16,
+          zIndex: 30,
         }}
       >
         <button
@@ -340,9 +347,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         style={{ paddingTop: 0, minWidth: 0 }}
       >
         {/* Spacer for mobile fixed header */}
-        <div className="md:hidden" style={{ height: 60 }} />
+        <div className="md:hidden" style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
         <div style={{ borderLeft: `1px solid ${SEPARATOR}` }} className="md:hidden" />
-        {children}
+        <div style={{ paddingTop: "calc(16px + env(safe-area-inset-top, 0px))" }}>
+          {children}
+        </div>
       </main>
 
     </div>
