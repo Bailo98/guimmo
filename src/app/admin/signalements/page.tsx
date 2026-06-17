@@ -56,9 +56,16 @@ export default function AdminSignalementsPage() {
   }, []);
 
   useEffect(() => {
-    load();
-    const interval = setInterval(load, 30_000);
-    return () => clearInterval(interval);
+    const id = window.setTimeout(() => {
+      void load();
+    }, 0);
+    const interval = window.setInterval(() => {
+      void load();
+    }, 30_000);
+    return () => {
+      window.clearTimeout(id);
+      window.clearInterval(interval);
+    };
   }, [load]);
 
   async function reportAction(action: string, payload: Record<string, unknown>): Promise<boolean> {
@@ -116,7 +123,7 @@ export default function AdminSignalementsPage() {
   }
 
   return (
-    <div style={{ padding: "28px 24px 40px", maxWidth: 1200 }} className="px-4 md:px-6">
+    <div className="admin-page" style={{ maxWidth: 1200 }}>
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 24 }}>

@@ -172,7 +172,7 @@ export default function AdminNouvelleAnnoncePage() {
   }
 
   return (
-    <div style={{ padding: "28px 24px 40px", maxWidth: 680, margin: "0 auto" }} className="px-4 md:px-6">
+    <div className="admin-page" style={{ maxWidth: 680, margin: "0 auto" }}>
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 28 }}>

@@ -60,7 +60,12 @@ export default function AdminUtilisateursPage() {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchUsers(); }, [fetchUsers]);
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      void fetchUsers();
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [fetchUsers]);
 
   async function handleVerify(id: string) {
     if (!supabase) return;
@@ -93,7 +98,7 @@ export default function AdminUtilisateursPage() {
   }, [users, search]);
 
   return (
-    <div className="px-4 md:px-6" style={{ paddingTop: 28, paddingBottom: 40, maxWidth: 1200 }}>
+    <div className="admin-page" style={{ maxWidth: 1200 }}>
 
       {/* Header */}
       <div style={{ marginBottom: 24 }}>

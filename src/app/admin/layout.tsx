@@ -355,21 +355,34 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               overflow-x: clip;
             }
           }
+
+          .admin-content-shell {
+            width: 100%;
+            max-width: none;
+            padding-left: clamp(16px, 2vw, 32px);
+            padding-right: clamp(16px, 2vw, 32px);
+            padding-bottom: 48px;
+            box-sizing: border-box;
+          }
+
+          .admin-page,
+          .admin-content-shell > :first-child {
+            width: 100%;
+            box-sizing: border-box;
+            padding-top: 32px !important;
+          }
+
+          @media (max-width: 767px) {
+            .admin-page,
+            .admin-content-shell > :first-child {
+              padding-top: 24px !important;
+            }
+          }
         `}</style>
         {/* Spacer for mobile fixed header */}
         <div className="md:hidden" style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
         <div style={{ borderLeft: `1px solid ${SEPARATOR}` }} className="md:hidden" />
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "none",
-            paddingTop: "calc(32px + env(safe-area-inset-top, 0px))",
-            paddingLeft: "clamp(16px, 2vw, 32px)",
-            paddingRight: "clamp(16px, 2vw, 32px)",
-            paddingBottom: 48,
-            boxSizing: "border-box",
-          }}
-        >
+        <div className="admin-content-shell">
           {children}
         </div>
       </main>

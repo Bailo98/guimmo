@@ -165,6 +165,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div
+      className="admin-page"
       style={{ width: "100%", maxWidth: "none", margin: 0, padding: 0, boxSizing: "border-box" }}
     >
       {/* Header */}

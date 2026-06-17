@@ -94,7 +94,12 @@ export default function AdminAnnoncesPage() {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchProperties(); }, [fetchProperties]);
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      void fetchProperties();
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [fetchProperties]);
 
   async function adminAction(action: string, id: string): Promise<boolean> {
     try {
@@ -160,7 +165,7 @@ export default function AdminAnnoncesPage() {
   }
 
   return (
-    <div className="px-4 md:px-6" style={{ paddingTop: 28, paddingBottom: 40, maxWidth: 1200 }}>
+    <div className="admin-page" style={{ maxWidth: 1200 }}>
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 24, flexWrap: "wrap" }}>

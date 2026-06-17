@@ -137,7 +137,7 @@ export default function AdminImportPage() {
   const invalidCount = rows.filter((r) => !r.valid).length;
 
   return (
-    <div style={{ padding: "28px 24px 40px", maxWidth: 800, margin: "0 auto" }} className="px-4 md:px-6">
+    <div className="admin-page" style={{ maxWidth: 800, margin: "0 auto" }}>
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 28 }}>

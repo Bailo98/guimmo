@@ -77,7 +77,12 @@ export default function AdminAgentsPage() {
     setLoading(false);
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      void load();
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [load]);
 
   function openNew() {
     setEditing(null);
@@ -144,7 +149,7 @@ export default function AdminAgentsPage() {
   const canSave = !!form.name && !!form.neighborhood && !!form.whatsapp;
 
   return (
-    <div style={{ padding: "28px 24px 40px", maxWidth: 1200 }} className="px-4 md:px-6">
+    <div className="admin-page" style={{ maxWidth: 1200 }}>
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "nowrap", width: "100%", gap: 16, marginBottom: 16 }}>
