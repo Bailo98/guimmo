@@ -38,12 +38,12 @@ interface PendingProperty {
 interface Report {
   id: string;
   property_id: string | null;
-  reporter_id: string | null;
   reason: string | null;
+  details: string | null;
+  reporter_phone: string | null;
   created_at: string;
-  resolved: boolean | null;
+  is_handled: boolean | null;
   property?: { title: string } | null;
-  reporter?: { full_name: string | null; email: string | null } | null;
 }
 
 
@@ -71,25 +71,35 @@ export default function AdminModerationPage() {
         .order("created_at", { ascending: false }),
       supabase
         .from("reports")
-        .select("id,property_id,reporter_id,reason,created_at,resolved,property:properties(title),reporter:profiles(full_name,email)")
-        .eq("resolved", false)
+        .select("id,property_id,reason,details,reporter_phone,created_at,is_handled,property:properties(title)")
+        .eq("is_handled", false)
         .order("created_at", { ascending: false })
         .limit(50),
     ]);
+    if (repRes.error) {
+      console.error("[admin/moderation] reports load error:", repRes.error.code, repRes.error.message, repRes.error.details);
+      toast("Impossible de charger les signalements", "error");
+    }
     setPending((propRes.data ?? []) as PendingProperty[]);
     setReports((repRes.data ?? []) as unknown as Report[]);
     setLoading(false);
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      void load();
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [load]);
 
   async function approve(prop: PendingProperty) {
     if (!supabase) return;
     setActionId(prop.id);
-    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 30);
     const { error } = await supabase
       .from("properties")
-      .update({ status: "active", expires_at: expiresAt })
+      .update({ status: "active", expires_at: expiresAt.toISOString() })
       .eq("id", prop.id);
     if (error) { toast(`Erreur : ${error.message}`, "error"); }
     else {
@@ -154,7 +164,13 @@ export default function AdminModerationPage() {
   async function resolveReport(report: Report, action: "keep" | "remove") {
     if (!supabase) return;
     setActionId(report.id);
-    await supabase.from("reports").update({ resolved: true }).eq("id", report.id);
+    const { error } = await supabase.from("reports").update({ is_handled: true }).eq("id", report.id);
+    if (error) {
+      console.error("[admin/moderation] report resolve error:", error.code, error.message, error.details);
+      toast("Impossible de traiter le signalement", "error");
+      setActionId(null);
+      return;
+    }
     if (action === "remove" && report.property_id) {
       await supabase.from("properties").update({ status: "archived" }).eq("id", report.property_id);
     }
@@ -335,15 +351,16 @@ export default function AdminModerationPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {reports.map((rep) => {
               const busy = actionId === rep.id;
-              const reporterName = (rep.reporter as { full_name?: string | null; email?: string | null } | null)?.full_name
-                ?? (rep.reporter as { full_name?: string | null; email?: string | null } | null)?.email
-                ?? "Anonyme";
+              const reporterName = rep.reporter_phone ? `Téléphone ${rep.reporter_phone}` : "Signalement anonyme";
               const propTitle = (rep.property as { title?: string } | null)?.title ?? rep.property_id ?? "Annonce inconnue";
               return (
                 <div key={rep.id} style={{ ...S_CARD, borderColor: "rgba(239,68,68,0.25)", opacity: busy ? 0.6 : 1 }}>
                   <div style={{ marginBottom: 10 }}>
                     <p style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: 14, margin: "0 0 3px" }}>{propTitle}</p>
                     <p style={{ color: "#f87171", fontSize: 12, margin: "0 0 2px" }}>{rep.reason ?? "Raison non précisée"}</p>
+                    {rep.details && (
+                      <p style={{ color: "var(--text-primary-dim)", fontSize: 12, margin: "0 0 3px" }}>{rep.details}</p>
+                    )}
                     <p style={{ color: "#666666", fontSize: 11, margin: 0 }}>
                       Signalé par {reporterName} · {fmtDate(rep.created_at)}
                     </p>
