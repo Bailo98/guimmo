@@ -165,8 +165,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div
-      style={{ width: "95vw", maxWidth: 1600, margin: "0 auto", padding: "28px 0 48px" }}
-      className="px-4 md:px-6"
+      style={{ width: "100%", maxWidth: "none", margin: 0, padding: 0, boxSizing: "border-box" }}
     >
       {/* Header */}
       <div

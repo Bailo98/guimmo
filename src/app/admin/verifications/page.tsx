@@ -93,7 +93,7 @@ export default function AdminVerificationsPage() {
   }
 
   return (
-    <main className="mx-auto w-[95vw] max-w-[1500px] py-6">
+    <main className="w-full max-w-none py-0">
       <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <h1 className="text-2xl font-black text-[var(--text-primary)] md:text-3xl">Vérifications propriétaire</h1>

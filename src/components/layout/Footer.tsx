@@ -14,10 +14,6 @@ export function Footer({ whatsappNumber }: { whatsappNumber: string }) {
       <div className="mx-auto w-[95%] max-w-[1600px] py-3 pb-[calc(92px+env(safe-area-inset-bottom,0px))] md:pb-3">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <Logo size="md" />
-          <span className="rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-3 py-1 text-xs font-bold text-[var(--text-secondary)]">
-            Build d758adf
-          </span>
-
           <div className="flex flex-wrap items-center gap-2 md:justify-end">
             <a
               href={`https://wa.me/${whatsappNumber}`}

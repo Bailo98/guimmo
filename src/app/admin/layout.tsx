@@ -343,13 +343,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* ── Main content ── */}
       <main
-        className="flex-1 md:ml-[var(--sidebar-w,248px)]"
+        className="admin-main flex-1"
         style={{ paddingTop: 0, minWidth: 0 }}
       >
+        <style>{`
+          @media (min-width: 768px) {
+            .admin-main {
+              margin-left: var(--sidebar-w, 248px);
+              width: calc(100vw - var(--sidebar-w, 248px));
+              max-width: calc(100vw - var(--sidebar-w, 248px));
+              overflow-x: clip;
+            }
+          }
+        `}</style>
         {/* Spacer for mobile fixed header */}
         <div className="md:hidden" style={{ height: "calc(60px + env(safe-area-inset-top, 0px))" }} />
         <div style={{ borderLeft: `1px solid ${SEPARATOR}` }} className="md:hidden" />
-        <div style={{ paddingTop: "calc(16px + env(safe-area-inset-top, 0px))" }}>
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "none",
+            paddingTop: "calc(32px + env(safe-area-inset-top, 0px))",
+            paddingLeft: "clamp(16px, 2vw, 32px)",
+            paddingRight: "clamp(16px, 2vw, 32px)",
+            paddingBottom: 48,
+            boxSizing: "border-box",
+          }}
+        >
           {children}
         </div>
       </main>
