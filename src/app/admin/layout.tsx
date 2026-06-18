@@ -24,6 +24,7 @@ const NAV_ITEMS = [
   { href: "/admin/annonces/nouvelle", label: "Ajouter",             icon: Plus },
   { href: "/admin/moderation",        label: "Modération",          icon: Shield,     badgeKey: "moderation" as const },
   { href: "/admin/verifications",     label: "Vérifications",       icon: UserCheck },
+  { href: "/admin/demandes-logement",  label: "Demandes logement",   icon: FileText },
   { href: "/admin/utilisateurs",      label: "Utilisateurs",        icon: Users },
   { href: "/admin/signalements",      label: "Signalements",        icon: Flag,       badgeKey: "reports" as const },
   { href: "/admin/agents",            label: "Agents",              icon: UserCheck },

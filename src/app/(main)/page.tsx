@@ -237,6 +237,22 @@ export default async function HomePage() {
             </div>
 
             <HeroSearch />
+            <div className="mt-3 flex flex-col items-center justify-center gap-2 sm:flex-row">
+              <span className="text-sm font-bold" style={{ color: "var(--text-secondary)" }}>
+                Tu ne trouves pas ?
+              </span>
+              <Link
+                href="/je-cherche"
+                className="inline-flex min-h-11 items-center justify-center rounded-2xl px-5 text-sm font-black no-underline transition hover:-translate-y-0.5"
+                style={{
+                  background: "rgba(185,138,46,0.12)",
+                  border: "1px solid rgba(185,138,46,0.28)",
+                  color: "var(--accent-gold)",
+                }}
+              >
+                Publier ma recherche
+              </Link>
+            </div>
           </div>
         </div>
       </section>

@@ -335,6 +335,13 @@ export default function AdminDashboardPage() {
           badge={v?.reports}
         />
         <ActionCard
+          href="/admin/demandes-logement"
+          icon={FileText}
+          iconColor="#7c3aed"
+          title="Demandes de logement"
+          desc="Voir les recherches publiées par les locataires."
+        />
+        <ActionCard
           href="/admin/annonces/nouvelle"
           icon={Plus}
           iconColor="var(--accent-gold)"

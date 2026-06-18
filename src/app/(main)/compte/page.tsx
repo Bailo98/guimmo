@@ -58,6 +58,19 @@ interface VisitRequest {
   status: string; created_at: string;
   properties?: { title: string; neighborhood: string } | null;
 }
+interface HousingRequest {
+  id: string;
+  user_id: string;
+  commune: string;
+  property_type: string | null;
+  max_budget: number | null;
+  rooms: number | null;
+  move_in_date: string | null;
+  phone: string | null;
+  message: string | null;
+  status: string;
+  created_at: string;
+}
 interface FavoriteProperty {
   id: string; title: string; neighborhood: string;
   price: number; price_period: string | null; primary_image: string | null;
@@ -1585,7 +1598,7 @@ function MobileAccountHome({
     ? [
         { label: "Mes logements", Icon: Home, tab: "annonces" },
         { label: "Publier", Icon: Plus, href: "/publier/rapide", primary: true },
-        { label: "Demandes", Icon: Phone, tab: "visites" },
+        { label: "Demandes", Icon: Phone, tab: "demandes_locataires" },
         { label: "Messages", Icon: MessageCircle, tab: "messages" },
         { label: "Vérifier compte", Icon: ShieldCheck, href: "/compte/verification", primary: !profile?.is_verified },
         { label: "Profil", Icon: User, tab: "profil" },
@@ -1655,6 +1668,134 @@ function MobileAccountHome({
         </button>
       </div>
     </section>
+  );
+}
+
+function TenantRequestsManager() {
+  const [requests, setRequests] = useState<HousingRequest[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [hiddenIds, setHiddenIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    async function load() {
+      if (!supabase) { setLoading(false); return; }
+      const { data, error } = await supabase
+        .from("housing_requests")
+        .select("*")
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .limit(50);
+      if (error) {
+        console.error("[compte] demandes locataires:", error.message, error.code);
+        setRequests([]);
+      } else {
+        setRequests((data ?? []) as HousingRequest[]);
+      }
+      setLoading(false);
+    }
+    void load();
+  }, []);
+
+  const visible = requests.filter((request) => !hiddenIds.includes(request.id));
+
+  if (loading) {
+    return (
+      <div className="grid gap-3 md:grid-cols-2">
+        {[1, 2].map((i) => (
+          <div key={i} className="h-40 animate-pulse rounded-2xl" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }} />
+        ))}
+      </div>
+    );
+  }
+
+  if (visible.length === 0) {
+    return (
+      <div className="rounded-2xl p-8 text-center" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+        <Phone className="mx-auto mb-3 h-10 w-10 text-[var(--accent-gold)]" strokeWidth={2.2} />
+        <p className="text-xl font-black" style={{ color: "var(--text-primary)" }}>Aucune demande dans vos zones</p>
+        <p className="mt-2 text-sm font-bold" style={{ color: "var(--text-secondary)" }}>
+          Les recherches de locataires correspondant à vos communes apparaîtront ici.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+      {visible.map((request) => {
+        const typeLabel = request.property_type ? (TL[request.property_type] ?? request.property_type) : "Logement";
+        const phone = request.phone?.replace(/\D/g, "") ?? "";
+        const message = `Bonjour, j'ai vu votre recherche sur LogerBien (${NL[request.commune] ?? request.commune}, ${typeLabel}) et j'ai un logement qui peut correspondre.`;
+        return (
+          <article key={request.id} className="rounded-[24px] p-5" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}>
+            <div className="mb-4 flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-black" style={{ background: "rgba(185,138,46,0.14)", color: "var(--accent-gold)" }}>
+                <MapPin className="h-4 w-4" strokeWidth={2.4} />
+                {NL[request.commune] ?? request.commune}
+              </span>
+              <span className="rounded-full px-3 py-1 text-sm font-black" style={{ background: "var(--bg-secondary)", color: "var(--text-primary)" }}>
+                {typeLabel}
+              </span>
+            </div>
+
+            <div className="mb-4 grid grid-cols-2 gap-3">
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-wide" style={{ color: "var(--text-secondary)" }}>Budget</p>
+                <p className="text-lg font-black" style={{ color: "var(--text-primary)" }}>{request.max_budget ? formatPrice(request.max_budget) : "Non précisé"}</p>
+              </div>
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-wide" style={{ color: "var(--text-secondary)" }}>Chambres</p>
+                <p className="text-lg font-black" style={{ color: "var(--text-primary)" }}>{request.rooms ? `${request.rooms}` : "Flexible"}</p>
+              </div>
+              <div className="col-span-2">
+                <p className="text-[11px] font-black uppercase tracking-wide" style={{ color: "var(--text-secondary)" }}>Date</p>
+                <p className="text-base font-black" style={{ color: "var(--text-primary)" }}>
+                  {request.move_in_date ? new Date(request.move_in_date).toLocaleDateString("fr-FR") : "Dès que possible"}
+                </p>
+              </div>
+            </div>
+
+            {request.message && (
+              <p className="mb-4 rounded-2xl p-3 text-sm font-bold leading-relaxed" style={{ background: "var(--bg-secondary)", color: "var(--text-secondary)" }}>
+                {request.message}
+              </p>
+            )}
+
+            <div className="grid gap-2">
+              {phone && (
+                <a
+                  href={`https://wa.me/${phone}?text=${encodeURIComponent(message)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex min-h-12 items-center justify-center gap-2 rounded-2xl text-sm font-black no-underline"
+                  style={{ background: "#25D366", color: "white" }}
+                >
+                  <MessageCircle className="h-4 w-4" strokeWidth={2.5} />
+                  Contacter
+                </a>
+              )}
+              <div className="grid grid-cols-2 gap-2">
+                <a
+                  href="/publier/rapide"
+                  className="flex min-h-11 items-center justify-center rounded-2xl text-sm font-black no-underline"
+                  style={{ background: "rgba(185,138,46,0.14)", border: "1px solid rgba(185,138,46,0.25)", color: "var(--accent-gold)" }}
+                >
+                  J&apos;ai un logement
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setHiddenIds((prev) => [...prev, request.id])}
+                  className="min-h-11 rounded-2xl text-sm font-black"
+                  style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}
+                >
+                  Ignorer
+                </button>
+              </div>
+            </div>
+          </article>
+        );
+      })}
+    </div>
   );
 }
 
@@ -1743,7 +1884,8 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
   const sidebarTabs: DashTab[] = [
     { key: "dashboard",    label: "Tableau de bord",    icon: <BarChart2 className="w-4 h-4" /> },
     { key: "annonces",     label: "Mes annonces",       icon: <Home className="w-4 h-4" /> },
-    { key: "visites",      label: "Visites & demandes", icon: <Calendar className="w-4 h-4" />, badge: pendingVisits },
+    { key: "demandes_locataires", label: "Demandes locataires", icon: <Phone className="w-4 h-4" /> },
+    { key: "visites",      label: "Visites", icon: <Calendar className="w-4 h-4" />, badge: pendingVisits },
     { key: "messages",     label: "Messages",           icon: <MessageCircle className="w-4 h-4" /> },
     { key: "statistiques", label: "Statistiques",       icon: <TrendingUp className="w-4 h-4" /> },
     { key: "avis",         label: "Avis & évaluations", icon: <Star className="w-4 h-4" /> },
@@ -1879,7 +2021,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
               {[
                 { label: "Mes logements", Icon: Home, onClick: () => setTab("annonces"), tone: "soft" },
                 { label: "Publier", Icon: Plus, href: "/publier/rapide", tone: "gold" },
-                { label: "Demandes", Icon: Phone, onClick: () => setTab("visites"), tone: "soft" },
+                { label: "Demandes locataires", Icon: Phone, onClick: () => setTab("demandes_locataires"), tone: "soft" },
                 { label: "Mettre en avant", Icon: Star, onClick: () => setTab("abonnement"), tone: "soft" },
                 { label: "Messages", Icon: MessageCircle, onClick: () => setTab("messages"), tone: "soft" },
                 { label: "Vérifier mon compte", Icon: ShieldCheck, href: "/compte/verification", tone: profile?.is_verified ? "soft" : "gold" },
@@ -2002,10 +2144,18 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
               </>
             )}
 
-            {/* ── VISITES & DEMANDES ── */}
+            {/* ── DEMANDES LOCATAIRES ── */}
+            {tab === "demandes_locataires" && (
+              <>
+                <SectionHeader title="Demandes de locataires" subtitle="Recherches visibles selon vos zones d'annonces" />
+                <TenantRequestsManager />
+              </>
+            )}
+
+            {/* ── VISITES ── */}
             {tab === "visites" && (
               <>
-                <SectionHeader title="Visites & demandes" subtitle="Reçues sur vos annonces" />
+                <SectionHeader title="Visites" subtitle="Demandes reçues sur vos annonces" />
                 <VisitRequestsManager userId={user.id} onPendingCount={setPendingVisits} />
               </>
             )}

@@ -1,6 +1,6 @@
 ﻿"use client";
 /* eslint-disable react-hooks/set-state-in-effect */
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Bed, Bell, Building2, DoorOpen, FileText, Leaf, Phone, Search, Plus, X, MapPin, Home, DollarSign } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
@@ -20,17 +20,16 @@ const TYPES = [
 
 interface PropertyRequest {
   id: string;
-  user_id: string | null;
-  budget_min: number | null;
-  budget_max: number | null;
-  neighborhood: string | null;
+  user_id: string;
+  commune: string;
   property_type: string | null;
+  max_budget: number | null;
   rooms: number | null;
-  description: string | null;
-  contact_phone: string | null;
-  is_active: boolean;
+  move_in_date: string | null;
+  phone: string | null;
+  message: string | null;
+  status: string;
   created_at: string;
-  profiles?: { full_name: string | null; avatar_url: string | null } | null;
 }
 
 const NL: Record<string, string> = {
@@ -57,58 +56,92 @@ export default function JeCharchePage() {
   const [submitting, setSubmitting] = useState(false);
 
   const [form, setForm] = useState({
-    budget_max: "",
-    neighborhood: "",
+    max_budget: "",
+    commune: "",
     property_type: "",
     rooms: "",
-    description: "",
-    contact_phone: "",
+    move_in_date: "",
+    phone: "",
+    message: "",
   });
 
   // Pre-fill phone
   useEffect(() => {
-    if (profile?.phone) setForm((f) => ({ ...f, contact_phone: profile.phone! }));
+    if (profile?.phone) setForm((f) => ({ ...f, phone: profile.phone! }));
   }, [profile]);
 
-  async function loadRequests() {
+  const loadRequests = useCallback(async () => {
     if (!isSupabaseConfigured || !supabase) { setLoading(false); return; }
+    if (!user) { setRequests([]); setLoading(false); return; }
     const { data } = await supabase
-      .from("property_requests")
-      .select("*, profiles(full_name, avatar_url)")
-      .eq("is_active", true)
+      .from("housing_requests")
+      .select("*")
+      .eq("user_id", user.id)
+      .neq("status", "removed")
       .order("created_at", { ascending: false })
       .limit(50);
     setRequests((data ?? []) as unknown as PropertyRequest[]);
     setLoading(false);
-  }
+  }, [user]);
 
-  useEffect(() => { loadRequests(); }, []);
+  useEffect(() => { void loadRequests(); }, [loadRequests]);
+
+  async function notifyMatchingOwners(requestId: string, commune: string, type: string | null, budget: number | null) {
+    if (!supabase) return;
+    const { data: owners } = await supabase
+      .from("properties")
+      .select("owner_id, neighborhood, city")
+      .or(`neighborhood.eq.${commune},city.eq.${commune}`)
+      .in("status", ["active", "pending"])
+      .limit(40);
+
+    const ownerIds = Array.from(new Set((owners ?? []).map((row) => row.owner_id).filter(Boolean)));
+    if (ownerIds.length === 0) return;
+
+    await supabase.from("housing_request_notifications").upsert(
+      ownerIds.map((ownerId) => ({ request_id: requestId, owner_id: ownerId })),
+      { onConflict: "request_id,owner_id", ignoreDuplicates: true },
+    );
+
+    await supabase.from("notifications").insert(
+      ownerIds.map((ownerId) => ({
+        user_id: ownerId,
+        type: "housing_request",
+        title: "Nouvelle demande de logement",
+        body: `${NL[commune] ?? commune}${type ? ` · ${TYPES.find((t) => t.id === type)?.label ?? type}` : ""}${budget ? ` · max ${formatPrice(budget)}` : ""}`,
+        data: { request_id: requestId, commune },
+      })),
+    );
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!user) { router.push("/connexion?redirect=/je-cherche"); return; }
-    if (!form.budget_max && !form.neighborhood && !form.property_type) {
-      toast("Remplissez au moins un champ (budget, quartier ou type)", "error");
+    if (!form.commune || !form.property_type || !form.max_budget || !form.phone) {
+      toast("Commune, type, budget et téléphone sont obligatoires", "error");
       return;
     }
     if (!isSupabaseConfigured || !supabase) return;
     setSubmitting(true);
-    const { error } = await supabase.from("property_requests").insert({
+    const maxBudget = Number(form.max_budget.replace(/\D/g, ""));
+    const { data, error } = await supabase.from("housing_requests").insert({
       user_id:      user.id,
-      budget_max:   form.budget_max ? Number(form.budget_max.replace(/\D/g, "")) : null,
-      neighborhood: form.neighborhood || null,
+      commune:      form.commune,
       property_type: form.property_type || null,
       rooms:        form.rooms ? Number(form.rooms) : null,
-      description:  form.description || null,
-      contact_phone: form.contact_phone || null,
-      is_active:    true,
-    });
+      max_budget:   Number.isFinite(maxBudget) ? maxBudget : null,
+      move_in_date: form.move_in_date || null,
+      phone:        form.phone || null,
+      message:      form.message || null,
+      status:       "active",
+    }).select("id").single();
     setSubmitting(false);
     if (error) { toast("Erreur lors de la publication", "error"); return; }
+    if (data?.id) void notifyMatchingOwners(data.id, form.commune, form.property_type || null, maxBudget || null);
     toast("Recherche publiée !", "success");
     setShowForm(false);
-    setForm({ budget_max: "", neighborhood: "", property_type: "", rooms: "", description: "", contact_phone: "" });
-    loadRequests();
+    setForm({ max_budget: "", commune: "", property_type: "", rooms: "", move_in_date: "", phone: profile?.phone ?? "", message: "" });
+    void loadRequests();
   }
 
   const inputStyle: React.CSSProperties = {
@@ -145,9 +178,9 @@ export default function JeCharchePage() {
 
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4" style={{ marginBottom: 18 }}>
           {[
-            { label: "Commune", value: form.neighborhood ? (NL[form.neighborhood] ?? form.neighborhood) : "Choisir", Icon: MapPin },
+            { label: "Commune", value: form.commune ? (NL[form.commune] ?? form.commune) : "Choisir", Icon: MapPin },
             { label: "Type", value: form.property_type ? (TYPES.find((t) => t.id === form.property_type)?.label ?? "Choisi") : "Maison", Icon: Home },
-            { label: "Budget", value: form.budget_max ? formatPrice(Number(form.budget_max.replace(/\D/g, ""))) : "Prix max", Icon: DollarSign },
+            { label: "Budget", value: form.max_budget ? formatPrice(Number(form.max_budget.replace(/\D/g, ""))) : "Prix max", Icon: DollarSign },
             { label: "Alerte", value: "Créer", Icon: Bell },
           ].map(({ label, value, Icon }) => (
             <button
@@ -224,8 +257,8 @@ export default function JeCharchePage() {
                 <input
                   type="text" inputMode="numeric"
                   placeholder="Ex: 2 000 000"
-                  value={form.budget_max}
-                  onChange={(e) => setForm((f) => ({ ...f, budget_max: e.target.value }))}
+                  value={form.max_budget}
+                  onChange={(e) => setForm((f) => ({ ...f, max_budget: e.target.value }))}
                   style={inputStyle}
                 />
               </div>
@@ -257,8 +290,8 @@ export default function JeCharchePage() {
               <div>
                 <label style={labelStyle}><MapPin className="mr-1 inline h-3.5 w-3.5" />Commune souhaitée</label>
                 <select
-                  value={form.neighborhood}
-                  onChange={(e) => setForm((f) => ({ ...f, neighborhood: e.target.value }))}
+                  value={form.commune}
+                  onChange={(e) => setForm((f) => ({ ...f, commune: e.target.value }))}
                   style={{ ...inputStyle, appearance: "none" }}
                 >
                   <option value="">Toutes les communes</option>
@@ -288,13 +321,24 @@ export default function JeCharchePage() {
                 </div>
               </div>
 
-              {/* Description */}
+              {/* Move-in date */}
               <div>
-                <label style={labelStyle}><FileText className="mr-1 inline h-3.5 w-3.5" />Description (optionnel)</label>
+                <label style={labelStyle}>Date souhaitée</label>
+                <input
+                  type="date"
+                  value={form.move_in_date}
+                  onChange={(e) => setForm((f) => ({ ...f, move_in_date: e.target.value }))}
+                  style={inputStyle}
+                />
+              </div>
+
+              {/* Message */}
+              <div>
+                <label style={labelStyle}><FileText className="mr-1 inline h-3.5 w-3.5" />Message court (optionnel)</label>
                 <textarea
-                  placeholder="Décrivez votre besoin : étage, meublé, proche école…"
-                  value={form.description}
-                  onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                  placeholder="Ex : Je cherche une maison à Ratoma, budget 2M, 3 chambres."
+                  value={form.message}
+                  onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
                   rows={3}
                   style={{ ...inputStyle, resize: "vertical" }}
                 />
@@ -306,8 +350,8 @@ export default function JeCharchePage() {
                 <input
                   type="tel"
                   placeholder="+224 6XX XXX XXX"
-                  value={form.contact_phone}
-                  onChange={(e) => setForm((f) => ({ ...f, contact_phone: e.target.value }))}
+                  value={form.phone}
+                  onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
                   style={inputStyle}
                 />
               </div>
@@ -389,7 +433,7 @@ export default function JeCharchePage() {
                           );
                         })()
                       )}
-                      {req.neighborhood && (
+                      {req.commune && (
                         <span style={{
                           background: "rgba(96,165,250,0.12)", color: "#60a5fa",
                           fontSize: 12, fontWeight: 600, padding: "3px 10px", borderRadius: 20,
@@ -397,7 +441,7 @@ export default function JeCharchePage() {
                           display: "flex", alignItems: "center", gap: 4,
                         }}>
                           <MapPin style={{ width: 10, height: 10 }} />
-                          {NL[req.neighborhood] ?? req.neighborhood}
+                          {NL[req.commune] ?? req.commune}
                         </span>
                       )}
                       {req.rooms && (
@@ -414,29 +458,29 @@ export default function JeCharchePage() {
                     </div>
 
                     {/* Budget */}
-                    {req.budget_max && (
+                    {req.max_budget && (
                       <p style={{ fontSize: 20, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4 }}>
-                        Max {formatPrice(req.budget_max)}
+                        Max {formatPrice(req.max_budget)}
                         <span style={{ fontSize: 12, fontWeight: 500, color: "var(--text-primary-faint)", marginLeft: 4 }}>/mois</span>
                       </p>
                     )}
 
-                    {/* Description */}
-                    {req.description && (
+                    {/* Message */}
+                    {req.message && (
                       <p style={{ fontSize: 13, color: "var(--text-primary-dim)", lineHeight: 1.5, marginBottom: 6 }}>
-                        {req.description}
+                        {req.message}
                       </p>
                     )}
 
                     <p style={{ fontSize: 11, color: "var(--text-primary-faint)" }}>
-                      {req.profiles?.full_name ?? "Anonyme"} · {timeAgo(req.created_at)}
+                      {req.move_in_date ? `Date souhaitée : ${new Date(req.move_in_date).toLocaleDateString("fr-FR")} · ` : ""}{timeAgo(req.created_at)}
                     </p>
                   </div>
 
                   {/* Contact button */}
-                  {req.contact_phone && (
+                  {req.phone && (
                     <a
-                      href={`https://wa.me/${req.contact_phone.replace(/\D/g, "")}?text=${encodeURIComponent("Bonjour, j'ai vu votre recherche sur LogerBien et j'ai un bien qui correspond.")}`}
+                      href={`https://wa.me/${req.phone.replace(/\D/g, "")}?text=${encodeURIComponent("Bonjour, j'ai vu votre recherche sur LogerBien et j'ai un bien qui correspond.")}`}
                       target="_blank" rel="noopener noreferrer"
                       style={{
                         display: "flex", alignItems: "center", gap: 6,
