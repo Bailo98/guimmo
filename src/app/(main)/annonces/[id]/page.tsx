@@ -8,6 +8,7 @@ import { AlertTriangle, ArrowLeft, Armchair, BadgeCheck, Battery, Bed, Bath, Bri
 import { ListingScore } from "@/components/ListingScore";
 import { Avatar } from "@/components/ui/Avatar";
 import { PhotoGallery } from "./PhotoGallery";
+import { VideoCard } from "./VideoCard";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { MessageButton } from "@/components/property/MessageButton";
 import { ReportButton } from "@/components/property/ReportButton";
@@ -577,24 +578,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               )}
 
               {videoUrl && (
-                <div className="rounded-2xl p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-                  <h2 className="mb-3 inline-flex items-center gap-2 text-sm font-black" style={{ color: "var(--text-primary)" }}>
-                    <Video className="h-4 w-4 text-[var(--accent-gold)]" strokeWidth={2.4} />
-                    Vidéo du logement
-                  </h2>
-                  <video
-                    src={videoUrl}
-                    controls
-                    muted
-                    playsInline
-                    preload="metadata"
-                    poster={property.property_images?.[0]?.url}
-                    className="aspect-video w-full rounded-2xl object-cover"
-                  />
-                  <p className="mt-2 text-xs font-semibold" style={{ color: "var(--text-secondary)" }}>
-                    Les vidéos LogerBien doivent durer 1 minute maximum.
-                  </p>
-                </div>
+                <VideoCard videoUrl={videoUrl} poster={property.property_images?.[0]?.url} />
               )}
 
               {/* ── Carte de localisation ── */}

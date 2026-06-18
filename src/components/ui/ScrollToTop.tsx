@@ -1,10 +1,13 @@
 ﻿"use client";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function ScrollToTop() {
   const [visible, setVisible] = useState(false);
+  const pathname = usePathname();
+  const isPropertyDetail = /^\/annonces\/[^/]+$/.test(pathname ?? "");
 
   useEffect(() => {
     function onScroll() {
@@ -19,7 +22,8 @@ export function ScrollToTop() {
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       aria-label="Retour en haut"
       className={cn(
-        "fixed z-[55] h-16 w-16 rounded-full bg-[var(--accent-gold)] flex items-center justify-center transition-all duration-300 hover:-translate-y-1 active:scale-95",
+        "fixed z-[55] h-16 w-16 rounded-full bg-[var(--accent-gold)] items-center justify-center transition-all duration-300 hover:-translate-y-1 active:scale-95",
+        isPropertyDetail ? "hidden md:flex" : "flex",
         visible ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-5 pointer-events-none"
       )}
       style={{
