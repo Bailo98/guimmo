@@ -1,6 +1,7 @@
-﻿"use client";
-import { useState, useEffect, useRef, useCallback } from "react";
-import TinderCard from "react-tinder-card";
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,11 +17,16 @@ import { haversineKm } from "@/lib/haversine";
 import type { Property } from "@/types";
 
 const SEEN_KEY = "lb_swipe_seen";
+const SWIPE_THRESHOLD = 120;
 
 function getSeenIds(): string[] {
-  try { return JSON.parse(localStorage.getItem(SEEN_KEY) ?? "[]"); }
-  catch { return []; }
+  try {
+    return JSON.parse(localStorage.getItem(SEEN_KEY) ?? "[]");
+  } catch {
+    return [];
+  }
 }
+
 function addSeenId(id: string) {
   try {
     const seen = getSeenIds();
@@ -29,60 +35,72 @@ function addSeenId(id: string) {
       if (seen.length > 200) seen.splice(0, seen.length - 200);
       localStorage.setItem(SEEN_KEY, JSON.stringify(seen));
     }
-  } catch { /* silent */ }
-}
-function clearSeenIds() {
-  try { localStorage.removeItem(SEEN_KEY); } catch { /* silent */ }
+  } catch {
+    /* silent */
+  }
 }
 
-type TinderAPI = {
-  swipe: (dir: "left" | "right" | "up" | "down") => Promise<void>;
-  restoreCard: () => Promise<void>;
-};
+function clearSeenIds() {
+  try {
+    localStorage.removeItem(SEEN_KEY);
+  } catch {
+    /* silent */
+  }
+}
+
+function propertyTypeLabel(type: Property["type"]) {
+  if (type === "apartment") return "Appartement";
+  if (type === "house") return "Maison";
+  if (type === "villa") return "Villa";
+  if (type === "studio") return "Studio";
+  if (type === "room") return "Chambre";
+  return type;
+}
+
+function primaryImage(property: Property) {
+  return property.property_images?.find((image) => image.is_primary) ?? property.property_images?.[0];
+}
 
 export function SwipeFeed({ properties }: { properties: Property[] }) {
-  const router             = useRouter();
-  const { user }           = useAuth();
+  const router = useRouter();
+  const { user } = useAuth();
   const { toggleFavorite } = useAppStore();
 
-  const [mounted,          setMounted]          = useState(false);
-  const [cards,            setCards]            = useState<Property[]>([]);
-  const [userLocation,     setUserLocation]     = useState<{ lat: number; lng: number } | null>(null);
-  const [reloading,        setReloading]        = useState(false);
-  const [everHadCards,     setEverHadCards]     = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [cards, setCards] = useState<Property[]>([]);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [reloading, setReloading] = useState(false);
+  const [everHadCards, setEverHadCards] = useState(false);
   const [emptyAfterReload, setEmptyAfterReload] = useState(false);
+  const [exiting, setExiting] = useState<"left" | "right" | null>(null);
 
-  // ── Ref-based re-entry guard for the reload flow.
-  // Using a ref (not state) so flipping it never re-runs the useEffect, which
-  // would cancel the setTimeout via cleanup — the exact bug that kept the
-  // spinner stuck forever.
   const reloadInProgress = useRef(false);
+  const dragMovedRef = useRef(false);
 
-  // ── Overlay refs — pure DOM manipulation, ZERO React re-renders during drag ──
-  const overlayRightRef = useRef<HTMLDivElement>(null);
-  const overlayLeftRef  = useRef<HTMLDivElement>(null);
-  const touchStartX     = useRef(0);
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-260, 0, 260], [-13, 0, 13]);
+  const likeOpacity = useTransform(x, [22, 128], [0, 1]);
+  const passOpacity = useTransform(x, [-128, -22], [1, 0]);
+  const nextScale = useTransform(x, [-240, 0, 240], [1, 0.955, 1]);
+  const nextY = useTransform(x, [-240, 0, 240], [10, 28, 10]);
+  const activeCardId = cards[0]?.id;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const topCardRef = useRef<TinderAPI>(null as any);
-
-  // ── Mount ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     const id = window.setTimeout(() => setMounted(true), 0);
     return () => window.clearTimeout(id);
   }, []);
 
-  // ── Geolocation ────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       (pos) => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => { /* silent */ },
-      { timeout: 5000, maximumAge: 300_000 }
+      () => {
+        /* silent */
+      },
+      { timeout: 5000, maximumAge: 300_000 },
     );
   }, []);
 
-  // ── Sort helper ────────────────────────────────────────────────────────────
   function sortList(list: Property[], loc: { lat: number; lng: number } | null): Property[] {
     if (loc) {
       return [...list].sort((a, b) => {
@@ -91,12 +109,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         const bLat = b.lat ?? b.latitude ?? NEIGHBORHOOD_COORDINATES[b.neighborhood]?.[0];
         const bLng = b.lng ?? b.longitude ?? NEIGHBORHOOD_COORDINATES[b.neighborhood]?.[1];
         if (!aLat || !bLat) return 0;
-        return (
-          haversineKm(loc.lat, loc.lng, aLat, aLng) -
-          haversineKm(loc.lat, loc.lng, bLat, bLng)
-        );
+        return haversineKm(loc.lat, loc.lng, aLat, aLng) - haversineKm(loc.lat, loc.lng, bLat, bLng);
       });
     }
+
     return [...list].sort((a, b) => {
       const score = (p: Property) =>
         (p.is_featured ? 1000 : 0) +
@@ -106,19 +122,13 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     });
   }
 
-  // ── Initial load: filter seen + sort ──────────────────────────────────────
-  // Runs only on first mount (or when the static prop / location changes).
-  // Does NOT interfere with the reload flow because the reload directly calls
-  // setCards() and reloadInProgress prevents re-entry.
   useEffect(() => {
-    // Skip if a reload is already managing cards
     if (reloadInProgress.current) return;
     if (properties.length === 0) return;
 
     const seen = getSeenIds();
     let list = properties.filter((p) => !seen.includes(p.id));
 
-    // If < 20 % of properties remain unseen, reset seen history and show all
     if (list.length === 0 || list.length < Math.max(1, properties.length * 0.2)) {
       clearSeenIds();
       list = [...properties];
@@ -133,17 +143,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     return () => window.clearTimeout(id);
   }, [properties, userLocation]);
 
-  // ── Auto-reload when all cards are swiped ─────────────────────────────────
-  //
-  // CRITICAL: `reloading` is intentionally NOT in the dependency array.
-  //
-  // If `reloading` were a dep, calling setReloading(true) would immediately
-  // re-run this effect → the cleanup would fire → clearTimeout(t) would CANCEL
-  // the 1.5 s timer before it fires → fetchProperties() is never called →
-  // setReloading(false) is never called → spinner stuck forever.
-  //
-  // We prevent re-entry with `reloadInProgress` (a ref), which can be read
-  // inside the effect without being listed as a dependency.
   useEffect(() => {
     if (!mounted || !everHadCards || cards.length > 0 || emptyAfterReload) return;
     if (reloadInProgress.current) return;
@@ -152,13 +151,9 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     setReloading(true);
 
     const t = setTimeout(() => {
-      // Wipe seen history so the fresh batch isn't immediately filtered out
       clearSeenIds();
 
-      console.log("[SwipeFeed] reload — appel fetchProperties...");
       fetchProperties().then((fresh) => {
-        console.log("[SwipeFeed] fetchProperties →", fresh.length, "annonce(s) reçue(s)");
-
         reloadInProgress.current = false;
 
         if (fresh.length === 0) {
@@ -167,8 +162,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           return;
         }
 
-        // Sort the fresh batch, load it, THEN hide the spinner
-        const sorted = sortList(fresh, null); // use score sort; location sort runs via the other effect
+        const sorted = sortList(fresh, null);
         setCards(sorted);
         setEverHadCards(true);
         setReloading(false);
@@ -178,207 +172,145 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     return () => clearTimeout(t);
   }, [mounted, everHadCards, cards.length, emptyAfterReload]);
 
-  // ── Progressive overlay: pure DOM — no setState ────────────────────────────
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  }, []);
+  useEffect(() => {
+    x.set(0);
+    dragMovedRef.current = false;
+  }, [activeCardId, x]);
 
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    const deltaX = e.touches[0].clientX - touchStartX.current;
-    const abs    = Math.abs(deltaX);
-    const opacity = abs < 15 ? 0 : Math.min(1, (abs - 15) / 50);
+  const completeSwipe = useCallback(
+    async (dir: "left" | "right", property: Property) => {
+      addSeenId(property.id);
 
-    if (deltaX > 15) {
-      if (overlayRightRef.current) overlayRightRef.current.style.opacity = String(opacity);
-      if (overlayLeftRef.current)  overlayLeftRef.current.style.opacity  = "0";
-    } else if (deltaX < -15) {
-      if (overlayLeftRef.current)  overlayLeftRef.current.style.opacity  = String(opacity);
-      if (overlayRightRef.current) overlayRightRef.current.style.opacity = "0";
-    } else {
-      if (overlayRightRef.current) overlayRightRef.current.style.opacity = "0";
-      if (overlayLeftRef.current)  overlayLeftRef.current.style.opacity  = "0";
-    }
-  }, []);
+      if (dir === "right") {
+        if (!user) {
+          router.push("/connexion?redirect=/decouvrir");
+          return;
+        }
 
-  const handleTouchEnd = useCallback(() => {
-    if (overlayRightRef.current) overlayRightRef.current.style.opacity = "0";
-    if (overlayLeftRef.current)  overlayLeftRef.current.style.opacity  = "0";
-  }, []);
+        toggleFavorite(property.id);
+        toast("Ajouté aux favoris", "success");
 
-  // ── Swipe callbacks ────────────────────────────────────────────────────────
-  // CRITICAL: onSwipe must NOT call setState (would cause double-swipe bug)
-  const onSwipe = useCallback(async (dir: string, property: Property) => {
-    addSeenId(property.id);
-    if (overlayRightRef.current) overlayRightRef.current.style.opacity = "0";
-    if (overlayLeftRef.current)  overlayLeftRef.current.style.opacity  = "0";
+        if (isSupabaseConfigured && supabase) {
+          try {
+            const { error } = await supabase
+              .from("favorites")
+              .upsert(
+                { user_id: user.id, property_id: property.id },
+                { onConflict: "user_id,property_id", ignoreDuplicates: true },
+              );
+            if (error) console.error("[SwipeFeed] favorites upsert:", error.message, error.code);
+          } catch (e) {
+            console.error("[SwipeFeed] favorites upsert exception:", e);
+          }
+        }
+      }
 
-    if (dir === "right") {
-      if (!user) {
+      setCards((prev) => prev.filter((p) => p.id !== property.id));
+      x.set(0);
+      setExiting(null);
+      dragMovedRef.current = false;
+    },
+    [router, toggleFavorite, user, x],
+  );
+
+  const animateSwipe = useCallback(
+    async (dir: "left" | "right", property: Property) => {
+      if (exiting) return;
+
+      if (dir === "right" && !user) {
         router.push("/connexion?redirect=/decouvrir");
         return;
       }
-      toggleFavorite(property.id);
-      toast("Ajouté aux favoris", "success");
-      if (isSupabaseConfigured && supabase) {
-        try {
-          const { error } = await supabase
-            .from("favorites")
-            .upsert(
-              { user_id: user.id, property_id: property.id },
-              { onConflict: "user_id,property_id", ignoreDuplicates: true }
-            );
-          if (error) console.error("[SwipeFeed] favorites upsert:", error.message, error.code);
-        } catch (e) {
-          console.error("[SwipeFeed] favorites upsert exception:", e);
-        }
-      }
-    }
-  }, [user, toggleFavorite, router]);
 
-  // onCardLeftScreen fires AFTER fly-off — safe to setState here
-  const onCardLeft = useCallback((property: Property) => {
-    setCards((prev) => prev.filter((p) => p.id !== property.id));
-  }, []);
+      setExiting(dir);
+      const target = dir === "right" ? window.innerWidth * 1.25 : -window.innerWidth * 1.25;
+      await animate(x, target, { type: "spring", stiffness: 220, damping: 26 });
+      await completeSwipe(dir, property);
+    },
+    [completeSwipe, exiting, router, user, x],
+  );
 
-  const triggerSwipe = useCallback(async (dir: "left" | "right") => {
-    await topCardRef.current?.swipe(dir);
-  }, []);
+  const openDetail = useCallback(
+    (property: Property) => {
+      if (dragMovedRef.current || exiting) return;
+      router.push(`/annonces/${property.id}`);
+    },
+    [exiting, router],
+  );
 
-  // ── Render ─────────────────────────────────────────────────────────────────
   if (!mounted) return null;
 
-  // ── Reloading spinner ─────────────────────────────────────────────────────
   if (reloading) {
     return (
-      <div style={{
-        position: "fixed", inset: 0, zIndex: 10, background: "var(--bg-primary)",
-        display: "flex", flexDirection: "column", alignItems: "center",
-        justifyContent: "center", padding: "0 32px",
-      }}>
-        <Loader2 style={{ width: 52, height: 52, marginBottom: 16, color: "var(--accent-gold)" }} className="animate-spin" strokeWidth={2.2} />
-        <p style={{ color: "var(--accent-gold)", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
+      <div className="fixed inset-0 z-10 flex flex-col items-center justify-center bg-[var(--bg-primary)] px-8">
+        <Loader2 className="mb-4 h-13 w-13 animate-spin text-[var(--accent-gold)]" strokeWidth={2.2} />
+        <p className="mb-2 text-center text-xl font-bold text-[var(--accent-gold)]">
           On recommence depuis le début…
         </p>
-        <p style={{ color: "var(--text-primary-faint)", fontSize: 13, textAlign: "center" }}>
-          Chargement des nouvelles annonces…
-        </p>
-        <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+        <p className="text-center text-sm text-[var(--text-primary-faint)]">Chargement des nouvelles annonces…</p>
       </div>
     );
   }
 
-  // ── Empty after fresh fetch ────────────────────────────────────────────────
   if (emptyAfterReload) {
     return (
-      <div style={{
-        position: "fixed", inset: 0, zIndex: 10, background: "var(--bg-primary)",
-        display: "flex", flexDirection: "column", alignItems: "center",
-        justifyContent: "center", padding: "0 32px",
-      }}>
-        <Home style={{ width: 52, height: 52, marginBottom: 16, color: "var(--accent-gold)" }} strokeWidth={1.8} />
-        <p style={{ color: "var(--accent-gold)", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
-          Aucune annonce disponible
+      <div className="fixed inset-0 z-10 flex flex-col items-center justify-center bg-[var(--bg-primary)] px-8">
+        <Home className="mb-4 h-13 w-13 text-[var(--accent-gold)]" strokeWidth={1.8} />
+        <p className="mb-2 text-center text-xl font-bold text-[var(--accent-gold)]">
+          Plus de logements pour le moment
         </p>
-        <p style={{ color: "var(--text-primary-faint)", fontSize: 13, textAlign: "center", marginBottom: 24 }}>
-          Il n&apos;y a pas d&apos;annonces à afficher pour le moment.
+        <p className="mb-6 text-center text-sm text-[var(--text-primary-faint)]">
+          Reviens bientôt ou modifie ta recherche.
         </p>
-        <button
-          onClick={() => {
-            setEmptyAfterReload(false);
-            // Reset in-progress guard so the auto-reload effect can fire again
-            reloadInProgress.current = false;
-          }}
-          style={{
-            padding: "14px 32px", borderRadius: 14, border: "none",
-            background: "var(--accent-gold)", color: "var(--text-primary)",
-            fontWeight: 700, fontSize: 15, cursor: "pointer",
-            width: "100%", maxWidth: 320, marginBottom: 12,
-          }}
+        <Link
+          href="/annonces"
+          className="flex min-h-12 w-full max-w-80 items-center justify-center rounded-2xl bg-[var(--accent-gold)] px-6 text-center text-base font-extrabold text-[var(--text-primary)] no-underline"
         >
-          Réessayer
-        </button>
-        <Link href="/annonces" style={{
-          display: "block", textAlign: "center", width: "100%", maxWidth: 320,
-          padding: "14px 0", borderRadius: 14,
-          background: "var(--bg-card)", border: "1px solid var(--border)",
-          color: "var(--text-primary)", fontWeight: 700, fontSize: 15, textDecoration: "none",
-        }}>
-          Voir toutes les annonces
+          Retour aux annonces
         </Link>
       </div>
     );
   }
 
-  // ── Brief transition before reload triggers (cards just hit 0) ────────────
   if (cards.length === 0 && everHadCards) {
     return (
-      <div style={{
-        position: "fixed", inset: 0, zIndex: 10, background: "var(--bg-primary)",
-        display: "flex", flexDirection: "column", alignItems: "center",
-        justifyContent: "center", padding: "0 32px",
-      }}>
-        <Loader2 style={{ width: 52, height: 52, marginBottom: 16, color: "var(--accent-gold)" }} className="animate-spin" strokeWidth={2.2} />
-        <p style={{ color: "var(--accent-gold)", fontWeight: 700, fontSize: 20, textAlign: "center", marginBottom: 8 }}>
+      <div className="fixed inset-0 z-10 flex flex-col items-center justify-center bg-[var(--bg-primary)] px-8">
+        <Loader2 className="mb-4 h-13 w-13 animate-spin text-[var(--accent-gold)]" strokeWidth={2.2} />
+        <p className="mb-2 text-center text-xl font-bold text-[var(--accent-gold)]">
           On recommence depuis le début…
         </p>
-        <p style={{ color: "var(--text-primary-faint)", fontSize: 13, textAlign: "center" }}>
-          Chargement des nouvelles annonces…
-        </p>
-        <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+        <p className="text-center text-sm text-[var(--text-primary-faint)]">Chargement des nouvelles annonces…</p>
       </div>
     );
   }
 
   if (cards.length === 0) {
     return (
-      <div style={{
-        minHeight: "calc(100svh - 72px)",
-        background: "var(--bg-primary)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "32px",
-        textAlign: "center",
-      }}>
-        <Home style={{ width: 56, height: 56, marginBottom: 16, color: "var(--accent-gold)" }} strokeWidth={1.8} />
-        <h1 style={{ color: "var(--text-primary)", fontSize: 28, fontWeight: 800, marginBottom: 8 }}>
-          Aucune annonce à découvrir
-        </h1>
-        <p style={{ color: "var(--text-secondary)", maxWidth: 360, marginBottom: 24 }}>
-          Les nouvelles annonces apparaîtront ici dès qu’elles seront disponibles.
+      <div className="flex min-h-[calc(100svh-72px)] flex-col items-center justify-center bg-[var(--bg-primary)] p-8 text-center">
+        <Home className="mb-4 h-14 w-14 text-[var(--accent-gold)]" strokeWidth={1.8} />
+        <h1 className="mb-2 text-3xl font-extrabold text-[var(--text-primary)]">Plus de logements pour le moment</h1>
+        <p className="mb-6 max-w-90 text-base text-[var(--text-secondary)]">
+          Reviens bientôt ou modifie ta recherche.
         </p>
-        <Link href="/annonces" style={{
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: 48,
-          padding: "0 24px",
-          borderRadius: 14,
-          background: "var(--accent-gold)",
-          color: "var(--bg-primary)",
-          fontWeight: 800,
-          textDecoration: "none",
-        }}>
-          Voir toutes les annonces
+        <Link
+          href="/annonces"
+          className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-[var(--accent-gold)] px-6 font-extrabold text-[var(--bg-primary)] no-underline"
+        >
+          Retour aux annonces
         </Link>
       </div>
     );
   }
 
   const topCard = cards[0];
-  const topImg  = topCard.property_images?.find((i) => i.is_primary) ?? topCard.property_images?.[0];
-  const typeLabel =
-    topCard.type === "apartment" ? "Appartement" :
-    topCard.type === "house" ? "Maison" :
-    topCard.type === "villa" ? "Villa" :
-    topCard.type === "studio" ? "Studio" :
-    topCard.type === "room" ? "Chambre" :
-    topCard.type;
+  const nextCard = cards[1];
+  const topImg = primaryImage(topCard);
+  const nextImg = nextCard ? primaryImage(nextCard) : null;
+  const typeLabel = propertyTypeLabel(topCard.type);
+  const nextTypeLabel = nextCard ? propertyTypeLabel(nextCard.type) : "";
 
   return (
     <>
-      {/* Minimal overlay header: keep only the back action. */}
       <div
         style={{
           position: "fixed",
@@ -402,244 +334,233 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           aria-label="Retour"
           style={{
             pointerEvents: "auto",
-            width: 40, height: 40,
+            width: 40,
+            height: 40,
             background: "rgba(255,255,255,0.12)",
             border: "none",
             borderRadius: "50%",
-            display: "flex", alignItems: "center", justifyContent: "center",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             cursor: "pointer",
             color: "#ffffff",
             flexShrink: 0,
           }}
         >
-            <ArrowLeft style={{ width: 20, height: 20 }} strokeWidth={2.6} />
+          <ArrowLeft style={{ width: 20, height: 20 }} strokeWidth={2.6} />
         </button>
       </div>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          FULL-SCREEN FIXED CONTAINER (z-10)
-          overflow:hidden prevents scroll interference with react-tinder-card
-      ══════════════════════════════════════════════════════════════════════ */}
       <div
         style={{
           position: "fixed",
           inset: 0,
           overflow: "hidden",
           zIndex: 10,
-          background: "#000",
-          touchAction: "none",
+          background: "#050505",
           paddingTop: "env(safe-area-inset-top, 0px)",
           paddingBottom: "calc(164px + env(safe-area-inset-bottom, 0px))",
           paddingLeft: "env(safe-area-inset-left, 0px)",
           paddingRight: "env(safe-area-inset-right, 0px)",
         }}
       >
-        {/* ── TinderCard ─────────────────────────────────────────────────────── */}
-        <TinderCard
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ref={topCardRef as any}
+        {nextCard && (
+          <motion.div
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              left: "max(14px, calc((100vw - 520px) / 2), env(safe-area-inset-left, 0px))",
+              right: "max(14px, calc((100vw - 520px) / 2), env(safe-area-inset-right, 0px))",
+              top: "calc(112px + env(safe-area-inset-top, 0px))",
+              bottom: "calc(178px + env(safe-area-inset-bottom, 0px))",
+              borderRadius: 34,
+              overflow: "hidden",
+              background: "#161B26",
+              scale: nextScale,
+              y: nextY,
+              filter: "brightness(0.72) blur(1px)",
+              boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
+            }}
+          >
+            {nextImg ? (
+              <Image
+                src={nextImg.url}
+                alt={nextCard.title}
+                fill
+                style={{ objectFit: "cover", objectPosition: "center" }}
+                sizes="min(92vw, 520px)"
+                quality={78}
+                draggable={false}
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-[var(--bg-secondary)]">
+                <Home className="h-20 w-20 text-white/20" strokeWidth={1.4} />
+              </div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/90" />
+            <div className="absolute bottom-6 left-5 right-5">
+              <p className="m-0 text-3xl font-black leading-none text-white">{formatPrice(nextCard.price)}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="rounded-full border border-white/20 bg-white/15 px-3 py-2 text-sm font-black text-white backdrop-blur">
+                  {nextTypeLabel}
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/15 px-3 py-2 text-sm font-black text-white backdrop-blur">
+                  <MapPin className="h-3.5 w-3.5" strokeWidth={2.4} />
+                  {getNeighborhoodName(nextCard.neighborhood)}
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        <motion.div
           key={topCard.id}
-          onSwipe={(dir) => onSwipe(dir, topCard)}
-          onCardLeftScreen={() => onCardLeft(topCard)}
-          preventSwipe={["up", "down"]}
-          swipeRequirementType="position"
-          swipeThreshold={40}
-          className="tc-swipe"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.18}
+          onDragStart={() => {
+            dragMovedRef.current = false;
+          }}
+          onDrag={(_, info) => {
+            if (Math.abs(info.offset.x) > 8) dragMovedRef.current = true;
+          }}
+          onDragEnd={(_, info) => {
+            const dx = info.offset.x;
+            const velocity = info.velocity.x;
+
+            if (dx > SWIPE_THRESHOLD || velocity > 650) {
+              void animateSwipe("right", topCard);
+            } else if (dx < -SWIPE_THRESHOLD || velocity < -650) {
+              void animateSwipe("left", topCard);
+            } else {
+              void animate(x, 0, { type: "spring", stiffness: 430, damping: 32 });
+            }
+          }}
+          onTap={() => openDetail(topCard)}
+          style={{
+            position: "absolute",
+            left: "max(14px, calc((100vw - 520px) / 2), env(safe-area-inset-left, 0px))",
+            right: "max(14px, calc((100vw - 520px) / 2), env(safe-area-inset-right, 0px))",
+            top: "calc(104px + env(safe-area-inset-top, 0px))",
+            bottom: "calc(170px + env(safe-area-inset-bottom, 0px))",
+            x,
+            rotate,
+            zIndex: 10,
+            cursor: "grab",
+            touchAction: "pan-y",
+          }}
         >
           <div
             className="pressable"
             style={{
               position: "absolute",
               inset: 0,
+              overflow: "hidden",
+              borderRadius: 34,
               background: "#161B26",
-              cursor: "grab",
+              boxShadow: "0 26px 70px rgba(0,0,0,0.42)",
               userSelect: "none",
               WebkitUserSelect: "none",
-              touchAction: "none",
             }}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-            onClick={() => router.push(`/annonces/${topCard.id}`)}
           >
-            {/* ── Full-screen photo ─────────────────────────────────────────── */}
             {topImg ? (
               <Image
                 src={topImg.url}
                 alt={topCard.title}
                 fill
                 style={{ objectFit: "cover", objectPosition: "center" }}
-                sizes="100vw"
-                quality={85}
+                sizes="min(92vw, 520px)"
+                quality={88}
                 priority
                 draggable={false}
               />
             ) : (
-              <div style={{
-                position: "absolute", inset: 0,
-                background: "linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <Home style={{ width: 96, height: 96, opacity: 0.10, color: "#ffffff" }} strokeWidth={1.4} />
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[var(--bg-secondary)] to-[var(--bg-primary)]">
+                <Home className="h-24 w-24 text-white/15" strokeWidth={1.4} />
               </div>
             )}
 
-            {/* ── Bottom gradient scrim ──────────────────────────────────────── */}
-            <div style={{
-              position: "absolute", inset: 0, pointerEvents: "none",
-              background: "linear-gradient(transparent 30%, rgba(0,0,0,0.30) 52%, rgba(0,0,0,0.92) 100%)",
-            }} />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-black/10 to-black/92" />
 
-            {/* ── Interested overlay (swipe right) ──────────────────────────── */}
-            <div
-              ref={overlayRightRef}
-              style={{ position: "absolute", top: 108, left: 24, pointerEvents: "none", opacity: 0 }}
+            <motion.div
+              style={{ opacity: likeOpacity }}
+              className="pointer-events-none absolute left-5 top-8 rotate-[-14deg]"
             >
-              <div style={{
-                width: 82, height: 82,
-                border: "3px solid var(--accent-gold)", borderRadius: "50%",
-                color: "#ffffff",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                transform: "rotate(-15deg)",
-                background: "rgba(0,0,0,0.32)",
-                backdropFilter: "blur(10px)",
-              }}>
-                <Heart style={{ width: 40, height: 40, fill: "currentColor" }} strokeWidth={2.6} />
+              <div className="flex items-center gap-2 rounded-3xl border-[3px] border-[#C8973A] bg-black/35 px-5 py-3 text-2xl font-black uppercase tracking-wide text-white backdrop-blur-md">
+                <Heart className="h-8 w-8 fill-current" strokeWidth={2.6} />
+                J&apos;aime
               </div>
-            </div>
+            </motion.div>
 
-            {/* ── Passed overlay (swipe left) ────────────────────────────────── */}
-            <div
-              ref={overlayLeftRef}
-              style={{ position: "absolute", top: 108, right: 24, pointerEvents: "none", opacity: 0 }}
+            <motion.div
+              style={{ opacity: passOpacity }}
+              className="pointer-events-none absolute right-5 top-8 rotate-[14deg]"
             >
-              <div style={{
-                width: 82, height: 82,
-                border: "3px solid #FF4D4D", borderRadius: "50%",
-                color: "#ffffff",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                transform: "rotate(15deg)",
-                background: "rgba(0,0,0,0.32)",
-                backdropFilter: "blur(10px)",
-              }}>
-                <X style={{ width: 42, height: 42 }} strokeWidth={2.8} />
+              <div className="flex items-center gap-2 rounded-3xl border-[3px] border-[#FF4D4D] bg-black/35 px-5 py-3 text-2xl font-black uppercase tracking-wide text-white backdrop-blur-md">
+                <X className="h-8 w-8" strokeWidth={2.8} />
+                Passer
               </div>
-            </div>
+            </motion.div>
 
-            {/* ── Property info — bottom left ──────────────────────────────────── */}
-            <div style={{
-              position: "absolute",
-              bottom: 168,
-              left: "max(18px, env(safe-area-inset-left, 0px))",
-              right: "max(18px, env(safe-area-inset-right, 0px))",
-              pointerEvents: "none",
-            }}>
-              <p style={{
-                margin: 0,
-                fontSize: "clamp(32px, 8vw, 48px)",
-                fontWeight: 900,
-                color: "#ffffff",
-                lineHeight: 1.1,
-                textShadow: "0 2px 8px rgba(0,0,0,0.5)",
-              }}>
+            <div
+              style={{
+                position: "absolute",
+                bottom: 28,
+                left: "max(18px, env(safe-area-inset-left, 0px))",
+                right: "max(18px, env(safe-area-inset-right, 0px))",
+                pointerEvents: "none",
+              }}
+            >
+              <p className="m-0 text-[clamp(36px,8vw,54px)] font-black leading-none text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]">
                 {formatPrice(topCard.price)}
               </p>
               {topCard.price_period === "month" && (
-                <p style={{
-                  margin: "2px 0 8px",
-                   fontSize: 16,
-                  color: "rgba(255,255,255,0.75)",
-                  lineHeight: 1,
-                }}>
-                  /mois
-                </p>
+                <p className="mb-3 mt-2 text-base font-bold leading-none text-white/75">/mois</p>
               )}
 
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginTop: 10 }}>
-                <span style={{
-                  color: "#ffffff",
-                  fontSize: 16,
-                  fontWeight: 900,
-                  borderRadius: 999,
-                  padding: "8px 12px",
-                  background: "rgba(255,255,255,0.14)",
-                  border: "1px solid rgba(255,255,255,0.20)",
-                  backdropFilter: "blur(10px)",
-                }}>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="rounded-full border border-white/20 bg-white/15 px-3 py-2 text-base font-black text-white backdrop-blur-md">
                   {typeLabel}
                 </span>
-                <span style={{
-                  color: "#ffffff",
-                  fontSize: 16,
-                  fontWeight: 900,
-                  borderRadius: 999,
-                  padding: "8px 12px",
-                  background: "rgba(255,255,255,0.14)",
-                  border: "1px solid rgba(255,255,255,0.20)",
-                  backdropFilter: "blur(10px)",
-                }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                    <MapPin style={{ width: 14, height: 14 }} strokeWidth={2.4} />
-                    {getNeighborhoodName(topCard.neighborhood)}
-                  </span>
+                <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/15 px-3 py-2 text-base font-black text-white backdrop-blur-md">
+                  <MapPin className="h-3.5 w-3.5" strokeWidth={2.4} />
+                  {getNeighborhoodName(topCard.neighborhood)}
                 </span>
               </div>
             </div>
           </div>
-        </TinderCard>
+        </motion.div>
 
-        <div style={{
-          position: "absolute",
-          left: "max(18px, env(safe-area-inset-left, 0px))",
-          right: "max(18px, env(safe-area-inset-right, 0px))",
-          bottom: "calc(96px + env(safe-area-inset-bottom, 0px))",
-          zIndex: 20,
-          display: "grid",
-          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-          gap: 10,
-        }}>
+        <div
+          style={{
+            position: "absolute",
+            left: "max(18px, calc((100vw - 520px) / 2 + 18px), env(safe-area-inset-left, 0px))",
+            right: "max(18px, calc((100vw - 520px) / 2 + 18px), env(safe-area-inset-right, 0px))",
+            bottom: "calc(96px + env(safe-area-inset-bottom, 0px))",
+            zIndex: 20,
+            display: "grid",
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: 10,
+          }}
+        >
           <button
-            onClick={() => triggerSwipe("left")}
+            onClick={() => void animateSwipe("left", topCard)}
             aria-label="Passer"
-            style={{
-              minHeight: 58,
-              borderRadius: 22,
-              background: "rgba(255,255,255,0.14)",
-              border: "1.5px solid rgba(255,255,255,0.25)",
-              color: "#ffffff",
-              cursor: "pointer",
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              fontSize: 16,
-              fontWeight: 900,
-              WebkitTapHighlightColor: "transparent",
-            }}
+            className="flex min-h-15 cursor-pointer items-center justify-center gap-2 rounded-[22px] border border-white/25 bg-white/15 text-base font-black text-white outline-none ring-white/30 transition hover:bg-white/20 focus-visible:ring-4"
           >
-            <X style={{ width: 24, height: 24 }} strokeWidth={2.8} />
+            <X className="h-6 w-6" strokeWidth={2.8} />
             Passer
           </button>
 
           <button
-            onClick={() => triggerSwipe("right")}
-            aria-label="J'adore"
-            style={{
-              minHeight: 58,
-              borderRadius: 22,
-              background: "#C8973A",
-              border: "none",
-              color: "#ffffff",
-              cursor: "pointer",
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              fontSize: 16,
-              fontWeight: 900,
-              WebkitTapHighlightColor: "transparent",
-              boxShadow: "0 4px 16px rgba(200,151,58,0.50)",
-            }}
+            onClick={() => void animateSwipe("right", topCard)}
+            aria-label="J'aime"
+            className="flex min-h-15 cursor-pointer items-center justify-center gap-2 rounded-[22px] bg-[#C8973A] text-base font-black text-white shadow-[0_4px_16px_rgba(200,151,58,0.5)] outline-none ring-[#C8973A]/40 transition hover:bg-[#B8872C] focus-visible:ring-4"
           >
-            <Heart style={{ width: 28, height: 28, fill: "currentColor" }} strokeWidth={2.4} />
+            <Heart className="h-7 w-7 fill-current" strokeWidth={2.4} />
             J&apos;aime
           </button>
         </div>
-
       </div>
     </>
   );
