@@ -26,12 +26,12 @@ const SELECT_BASE: React.CSSProperties = {
   background: "var(--surface-soft)",
   border: "1px solid var(--border)",
   color: "var(--text-primary)",
-  borderRadius: "12px",
-  padding: "0 14px",
+  borderRadius: "11px",
+  padding: "0 12px",
   fontSize: "16px",
   width: "100%",
-  height: "48px",
-  minHeight: "48px",
+  height: "44px",
+  minHeight: "44px",
   outline: "none",
   appearance: "none",
   WebkitAppearance: "none",
@@ -64,7 +64,7 @@ export function HeroSearch() {
 
   return (
     <div
-      className="rounded-2xl p-3 sm:p-4 w-full max-w-[1080px] mx-auto"
+      className="rounded-2xl p-2.5 sm:p-3.5 w-full max-w-[1080px] mx-auto"
       style={{
         background: "var(--bg-card)",
         border: "1px solid var(--border)",
@@ -73,7 +73,7 @@ export function HeroSearch() {
     >
       {/* Tabs — pleine largeur, 50/50 */}
       <div
-        className="grid grid-cols-2 gap-1 mb-4 p-1 rounded-[10px]"
+        className="grid grid-cols-2 gap-1 mb-3 p-1 rounded-[10px]"
         style={{ background: "var(--surface-soft)", borderRadius: 12 }}
       >
         {(["rent", "sale"] as const).map((t) => (
@@ -82,7 +82,7 @@ export function HeroSearch() {
             onClick={() => setTab(t)}
             className="flex-1 text-sm font-semibold rounded-lg transition-all"
             style={{
-              minHeight: "44px",
+              minHeight: "40px",
               borderRadius: 10,
               ...(tab === t
                 ? { background: "var(--accent-gold)", color: "var(--bg-primary)", fontWeight: 700 }
@@ -98,7 +98,7 @@ export function HeroSearch() {
       </div>
 
       {/* Selects + budget — empilés mobile, côte à côte sm+ */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-3">
         <div>
           <label
             htmlFor="hs-commune"
@@ -182,11 +182,11 @@ export function HeroSearch() {
       </div>
 
       {/* Bouton Rechercher + micro — flex row pleine largeur */}
-      <div className="flex gap-2 px-16 sm:px-0">
+      <div className="flex gap-2 px-8 sm:px-0">
         <button
           onClick={handleSearch}
           className="flex-1 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-colors"
-          style={{ background: "var(--accent-gold)", color: "var(--bg-primary)", minHeight: "52px", fontWeight: 700 }}
+          style={{ background: "var(--accent-gold)", color: "var(--bg-primary)", minHeight: "46px", fontWeight: 700 }}
           onMouseEnter={(e) => { e.currentTarget.style.background = "#B8963A"; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = "var(--accent-gold)"; }}
         >

@@ -191,7 +191,7 @@ export default async function HomePage() {
   const recent = properties.slice(0, 4);
   return (
     <>
-      <section className="hero-section relative overflow-hidden py-4 sm:py-5 lg:py-6">
+      <section className="hero-section relative overflow-hidden py-2.5 sm:py-4 lg:py-5">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -207,19 +207,19 @@ export default async function HomePage() {
         <div className="content-fluid max-w-[1240px] relative">
           <div className="mx-auto max-w-[1120px] text-center">
             <h1
-              className="mx-auto mb-3 max-w-[820px] text-[clamp(2rem,8vw,3.5rem)] font-bold leading-[0.98]"
+              className="mx-auto mb-2 max-w-[820px] text-[clamp(1.85rem,7.3vw,3.5rem)] font-bold leading-[0.98]"
               style={{ color: "var(--text-primary)", fontFamily: "var(--font-manrope), sans-serif", letterSpacing: 0 }}
             >
               <span className="inline-flex items-center justify-center gap-2 md:gap-3">
-                <MapPin className="h-8 w-8 md:h-11 md:w-11" strokeWidth={2.5} />
+                <MapPin className="h-7 w-7 md:h-11 md:w-11" strokeWidth={2.5} />
                 Où cherches-tu ?
               </span>
             </h1>
-            <p className="mx-auto mb-4 max-w-[560px] text-base md:text-lg font-bold leading-snug" style={{ color: "var(--text-secondary)" }}>
+            <p className="mx-auto mb-3 max-w-[560px] text-[15px] md:text-lg font-bold leading-snug" style={{ color: "var(--text-secondary)" }}>
               Sans démarcheur. Sans commission.
             </p>
 
-            <div className="mb-4 grid grid-cols-3 gap-2 max-w-xl mx-auto">
+            <div className="mb-3 grid grid-cols-3 gap-1.5 sm:gap-2 max-w-xl mx-auto">
               {[
                 { label: "Je cherche", Icon: Search },
                 { label: "Je découvre", Icon: Heart },
@@ -227,10 +227,10 @@ export default async function HomePage() {
               ].map(({ label, Icon }) => (
                 <span
                   key={label}
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-base font-black"
+                  className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-2xl px-2 py-2 text-[13px] font-black sm:min-h-12 sm:gap-2 sm:px-3 sm:text-base"
                   style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}
                 >
-                  <Icon className="h-5 w-5" strokeWidth={2.3} />
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2.3} />
                   {label}
                 </span>
               ))}

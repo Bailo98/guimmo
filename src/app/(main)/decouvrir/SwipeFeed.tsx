@@ -78,11 +78,11 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   const dragMovedRef = useRef(false);
 
   const x = useMotionValue(0);
-  const rotate = useTransform(x, [-260, 0, 260], [-13, 0, 13]);
-  const likeOpacity = useTransform(x, [22, 128], [0, 1]);
-  const passOpacity = useTransform(x, [-128, -22], [1, 0]);
-  const nextScale = useTransform(x, [-240, 0, 240], [1, 0.955, 1]);
-  const nextY = useTransform(x, [-240, 0, 240], [10, 28, 10]);
+  const rotate = useTransform(x, [-280, 0, 280], [-18, 0, 18]);
+  const likeOpacity = useTransform(x, [18, 120], [0, 1]);
+  const passOpacity = useTransform(x, [-120, -18], [1, 0]);
+  const nextScale = useTransform(x, [-260, 0, 260], [1, 0.93, 1]);
+  const nextY = useTransform(x, [-260, 0, 260], [8, 34, 8]);
   const activeCardId = cards[0]?.id;
 
   useEffect(() => {
@@ -314,7 +314,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
       <div
         style={{
           position: "fixed",
-          top: "calc(72px + env(safe-area-inset-top, 0px))",
+          top: "calc(64px + env(safe-area-inset-top, 0px))",
           left: 0,
           right: 0,
           zIndex: 200,
@@ -369,17 +369,17 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             aria-hidden="true"
             style={{
               position: "absolute",
-              left: "max(14px, calc((100vw - 520px) / 2), env(safe-area-inset-left, 0px))",
-              right: "max(14px, calc((100vw - 520px) / 2), env(safe-area-inset-right, 0px))",
-              top: "calc(112px + env(safe-area-inset-top, 0px))",
-              bottom: "calc(178px + env(safe-area-inset-bottom, 0px))",
-              borderRadius: 34,
+              left: "max(22px, calc((100vw - 492px) / 2), env(safe-area-inset-left, 0px))",
+              right: "max(22px, calc((100vw - 492px) / 2), env(safe-area-inset-right, 0px))",
+              top: "calc(104px + env(safe-area-inset-top, 0px))",
+              bottom: "calc(170px + env(safe-area-inset-bottom, 0px))",
+              borderRadius: 36,
               overflow: "hidden",
               background: "#161B26",
               scale: nextScale,
               y: nextY,
-              filter: "brightness(0.72) blur(1px)",
-              boxShadow: "0 24px 60px rgba(0,0,0,0.35)",
+              filter: "brightness(0.78)",
+              boxShadow: "0 28px 72px rgba(0,0,0,0.42)",
             }}
           >
             {nextImg ? (
@@ -441,8 +441,8 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             position: "absolute",
             left: "max(14px, calc((100vw - 520px) / 2), env(safe-area-inset-left, 0px))",
             right: "max(14px, calc((100vw - 520px) / 2), env(safe-area-inset-right, 0px))",
-            top: "calc(104px + env(safe-area-inset-top, 0px))",
-            bottom: "calc(170px + env(safe-area-inset-bottom, 0px))",
+            top: "calc(96px + env(safe-area-inset-top, 0px))",
+            bottom: "calc(164px + env(safe-area-inset-bottom, 0px))",
             x,
             rotate,
             zIndex: 10,
@@ -456,7 +456,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               position: "absolute",
               inset: 0,
               overflow: "hidden",
-              borderRadius: 34,
+              borderRadius: 36,
               background: "#161B26",
               boxShadow: "0 26px 70px rgba(0,0,0,0.42)",
               userSelect: "none",
@@ -484,21 +484,21 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
             <motion.div
               style={{ opacity: likeOpacity }}
-              className="pointer-events-none absolute left-5 top-8 rotate-[-14deg]"
+              className="pointer-events-none absolute left-4 top-9 rotate-[-14deg] sm:left-6"
             >
-              <div className="flex items-center gap-2 rounded-3xl border-[3px] border-[#C8973A] bg-black/35 px-5 py-3 text-2xl font-black uppercase tracking-wide text-white backdrop-blur-md">
-                <Heart className="h-8 w-8 fill-current" strokeWidth={2.6} />
-                J&apos;aime
+              <div className="flex items-center gap-2 rounded-[28px] border-[4px] border-[#C8973A] bg-black/40 px-5 py-4 text-3xl font-black uppercase tracking-wide text-white shadow-2xl backdrop-blur-md sm:px-7 sm:text-4xl">
+                <Heart className="h-9 w-9 fill-current sm:h-11 sm:w-11" strokeWidth={2.6} />
+                J&apos;AIME
               </div>
             </motion.div>
 
             <motion.div
               style={{ opacity: passOpacity }}
-              className="pointer-events-none absolute right-5 top-8 rotate-[14deg]"
+              className="pointer-events-none absolute right-4 top-9 rotate-[14deg] sm:right-6"
             >
-              <div className="flex items-center gap-2 rounded-3xl border-[3px] border-[#FF4D4D] bg-black/35 px-5 py-3 text-2xl font-black uppercase tracking-wide text-white backdrop-blur-md">
-                <X className="h-8 w-8" strokeWidth={2.8} />
-                Passer
+              <div className="flex items-center gap-2 rounded-[28px] border-[4px] border-[#FF4D4D] bg-black/40 px-5 py-4 text-3xl font-black uppercase tracking-wide text-white shadow-2xl backdrop-blur-md sm:px-7 sm:text-4xl">
+                <X className="h-9 w-9 sm:h-11 sm:w-11" strokeWidth={2.8} />
+                PASSER
               </div>
             </motion.div>
 

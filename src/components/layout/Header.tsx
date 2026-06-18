@@ -129,10 +129,10 @@ export function Header() {
       style={{ background: "var(--nav-bg)", backdropFilter: "blur(18px) saturate(1.3)", WebkitBackdropFilter: "blur(18px) saturate(1.3)", borderBottom: "1px solid var(--border)" }}
     >
       <div
-        className="content-fluid flex h-[calc(72px+env(safe-area-inset-top,0px))] items-center justify-between gap-4"
+        className="content-fluid flex h-[calc(64px+env(safe-area-inset-top,0px))] items-center justify-between gap-3"
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
-        <Logo />
+        <Logo size="sm" />
 
         <nav className="hidden md:flex items-center gap-1 lg:gap-2">
           {desktopNav.map(({ href, label, Icon, active }) => (
@@ -347,7 +347,7 @@ export function Header() {
 
       {menuOpen && (
         <div
-          className="md:hidden border-t px-4 pb-4 space-y-1 animate-[slideDown_0.2s_ease-out]"
+          className="md:hidden border-t px-4 pb-3 space-y-1 animate-[slideDown_0.2s_ease-out]"
           style={{ background: "var(--nav-dropdown-bg)", borderColor: "var(--nav-border)" }}
         >
           <Link href="/annonces" onClick={() => setMenuOpen(false)}

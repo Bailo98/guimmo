@@ -17,8 +17,9 @@ const CONFIG = {
 function HouseIcon({ size }: { size: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-      <polyline points="9 22 9 12 15 12 15 22" />
+      <path d="M2 10.2 12 2.4l10 7.8" />
+      <path d="M4.2 9.6V20a2 2 0 0 0 2 2h11.6a2 2 0 0 0 2-2V9.6" />
+      <polyline points="9 22 9 13 15 13 15 22" />
     </svg>
   );
 }
