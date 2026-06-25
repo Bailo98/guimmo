@@ -6,12 +6,14 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { PropertyCard } from "@/components/ui/PropertyCard";
+import { useAppStore } from "@/lib/store";
 import type { Property } from "@/types";
 
 
 export default function FavorisPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const removeFavoriteFromStore = useAppStore((s) => s.removeFavorite);
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -57,6 +59,7 @@ export default function FavorisPage() {
         .eq("user_id", user.id)
         .eq("property_id", propertyId);
     }
+    removeFavoriteFromStore(propertyId);
     setProperties((p) => p.filter((x) => x.id !== propertyId));
   }
 

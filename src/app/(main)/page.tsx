@@ -221,18 +221,19 @@ export default async function HomePage() {
 
             <div className="mb-3 grid grid-cols-3 gap-1.5 sm:gap-2 max-w-xl mx-auto">
               {[
-                { label: "Je cherche", Icon: Search },
+                { label: "Je cherche", Icon: Search, href: "/annonces" },
                 { label: "Je découvre", Icon: Heart },
-                { label: "Je contacte", Icon: MessageCircle },
-              ].map(({ label, Icon }) => (
-                <span
+                { label: "Je contacte", Icon: MessageCircle, href: "/annonces" },
+              ].map(({ label, Icon, href }) => (
+                <Link
                   key={label}
-                  className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-2xl px-2 py-2 text-[13px] font-black sm:min-h-12 sm:gap-2 sm:px-3 sm:text-base"
+                  href={href ?? "/decouvrir"}
+                  className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-2xl px-2 py-2 text-[13px] font-black no-underline transition active:scale-[0.98] sm:min-h-12 sm:gap-2 sm:px-3 sm:text-base"
                   style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}
                 >
                   <Icon className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2.3} />
                   {label}
-                </span>
+                </Link>
               ))}
             </div>
 

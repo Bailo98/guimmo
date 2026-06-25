@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { AlertTriangle, ArrowLeft, Armchair, BadgeCheck, Battery, Bed, Bath, BrickWall, Calendar, Camera, Car, CheckCircle, CircleCheck, Droplets, Edit3, Eye, Home, KeyRound, Lock, MapPin, MessageCircle, Phone, Shield, ShieldCheck, Snowflake, Sofa, Square, Sun, Video, Wifi, XCircle, Zap } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Armchair, BadgeCheck, Battery, Bed, Bath, BrickWall, Calendar, Car, CheckCircle, CircleCheck, Droplets, Edit3, Eye, Home, KeyRound, Lock, MapPin, MessageCircle, Phone, Shield, ShieldCheck, Snowflake, Sofa, Square, Sun, Wifi, XCircle, Zap } from "lucide-react";
 import { ListingScore } from "@/components/ListingScore";
 import { Avatar } from "@/components/ui/Avatar";
 import { PhotoGallery } from "./PhotoGallery";
@@ -287,7 +287,7 @@ export default async function PropertyDetailPage({ params }: Props) {
 
       {/* Back button */}
       <div
-        className="absolute left-0 right-0 top-[64px] z-20 flex items-center px-4 pt-4"
+        className="fixed left-0 right-0 top-[64px] z-40 flex items-center px-4 pt-3"
         style={{
           paddingLeft: "max(16px, env(safe-area-inset-left, 0px))",
           paddingRight: "max(16px, env(safe-area-inset-right, 0px))",
@@ -295,10 +295,10 @@ export default async function PropertyDetailPage({ params }: Props) {
       >
         <Link
           href="/annonces"
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-md hover:bg-white transition-colors text-[#1A1A1A] flex-shrink-0"
+          className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-white/95 text-[#17120a] shadow-[0_14px_34px_rgba(0,0,0,0.22)] ring-1 ring-black/10 backdrop-blur-md transition-colors hover:bg-white"
           aria-label="Retour aux annonces"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="h-6 w-6" strokeWidth={2.8} />
         </Link>
       </div>
 
@@ -598,37 +598,6 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* Virtual tour */}
               {vtRooms.length > 0 && <VirtualTourWrapper rooms={vtRooms} />}
-
-              {/* Trust badges */}
-              {((profileData as {is_verified?: boolean} | null)?.is_verified || (property.property_images?.length ?? 0) > 0 || property.contact_phone) && (
-                <div className="rounded-2xl p-4 space-y-3" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-                  {(profileData as {is_verified?: boolean} | null)?.is_verified && (
-                    <p className="font-bold text-sm mb-2" style={{ color: "var(--text-primary)" }}>Pourquoi faire confiance à cette annonce</p>
-                  )}
-                  <div className="flex flex-wrap gap-2">
-                    {(profileData as {is_verified?: boolean} | null)?.is_verified && (
-                      <span className="inline-flex items-center gap-1.5 text-base font-black px-3 py-2 rounded-full" style={{ background: "rgba(212,175,55,0.12)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.30)" }}>
-                        <BadgeCheck className="h-4 w-4" strokeWidth={2.4} /> Propriétaire
-                      </span>
-                    )}
-                    {(property.property_images?.length ?? 0) > 0 && (
-                      <span className="inline-flex items-center gap-1.5 text-base font-black px-3 py-2 rounded-full" style={{ background: "rgba(212,175,55,0.15)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.25)" }}>
-                        <Camera className="h-4 w-4" strokeWidth={2.4} /> Photos
-                      </span>
-                    )}
-                    {property.contact_phone && (
-                      <span className="inline-flex items-center gap-1.5 text-base font-black px-3 py-2 rounded-full" style={{ background: "rgba(37,211,102,0.12)", color: "#15803d", border: "1px solid rgba(37,211,102,0.25)" }}>
-                        <Phone className="h-4 w-4" strokeWidth={2.4} /> Téléphone
-                      </span>
-                    )}
-                    {videoUrl && (
-                      <span className="inline-flex items-center gap-1.5 text-base font-black px-3 py-2 rounded-full" style={{ background: "rgba(139,92,246,0.15)", color: "#6d28d9", border: "1px solid rgba(139,92,246,0.25)" }}>
-                        <Video className="h-4 w-4" strokeWidth={2.4} /> Vidéo
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
 
               {/* Report — discreet at bottom */}
               <div className="flex justify-center pb-4">

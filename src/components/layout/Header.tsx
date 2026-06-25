@@ -361,11 +361,6 @@ export function Header() {
             <Search className="h-4 w-4" strokeWidth={2.4} />
             Je cherche
           </Link>
-          <Link href="/agents" onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-3 rounded-xl hover:bg-black/5"
-            style={{ color: "var(--nav-text)" }}>
-            Agents
-          </Link>
           {user ? (
             <>
               {isAdmin ? (

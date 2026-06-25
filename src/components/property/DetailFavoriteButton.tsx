@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { toast } from "@/lib/toast";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { AuthPromptModal } from "@/components/AuthPromptModal";
+import { useAppStore } from "@/lib/store";
 
 interface Props {
   propertyId: string;
@@ -21,6 +22,7 @@ interface Props {
  */
 export function DetailFavoriteButton({ propertyId }: Props) {
   const { user } = useAuth();
+  const setFavorite = useAppStore((s) => s.setFavorite);
   // Always start as false â€” Supabase re-check on mount sets the real value.
   // Never initialise from the server-rendered prop or the Zustand store, both
   // can be stale (e.g. user deleted the fav on /favoris then came back here).
@@ -49,6 +51,7 @@ export function DetailFavoriteButton({ propertyId }: Props) {
       .then(({ data }) => {
         if (cancelled) return;
         setIsFav(!!data);
+        setFavorite(propertyId, !!data);
         setChecked(true);
       });
     return () => { cancelled = true; };
@@ -60,6 +63,7 @@ export function DetailFavoriteButton({ propertyId }: Props) {
     if (!checked) return; // wait until we know the real state
     const next = !isFav;
     setIsFav(next); // optimistic
+    setFavorite(propertyId, next);
     toast(next ? "Ajouté aux favoris" : "Retiré des favoris", next ? "success" : "info");
 
     if (!isSupabaseConfigured || !supabase) return;
@@ -82,8 +86,9 @@ export function DetailFavoriteButton({ propertyId }: Props) {
       }
     } catch {
       setIsFav(!next); // rollback
+      setFavorite(propertyId, !next);
     }
-  }, [user, isFav, checked, propertyId]);
+  }, [user, isFav, checked, propertyId, setFavorite]);
 
   return (
     <>
@@ -93,12 +98,12 @@ export function DetailFavoriteButton({ propertyId }: Props) {
         aria-label={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
         style={{
           width: 44, height: 44,
-          background: isFav ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.08)",
-          border: isFav ? "1.5px solid rgba(239,68,68,0.50)" : "1.5px solid rgba(255,255,255,0.15)",
+          background: isFav ? "rgba(239,68,68,0.15)" : "var(--bg-card)",
+          border: isFav ? "1.5px solid rgba(239,68,68,0.50)" : "1.5px solid var(--border)",
           borderRadius: "50%",
           display: "flex", alignItems: "center", justifyContent: "center",
           cursor: checked ? "pointer" : "default",
-          color: isFav ? "#ef4444" : "rgba(255,255,255,0.70)",
+          color: isFav ? "#ef4444" : "var(--text-primary)",
           backdropFilter: "blur(6px)",
           transition: "background 0.2s, border-color 0.2s, transform 0.15s",
           flexShrink: 0,

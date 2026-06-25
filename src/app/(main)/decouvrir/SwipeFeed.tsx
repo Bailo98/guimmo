@@ -5,7 +5,7 @@ import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Heart, Home, Loader2, MapPin, X } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Heart, Home, Loader2, MapPin, MessageCircle, Phone, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useAppStore } from "@/lib/store";
 import { toast } from "@/lib/toast";
@@ -14,10 +14,11 @@ import { fetchProperties } from "@/lib/properties";
 import { formatPrice } from "@/lib/utils";
 import { getNeighborhoodName, NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
 import { haversineKm } from "@/lib/haversine";
+import { advanceSignal, availabilitySignal } from "@/lib/property-signals";
 import type { Property } from "@/types";
 
 const SEEN_KEY = "lb_swipe_seen";
-const SWIPE_THRESHOLD = 120;
+const SWIPE_THRESHOLD = 105;
 
 function getSeenIds(): string[] {
   try {
@@ -64,7 +65,7 @@ function primaryImage(property: Property) {
 export function SwipeFeed({ properties }: { properties: Property[] }) {
   const router = useRouter();
   const { user } = useAuth();
-  const { toggleFavorite } = useAppStore();
+  const { setFavorite, isFavorite, _hasHydrated } = useAppStore();
 
   const [mounted, setMounted] = useState(false);
   const [cards, setCards] = useState<Property[]>([]);
@@ -187,7 +188,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           return;
         }
 
-        toggleFavorite(property.id);
+        setFavorite(property.id, true);
         toast("Ajouté aux favoris", "success");
 
         if (isSupabaseConfigured && supabase) {
@@ -198,8 +199,12 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 { user_id: user.id, property_id: property.id },
                 { onConflict: "user_id,property_id", ignoreDuplicates: true },
               );
-            if (error) console.error("[SwipeFeed] favorites upsert:", error.message, error.code);
+            if (error) {
+              setFavorite(property.id, false);
+              console.error("[SwipeFeed] favorites upsert:", error.message, error.code);
+            }
           } catch (e) {
+            setFavorite(property.id, false);
             console.error("[SwipeFeed] favorites upsert exception:", e);
           }
         }
@@ -210,7 +215,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
       setExiting(null);
       dragMovedRef.current = false;
     },
-    [router, toggleFavorite, user, x],
+    [router, setFavorite, user, x],
   );
 
   const animateSwipe = useCallback(
@@ -236,6 +241,66 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
       router.push(`/annonces/${property.id}`);
     },
     [exiting, router],
+  );
+
+  const handleFavoriteOnly = useCallback(
+    async (property: Property) => {
+      if (!user) {
+        router.push("/connexion?redirect=/decouvrir");
+        return;
+      }
+      const next = !_hasHydrated || !isFavorite(property.id);
+      setFavorite(property.id, next);
+      toast(next ? "Ajouté aux favoris" : "Retiré des favoris", next ? "success" : "info");
+
+      if (!isSupabaseConfigured || !supabase) return;
+      try {
+        const { error } = next
+          ? await supabase
+              .from("favorites")
+              .upsert(
+                { user_id: user.id, property_id: property.id },
+                { onConflict: "user_id,property_id", ignoreDuplicates: true },
+              )
+          : await supabase
+              .from("favorites")
+              .delete()
+              .eq("user_id", user.id)
+              .eq("property_id", property.id);
+        if (error) throw error;
+      } catch (e) {
+        setFavorite(property.id, !next);
+        console.error("[SwipeFeed] favorite action:", e);
+      }
+    },
+    [_hasHydrated, isFavorite, router, setFavorite, user],
+  );
+
+  const handleWhatsApp = useCallback(
+    (property: Property) => {
+      if (!user) {
+        router.push(`/connexion?redirect=/annonces/${property.id}`);
+        return;
+      }
+      const phone = property.contact_phone?.replace(/\D/g, "");
+      if (!phone) return;
+      const msg = encodeURIComponent(`Bonjour, je suis intéressé par "${property.title}" sur LogerBien`);
+      window.open(`https://wa.me/${phone}?text=${msg}`, "_blank", "noopener");
+    },
+    [router, user],
+  );
+
+  const handleCall = useCallback(
+    (property: Property) => {
+      if (!user) {
+        router.push(`/connexion?redirect=/annonces/${property.id}`);
+        return;
+      }
+      const phone = property.contact_phone?.replace(/\D/g, "");
+      if (!phone) return;
+      window.location.href = `tel:${phone}`;
+    },
+    [router, user],
   );
 
   if (!mounted) return null;
@@ -308,6 +373,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   const nextImg = nextCard ? primaryImage(nextCard) : null;
   const typeLabel = propertyTypeLabel(topCard.type);
   const nextTypeLabel = nextCard ? propertyTypeLabel(nextCard.type) : "";
+  const availability = availabilitySignal(topCard);
+  const advance = advanceSignal(topCard);
+  const isFav = _hasHydrated && isFavorite(topCard.id);
+  const loadedImages = cards.slice(0, 3).map(primaryImage).filter(Boolean);
 
   return (
     <>
@@ -320,9 +389,9 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           zIndex: 200,
           display: "flex",
           alignItems: "center",
-          justifyContent: "flex-start",
-          paddingTop: 12,
-          paddingBottom: 12,
+          justifyContent: "space-between",
+          paddingTop: 8,
+          paddingBottom: 8,
           paddingLeft: "max(16px, env(safe-area-inset-left, 0px))",
           paddingRight: "max(16px, env(safe-area-inset-right, 0px))",
           background: "linear-gradient(rgba(0,0,0,0.42) 0%, transparent 100%)",
@@ -336,8 +405,8 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             pointerEvents: "auto",
             width: 40,
             height: 40,
-            background: "rgba(255,255,255,0.12)",
-            border: "none",
+            background: "rgba(0,0,0,0.34)",
+            border: "1px solid rgba(255,255,255,0.24)",
             borderRadius: "50%",
             display: "flex",
             alignItems: "center",
@@ -349,6 +418,17 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         >
           <ArrowLeft style={{ width: 20, height: 20 }} strokeWidth={2.6} />
         </button>
+        <div
+          className="rounded-full px-3 py-2 text-sm font-black text-white"
+          style={{
+            background: "rgba(0,0,0,0.34)",
+            border: "1px solid rgba(255,255,255,0.18)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+          }}
+        >
+          {properties.length - cards.length + 1} / {properties.length}
+        </div>
       </div>
 
       <div
@@ -359,21 +439,26 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           zIndex: 10,
           background: "#050505",
           paddingTop: "env(safe-area-inset-top, 0px)",
-          paddingBottom: "calc(164px + env(safe-area-inset-bottom, 0px))",
+          paddingBottom: "calc(92px + env(safe-area-inset-bottom, 0px))",
           paddingLeft: "env(safe-area-inset-left, 0px)",
           paddingRight: "env(safe-area-inset-right, 0px)",
         }}
       >
+        <div aria-hidden="true" className="hidden">
+          {loadedImages.map((image, index) => image && (
+            <Image key={`${image.url}-${index}`} src={image.url} alt="" width={20} height={20} priority={index < 2} />
+          ))}
+        </div>
         {nextCard && (
           <motion.div
             aria-hidden="true"
             style={{
               position: "absolute",
-              left: "max(22px, calc((100vw - 492px) / 2), env(safe-area-inset-left, 0px))",
-              right: "max(22px, calc((100vw - 492px) / 2), env(safe-area-inset-right, 0px))",
-              top: "calc(104px + env(safe-area-inset-top, 0px))",
-              bottom: "calc(170px + env(safe-area-inset-bottom, 0px))",
-              borderRadius: 36,
+              left: "max(14px, calc((100vw - 520px) / 2), env(safe-area-inset-left, 0px))",
+              right: "max(14px, calc((100vw - 520px) / 2), env(safe-area-inset-right, 0px))",
+              top: "calc(78px + env(safe-area-inset-top, 0px))",
+              bottom: "calc(96px + env(safe-area-inset-bottom, 0px))",
+              borderRadius: 30,
               overflow: "hidden",
               background: "#161B26",
               scale: nextScale,
@@ -397,7 +482,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 <Home className="h-20 w-20 text-white/20" strokeWidth={1.4} />
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/90" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/88" />
             <div className="absolute bottom-6 left-5 right-5">
               <p className="m-0 text-3xl font-black leading-none text-white">{formatPrice(nextCard.price)}</p>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -439,10 +524,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           onTap={() => openDetail(topCard)}
           style={{
             position: "absolute",
-            left: "max(14px, calc((100vw - 520px) / 2), env(safe-area-inset-left, 0px))",
-            right: "max(14px, calc((100vw - 520px) / 2), env(safe-area-inset-right, 0px))",
-            top: "calc(96px + env(safe-area-inset-top, 0px))",
-            bottom: "calc(164px + env(safe-area-inset-bottom, 0px))",
+            left: "max(10px, calc((100vw - 540px) / 2), env(safe-area-inset-left, 0px))",
+            right: "max(10px, calc((100vw - 540px) / 2), env(safe-area-inset-right, 0px))",
+            top: "calc(72px + env(safe-area-inset-top, 0px))",
+            bottom: "calc(92px + env(safe-area-inset-bottom, 0px))",
             x,
             rotate,
             zIndex: 10,
@@ -456,7 +541,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               position: "absolute",
               inset: 0,
               overflow: "hidden",
-              borderRadius: 36,
+              borderRadius: 30,
               background: "#161B26",
               boxShadow: "0 26px 70px rgba(0,0,0,0.42)",
               userSelect: "none",
@@ -480,7 +565,43 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               </div>
             )}
 
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-black/10 to-black/92" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/92" />
+
+            <div className="absolute right-3 top-3 z-20 flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  void handleFavoriteOnly(topCard);
+                }}
+                aria-label={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white shadow-lg backdrop-blur-xl transition active:scale-95"
+              >
+                <Heart className={isFav ? "h-5 w-5 fill-red-500 text-red-500" : "h-5 w-5"} strokeWidth={2.5} />
+              </button>
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleCall(topCard);
+                }}
+                aria-label="Appeler"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white shadow-lg backdrop-blur-xl transition active:scale-95"
+              >
+                <Phone className="h-5 w-5" strokeWidth={2.5} />
+              </button>
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleWhatsApp(topCard);
+                }}
+                aria-label="WhatsApp"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-[#25D366]/90 text-white shadow-lg backdrop-blur-xl transition active:scale-95"
+              >
+                <MessageCircle className="h-5 w-5" strokeWidth={2.5} />
+              </button>
+            </div>
 
             <motion.div
               style={{ opacity: likeOpacity }}
@@ -505,26 +626,33 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             <div
               style={{
                 position: "absolute",
-                bottom: 28,
+                bottom: 22,
                 left: "max(18px, env(safe-area-inset-left, 0px))",
                 right: "max(18px, env(safe-area-inset-right, 0px))",
                 pointerEvents: "none",
               }}
             >
-              <p className="m-0 text-[clamp(36px,8vw,54px)] font-black leading-none text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]">
+              <p className="mb-1 flex items-center gap-1 text-sm font-black text-white/85">
+                <BadgeCheck className="h-4 w-4 text-[#25D366]" strokeWidth={2.5} />
+                {availability.label}
+              </p>
+              <p className="m-0 text-[clamp(38px,9vw,58px)] font-black leading-none text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.55)]">
                 {formatPrice(topCard.price)}
               </p>
               {topCard.price_period === "month" && (
-                <p className="mb-3 mt-2 text-base font-bold leading-none text-white/75">/mois</p>
+                <p className="mb-2 mt-2 text-base font-bold leading-none text-white/75">/mois</p>
               )}
 
-              <div className="mt-3 flex flex-wrap items-center gap-2">
+              <div className="mt-2 flex flex-wrap items-center gap-2">
                 <span className="rounded-full border border-white/20 bg-white/15 px-3 py-2 text-base font-black text-white backdrop-blur-md">
                   {typeLabel}
                 </span>
                 <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/15 px-3 py-2 text-base font-black text-white backdrop-blur-md">
                   <MapPin className="h-3.5 w-3.5" strokeWidth={2.4} />
                   {getNeighborhoodName(topCard.neighborhood)}
+                </span>
+                <span className="rounded-full border border-white/20 bg-white/15 px-3 py-2 text-base font-black text-white backdrop-blur-md">
+                  {advance}
                 </span>
               </div>
             </div>
@@ -536,7 +664,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
             position: "absolute",
             left: "max(18px, calc((100vw - 520px) / 2 + 18px), env(safe-area-inset-left, 0px))",
             right: "max(18px, calc((100vw - 520px) / 2 + 18px), env(safe-area-inset-right, 0px))",
-            bottom: "calc(96px + env(safe-area-inset-bottom, 0px))",
+            bottom: "calc(18px + env(safe-area-inset-bottom, 0px))",
             zIndex: 20,
             display: "grid",
             gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
@@ -546,7 +674,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           <button
             onClick={() => void animateSwipe("left", topCard)}
             aria-label="Passer"
-            className="flex min-h-15 cursor-pointer items-center justify-center gap-2 rounded-[22px] border border-white/25 bg-white/15 text-base font-black text-white outline-none ring-white/30 transition hover:bg-white/20 focus-visible:ring-4"
+            className="flex min-h-14 cursor-pointer items-center justify-center gap-2 rounded-full border border-white/25 bg-white/15 text-base font-black text-white outline-none ring-white/30 backdrop-blur-xl transition hover:bg-white/20 active:scale-95 focus-visible:ring-4"
           >
             <X className="h-6 w-6" strokeWidth={2.8} />
             Passer
@@ -555,7 +683,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
           <button
             onClick={() => void animateSwipe("right", topCard)}
             aria-label="J'aime"
-            className="flex min-h-15 cursor-pointer items-center justify-center gap-2 rounded-[22px] bg-[#C8973A] text-base font-black text-white shadow-[0_4px_16px_rgba(200,151,58,0.5)] outline-none ring-[#C8973A]/40 transition hover:bg-[#B8872C] focus-visible:ring-4"
+            className="flex min-h-14 cursor-pointer items-center justify-center gap-2 rounded-full bg-[#C8973A] text-base font-black text-white shadow-[0_4px_16px_rgba(200,151,58,0.5)] outline-none ring-[#C8973A]/40 transition hover:bg-[#B8872C] active:scale-95 focus-visible:ring-4"
           >
             <Heart className="h-7 w-7 fill-current" strokeWidth={2.4} />
             J&apos;aime

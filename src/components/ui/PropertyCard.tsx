@@ -48,7 +48,7 @@ export function PropertyCard({
   showDiasporaPrice = false,
 }: PropertyCardProps) {
   const router                               = useRouter();
-  const { toggleFavorite, isFavorite, _hasHydrated } = useAppStore();
+  const { setFavorite, isFavorite, _hasHydrated } = useAppStore();
   const { user }                             = useAuth();
   const [showAuthModal, setShowAuthModal]    = useState(false);
   const [currentImg,    setCurrentImg]       = useState(0);
@@ -109,20 +109,24 @@ export function PropertyCard({
     e.preventDefault(); e.stopPropagation();
     if (!user) { setShowAuthModal(true); return; }
     const willBeFav = !fav;
-    toggleFavorite(property.id);
+    setFavorite(property.id, willBeFav);
     toast(willBeFav ? "Ajouté aux favoris" : "Retiré des favoris", willBeFav ? "success" : "info");
     if (isSupabaseConfigured && supabase) {
       try {
+        let error: unknown = null;
         if (willBeFav) {
-          await supabase.from("favorites").upsert(
+          ({ error } = await supabase.from("favorites").upsert(
             { user_id: user.id, property_id: property.id },
             { onConflict: "user_id,property_id", ignoreDuplicates: true }
-          );
+          ));
         } else {
-          await supabase.from("favorites").delete()
-            .eq("user_id", user.id).eq("property_id", property.id);
+          ({ error } = await supabase.from("favorites").delete()
+            .eq("user_id", user.id).eq("property_id", property.id));
         }
-      } catch { /* silent */ }
+        if (error) throw error;
+      } catch {
+        setFavorite(property.id, !willBeFav);
+      }
     }
   }
 

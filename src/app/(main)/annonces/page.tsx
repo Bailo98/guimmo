@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useMemo, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Search,
   SlidersHorizontal,
@@ -627,6 +628,41 @@ function AnnoncesContent() {
         </div>
 
         {/* ── Map or Grid ── */}
+        {!loading && (
+          <div
+            className="mb-5 grid gap-3 rounded-[24px] p-4 sm:grid-cols-[1fr_auto] sm:items-center"
+            style={{
+              background: "linear-gradient(135deg, rgba(185,138,46,0.16), var(--bg-card))",
+              border: "1px solid rgba(185,138,46,0.34)",
+              boxShadow: "var(--shadow-soft)",
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl"
+                style={{ background: "var(--accent-gold)", color: "#17120a" }}
+              >
+                <Search className="h-6 w-6" strokeWidth={2.6} />
+              </div>
+              <div>
+                <p className="text-base font-black" style={{ color: "var(--text-primary)" }}>
+                  Tu ne trouves pas ?
+                </p>
+                <p className="text-sm font-bold" style={{ color: "var(--text-secondary)" }}>
+                  Publie ta recherche, les propriétaires de ta zone pourront te contacter.
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/je-cherche"
+              className="inline-flex min-h-12 items-center justify-center rounded-2xl px-5 text-sm font-black no-underline transition active:scale-[0.98]"
+              style={{ background: "var(--accent-gold)", color: "#17120a" }}
+            >
+              Publier ma recherche
+            </Link>
+          </div>
+        )}
+
         {loading ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5 xl:gap-6">
             {Array.from({ length: pageSize }).map((_, i) => <SkeletonCard key={i} />)}

@@ -109,6 +109,8 @@ interface AppState {
   // Favorites
   favorites: string[];
   toggleFavorite: (id: string) => void;
+  setFavorite: (id: string, isFavorite: boolean) => void;
+  removeFavorite: (id: string) => void;
   isFavorite: (id: string) => boolean;
 
   // Search
@@ -193,6 +195,14 @@ export const useAppStore = create<AppState>()(
             ? s.favorites.filter((f) => f !== id)
             : [...s.favorites, id],
         })),
+      setFavorite: (id, isFavorite) =>
+        set((s) => ({
+          favorites: isFavorite
+            ? (s.favorites.includes(id) ? s.favorites : [...s.favorites, id])
+            : s.favorites.filter((f) => f !== id),
+        })),
+      removeFavorite: (id) =>
+        set((s) => ({ favorites: s.favorites.filter((f) => f !== id) })),
       isFavorite: (id) => get().favorites.includes(id),
 
       lastFilters: {},
