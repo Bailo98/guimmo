@@ -162,7 +162,7 @@ export function Header() {
             style={{ color: "var(--nav-text)" }}
             aria-label="Changer le thème"
           >
-            {(!mounted || resolvedTheme === "dark") ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            {mounted && resolvedTheme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
 
           {/* ── Notification bell ── */}

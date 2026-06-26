@@ -55,6 +55,9 @@
   --nav-bg:           rgba(247,243,234,0.86);
   --shadow:           0 22px 60px rgba(24,21,16,0.13);
   --shadow-soft:      0 12px 32px rgba(24,21,16,0.08);
+  --media-card-bg:    #efe7d8;
+  --swipe-bg:         #f2eadb;
+  --swipe-card-bg:    #fffaf0;
 }
 
 /* ── Light mode: derived + backward-compat aliases ────────────── */
@@ -128,6 +131,9 @@
   --color-green:      #7ba88b;
   --color-green-soft: #1f3228;
   --nav-bg:           rgba(17,16,13,0.86);
+  --media-card-bg:    #111820;
+  --swipe-bg:         #050505;
+  --swipe-card-bg:    #161B26;
 }
 
 /* ── Dark mode: derived + backward-compat aliases ─────────────── */
@@ -392,6 +398,14 @@ textarea {
 }
 
 .app-page-bg {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+.app-main-shell {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+.app-main-shell :where(.bg-app-surface) {
   background: var(--bg-primary);
   color: var(--text-primary);
 }

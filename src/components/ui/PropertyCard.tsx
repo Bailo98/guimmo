@@ -200,7 +200,7 @@ export function PropertyCard({
         borderRadius: 24,
         overflow: "hidden",
         boxShadow: "0 16px 42px rgba(24,21,16,0.22)",
-        background: "#111820",
+        background: "var(--media-card-bg)",
         flexShrink: 0,
         transition: "transform 0.22s ease, box-shadow 0.22s ease",
       }}

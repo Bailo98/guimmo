@@ -41,7 +41,7 @@ const AnnoncesMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div style={{ height: "calc(100vh - 180px)", background: "#111820", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ height: "calc(100vh - 180px)", background: "var(--media-card-bg)", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <span style={{ color: "var(--text-primary-faint)", fontSize: 14 }}>Chargement de la carte…</span>
       </div>
     ),

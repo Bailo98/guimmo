@@ -61,28 +61,38 @@ export function PropertyShareButton({ title, neighborhood, price, rooms, bathroo
       <button
         type="button"
         onClick={share}
-        className="flex items-center gap-2 px-4 rounded-xl font-bold text-white text-sm transition-all"
-        style={{ minHeight: 44, background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.15)" }}
+        className="flex items-center justify-center rounded-full font-bold transition-all"
+        style={{
+          width: 44,
+          height: 44,
+          background: "var(--bg-card)",
+          border: "1px solid var(--border)",
+          color: "var(--text-primary)",
+          boxShadow: "var(--shadow-soft)",
+        }}
+        title="Partager"
+        aria-label="Partager"
       >
         <Share2 className="w-4 h-4 flex-shrink-0" />
-        Partager
       </button>
 
       {/* Copy link */}
       <button
         type="button"
         onClick={copyLink}
-        title="Copier le lien court"
-        className="flex items-center gap-1.5 px-3 rounded-xl font-semibold text-sm transition-all"
+        title={copied ? "Lien copié" : "Copier le lien"}
+        aria-label={copied ? "Lien copié" : "Copier le lien"}
+        className="flex items-center justify-center rounded-full font-semibold transition-all"
         style={{
-          minHeight: 44,
-          background: copied ? "rgba(212,175,55,0.12)" : "rgba(255,255,255,0.08)",
-          border: copied ? "1px solid rgba(212,175,55,0.30)" : "1px solid rgba(255,255,255,0.12)",
-          color: copied ? "var(--accent-gold)" : "rgba(255,255,255,0.70)",
+          width: 44,
+          height: 44,
+          background: copied ? "rgba(212,175,55,0.16)" : "var(--bg-card)",
+          border: copied ? "1px solid rgba(212,175,55,0.38)" : "1px solid var(--border)",
+          color: copied ? "var(--accent-gold)" : "var(--text-primary)",
+          boxShadow: "var(--shadow-soft)",
         }}
       >
         {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-        {copied ? "Copié !" : "Copier le lien"}
       </button>
     </div>
   );
