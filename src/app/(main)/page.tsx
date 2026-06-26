@@ -1,9 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, ChevronRight, Flame, Heart, Home, MapPin, MessageCircle, Phone, Search, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronRight, CircleHelp, Flame, Heart, Home, PlusCircle, X } from "lucide-react";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { HeroSearch } from "@/components/home/HeroSearch";
-import { formatPrice } from "@/lib/utils";
 import { isPubliclyAvailable } from "@/lib/property-signals";
 import { createClient } from "@supabase/supabase-js";
 import type { Metadata } from "next";
@@ -23,12 +22,6 @@ export const metadata: Metadata = {
     url: "https://logerbien.gn",
     siteName: "LogerBien",
   },
-};
-
-const NL: Record<string, string> = {
-  kipe: "Kipé", hamdallaye: "Hamdallaye", dixinn: "Dixinn", ratoma: "Ratoma",
-  taouyah: "Taouyah", sonfonia: "Sonfonia", lambanyi: "Lambanyi", kaloum: "Kaloum",
-  matam: "Matam", madina: "Madina", nongo: "Nongo", cosa: "Cosa",
 };
 
 const TYPE_GRADIENTS: Record<string, [string, string]> = {
@@ -67,118 +60,80 @@ async function fetchHomeProperties(): Promise<Property[]> {
       .order("created_at", { ascending: false })
       .limit(12);
     return ((data ?? []) as Property[]).filter(isPubliclyAvailable);
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function DiscoverPreview({ property }: { property: Property | undefined }) {
   const primaryImg = property?.property_images?.find((i) => i.is_primary) ?? property?.property_images?.[0];
   const [gradFrom, gradTo] = TYPE_GRADIENTS[property?.type ?? "apartment"] ?? HERO_GRADIENTS[0];
-  const priceStr = property ? formatPrice(property.price, "GNF", property.price_period) : "Découvre les annonces";
-  const neighborhood = property ? NL[property.neighborhood] ?? property.neighborhood : "Conakry";
 
   return (
-    <section className="py-5 md:py-7" style={{ background: "var(--bg-card-light)" }}>
+    <section className="py-4 md:py-7" style={{ background: "var(--bg-card-light)" }}>
       <div className="content-fluid max-w-[1240px]">
-        <div className="mx-auto max-w-[720px] text-center">
-          <h2 className="text-[28px] md:text-[40px] font-bold mb-3 leading-tight" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
-            <span className="inline-flex items-center justify-center gap-3">
-              <Heart className="h-8 w-8 md:h-10 md:w-10" strokeWidth={2.4} />
+        <Link
+          href="/decouvrir"
+          className="group relative mx-auto block w-full max-w-[760px] overflow-hidden rounded-[34px] no-underline"
+          style={{
+            minHeight: "clamp(360px, 76vw, 520px)",
+            border: "1px solid var(--border)",
+            boxShadow: "0 22px 70px rgba(24,21,16,0.16)",
+            background: `linear-gradient(135deg, ${gradFrom}, ${gradTo})`,
+          }}
+        >
+          {primaryImg ? (
+            <Image
+              src={primaryImg.url}
+              alt={property?.title ?? "Découvrir les logements"}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              sizes="(max-width: 768px) 94vw, 760px"
+              quality={78}
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center opacity-20">
+              <Home className="h-24 w-24" strokeWidth={1.6} />
+            </div>
+          )}
+          <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.10) 38%, rgba(0,0,0,0.88) 100%)" }} />
+
+          <div className="absolute left-4 right-4 top-4 flex items-center justify-between gap-3">
+            <span className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-black text-white" style={{ background: "rgba(0,0,0,0.42)", backdropFilter: "blur(12px)" }}>
+              <Heart className="h-4 w-4" strokeWidth={2.4} />
               Découvre les logements
             </span>
-          </h2>
-          <div className="hidden">
-            <div className="rounded-2xl px-3 py-4 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#b91c1c" }}>
-              <X className="mx-auto mb-1 h-7 w-7" strokeWidth={2.5} />
-              Passer
-            </div>
-            <div className="rounded-2xl px-3 py-4 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--accent-gold)" }}>
-              <Heart className="mx-auto mb-1 h-7 w-7" strokeWidth={2.5} />
-              J&apos;aime
-            </div>
-          </div>
-          <Link
-            href="/decouvrir"
-            className="mb-5 inline-flex min-h-12 items-center justify-center rounded-2xl px-6 text-base font-black transition-all hover:-translate-y-0.5 hover:opacity-95"
-            style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
-          >
-            Commencer
-          </Link>
-        </div>
-
-        <div className="relative mx-auto w-full max-w-[600px] py-3">
-          <div
-            className="absolute left-0 top-[34%] z-30 hidden sm:flex -translate-x-2 -rotate-6 items-center gap-2 rounded-2xl px-4 py-3 text-base font-black"
-            style={{ background: "rgba(255,255,255,0.92)", color: "#b91c1c", border: "1px solid rgba(185,28,28,0.18)", boxShadow: "0 16px 40px rgba(24,21,16,0.12)" }}
-          >
-            <ArrowLeft className="h-5 w-5" strokeWidth={2.5} />
-            <X className="h-5 w-5" strokeWidth={2.5} />
-            Passer
-          </div>
-          <div
-            className="absolute right-0 top-[34%] z-30 hidden sm:flex translate-x-2 rotate-6 items-center gap-2 rounded-2xl px-4 py-3 text-base font-black"
-            style={{ background: "rgba(255,255,255,0.92)", color: "#be8a2e", border: "1px solid rgba(185,138,46,0.22)", boxShadow: "0 16px 40px rgba(24,21,16,0.12)" }}
-          >
-            <Heart className="h-5 w-5" strokeWidth={2.5} />
-            J&apos;aime
-            <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
+            <span className="inline-flex min-h-10 items-center justify-center rounded-full px-4 text-sm font-black" style={{ background: "rgba(255,255,255,0.92)", color: "#17120a" }}>
+              Commencer
+            </span>
           </div>
 
-          <div className="absolute left-9 right-9 top-8 h-[88%] rotate-[-8deg] rounded-[30px]" style={{ background: "rgba(185,138,46,0.18)", border: "1px solid rgba(185,138,46,0.20)" }} />
-          <div className="absolute left-9 right-9 top-8 h-[88%] rotate-[8deg] rounded-[30px]" style={{ background: "rgba(31,86,61,0.16)", border: "1px solid rgba(31,86,61,0.18)" }} />
-
-          <Link href={property ? `/annonces/${property.id}` : "/decouvrir"} className="relative z-20 mx-auto block w-full max-w-[360px]">
-            <div
-              className="relative overflow-hidden rounded-[30px]"
-              style={{
-                aspectRatio: "0.68",
-                background: `linear-gradient(135deg, ${gradFrom}, ${gradTo})`,
-                boxShadow: "0 22px 70px rgba(24,21,16,0.22)",
-              }}
-            >
-              {primaryImg ? (
-                <Image src={primaryImg.url} alt={property?.title ?? "Découvrir les logements"} fill className="object-cover" sizes="360px" quality={75} />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                  <Home className="h-20 w-20" strokeWidth={1.6} />
-                </div>
-              )}
-              <div className="absolute inset-0" style={{ background: "linear-gradient(transparent 28%, rgba(0,0,0,0.9) 100%)" }} />
-              <div className="absolute left-4 right-4 bottom-4">
-                <p className="mb-3 inline-flex rounded-full px-3 py-1 text-base font-black text-white" style={{ background: "rgba(255,255,255,0.18)", border: "1px solid rgba(255,255,255,0.18)" }}>
-                  Glisse. Choisis. Contacte.
-                </p>
-                <p className="text-[32px] font-black leading-tight text-white">{priceStr}</p>
-                <p className="mt-1 inline-flex items-center gap-2 text-lg font-black text-white">
-                  <MapPin className="h-5 w-5" strokeWidth={2.4} />
-                  {neighborhood}
-                </p>
-                <div className="mt-3 grid grid-cols-2 gap-2">
-                  <span className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-2 text-center text-base font-black text-white" style={{ background: "#25D366" }}>
-                    <MessageCircle className="h-4 w-4" strokeWidth={2.4} />
-                    WhatsApp
-                  </span>
-                  <span className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-2 text-center text-base font-black" style={{ background: "rgba(255,255,255,0.92)", color: "#17120a" }}>
-                    <Phone className="h-4 w-4" strokeWidth={2.4} />
-                    Appeler
-                  </span>
-                </div>
-              </div>
+          <div className="absolute bottom-4 left-4 right-4">
+            <p className="mb-2 text-[28px] font-black leading-tight text-white md:text-[42px]">Fais défiler les annonces</p>
+            <p className="mb-4 max-w-[360px] text-base font-bold text-white/88">Comme sur Tinder. Choisis vite, contacte direct.</p>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-black text-white" style={{ background: "rgba(185,28,28,0.82)" }}>
+                <X className="h-5 w-5" strokeWidth={2.5} />
+                Passer
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-black" style={{ background: "rgba(255,255,255,0.92)", color: "#17120a" }}>
+                <Heart className="h-5 w-5" strokeWidth={2.5} />
+                J&apos;aime
+              </span>
             </div>
-          </Link>
+          </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <span className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "#b91c1c" }}>
+          <div className="pointer-events-none absolute inset-x-5 top-1/2 hidden -translate-y-1/2 justify-between sm:flex">
+            <span className="inline-flex rotate-[-8deg] items-center gap-2 rounded-2xl px-4 py-3 text-base font-black text-white" style={{ background: "rgba(185,28,28,0.70)" }}>
               <ArrowLeft className="h-5 w-5" strokeWidth={2.5} />
-              <X className="h-5 w-5" strokeWidth={2.5} />
               Passer
             </span>
-            <span className="inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-center text-base font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--accent-gold)" }}>
-              <Heart className="h-5 w-5" strokeWidth={2.5} />
+            <span className="inline-flex rotate-[8deg] items-center gap-2 rounded-2xl px-4 py-3 text-base font-black" style={{ background: "rgba(255,255,255,0.90)", color: "#17120a" }}>
               J&apos;aime
               <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
             </span>
           </div>
-        </div>
+        </Link>
       </div>
     </section>
   );
@@ -189,9 +144,10 @@ export default async function HomePage() {
 
   const discoverPreview = properties[0];
   const recent = properties.slice(0, 4);
+
   return (
     <>
-      <section className="hero-section relative overflow-hidden py-2.5 sm:py-4 lg:py-5">
+      <section className="hero-section relative overflow-hidden py-3 sm:py-5 lg:py-6">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -205,52 +161,47 @@ export default async function HomePage() {
         />
 
         <div className="content-fluid max-w-[1240px] relative">
-          <div className="mx-auto max-w-[1120px] text-center">
+          <div className="mx-auto max-w-[860px] text-center">
             <h1
-              className="mx-auto mb-2 max-w-[820px] text-[clamp(1.85rem,7.3vw,3.5rem)] font-bold leading-[0.98]"
+              className="mx-auto mb-2 max-w-[820px] text-[clamp(2.55rem,11vw,4.7rem)] font-black leading-[0.92]"
               style={{ color: "var(--text-primary)", fontFamily: "var(--font-manrope), sans-serif", letterSpacing: 0 }}
             >
-              <span className="inline-flex items-center justify-center gap-2 md:gap-3">
-                <MapPin className="h-7 w-7 md:h-11 md:w-11" strokeWidth={2.5} />
-                Où cherches-tu ?
+              <span className="inline-flex items-center justify-center gap-2.5 md:gap-4">
+                <Home className="h-9 w-9 md:h-14 md:w-14" strokeWidth={2.6} style={{ color: "var(--accent-gold)" }} />
+                Trouve ton logement
               </span>
             </h1>
-            <p className="mx-auto mb-3 max-w-[560px] text-[15px] md:text-lg font-bold leading-snug" style={{ color: "var(--text-secondary)" }}>
-              Sans démarcheur. Sans commission.
+            <p className="mx-auto mb-4 max-w-[560px] text-[18px] md:text-xl font-black leading-snug" style={{ color: "var(--text-secondary)" }}>
+              Simple. Rapide. Sans démarcheur.
             </p>
 
-            <div className="mb-3 grid grid-cols-3 gap-1.5 sm:gap-2 max-w-xl mx-auto">
-              {[
-                { label: "Je cherche", Icon: Search, href: "/annonces" },
-                { label: "Je découvre", Icon: Heart },
-                { label: "Je contacte", Icon: MessageCircle, href: "/annonces" },
-              ].map(({ label, Icon, href }) => (
-                <Link
-                  key={label}
-                  href={href ?? "/decouvrir"}
-                  className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-2xl px-2 py-2 text-[13px] font-black no-underline transition active:scale-[0.98] sm:min-h-12 sm:gap-2 sm:px-3 sm:text-base"
-                  style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}
-                >
-                  <Icon className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2.3} />
-                  {label}
-                </Link>
-              ))}
-            </div>
-
             <HeroSearch />
-            <div className="mt-3 flex flex-col items-center justify-center gap-2 sm:flex-row">
-              <span className="text-sm font-bold" style={{ color: "var(--text-secondary)" }}>
-                Tu ne trouves pas ?
-              </span>
+
+            <div
+              className="mx-auto mt-4 max-w-[760px] rounded-[28px] p-4 text-left sm:flex sm:items-center sm:justify-between sm:gap-4"
+              style={{
+                background: "linear-gradient(135deg, rgba(185,138,46,0.16), var(--bg-card))",
+                border: "1px solid rgba(185,138,46,0.26)",
+                boxShadow: "var(--shadow-soft)",
+              }}
+            >
+              <div className="flex items-start gap-3">
+                <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl" style={{ background: "rgba(185,138,46,0.18)", color: "var(--accent-gold)" }}>
+                  <CircleHelp className="h-6 w-6" strokeWidth={2.5} />
+                </span>
+                <div>
+                  <p className="text-lg font-black leading-tight" style={{ color: "var(--text-primary)" }}>Tu ne trouves pas ton logement ?</p>
+                  <p className="mt-1 text-sm font-bold leading-snug" style={{ color: "var(--text-secondary)" }}>
+                    Publie gratuitement ta recherche. Les propriétaires pourront te contacter directement.
+                  </p>
+                </div>
+              </div>
               <Link
                 href="/je-cherche"
-                className="inline-flex min-h-11 items-center justify-center rounded-2xl px-5 text-sm font-black no-underline transition hover:-translate-y-0.5"
-                style={{
-                  background: "rgba(185,138,46,0.12)",
-                  border: "1px solid rgba(185,138,46,0.28)",
-                  color: "var(--accent-gold)",
-                }}
+                className="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 text-base font-black no-underline transition hover:-translate-y-0.5 sm:mt-0 sm:w-auto sm:flex-shrink-0"
+                style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
               >
+                <PlusCircle className="h-5 w-5" strokeWidth={2.5} />
                 Publier ma recherche
               </Link>
             </div>
@@ -287,7 +238,6 @@ export default async function HomePage() {
           </div>
         </section>
       )}
-
     </>
   );
 }
