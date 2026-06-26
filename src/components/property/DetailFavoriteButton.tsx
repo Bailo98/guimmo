@@ -11,6 +11,7 @@ import { useAppStore } from "@/lib/store";
 interface Props {
   propertyId: string;
   initialIsFav: boolean;
+  variant?: "surface" | "glass";
 }
 
 /**
@@ -20,7 +21,7 @@ interface Props {
  * On mount we re-check the DB so the button reflects reality even if the
  * server-rendered `initialIsFav` was stale (different device / another tab).
  */
-export function DetailFavoriteButton({ propertyId }: Props) {
+export function DetailFavoriteButton({ propertyId, variant = "surface" }: Props) {
   const { user } = useAuth();
   const setFavorite = useAppStore((s) => s.setFavorite);
   // Always start as false â€” Supabase re-check on mount sets the real value.
@@ -98,13 +99,18 @@ export function DetailFavoriteButton({ propertyId }: Props) {
         aria-label={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
         style={{
           width: 44, height: 44,
-          background: isFav ? "rgba(239,68,68,0.15)" : "var(--bg-card)",
-          border: isFav ? "1.5px solid rgba(239,68,68,0.50)" : "1.5px solid var(--border)",
+          background: variant === "glass"
+            ? (isFav ? "rgba(239,68,68,0.82)" : "rgba(255,255,255,0.88)")
+            : (isFav ? "rgba(239,68,68,0.15)" : "var(--bg-card)"),
+          border: variant === "glass"
+            ? "1px solid rgba(255,255,255,0.45)"
+            : (isFav ? "1.5px solid rgba(239,68,68,0.50)" : "1.5px solid var(--border)"),
           borderRadius: "50%",
           display: "flex", alignItems: "center", justifyContent: "center",
           cursor: checked ? "pointer" : "default",
-          color: isFav ? "#ef4444" : "var(--text-primary)",
-          backdropFilter: "blur(6px)",
+          color: variant === "glass" ? (isFav ? "#ffffff" : "#17120a") : (isFav ? "#ef4444" : "var(--text-primary)"),
+          boxShadow: variant === "glass" ? "0 14px 34px rgba(0,0,0,0.22)" : undefined,
+          backdropFilter: "blur(14px)",
           transition: "background 0.2s, border-color 0.2s, transform 0.15s",
           flexShrink: 0,
           opacity: checked ? 1 : 0.5,

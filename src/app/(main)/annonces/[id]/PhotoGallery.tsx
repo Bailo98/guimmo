@@ -30,14 +30,16 @@ export function PhotoGallery({ images, title }: Props) {
   }
 
   const activeImage = images[current];
+  const nextImage = images[(current + 1) % images.length];
+  const prevImage = images[(current - 1 + images.length) % images.length];
   const visibleThumbs = images.slice(0, 4);
   const remaining = Math.max(0, images.length - visibleThumbs.length);
 
   return (
     <>
-    <div className="relative overflow-hidden rounded-[28px] bg-slate-200 shadow-[0_22px_60px_rgba(24,21,16,0.16)] dark:bg-slate-800 select-none">
+    <div className="relative overflow-hidden rounded-b-[30px] bg-slate-200 shadow-[0_22px_60px_rgba(24,21,16,0.16)] md:rounded-[30px] dark:bg-slate-800 select-none">
       <div
-        className="relative aspect-[4/3] md:aspect-auto md:h-[500px] md:max-h-[550px] xl:h-[500px]"
+        className="relative h-[68svh] min-h-[430px] max-h-[720px] md:h-[560px] md:max-h-[620px] xl:h-[620px]"
         onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           const diff = touchStartX.current - e.changedTouches[0].clientX;
@@ -50,13 +52,19 @@ export function PhotoGallery({ images, title }: Props) {
           alt={activeImage.alt || title}
           fill
           className="object-cover"
-          sizes="(max-width: 768px) 100vw, 66vw"
-          quality={75}
+          sizes="(max-width: 768px) 100vw, 95vw"
+          quality={82}
           priority
         />
+        {images.length > 1 && (
+          <div className="hidden" aria-hidden="true">
+            <Image src={nextImage.url} alt="" width={32} height={32} priority={false} loading="eager" />
+            <Image src={prevImage.url} alt="" width={32} height={32} priority={false} loading="eager" />
+          </div>
+        )}
 
         {/* Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-black/20 pointer-events-none" />
 
         {/* Counter */}
         <div className="absolute bottom-3 right-3 bg-black/55 text-white text-sm font-black px-3 py-1.5 rounded-full pointer-events-none">
@@ -66,7 +74,7 @@ export function PhotoGallery({ images, title }: Props) {
         <button
           type="button"
           onClick={() => setFullscreen(true)}
-          className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur transition-colors hover:bg-black/65"
+          className="absolute bottom-3 left-3 flex h-11 w-11 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur transition-colors hover:bg-black/65"
           aria-label="Voir la photo en grand"
         >
           <Maximize2 className="h-5 w-5" strokeWidth={2.4} />
@@ -109,7 +117,7 @@ export function PhotoGallery({ images, title }: Props) {
 
       {/* Thumbnail strip — desktop only */}
       {images.length > 1 && (
-        <div className="flex gap-2 px-3 py-3 overflow-x-auto scrollbar-hide">
+        <div className="hidden gap-2 px-3 py-3 overflow-x-auto scrollbar-hide md:flex">
           {visibleThumbs.map((img, i) => (
             <button
               key={i}
@@ -144,7 +152,7 @@ export function PhotoGallery({ images, title }: Props) {
             <ChevronLeft className="h-7 w-7" />
           </button>
         )}
-        <div className="relative h-[82vh] w-full max-w-6xl">
+        <div className="relative h-[82vh] w-full max-w-6xl touch-pan-x touch-pan-y" style={{ touchAction: "pinch-zoom pan-x pan-y" }}>
           <Image src={activeImage.url} alt={activeImage.alt || title} fill className="object-contain" sizes="100vw" quality={90} />
         </div>
         {images.length > 1 && (

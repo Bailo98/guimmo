@@ -12,10 +12,21 @@ interface Props {
   shortRef?: string;
   propertyId: string;
   isLoggedIn?: boolean; // kept for API compatibility, no longer used internally
+  variant?: "surface" | "glass";
 }
 
-export function PropertyShareButton({ title, neighborhood, price, rooms, bathrooms, surface, shortRef, propertyId }: Props) {
+export function PropertyShareButton({ title, neighborhood, price, rooms, bathrooms, surface, shortRef, propertyId, variant = "surface" }: Props) {
   const [copied, setCopied] = useState(false);
+  const isGlass = variant === "glass";
+  const buttonBase: React.CSSProperties = {
+    width: 44,
+    height: 44,
+    background: isGlass ? "rgba(255,255,255,0.88)" : "var(--bg-card)",
+    border: isGlass ? "1px solid rgba(255,255,255,0.45)" : "1px solid var(--border)",
+    color: isGlass ? "#17120a" : "var(--text-primary)",
+    boxShadow: isGlass ? "0 14px 34px rgba(0,0,0,0.22)" : "var(--shadow-soft)",
+    backdropFilter: isGlass ? "blur(14px)" : undefined,
+  };
 
   const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://LogerBien.gn";
   const shortUrl = shortRef ? `${siteUrl}/a/${shortRef}` : `${siteUrl}/annonces/${propertyId}`;
@@ -62,14 +73,7 @@ export function PropertyShareButton({ title, neighborhood, price, rooms, bathroo
         type="button"
         onClick={share}
         className="flex items-center justify-center rounded-full font-bold transition-all"
-        style={{
-          width: 44,
-          height: 44,
-          background: "var(--bg-card)",
-          border: "1px solid var(--border)",
-          color: "var(--text-primary)",
-          boxShadow: "var(--shadow-soft)",
-        }}
+        style={buttonBase}
         title="Partager"
         aria-label="Partager"
       >
@@ -84,12 +88,10 @@ export function PropertyShareButton({ title, neighborhood, price, rooms, bathroo
         aria-label={copied ? "Lien copié" : "Copier le lien"}
         className="flex items-center justify-center rounded-full font-semibold transition-all"
         style={{
-          width: 44,
-          height: 44,
-          background: copied ? "rgba(212,175,55,0.16)" : "var(--bg-card)",
-          border: copied ? "1px solid rgba(212,175,55,0.38)" : "1px solid var(--border)",
-          color: copied ? "var(--accent-gold)" : "var(--text-primary)",
-          boxShadow: "var(--shadow-soft)",
+          ...buttonBase,
+          background: copied ? "rgba(212,175,55,0.16)" : buttonBase.background,
+          border: copied ? "1px solid rgba(212,175,55,0.38)" : buttonBase.border,
+          color: copied ? "var(--accent-gold)" : buttonBase.color,
         }}
       >
         {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}

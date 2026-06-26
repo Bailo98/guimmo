@@ -285,34 +285,47 @@ export default async function PropertyDetailPage({ params }: Props) {
       {/* Silent view tracker (client component) */}
       <PropertyViewTracker propertyId={property.id} />
 
-      {/* Back button */}
-      <div
-        className="fixed left-0 right-0 top-[64px] z-40 flex items-center px-4 pt-3"
-        style={{
-          paddingLeft: "max(16px, env(safe-area-inset-left, 0px))",
-          paddingRight: "max(16px, env(safe-area-inset-right, 0px))",
-        }}
-      >
-        <Link
-          href="/annonces"
-          className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-white/95 text-[#17120a] shadow-[0_14px_34px_rgba(0,0,0,0.22)] ring-1 ring-black/10 backdrop-blur-md transition-colors hover:bg-white"
-          aria-label="Retour aux annonces"
-        >
-          <ArrowLeft className="h-6 w-6" strokeWidth={2.8} />
-        </Link>
-      </div>
-
       {/* Premium gallery */}
-      <div className="relative mx-auto w-[95vw] max-w-[1600px] pt-20 md:pt-24">
+      <div className="relative mx-auto w-full max-w-none pt-0 md:w-[95vw] md:max-w-[1600px] md:pt-6">
         <PhotoGallery
           images={(property.property_images ?? []).map((i) => ({ url: i.url, alt: property.title }))}
           title={property.title}
         />
+        <div
+          className="pointer-events-none absolute left-0 right-0 top-0 z-30 flex items-center justify-between gap-3 px-4 pt-4 md:pt-10"
+          style={{
+            paddingLeft: "max(16px, env(safe-area-inset-left, 0px))",
+            paddingRight: "max(16px, env(safe-area-inset-right, 0px))",
+          }}
+        >
+          <Link
+            href="/annonces"
+            className="pointer-events-auto flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-white/90 text-[#17120a] shadow-[0_14px_34px_rgba(0,0,0,0.22)] ring-1 ring-white/45 backdrop-blur-md transition-colors hover:bg-white"
+            aria-label="Retour aux annonces"
+          >
+            <ArrowLeft className="h-5 w-5" strokeWidth={2.8} />
+          </Link>
+          <div className="pointer-events-auto flex items-center gap-2">
+            <DetailFavoriteButton propertyId={id} initialIsFav={initialIsFav} variant="glass" />
+            <PropertyShareButton
+              title={property.title}
+              neighborhood={neighborhoodLabel}
+              price={formattedPrice}
+              rooms={property.rooms}
+              bathrooms={property.bathrooms}
+              surface={property.surface}
+              shortRef={shortRef ?? undefined}
+              propertyId={property.id}
+              isLoggedIn={isLoggedIn}
+              variant="glass"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Content card */}
       <div className="relative z-10 mt-0 rounded-t-[28px]" style={{ background: "var(--bg-primary)" }}>
-        <div className="mx-auto w-[95vw] max-w-[1600px] pt-5">
+        <div className="mx-auto w-[95vw] max-w-[1600px] pt-4 md:pt-6">
 
           {/* Déjà loué banner */}
           {isHiddenAvailability && (
@@ -382,46 +395,14 @@ export default async function PropertyDetailPage({ params }: Props) {
                 </span>
               </div>
 
-              {/* Title + location + price + SHARE (visible) */}
+              {/* Price + title + location */}
               <div>
-                <div className="flex items-start justify-between gap-3 flex-wrap">
-                  <h1 className="text-xl md:text-3xl font-black leading-tight flex-1" style={{ color: "var(--text-primary)" }}>
-                    {property.title}
-                  </h1>
-                  {/* Favorite + Share — visible near title */}
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <DetailFavoriteButton propertyId={id} initialIsFav={initialIsFav} />
-                    <PropertyShareButton
-                      title={property.title}
-                      neighborhood={neighborhoodLabel}
-                      price={formattedPrice}
-                      rooms={property.rooms}
-                      bathrooms={property.bathrooms}
-                      surface={property.surface}
-                      shortRef={shortRef ?? undefined}
-                      propertyId={property.id}
-                      isLoggedIn={isLoggedIn}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 mt-1 flex-wrap">
-                  <div className="flex items-center gap-1.5 text-sm">
-                    <MapPin className="w-4 h-4 flex-shrink-0" style={{ color: "var(--text-muted)" }} />
-                    <span style={{ color: "var(--text-secondary)" }}>{neighborhoodLabel}, {property.city}</span>
-                  </div>
-                  {(property.views ?? 0) > 0 && (
-                    <span className="inline-flex items-center gap-1 text-xs" style={{ color: "var(--text-muted)" }}>
-                      <Eye className="h-3.5 w-3.5" strokeWidth={2.4} />
-                      {property.views} vue{(property.views ?? 0) > 1 ? "s" : ""}
-                    </span>
-                  )}
-                </div>
-                <div className="mt-1 leading-none" aria-label={formattedPrice}>
+                <div className="leading-none" aria-label={formattedPrice}>
                   <div
-                    className="text-[42px] font-black leading-none md:text-[72px]"
+                    className="text-[46px] font-black leading-none md:text-[76px]"
                     style={{
                       color: "var(--accent-gold)",
-                      fontSize: "clamp(42px, 6.5vw, 72px)",
+                      fontSize: "clamp(46px, 7vw, 76px)",
                       fontWeight: 900,
                       lineHeight: 0.9,
                     }}
@@ -435,6 +416,21 @@ export default async function PropertyDetailPage({ params }: Props) {
                     >
                       {pricePeriod}
                     </div>
+                  )}
+                </div>
+                <h1 className="mt-3 text-2xl font-black leading-tight md:text-4xl" style={{ color: "var(--text-primary)" }}>
+                  {property.title}
+                </h1>
+                <div className="flex items-center gap-3 mt-1 flex-wrap">
+                  <div className="flex items-center gap-1.5 text-sm">
+                    <MapPin className="w-4 h-4 flex-shrink-0" style={{ color: "var(--text-muted)" }} />
+                    <span style={{ color: "var(--text-secondary)" }}>{neighborhoodLabel}, {property.city}</span>
+                  </div>
+                  {(property.views ?? 0) > 0 && (
+                    <span className="inline-flex items-center gap-1 text-xs" style={{ color: "var(--text-muted)" }}>
+                      <Eye className="h-3.5 w-3.5" strokeWidth={2.4} />
+                      {property.views} vue{(property.views ?? 0) > 1 ? "s" : ""}
+                    </span>
                   )}
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -451,6 +447,25 @@ export default async function PropertyDetailPage({ params }: Props) {
                     {advanceInfo}
                   </span>
                 </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {[
+                  { Icon: Home, label: "Type", value: TYPE_LABELS[property.type] ?? property.type },
+                  { Icon: Bed, label: "Chambres", value: property.rooms ? `${property.rooms}` : "N/A" },
+                  { Icon: Bath, label: "Douche", value: property.bathrooms ? `${property.bathrooms}` : "N/A" },
+                  { Icon: Square, label: "Surface", value: property.surface ? `${property.surface} m²` : "N/A" },
+                ].map(({ Icon, label, value }) => (
+                  <div
+                    key={label}
+                    className="rounded-2xl p-3"
+                    style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
+                  >
+                    <Icon className="mb-2 h-5 w-5 text-[var(--accent-gold)]" strokeWidth={2.4} />
+                    <p className="text-[11px] font-black uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>{label}</p>
+                    <p className="mt-0.5 text-base font-black" style={{ color: "var(--text-primary)" }}>{value}</p>
+                  </div>
+                ))}
               </div>
 
               {/* Mobile contact card — integrated in content, never fixed over BottomNav */}
