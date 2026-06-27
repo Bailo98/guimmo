@@ -1,6 +1,7 @@
 ﻿"use client";
 import { useState, useRef } from "react";
 import Image from "next/image";
+import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, Home, Maximize2, X } from "lucide-react";
 
 interface Props {
@@ -34,6 +35,34 @@ export function PhotoGallery({ images, title }: Props) {
   const prevImage = images[(current - 1 + images.length) % images.length];
   const visibleThumbs = images.slice(0, 4);
   const remaining = Math.max(0, images.length - visibleThumbs.length);
+  const fullscreenOverlay = (
+    <div className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-black/95 p-3 md:p-8">
+      <button
+        type="button"
+        onClick={() => setFullscreen(false)}
+        className="absolute right-4 top-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur transition-colors hover:bg-white/20"
+        aria-label="Fermer"
+      >
+        <X className="h-6 w-6" strokeWidth={2.6} />
+      </button>
+      {images.length > 1 && (
+        <button type="button" onClick={prev} className="absolute left-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-white/20" aria-label="Photo précédente">
+          <ChevronLeft className="h-7 w-7" />
+        </button>
+      )}
+      <div className="relative h-[82vh] w-full max-w-6xl touch-pan-x touch-pan-y" style={{ touchAction: "pinch-zoom pan-x pan-y" }}>
+        <Image src={activeImage.url} alt={activeImage.alt || title} fill className="object-contain" sizes="100vw" quality={90} />
+      </div>
+      {images.length > 1 && (
+        <button type="button" onClick={next} className="absolute right-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-white/20" aria-label="Photo suivante">
+          <ChevronRight className="h-7 w-7" />
+        </button>
+      )}
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm font-black text-white backdrop-blur">
+        {current + 1} / {images.length}
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -137,34 +166,7 @@ export function PhotoGallery({ images, title }: Props) {
         </div>
       )}
     </div>
-    {fullscreen && (
-      <div className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-black/95 p-3 md:p-8">
-        <button
-          type="button"
-          onClick={() => setFullscreen(false)}
-          className="absolute right-4 top-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur transition-colors hover:bg-white/20"
-          aria-label="Fermer"
-        >
-          <X className="h-6 w-6" strokeWidth={2.6} />
-        </button>
-        {images.length > 1 && (
-          <button type="button" onClick={prev} className="absolute left-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-white/20" aria-label="Photo précédente">
-            <ChevronLeft className="h-7 w-7" />
-          </button>
-        )}
-        <div className="relative h-[82vh] w-full max-w-6xl touch-pan-x touch-pan-y" style={{ touchAction: "pinch-zoom pan-x pan-y" }}>
-          <Image src={activeImage.url} alt={activeImage.alt || title} fill className="object-contain" sizes="100vw" quality={90} />
-        </div>
-        {images.length > 1 && (
-          <button type="button" onClick={next} className="absolute right-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-white/20" aria-label="Photo suivante">
-            <ChevronRight className="h-7 w-7" />
-          </button>
-        )}
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm font-black text-white backdrop-blur">
-          {current + 1} / {images.length}
-        </div>
-      </div>
-    )}
+    {fullscreen && typeof document !== "undefined" ? createPortal(fullscreenOverlay, document.body) : null}
     </>
   );
 }
