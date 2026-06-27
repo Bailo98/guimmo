@@ -51,24 +51,24 @@ export function BottomNav() {
   let navItems: NavItemDef[];
   if (!user) {
     navItems = [
-      { href: "/", icon: Home, label: "Accueil", authRequired: false },
       { href: "/annonces", icon: Search, label: "Chercher", authRequired: false },
+      { href: "/", icon: Home, label: "Accueil", authRequired: false },
       { href: "/connexion", icon: LogIn, label: "Connexion", authRequired: false },
       { href: "/inscription", icon: User, label: "S'inscrire", authRequired: false },
     ];
   } else if (isOwner) {
     navItems = [
       { href: "/compte/annonces", icon: List, label: "Mes biens", authRequired: true },
-      { href: "/publier/rapide", icon: Plus, label: "Publier", authRequired: true },
       { href: "/", icon: Home, label: "Accueil", authRequired: false },
+      { href: "/publier/rapide", icon: Plus, label: "Publier", authRequired: true },
       { href: "/messages", icon: MessageCircle, label: "Contacts", authRequired: true },
       { href: "/compte", icon: User, label: "Profil", authRequired: true },
     ];
   } else {
     navItems = [
       { href: "/annonces", icon: Search, label: "Chercher", authRequired: false },
-      { href: "/decouvrir", icon: Compass, label: "Voir", authRequired: true },
       { href: "/", icon: Home, label: "Accueil", authRequired: false },
+      { href: "/decouvrir", icon: Compass, label: "Voir", authRequired: true },
       { href: "/favoris", icon: Heart, label: "Favoris", authRequired: true },
       { href: "/compte", icon: User, label: "Profil", authRequired: true },
     ];
@@ -79,7 +79,7 @@ export function BottomNav() {
       className="mobile-bottom-nav flex md:hidden"
       style={{
         position: "fixed",
-        bottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+        bottom: "env(safe-area-inset-bottom, 0px)",
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: 50,

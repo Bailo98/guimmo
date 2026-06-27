@@ -10,7 +10,6 @@ import { useAuth } from "@/lib/auth-context";
 import { useAppStore } from "@/lib/store";
 import { toast } from "@/lib/toast";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
-import { fetchProperties } from "@/lib/properties";
 import { formatPrice } from "@/lib/utils";
 import { getNeighborhoodName, NEIGHBORHOOD_COORDINATES } from "@/data/neighborhoods";
 import { haversineKm } from "@/lib/haversine";
@@ -70,12 +69,10 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   const [mounted, setMounted] = useState(false);
   const [cards, setCards] = useState<Property[]>([]);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [reloading, setReloading] = useState(false);
   const [everHadCards, setEverHadCards] = useState(false);
   const [emptyAfterReload, setEmptyAfterReload] = useState(false);
   const [exiting, setExiting] = useState<"left" | "right" | null>(null);
 
-  const reloadInProgress = useRef(false);
   const dragMovedRef = useRef(false);
 
   const x = useMotionValue(0);
@@ -124,7 +121,6 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
   }
 
   useEffect(() => {
-    if (reloadInProgress.current) return;
     if (properties.length === 0) return;
 
     const seen = getSeenIds();
@@ -139,44 +135,27 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
       const sorted = sortList(list, userLocation);
       setCards(sorted);
       if (sorted.length > 0) setEverHadCards(true);
+      setEmptyAfterReload(sorted.length === 0);
     }, 0);
 
     return () => window.clearTimeout(id);
   }, [properties, userLocation]);
 
   useEffect(() => {
-    if (!mounted || !everHadCards || cards.length > 0 || emptyAfterReload) return;
-    if (reloadInProgress.current) return;
-
-    reloadInProgress.current = true;
-    setReloading(true);
-
-    const t = setTimeout(() => {
-      clearSeenIds();
-
-      fetchProperties().then((fresh) => {
-        reloadInProgress.current = false;
-
-        if (fresh.length === 0) {
-          setEmptyAfterReload(true);
-          setReloading(false);
-          return;
-        }
-
-        const sorted = sortList(fresh, null);
-        setCards(sorted);
-        setEverHadCards(true);
-        setReloading(false);
-      });
-    }, 1500);
-
-    return () => clearTimeout(t);
-  }, [mounted, everHadCards, cards.length, emptyAfterReload]);
-
-  useEffect(() => {
     x.set(0);
     dragMovedRef.current = false;
   }, [activeCardId, x]);
+
+  function restartDeck() {
+    clearSeenIds();
+    const sorted = sortList(properties, userLocation);
+    setCards(sorted);
+    setEverHadCards(sorted.length > 0);
+    setEmptyAfterReload(sorted.length === 0);
+    setExiting(null);
+    x.set(0);
+    dragMovedRef.current = false;
+  }
 
   const completeSwipe = useCallback(
     async (dir: "left" | "right", property: Property) => {
@@ -303,9 +282,19 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     [router, user],
   );
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return (
+      <div className="fixed inset-0 z-10 flex flex-col items-center justify-center bg-[var(--bg-primary)] px-8">
+        <Home className="mb-4 h-13 w-13 text-[var(--accent-gold)]" strokeWidth={1.8} />
+        <p className="mb-2 text-center text-xl font-bold text-[var(--accent-gold)]">
+          Préparation des logements
+        </p>
+        <p className="text-center text-sm text-[var(--text-primary-faint)]">La découverte arrive tout de suite.</p>
+      </div>
+    );
+  }
 
-  if (reloading) {
+  if (cards.length === 0 && everHadCards && emptyAfterReload) {
     return (
       <div className="fixed inset-0 z-10 flex flex-col items-center justify-center bg-[var(--bg-primary)] px-8">
         <Loader2 className="mb-4 h-13 w-13 animate-spin text-[var(--accent-gold)]" strokeWidth={2.2} />
@@ -327,17 +316,27 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
         <p className="mb-6 text-center text-sm text-[var(--text-primary-faint)]">
           Reviens bientôt ou modifie ta recherche.
         </p>
-        <Link
-          href="/annonces"
-          className="flex min-h-12 w-full max-w-80 items-center justify-center rounded-2xl bg-[var(--accent-gold)] px-6 text-center text-base font-extrabold text-[var(--text-primary)] no-underline"
-        >
-          Retour aux annonces
-        </Link>
+        <div className="grid w-full max-w-80 gap-3">
+          <button
+            type="button"
+            onClick={restartDeck}
+            className="flex min-h-12 w-full items-center justify-center rounded-2xl bg-[var(--accent-gold)] px-6 text-center text-base font-extrabold text-[var(--bg-primary)]"
+          >
+            Recommencer
+          </button>
+          <Link
+            href="/annonces"
+            className="flex min-h-12 w-full items-center justify-center rounded-2xl px-6 text-center text-base font-extrabold no-underline"
+            style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+          >
+            Voir toutes les annonces
+          </Link>
+        </div>
       </div>
     );
   }
 
-  if (cards.length === 0 && everHadCards) {
+  if (cards.length === 0 && everHadCards && emptyAfterReload) {
     return (
       <div className="fixed inset-0 z-10 flex flex-col items-center justify-center bg-[var(--bg-primary)] px-8">
         <Loader2 className="mb-4 h-13 w-13 animate-spin text-[var(--accent-gold)]" strokeWidth={2.2} />
@@ -353,16 +352,28 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
     return (
       <div className="flex min-h-[calc(100svh-72px)] flex-col items-center justify-center bg-[var(--bg-primary)] p-8 text-center">
         <Home className="mb-4 h-14 w-14 text-[var(--accent-gold)]" strokeWidth={1.8} />
-        <h1 className="mb-2 text-3xl font-extrabold text-[var(--text-primary)]">Plus de logements pour le moment</h1>
+        <h1 className="mb-2 text-3xl font-extrabold text-[var(--text-primary)]">
+          {everHadCards ? "Tu as tout vu" : "Plus de logements pour le moment"}
+        </h1>
         <p className="mb-6 max-w-90 text-base text-[var(--text-secondary)]">
           Reviens bientôt ou modifie ta recherche.
         </p>
-        <Link
-          href="/annonces"
-          className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-[var(--accent-gold)] px-6 font-extrabold text-[var(--bg-primary)] no-underline"
-        >
-          Retour aux annonces
-        </Link>
+        <div className="grid w-full max-w-80 gap-3">
+          <button
+            type="button"
+            onClick={restartDeck}
+            className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-[var(--accent-gold)] px-6 font-extrabold text-[var(--bg-primary)]"
+          >
+            Recommencer
+          </button>
+          <Link
+            href="/annonces"
+            className="inline-flex min-h-12 items-center justify-center rounded-2xl px-6 font-extrabold no-underline"
+            style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+          >
+            Voir toutes les annonces
+          </Link>
+        </div>
       </div>
     );
   }
@@ -567,7 +578,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
 
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/92" />
 
-            <div className="absolute right-3 top-3 z-20 flex flex-col gap-2">
+            <div className="absolute right-3 top-16 z-20 flex flex-col gap-2">
               <button
                 type="button"
                 onClick={(event) => {

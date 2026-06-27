@@ -14,7 +14,6 @@ import { MessageButton } from "@/components/property/MessageButton";
 import { ReportButton } from "@/components/property/ReportButton";
 import { DetailFavoriteButton } from "@/components/property/DetailFavoriteButton";
 import { PropertyShareButton } from "@/components/property/PropertyShareButton";
-import { VisitButton } from "@/components/property/VisitButton";
 import type { VTRoom } from "@/components/VirtualTour";
 import VirtualTourWrapper from "@/components/VirtualTourWrapper";
 import { getNeighborhoodName } from "@/data/neighborhoods";
@@ -281,7 +280,7 @@ export default async function PropertyDetailPage({ params }: Props) {
   ];
 
   return (
-    <div className="bg-[var(--bg-primary)] pb-60 md:pb-12">
+    <div className="bg-[var(--bg-primary)] pb-32 md:pb-12">
       {/* Silent view tracker (client component) */}
       <PropertyViewTracker propertyId={property.id} />
 
@@ -470,10 +469,13 @@ export default async function PropertyDetailPage({ params }: Props) {
 
               {/* Mobile contact card — integrated in content, never fixed over BottomNav */}
               <div
-                className="lg:hidden rounded-2xl p-3 space-y-2"
+                className="lg:hidden rounded-2xl p-4 space-y-3 shadow-[0_12px_30px_rgba(15,23,42,0.08)]"
                 style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
               >
-                <h2 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>Contacter</h2>
+                <h2 className="flex items-center gap-2 text-base font-black" style={{ color: "var(--text-primary)" }}>
+                  <MessageCircle className="h-4 w-4 text-[var(--accent-gold)]" strokeWidth={2.5} />
+                  Contacter
+                </h2>
                 {isOwner ? (
                   <Link
                     href={`/compte/annonces/${property.id}/modifier`}
@@ -512,21 +514,14 @@ export default async function PropertyDetailPage({ params }: Props) {
                       <MessageCircle className="h-5 w-5" strokeWidth={2.6} />
                       WhatsApp
                     </a>
-                    <div className="grid grid-cols-2 gap-2">
-                      <VisitButton
-                        propertyId={property.id}
-                        ownerId={property.owner_id}
-                        propertyTitle={property.title}
-                      />
-                      <a
-                        href={phoneUrl}
-                        className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl text-sm font-semibold"
-                        style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
-                      >
-                        <Phone className="h-4 w-4" />
-                        Appeler
-                      </a>
-                    </div>
+                    <a
+                      href={phoneUrl}
+                      className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold"
+                      style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+                    >
+                      <Phone className="h-4 w-4" />
+                      Appeler
+                    </a>
                     <MessageButton
                       propertyId={property.id}
                       ownerId={property.owner_id}
@@ -536,6 +531,54 @@ export default async function PropertyDetailPage({ params }: Props) {
                   </>
                 )}
               </div>
+
+              {profileData && (
+                <div
+                  className="lg:hidden rounded-2xl p-4 space-y-3"
+                  style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
+                >
+                  <h2 className="text-sm font-black" style={{ color: "var(--text-primary)" }}>Propriétaire</h2>
+                  <div className="flex items-center gap-3">
+                    <Avatar
+                      url={(profileData as { avatar_url?: string | null }).avatar_url}
+                      name={(profileData as { full_name?: string | null }).full_name ?? undefined}
+                      size="sm"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-base font-black leading-tight" style={{ color: "var(--text-primary)" }}>
+                        {(profileData as { full_name?: string | null }).full_name ?? "Propriétaire"}
+                      </p>
+                      <p className="text-xs font-bold" style={{ color: "var(--text-secondary)" }}>
+                        Propriétaire LogerBien
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {property.contact_phone && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "rgba(37,211,102,0.12)", border: "1px solid rgba(37,211,102,0.24)", color: "#15803d" }}>
+                        <Phone className="h-3.5 w-3.5" strokeWidth={2.5} />
+                        Téléphone vérifié
+                      </span>
+                    )}
+                    {(profileData as { is_verified?: boolean } | null)?.is_verified && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "rgba(185,138,46,0.14)", border: "1px solid rgba(185,138,46,0.28)", color: "var(--accent-gold)" }}>
+                        <BadgeCheck className="h-3.5 w-3.5" strokeWidth={2.5} />
+                        Compte vérifié
+                      </span>
+                    )}
+                    {ownerListingsCount !== null && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                        <Home className="h-3.5 w-3.5" strokeWidth={2.5} />
+                        {ownerListingsCount} annonce{ownerListingsCount > 1 ? "s" : ""}
+                      </span>
+                    )}
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-black" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+                      <MapPin className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      {neighborhoodLabel}
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {/* Score de confiance */}
               <ListingScore
@@ -709,13 +752,6 @@ export default async function PropertyDetailPage({ params }: Props) {
                       WhatsApp
                     </a>
 
-                    {/* Visit — opens VisitRequestModal (form → DB insert) */}
-                    <VisitButton
-                      propertyId={property.id}
-                      ownerId={property.owner_id}
-                      propertyTitle={property.title}
-                    />
-
                     {/* Phone */}
                     <a href={phoneUrl}
                       className="flex items-center justify-center gap-2 w-full font-semibold py-2.5 px-4 rounded-xl transition-colors text-sm hover:bg-black/5"
@@ -768,65 +804,6 @@ export default async function PropertyDetailPage({ params }: Props) {
             </section>
           )}
         </div>
-      </div>
-
-      <div
-        className="fixed left-1/2 z-40 flex w-[min(92vw,420px)] -translate-x-1/2 gap-2 rounded-[var(--radius-card)] p-2 shadow-[0_18px_42px_rgba(0,0,0,0.24)] backdrop-blur-xl lg:hidden"
-        style={{
-          bottom: "calc(88px + env(safe-area-inset-bottom, 0px))",
-          background: "color-mix(in srgb, var(--bg-card) 88%, transparent)",
-          border: "1px solid var(--border)",
-        }}
-        aria-label="Actions rapides de contact"
-      >
-        {isOwner ? (
-          <Link
-            href={`/compte/annonces/${property.id}/modifier`}
-            className="flex min-h-[54px] flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] text-sm font-black shadow-[0_8px_24px_rgba(185,138,46,0.24)] transition-transform active:scale-[0.98]"
-            style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
-          >
-            <Edit3 className="h-5 w-5" strokeWidth={2.6} />
-            Gérer
-          </Link>
-        ) : !isLoggedIn ? (
-          <>
-            <Link
-              href={`/connexion?redirect=/annonces/${property.id}`}
-              className="flex min-h-[54px] flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] text-sm font-black shadow-[0_8px_24px_rgba(185,138,46,0.24)] transition-transform active:scale-[0.98]"
-              style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
-            >
-              <KeyRound className="h-5 w-5" strokeWidth={2.6} />
-              Connexion
-            </Link>
-            <Link
-              href={`/inscription?redirect=/annonces/${property.id}`}
-              className="flex min-h-[54px] flex-1 items-center justify-center rounded-[var(--radius-btn)] text-sm font-black transition-transform active:scale-[0.98]"
-              style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
-            >
-              S&apos;inscrire
-            </Link>
-          </>
-        ) : (
-          <>
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex min-h-[54px] flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-[#25D366] text-sm font-black text-white shadow-[0_8px_24px_rgba(37,211,102,0.32)] transition-transform active:scale-[0.98]"
-            >
-              <MessageCircle className="h-5 w-5" strokeWidth={2.6} />
-              WhatsApp
-            </a>
-            <a
-              href={phoneUrl}
-              className="flex min-h-[54px] flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] text-sm font-black shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-transform active:scale-[0.98]"
-              style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
-            >
-              <Phone className="h-5 w-5" strokeWidth={2.6} />
-              Appeler
-            </a>
-          </>
-        )}
       </div>
 
     </div>

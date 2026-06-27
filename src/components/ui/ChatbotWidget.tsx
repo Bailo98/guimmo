@@ -119,18 +119,17 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
         <div
           style={{
             position: "fixed",
-            // Panel sits above the 64px FAB + gap, itself above the pill nav.
-            bottom: "calc(76px + env(safe-area-inset-bottom, 0px) + 16px + 72px)",
-            left: 16,
+            bottom: "calc(64px + env(safe-area-inset-bottom, 0px) + 66px)",
+            left: 12,
             zIndex: 61,
-            width: "min(320px, calc(100vw - 32px))",
+            width: "min(300px, calc(100vw - 24px))",
           }}
         >
           <div
             style={{
               display: "flex",
               flexDirection: "column",
-              height: 440,
+              height: "min(420px, calc(100svh - 156px))",
               borderRadius: 20,
               overflow: "hidden",
               background: "#1e2830",
@@ -354,10 +353,10 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
         <div
           style={{
             position: "fixed",
-            bottom: "calc(132px + env(safe-area-inset-bottom, 0px) + 16px)",
+            bottom: "calc(64px + env(safe-area-inset-bottom, 0px) + 60px)",
             left: 12,
             zIndex: 62,
-            width: "min(210px, calc(50vw - 18px))",
+            width: "min(190px, calc(52vw - 18px))",
             borderRadius: 18,
             background: "var(--bg-card)",
             border: "1px solid var(--border)",
@@ -397,19 +396,19 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
         aria-label="Ouvrir l'assistant LogerBien"
         style={{
           position: "fixed",
-          bottom: "calc(76px + env(safe-area-inset-bottom, 0px) + 16px)",
+          bottom: "calc(64px + env(safe-area-inset-bottom, 0px) + 10px)",
           left: 12,
           zIndex: 60,
-          width: 64,
-          height: 64,
-          minHeight: 64,
+          width: 48,
+          height: 48,
+          minHeight: 48,
           borderRadius: "50%",
           background: "var(--accent-gold)",
           border: "none",
           cursor: "pointer",
           display: "inline-flex", alignItems: "center", justifyContent: "center",
           padding: 0,
-          boxShadow: "0 12px 30px rgba(185,138,46,0.34)",
+          boxShadow: "0 10px 24px rgba(185,138,46,0.28)",
           transition: "transform 0.2s, background 0.2s",
           color: "var(--bg-primary)",
         }}
@@ -419,9 +418,9 @@ export function ChatbotWidget({ whatsappNumber }: { whatsappNumber?: string }) {
         {open
           ? <X style={{ width: 25, height: 25, color: "var(--bg-primary)" }} />
           : (
-            <span style={{ position: "relative", width: 27, height: 27, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-              <Headset style={{ width: 29, height: 29, color: "var(--bg-primary)" }} strokeWidth={2.6} />
-              <MessageCircle style={{ position: "absolute", right: -7, bottom: -5, width: 15, height: 15, color: "var(--bg-primary)" }} strokeWidth={3} />
+            <span style={{ position: "relative", width: 23, height: 23, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+              <Headset style={{ width: 24, height: 24, color: "var(--bg-primary)" }} strokeWidth={2.6} />
+              <MessageCircle style={{ position: "absolute", right: -6, bottom: -4, width: 12, height: 12, color: "var(--bg-primary)" }} strokeWidth={3} />
             </span>
           )
         }
