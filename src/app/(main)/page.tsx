@@ -74,11 +74,9 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
       <div className="content-fluid max-w-[1240px]">
         <Link
           href="/decouvrir"
-          className="group relative mx-auto block w-full max-w-[760px] overflow-hidden rounded-[34px] no-underline"
+          className="group premium-card relative mx-auto block w-full max-w-[760px] overflow-hidden no-underline"
           style={{
             minHeight: "clamp(360px, 76vw, 520px)",
-            border: "1px solid var(--border)",
-            boxShadow: "0 22px 70px rgba(24,21,16,0.16)",
             background: `linear-gradient(135deg, ${gradFrom}, ${gradTo})`,
           }}
         >
@@ -103,7 +101,7 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
               <Heart className="h-4 w-4" strokeWidth={2.4} />
               Découvre les logements
             </span>
-            <span className="inline-flex min-h-10 items-center justify-center rounded-full px-4 text-sm font-black" style={{ background: "rgba(255,255,255,0.92)", color: "#17120a" }}>
+            <span className="app-button-secondary inline-flex min-h-10 items-center justify-center px-4 text-sm font-black" style={{ background: "rgba(255,255,255,0.92)", color: "#17120a" }}>
               Commencer
             </span>
           </div>
@@ -112,11 +110,11 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
             <p className="mb-2 text-[28px] font-black leading-tight text-white md:text-[42px]">Fais défiler les annonces</p>
             <p className="mb-4 max-w-[360px] text-base font-bold text-white/88">Comme sur Tinder. Choisis vite, contacte direct.</p>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-black text-white" style={{ background: "rgba(185,28,28,0.82)" }}>
+              <span className="app-touch inline-flex items-center gap-2 px-4 text-sm font-black text-white" style={{ background: "rgba(185,28,28,0.82)" }}>
                 <X className="h-5 w-5" strokeWidth={2.5} />
                 Passer
               </span>
-              <span className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-black" style={{ background: "rgba(255,255,255,0.92)", color: "#17120a" }}>
+              <span className="app-touch inline-flex items-center gap-2 px-4 text-sm font-black" style={{ background: "rgba(255,255,255,0.92)", color: "#17120a" }}>
                 <Heart className="h-5 w-5" strokeWidth={2.5} />
                 J&apos;aime
               </span>
@@ -124,11 +122,11 @@ function DiscoverPreview({ property }: { property: Property | undefined }) {
           </div>
 
           <div className="pointer-events-none absolute inset-x-5 top-1/2 hidden -translate-y-1/2 justify-between sm:flex">
-            <span className="inline-flex rotate-[-8deg] items-center gap-2 rounded-2xl px-4 py-3 text-base font-black text-white" style={{ background: "rgba(185,28,28,0.70)" }}>
+            <span className="app-touch inline-flex rotate-[-8deg] items-center gap-2 px-4 text-base font-black text-white" style={{ background: "rgba(185,28,28,0.70)" }}>
               <ArrowLeft className="h-5 w-5" strokeWidth={2.5} />
               Passer
             </span>
-            <span className="inline-flex rotate-[8deg] items-center gap-2 rounded-2xl px-4 py-3 text-base font-black" style={{ background: "rgba(255,255,255,0.90)", color: "#17120a" }}>
+            <span className="app-touch inline-flex rotate-[8deg] items-center gap-2 px-4 text-base font-black" style={{ background: "rgba(255,255,255,0.90)", color: "#17120a" }}>
               J&apos;aime
               <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
             </span>
@@ -178,11 +176,9 @@ export default async function HomePage() {
             <HeroSearch />
 
             <div
-              className="mx-auto mt-4 max-w-[760px] rounded-[28px] p-4 text-left sm:flex sm:items-center sm:justify-between sm:gap-4"
+              className="app-card mx-auto mt-4 max-w-[760px] p-4 text-left sm:flex sm:items-center sm:justify-between sm:gap-4"
               style={{
                 background: "linear-gradient(135deg, rgba(185,138,46,0.16), var(--bg-card))",
-                border: "1px solid rgba(185,138,46,0.26)",
-                boxShadow: "var(--shadow-soft)",
               }}
             >
               <div className="flex items-start gap-3">
@@ -198,7 +194,7 @@ export default async function HomePage() {
               </div>
               <Link
                 href="/je-cherche"
-                className="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 text-base font-black no-underline transition hover:-translate-y-0.5 sm:mt-0 sm:w-auto sm:flex-shrink-0"
+                className="app-button-primary mt-4 inline-flex w-full items-center justify-center gap-2 px-5 text-base font-black no-underline sm:mt-0 sm:w-auto sm:flex-shrink-0"
                 style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
               >
                 <PlusCircle className="h-5 w-5" strokeWidth={2.5} />

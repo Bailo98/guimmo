@@ -458,7 +458,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               right: "max(14px, calc((100vw - 520px) / 2), env(safe-area-inset-right, 0px))",
               top: "calc(78px + env(safe-area-inset-top, 0px))",
               bottom: "calc(96px + env(safe-area-inset-bottom, 0px))",
-              borderRadius: 30,
+              borderRadius: "var(--radius-card)",
               overflow: "hidden",
               background: "var(--swipe-card-bg)",
               scale: nextScale,
@@ -541,7 +541,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
               position: "absolute",
               inset: 0,
               overflow: "hidden",
-              borderRadius: 30,
+              borderRadius: "var(--radius-card)",
               background: "var(--swipe-card-bg)",
               boxShadow: "0 26px 70px rgba(0,0,0,0.42)",
               userSelect: "none",
@@ -575,7 +575,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                   void handleFavoriteOnly(topCard);
                 }}
                 aria-label={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white shadow-lg backdrop-blur-xl transition active:scale-95"
+                className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white shadow-lg backdrop-blur-xl transition active:scale-95"
               >
                 <Heart className={isFav ? "h-5 w-5 fill-red-500 text-red-500" : "h-5 w-5"} strokeWidth={2.5} />
               </button>
@@ -586,7 +586,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                   handleCall(topCard);
                 }}
                 aria-label="Appeler"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white shadow-lg backdrop-blur-xl transition active:scale-95"
+                className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/30 text-white shadow-lg backdrop-blur-xl transition active:scale-95"
               >
                 <Phone className="h-5 w-5" strokeWidth={2.5} />
               </button>
@@ -597,7 +597,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                   handleWhatsApp(topCard);
                 }}
                 aria-label="WhatsApp"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-[#25D366]/90 text-white shadow-lg backdrop-blur-xl transition active:scale-95"
+                className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-[#25D366]/90 text-white shadow-lg backdrop-blur-xl transition active:scale-95"
               >
                 <MessageCircle className="h-5 w-5" strokeWidth={2.5} />
               </button>
@@ -648,7 +648,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                   {typeLabel}
                 </span>
                 <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/15 px-3 py-2 text-base font-black text-white backdrop-blur-md">
-                  <MapPin className="h-3.5 w-3.5" strokeWidth={2.4} />
+                  <MapPin className="h-4 w-4" strokeWidth={2.4} />
                   {getNeighborhoodName(topCard.neighborhood)}
                 </span>
                 <span className="rounded-full border border-white/20 bg-white/15 px-3 py-2 text-base font-black text-white backdrop-blur-md">

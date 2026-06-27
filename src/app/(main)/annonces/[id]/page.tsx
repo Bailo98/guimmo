@@ -771,7 +771,7 @@ export default async function PropertyDetailPage({ params }: Props) {
       </div>
 
       <div
-        className="fixed left-1/2 z-40 flex w-[min(92vw,420px)] -translate-x-1/2 gap-2 rounded-[28px] p-2 shadow-[0_18px_42px_rgba(0,0,0,0.24)] backdrop-blur-xl lg:hidden"
+        className="fixed left-1/2 z-40 flex w-[min(92vw,420px)] -translate-x-1/2 gap-2 rounded-[var(--radius-card)] p-2 shadow-[0_18px_42px_rgba(0,0,0,0.24)] backdrop-blur-xl lg:hidden"
         style={{
           bottom: "calc(88px + env(safe-area-inset-bottom, 0px))",
           background: "color-mix(in srgb, var(--bg-card) 88%, transparent)",
@@ -782,7 +782,7 @@ export default async function PropertyDetailPage({ params }: Props) {
         {isOwner ? (
           <Link
             href={`/compte/annonces/${property.id}/modifier`}
-            className="flex min-h-[54px] flex-1 items-center justify-center gap-2 rounded-2xl text-sm font-black shadow-[0_8px_24px_rgba(185,138,46,0.24)] active:scale-[0.98]"
+            className="flex min-h-[54px] flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] text-sm font-black shadow-[0_8px_24px_rgba(185,138,46,0.24)] transition-transform active:scale-[0.98]"
             style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
           >
             <Edit3 className="h-5 w-5" strokeWidth={2.6} />
@@ -792,7 +792,7 @@ export default async function PropertyDetailPage({ params }: Props) {
           <>
             <Link
               href={`/connexion?redirect=/annonces/${property.id}`}
-              className="flex min-h-[54px] flex-1 items-center justify-center gap-2 rounded-2xl text-sm font-black shadow-[0_8px_24px_rgba(185,138,46,0.24)] active:scale-[0.98]"
+              className="flex min-h-[54px] flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] text-sm font-black shadow-[0_8px_24px_rgba(185,138,46,0.24)] transition-transform active:scale-[0.98]"
               style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
             >
               <KeyRound className="h-5 w-5" strokeWidth={2.6} />
@@ -800,7 +800,7 @@ export default async function PropertyDetailPage({ params }: Props) {
             </Link>
             <Link
               href={`/inscription?redirect=/annonces/${property.id}`}
-              className="flex min-h-[54px] flex-1 items-center justify-center rounded-2xl text-sm font-black active:scale-[0.98]"
+              className="flex min-h-[54px] flex-1 items-center justify-center rounded-[var(--radius-btn)] text-sm font-black transition-transform active:scale-[0.98]"
               style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
             >
               S&apos;inscrire
@@ -812,14 +812,14 @@ export default async function PropertyDetailPage({ params }: Props) {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex min-h-[54px] flex-1 items-center justify-center gap-2 rounded-2xl bg-[#25D366] text-sm font-black text-white shadow-[0_8px_24px_rgba(37,211,102,0.32)] active:scale-[0.98]"
+              className="flex min-h-[54px] flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-[#25D366] text-sm font-black text-white shadow-[0_8px_24px_rgba(37,211,102,0.32)] transition-transform active:scale-[0.98]"
             >
               <MessageCircle className="h-5 w-5" strokeWidth={2.6} />
               WhatsApp
             </a>
             <a
               href={phoneUrl}
-              className="flex min-h-[54px] flex-1 items-center justify-center gap-2 rounded-2xl text-sm font-black shadow-[0_8px_24px_rgba(0,0,0,0.08)] active:scale-[0.98]"
+              className="flex min-h-[54px] flex-1 items-center justify-center gap-2 rounded-[var(--radius-btn)] text-sm font-black shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-transform active:scale-[0.98]"
               style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}
             >
               <Phone className="h-5 w-5" strokeWidth={2.6} />

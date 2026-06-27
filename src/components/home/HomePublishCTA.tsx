@@ -21,8 +21,7 @@ export function HomePublishCTA() {
     <section className="py-5 md:py-8" style={{ background: "var(--bg-secondary)" }}>
       <div className="content-fluid max-w-[1240px]">
         <div
-          className="relative overflow-hidden rounded-[28px] p-5 md:p-8"
-          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "0 22px 64px rgba(24,21,16,0.14)" }}
+          className="app-card relative overflow-hidden p-5 md:p-8"
         >
           <div className="grid grid-cols-1 md:grid-cols-[220px_1fr_auto] gap-5 md:gap-7 items-center">
             <div
@@ -53,7 +52,7 @@ export function HomePublishCTA() {
 
             <Link
               href={href}
-              className="inline-flex min-h-14 w-full md:w-auto items-center justify-center gap-2 rounded-2xl px-8 text-base font-black transition-all hover:-translate-y-0.5 hover:opacity-95"
+                className="app-button-primary inline-flex w-full md:w-auto items-center justify-center gap-2 px-8 text-base font-black"
               style={{ background: "var(--accent-gold)", color: "var(--bg-primary)", boxShadow: "0 14px 34px rgba(185,138,46,0.24)" }}
             >
               <Plus className="h-5 w-5" strokeWidth={2.6} />

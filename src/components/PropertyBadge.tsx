@@ -51,20 +51,21 @@ export function PropertyBadge({ type }: PropertyBadgeProps) {
         background: cfg.bg,
         color: cfg.color,
         border: cfg.border,
-        borderRadius: 20,
-        padding: "3px 10px",
-        fontSize: 11,
-        fontWeight: 600,
+        borderRadius: "var(--radius-chip)",
+        minHeight: 28,
+        padding: "5px 10px",
+        fontSize: 12,
+        fontWeight: 900,
         whiteSpace: "nowrap",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
         display: "inline-flex",
         alignItems: "center",
-        gap: 4,
-        lineHeight: 1.6,
+        gap: 6,
+        lineHeight: 1,
       }}
     >
-      <Icon style={{ width: 13, height: 13 }} strokeWidth={2.4} />
+      <Icon style={{ width: 14, height: 14 }} strokeWidth={2.4} />
       {cfg.label}
     </span>
   );
@@ -99,16 +100,17 @@ export function TypeBadge({ propertyType }: TypeBadgeProps) {
       style={{
         background: cfg.bg,
         color: cfg.color,
-        borderRadius: 20,
-        padding: "3px 10px",
-        fontSize: 10,
-        fontWeight: 700,
+        borderRadius: "var(--radius-chip)",
+        minHeight: 28,
+        padding: "5px 10px",
+        fontSize: 12,
+        fontWeight: 900,
         whiteSpace: "nowrap",
         backdropFilter: "blur(6px)",
         WebkitBackdropFilter: "blur(6px)",
         display: "inline-flex",
         alignItems: "center",
-        lineHeight: 1.6,
+        lineHeight: 1,
       }}
     >
       {label}

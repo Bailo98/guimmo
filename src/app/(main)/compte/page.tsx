@@ -1612,7 +1612,7 @@ function MobileAccountHome({
       ];
 
   return (
-    <section className="mb-4 rounded-[28px] p-4 lg:hidden" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "var(--shadow-soft)" }}>
+    <section className="app-card mb-4 p-4 lg:hidden">
       <div className="mb-4 flex items-center gap-3">
         <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full">
           {profile?.avatar_url ? (
@@ -1627,7 +1627,7 @@ function MobileAccountHome({
           <p className="truncate text-xl font-black leading-tight" style={{ color: "var(--text-primary)" }}>Mon compte</p>
           <p className="truncate text-base font-black" style={{ color: "var(--text-primary)" }}>{displayName}</p>
           <p className="truncate text-sm font-bold" style={{ color: "var(--text-secondary)" }}>{user.email}</p>
-          <span className="mt-2 inline-flex rounded-full px-3 py-1 text-xs font-black" style={{ background: "rgba(185,138,46,0.14)", color: "var(--accent-gold)", border: "1px solid rgba(185,138,46,0.25)" }}>
+          <span className="app-badge mt-2" style={{ color: "var(--accent-gold)" }}>
             {accountTypeLabel}
           </span>
         </div>
@@ -1645,11 +1645,11 @@ function MobileAccountHome({
             </>
           );
           return href ? (
-            <Link key={label} href={href} className="flex min-h-[104px] flex-col items-center justify-center rounded-[22px] p-3 text-center" style={style}>
+            <Link key={label} href={href} className="flex min-h-[104px] flex-col items-center justify-center rounded-[var(--radius-card)] p-3 text-center transition-transform active:scale-[0.98]" style={style}>
               {content}
             </Link>
           ) : (
-            <button key={label} type="button" onClick={() => tab && onTab(tab)} className="flex min-h-[104px] flex-col items-center justify-center rounded-[22px] p-3 text-center" style={style}>
+            <button key={label} type="button" onClick={() => tab && onTab(tab)} className="flex min-h-[104px] flex-col items-center justify-center rounded-[var(--radius-card)] p-3 text-center transition-transform active:scale-[0.98]" style={style}>
               {content}
             </button>
           );
@@ -1660,7 +1660,7 @@ function MobileAccountHome({
             await onSignOut();
             window.location.href = "/";
           }}
-          className="col-span-2 flex min-h-[58px] items-center justify-center gap-2 rounded-[20px] text-base font-black"
+          className="col-span-2 flex min-h-[58px] items-center justify-center gap-2 rounded-[var(--radius-btn)] text-base font-black transition-transform active:scale-[0.98]"
           style={{ background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.24)", color: "#dc2626" }}
         >
           <LogOut className="h-5 w-5" strokeWidth={2.4} />
@@ -2040,7 +2040,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                   <Link
                     key={label}
                     href={href}
-                    className="flex min-h-[118px] flex-col items-center justify-center rounded-[24px] p-3 text-center shadow-sm transition-transform hover:-translate-y-0.5"
+                    className="flex min-h-[118px] flex-col items-center justify-center rounded-[var(--radius-card)] p-3 text-center shadow-sm transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
                     style={style}
                   >
                     {content}
@@ -2050,7 +2050,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                     key={label}
                     type="button"
                     onClick={onClick}
-                    className="flex min-h-[118px] flex-col items-center justify-center rounded-[24px] p-3 text-center shadow-sm transition-transform hover:-translate-y-0.5"
+                    className="flex min-h-[118px] flex-col items-center justify-center rounded-[var(--radius-card)] p-3 text-center shadow-sm transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
                     style={style}
                   >
                     {content}

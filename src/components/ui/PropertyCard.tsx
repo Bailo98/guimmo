@@ -161,7 +161,7 @@ export function PropertyCard({
     return (
       <div
         className={cn("group flex gap-3 overflow-hidden transition-all hover:-translate-y-0.5", className)}
-        style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 24, boxShadow: "var(--shadow-soft)" }}
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-soft)" }}
       >
         <Link href={`/annonces/${property.id}`} className="relative w-28 flex-shrink-0">
           <div className="relative w-full h-full min-h-[100px]">
@@ -197,12 +197,12 @@ export function PropertyCard({
       className={cn("group property-card-default", className)}
       style={{
         position: "relative",
-        borderRadius: 24,
+        borderRadius: "var(--radius-card)",
         overflow: "hidden",
         boxShadow: "0 16px 42px rgba(24,21,16,0.22)",
         background: "var(--media-card-bg)",
         flexShrink: 0,
-        transition: "transform 0.22s ease, box-shadow 0.22s ease",
+        transition: "transform var(--ui-duration) var(--ui-ease), box-shadow var(--ui-duration) var(--ui-ease)",
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLDivElement).style.transform  = "translateY(-4px)";
@@ -316,8 +316,9 @@ export function PropertyCard({
             background: "rgba(37,211,102,0.18)",
             color: "#ffffff",
             border: "1px solid rgba(37,211,102,0.38)",
-            borderRadius: 999,
-            padding: "4px 8px",
+            borderRadius: "var(--radius-chip)",
+            minHeight: 28,
+            padding: "5px 10px",
             fontSize: 12,
             fontWeight: 900,
             backdropFilter: "blur(6px)",
@@ -336,8 +337,9 @@ export function PropertyCard({
           <span style={{
             background: availCfg.bg, color: availCfg.color,
             border: `1px solid ${availCfg.border}`,
-            fontSize: 14, fontWeight: 900, padding: "5px 10px",
-            borderRadius: 20, whiteSpace: "nowrap",
+            fontSize: 12, fontWeight: 900, padding: "5px 10px",
+            minHeight: 28,
+            borderRadius: "var(--radius-chip)", whiteSpace: "nowrap",
             backdropFilter: "blur(6px)",
             display: "inline-flex",
             alignItems: "center",
@@ -355,7 +357,7 @@ export function PropertyCard({
         aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
         style={{
           position: "absolute", top: 12, right: 12, zIndex: 6,
-          width: 36, height: 36,
+          width: 40, height: 40,
           background: "rgba(0,0,0,0.40)",
           border: "none",
           borderRadius: "50%",
@@ -363,11 +365,11 @@ export function PropertyCard({
           cursor: "pointer",
           backdropFilter: "blur(6px)",
           WebkitBackdropFilter: "blur(6px)",
-          transition: "background 0.2s",
+          transition: "background var(--ui-duration) var(--ui-ease), transform var(--ui-duration) var(--ui-ease)",
         }}
       >
         <Heart style={{
-          width: 16, height: 16,
+          width: 18, height: 18,
           fill: fav ? "#ef4444" : "none",
           stroke: fav ? "#ef4444" : "rgba(255,255,255,0.90)",
           strokeWidth: fav ? 0 : 1.8,
@@ -446,13 +448,14 @@ export function PropertyCard({
 
         <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginTop: 7 }}>
           <span style={{
-            fontSize: 14,
+            fontSize: 12,
             fontWeight: 900,
             color: availability.color,
             background: availability.bg,
             border: `1px solid ${availability.border}`,
-            padding: "4px 9px",
-            borderRadius: 14,
+            minHeight: 28,
+            padding: "5px 10px",
+            borderRadius: "var(--radius-chip)",
             whiteSpace: "nowrap",
             backdropFilter: "blur(6px)",
           }}>
@@ -461,13 +464,14 @@ export function PropertyCard({
           </span>
           {property.is_verified && (
             <span style={{
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: 900,
               color: "#ffffff",
               background: "rgba(34,197,94,0.30)",
               border: "1px solid rgba(34,197,94,0.36)",
-              padding: "4px 9px",
-              borderRadius: 14,
+              minHeight: 28,
+              padding: "5px 10px",
+              borderRadius: "var(--radius-chip)",
               whiteSpace: "nowrap",
             }}>
               <ShieldCheck style={{ width: 14, height: 14, display: "inline", marginRight: 4, verticalAlign: "-2px" }} strokeWidth={2.4} />
@@ -476,13 +480,14 @@ export function PropertyCard({
           )}
           {published && (
             <span style={{
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: 900,
               color: "#ffffff",
               background: "rgba(0,0,0,0.45)",
               border: "1px solid rgba(255,255,255,0.20)",
-              padding: "4px 9px",
-              borderRadius: 14,
+              minHeight: 28,
+              padding: "5px 10px",
+              borderRadius: "var(--radius-chip)",
               whiteSpace: "nowrap",
             }}>
               <Calendar style={{ width: 14, height: 14, display: "inline", marginRight: 4, verticalAlign: "-2px" }} strokeWidth={2.4} />
@@ -490,13 +495,14 @@ export function PropertyCard({
             </span>
           )}
           <span style={{
-            fontSize: 14,
+            fontSize: 12,
             fontWeight: 900,
             color: "#ffffff",
             background: "rgba(0,0,0,0.45)",
             border: "1px solid rgba(255,255,255,0.20)",
-            padding: "4px 9px",
-            borderRadius: 14,
+            minHeight: 28,
+            padding: "5px 10px",
+            borderRadius: "var(--radius-chip)",
             whiteSpace: "nowrap",
           }}>
             {advance}
@@ -513,8 +519,8 @@ export function PropertyCard({
           bottom: 68,
           right: 16,
           zIndex: 6,
-          width: 46,
-          height: 46,
+          width: 48,
+          height: 48,
           borderRadius: "50%",
           background: "rgba(255,255,255,0.94)",
           color: "#17120a",
@@ -540,8 +546,8 @@ export function PropertyCard({
           bottom: 16,
           right: 16,
           zIndex: 6,
-          width: 50,
-          height: 50,
+          width: 52,
+          height: 52,
           borderRadius: "50%",
           background: "#25D366",
           border: "none",
