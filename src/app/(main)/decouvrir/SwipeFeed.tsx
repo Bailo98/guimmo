@@ -465,7 +465,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
       >
         <div aria-hidden="true" className="hidden">
           {loadedImages.map((image, index) => image && (
-            <Image key={`${image.url}-${index}`} src={image.url} alt="" width={20} height={20} priority={index < 2} />
+            <Image key={`${image.url}-${index}`} src={image.url} alt="" width={20} height={20} quality={65} loading="eager" />
           ))}
         </div>
         {nextCard && (
@@ -492,8 +492,9 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 alt={nextCard.title}
                 fill
                 style={{ objectFit: "cover", objectPosition: "center" }}
-                sizes="min(92vw, 520px)"
-                quality={78}
+                sizes="(max-width: 640px) 92vw, 520px"
+                quality={75}
+                loading="eager"
                 draggable={false}
               />
             ) : (
@@ -573,7 +574,7 @@ export function SwipeFeed({ properties }: { properties: Property[] }) {
                 alt={topCard.title}
                 fill
                 style={{ objectFit: "cover", objectPosition: "center" }}
-                sizes="min(92vw, 520px)"
+                sizes="(max-width: 640px) 92vw, 520px"
                 quality={88}
                 priority
                 draggable={false}

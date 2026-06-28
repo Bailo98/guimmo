@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
       {
         source: "/images/(.*)",
         headers: [
-          { key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" },
+          { key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=2592000" },
         ],
       },
     ];
@@ -47,8 +47,8 @@ const nextConfig: NextConfig = {
       },
     ],
     formats: ["image/webp", "image/avif"],
-    qualities: [65, 75, 90],
-    minimumCacheTTL: 86400,
+    qualities: [50, 65, 75, 78, 80, 82, 88, 90],
+    minimumCacheTTL: 604800,
     deviceSizes: [375, 414, 640, 768, 1024, 1280],
     imageSizes: [16, 32, 64, 96, 128, 256],
   },

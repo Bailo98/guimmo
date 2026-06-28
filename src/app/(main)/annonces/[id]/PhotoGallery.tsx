@@ -90,14 +90,14 @@ export function PhotoGallery({ images, title }: Props) {
           alt={activeImage.alt || title}
           fill
           className="object-cover"
-          sizes="(max-width: 768px) 100vw, 95vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 64vw, 980px"
           quality={82}
           priority
         />
         {safeImages.length > 1 && (
           <div className="hidden" aria-hidden="true">
-            <Image src={nextImage.url} alt="" width={32} height={32} priority={false} loading="eager" />
-            <Image src={prevImage.url} alt="" width={32} height={32} priority={false} loading="eager" />
+            <Image src={nextImage.url} alt="" width={32} height={32} quality={50} loading="lazy" />
+            <Image src={prevImage.url} alt="" width={32} height={32} quality={50} loading="lazy" />
           </div>
         )}
 

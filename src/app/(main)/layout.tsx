@@ -6,7 +6,7 @@ import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { ToastProvider } from "@/components/ui/Toast";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { PageTransition } from "@/components/ui/PageTransition";
-import { ChatbotWidget } from "@/components/ui/ChatbotWidget";
+import { DeferredChatbotWidget } from "@/components/ui/DeferredChatbotWidget";
 import { Onboarding } from "@/components/Onboarding";
 import { LowConnectionMode } from "@/components/LowConnectionMode";
 import { getContactWhatsApp } from "@/lib/site-config";
@@ -26,7 +26,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
       <Onboarding />
       <LowConnectionMode />
       <ScrollToTop />
-      <ChatbotWidget whatsappNumber={whatsappNumber} />
+      <DeferredChatbotWidget whatsappNumber={whatsappNumber} />
     </ToastProvider>
   );
 }

@@ -690,7 +690,7 @@ function AnnoncesContent() {
             {!hasFilters && <NearbySection properties={allProperties} />}
             <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5 xl:gap-6">
               {pageItems.map((p, i) => (
-                <PropertyCard key={p.id} property={p} index={i} showDiasporaPrice={diaspora} />
+                <PropertyCard key={p.id} property={p} index={i} priority={safePage === 1 && i < 2} showDiasporaPrice={diaspora} />
               ))}
             </div>
 

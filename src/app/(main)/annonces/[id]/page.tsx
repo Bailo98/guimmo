@@ -814,7 +814,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               <div className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible xl:grid-cols-4 2xl:grid-cols-5">
                 {similar.map((p, i) => (
                   <div key={p.id} className="min-w-[82vw] md:min-w-0">
-                    <PropertyCard property={p} index={i} />
+                    <PropertyCard property={p} index={i} priority={false} />
                   </div>
                 ))}
               </div>

@@ -21,6 +21,7 @@ interface PropertyCardProps {
   variant?: "default" | "compact" | "horizontal";
   className?: string;
   index?: number;
+  priority?: boolean;
   userLocation?: { lat: number; lng: number } | null;
   showDiasporaPrice?: boolean;
 }
@@ -51,6 +52,7 @@ export function PropertyCard({
   variant = "default",
   className,
   index = 0,
+  priority,
   userLocation = null,
   showDiasporaPrice = false,
 }: PropertyCardProps) {
@@ -62,6 +64,7 @@ export function PropertyCard({
   const touchStartX = useRef<number | null>(null);
   const didSwipe    = useRef(false);
   const simplified = variant === "compact";
+  const shouldPrioritizeImage = priority ?? index < 2;
 
   const fav    = _hasHydrated && isFavorite(property.id);
   const images = [...(property.property_images ?? [])]
@@ -250,10 +253,10 @@ export function PropertyCard({
           alt={property.title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 50vw, 520px"
           quality={75}
-          priority={index < 4}
-          loading={index < 4 ? undefined : "lazy"}
+          priority={shouldPrioritizeImage}
+          loading={shouldPrioritizeImage ? undefined : "lazy"}
           style={{ zIndex: 0 }}
         />
       ) : (
