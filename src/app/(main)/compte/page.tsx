@@ -109,7 +109,7 @@ function todayLabel() {
 
 function DeleteDialog({ title, onConfirm, onCancel }: { title: string; onConfirm: () => void; onCancel: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[2147483647] flex items-center justify-center overflow-y-auto bg-black/60 p-4 backdrop-blur-sm">
       <div className="rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(240,68,68,0.15)" }}>
@@ -137,7 +137,7 @@ function DeleteDialog({ title, onConfirm, onCancel }: { title: string; onConfirm
 function DeleteAccountDialog({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
   const [confirm, setConfirm] = useState("");
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[2147483647] flex items-center justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm">
       <div className="rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ background: "var(--bg-card)", border: "1px solid rgba(240,68,68,0.30)" }}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "rgba(240,68,68,0.15)" }}>
@@ -253,46 +253,25 @@ function ProfileForm({ user, profile, refreshProfile }: {
         />
       </div>
 
-      <div className="rounded-2xl p-4 mb-6" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <p className="bl-section-label">Type de compte</p>
-          <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-black" style={{ background: "rgba(185,138,46,0.14)", border: "1px solid rgba(185,138,46,0.28)", color: "var(--accent-gold)" }}>
-            <CheckCircle className="h-3.5 w-3.5" strokeWidth={2.5} />
-            {accountMode === "owner" ? "Propriétaire" : "Chercheur"}
-          </span>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          {([
-            { id: "seeker" as const, icon: <Search className="h-5 w-5" strokeWidth={2.4} />, title: "Je cherche", sub: "Logement" },
-            { id: "owner" as const, icon: <Home className="h-5 w-5" strokeWidth={2.4} />, title: "Je publie", sub: "Mes biens" },
-          ]).map((item) => {
-            const active = accountMode === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => { if (!active) void updateAccountMode(item.id); }}
-                disabled={saving}
-                className="relative rounded-2xl p-4 text-left transition-all active:scale-[0.97] disabled:opacity-60"
-                style={{
-                  minHeight: 96,
-                  background: active ? "rgba(185,138,46,0.16)" : "var(--bg-secondary)",
-                  border: active ? "2px solid var(--accent-gold)" : "1px solid var(--border)",
-                  color: "var(--text-primary)",
-                  boxShadow: active ? "0 10px 24px rgba(185,138,46,0.18)" : "none",
-                }}
-              >
-                {active && (
-                  <span className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full" style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}>
-                    {saving ? <RotateCcw className="h-4 w-4 animate-spin" strokeWidth={2.5} /> : <CheckCircle className="h-4 w-4" strokeWidth={2.6} />}
-                  </span>
-                )}
-                <span className="block text-3xl mb-2">{item.icon}</span>
-                <span className="block text-base font-black">{item.title}</span>
-                <span className="block text-xs font-bold mt-1" style={{ color: "var(--text-secondary)" }}>{item.sub}</span>
-              </button>
-            );
-          })}
+      <div className="mb-5 rounded-2xl p-3" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-xs font-black uppercase tracking-wide" style={{ color: "var(--text-secondary)" }}>Type de compte</p>
+            <p className="mt-1 inline-flex items-center gap-1.5 text-sm font-black" style={{ color: "var(--text-primary)" }}>
+              {accountMode === "owner" ? <Home className="h-4 w-4 text-[var(--accent-gold)]" strokeWidth={2.4} /> : <Search className="h-4 w-4 text-[var(--accent-gold)]" strokeWidth={2.4} />}
+              {accountMode === "owner" ? "Propriétaire" : "Chercheur"}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => { void updateAccountMode(accountMode === "owner" ? "seeker" : "owner"); }}
+            disabled={saving}
+            className="inline-flex min-h-10 items-center gap-2 rounded-xl px-3 text-sm font-black transition-transform active:scale-[0.97] disabled:opacity-60"
+            style={{ background: "rgba(185,138,46,0.14)", border: "1px solid rgba(185,138,46,0.28)", color: "var(--accent-gold)" }}
+          >
+            {saving ? <RotateCcw className="h-4 w-4 animate-spin" strokeWidth={2.5} /> : <RotateCcw className="h-4 w-4" strokeWidth={2.5} />}
+            Changer
+          </button>
         </div>
       </div>
 
@@ -1091,14 +1070,14 @@ function BuyerProfile({ user, profile, refreshProfile }: {
   return (
     <div>
       {/* Header profil */}
-      <div className="px-4 pt-8 pb-6 text-center border-b" style={{ background: "var(--bg-secondary)", borderColor: "var(--border)" }}>
+      <div className="px-4 pt-5 pb-4 border-b" style={{ background: "var(--bg-secondary)", borderColor: "var(--border)" }}>
         <AvatarUpload
           userId={user.id}
           currentUrl={profile?.avatar_url}
           name={profile?.full_name}
           onSuccess={() => { void refreshProfile(); }}
         />
-        <h1 className="mt-3 font-bold text-xl" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
+        <h1 className="mt-3 font-bold text-lg" style={{ color: "var(--text-primary)", fontFamily: "var(--font-display), sans-serif" }}>
           {displayName}
         </h1>
         <p className="text-sm mt-1" style={{ color: "var(--text-primary-dim)" }}>{user.email}</p>
@@ -1125,49 +1104,57 @@ function BuyerProfile({ user, profile, refreshProfile }: {
         </div>
       </div>
 
-      <div className="mx-4 mt-4 grid grid-cols-2 gap-3 lg:hidden">
+      <div className="mx-4 mt-4 overflow-hidden rounded-2xl lg:hidden" style={{ border: "1px solid var(--border)" }}>
         <button
           type="button"
           onClick={() => setEditing(true)}
-          className="flex min-h-[104px] flex-col items-center justify-center rounded-[22px] p-3 text-center"
-          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+          className="flex min-h-14 w-full items-center gap-3 px-3 text-left"
+          style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--border)", color: "var(--text-primary)" }}
         >
-          <Pencil className="mb-2 h-7 w-7" strokeWidth={2.4} />
-          <span className="text-base font-black">Modifier profil</span>
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: "var(--bg-secondary)" }}><Pencil className="h-5 w-5" strokeWidth={2.4} /></span>
+          <span className="flex-1 text-sm font-black">Modifier profil</span>
+          <ChevronRight className="h-4 w-4" style={{ color: "var(--text-muted)" }} />
         </button>
         <button
           type="button"
           onClick={becomePro}
           disabled={becomingPro}
-          className="flex min-h-[104px] flex-col items-center justify-center rounded-[22px] p-3 text-center disabled:opacity-60"
-          style={{ background: "var(--accent-gold)", border: "1px solid rgba(123,84,24,0.18)", color: "var(--bg-primary)" }}
+          className="flex min-h-14 w-full items-center gap-3 px-3 text-left disabled:opacity-60"
+          style={{ background: "rgba(185,138,46,0.12)", borderBottom: "1px solid var(--border)", color: "var(--text-primary)" }}
         >
-          <RotateCcw className="mb-2 h-7 w-7" strokeWidth={2.4} />
-          <span className="text-base font-black">Passer propriétaire</span>
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: "rgba(185,138,46,0.16)", color: "var(--accent-gold)" }}>
+            {becomingPro ? <RotateCcw className="h-5 w-5 animate-spin" strokeWidth={2.4} /> : <RotateCcw className="h-5 w-5" strokeWidth={2.4} />}
+          </span>
+          <span className="flex-1 text-sm font-black">Passer propriétaire</span>
+          <ChevronRight className="h-4 w-4" style={{ color: "var(--text-muted)" }} />
         </button>
         <Link
           href="/je-cherche"
-          className="flex min-h-[104px] flex-col items-center justify-center rounded-[22px] p-3 text-center"
-          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+          className="flex min-h-14 items-center gap-3 px-3"
+          style={{ background: "var(--bg-card)", borderBottom: "1px solid var(--border)", color: "var(--text-primary)" }}
         >
-          <Search className="mb-2 h-7 w-7" strokeWidth={2.4} />
-          <span className="text-base font-black">Mes recherches</span>
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: "var(--bg-secondary)" }}><Search className="h-5 w-5" strokeWidth={2.4} /></span>
+          <span className="flex-1 text-sm font-black">Mes recherches</span>
+          <ChevronRight className="h-4 w-4" style={{ color: "var(--text-muted)" }} />
         </Link>
         <Link
           href="/favoris"
-          className="flex min-h-[104px] flex-col items-center justify-center rounded-[22px] p-3 text-center"
-          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+          className="flex min-h-14 items-center gap-3 px-3"
+          style={{ background: "var(--bg-card)", color: "var(--text-primary)" }}
         >
-          <Heart className="mb-2 h-7 w-7" strokeWidth={2.4} />
-          <span className="text-base font-black">Favoris</span>
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: "var(--bg-secondary)" }}><Heart className="h-5 w-5" strokeWidth={2.4} /></span>
+          <span className="flex-1 text-sm font-black">Favoris</span>
+          <ChevronRight className="h-4 w-4" style={{ color: "var(--text-muted)" }} />
         </Link>
+      </div>
+      <div className="mx-4 mt-3 lg:hidden">
         <button
           type="button"
           onClick={async () => { if (supabase) await supabase.auth.signOut(); window.location.href = "/"; }}
-          className="col-span-2 flex min-h-[58px] items-center justify-center gap-2 rounded-[20px] text-base font-black"
+          className="flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl text-sm font-black"
           style={{ background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.24)", color: "#dc2626" }}
         >
-          <LogOut className="h-5 w-5" strokeWidth={2.4} />
+          <LogOut className="h-4 w-4" strokeWidth={2.4} />
           Déconnexion
         </button>
       </div>
@@ -1608,74 +1595,103 @@ function MobileAccountHome({
 }) {
   const actions = mode === "owner"
     ? [
-        { label: "Mes logements", Icon: Home, tab: "annonces" },
-        { label: "Publier", Icon: Plus, href: "/publier/rapide", primary: true },
-        { label: "Demandes", Icon: Phone, tab: "demandes_locataires" },
-        { label: "Messages", Icon: MessageCircle, tab: "messages" },
-        { label: "Vérifier compte", Icon: ShieldCheck, href: "/compte/verification", primary: !profile?.is_verified },
-        { label: "Profil", Icon: User, tab: "profil" },
+        { label: "Mes logements", Icon: Home, tab: "annonces", highlight: false },
+        { label: "Publier une annonce", Icon: Plus, href: "/publier/rapide", highlight: true },
+        { label: "Demandes reçues", Icon: Phone, tab: "demandes_locataires", highlight: false },
+        { label: "Messages", Icon: MessageCircle, tab: "messages", highlight: false },
+        { label: "Vérifier mon compte", Icon: ShieldCheck, href: "/compte/verification", highlight: !profile?.is_verified },
+        { label: "Modifier profil", Icon: Pencil, tab: "profil", highlight: false },
       ]
     : [
-        { label: "Modifier profil", Icon: Pencil, tab: "profil" },
-        { label: "Changer type", Icon: RotateCcw, tab: "profil", primary: true },
-        { label: "Mes recherches", Icon: Search, tab: "recherches" },
-        { label: "Favoris", Icon: Heart, href: "/favoris" },
-        { label: "Mes visites", Icon: Calendar, tab: "visites" },
+        { label: "Mes recherches", Icon: Search, tab: "recherches", highlight: false },
+        { label: "Favoris", Icon: Heart, href: "/favoris", highlight: false },
+        { label: "Mes visites", Icon: Calendar, tab: "visites", highlight: false },
+        { label: "Messages", Icon: MessageCircle, tab: "messages", highlight: false },
       ];
 
   return (
-    <section className="app-card mb-4 p-4 lg:hidden">
-      <div className="mb-4 flex items-center gap-3">
-        <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full">
+    <section className="mb-4 rounded-3xl p-4 lg:hidden" style={{ background: "var(--bg-card)", border: "1px solid var(--border)", boxShadow: "0 12px 28px rgba(15,23,42,0.06)" }}>
+      <div className="mb-3 flex items-center gap-3">
+        <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full">
           {profile?.avatar_url ? (
-            <Image src={profile.avatar_url} alt={displayName} fill className="object-cover" sizes="64px" />
+            <Image src={profile.avatar_url} alt={displayName} fill className="object-cover" sizes="48px" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-xl font-black" style={{ background: "rgba(185,138,46,0.16)", color: "var(--accent-gold)", border: "2px solid rgba(185,138,46,0.24)" }}>
+            <div className="flex h-full w-full items-center justify-center text-base font-black" style={{ background: "rgba(185,138,46,0.16)", color: "var(--accent-gold)", border: "2px solid rgba(185,138,46,0.24)" }}>
               {initials}
             </div>
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-xl font-black leading-tight" style={{ color: "var(--text-primary)" }}>Mon compte</p>
-          <p className="truncate text-base font-black" style={{ color: "var(--text-primary)" }}>{displayName}</p>
-          <p className="truncate text-sm font-bold" style={{ color: "var(--text-secondary)" }}>{user.email}</p>
-          <span className="app-badge mt-2" style={{ color: "var(--accent-gold)" }}>
+          <p className="truncate text-base font-black leading-tight" style={{ color: "var(--text-primary)" }}>{displayName}</p>
+          <p className="truncate text-xs font-bold" style={{ color: "var(--text-secondary)" }}>{user.email}</p>
+          <span className="mt-1 inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-black" style={{ background: "rgba(185,138,46,0.12)", border: "1px solid rgba(185,138,46,0.24)", color: "var(--accent-gold)" }}>
             {accountTypeLabel}
           </span>
         </div>
+        <button
+          type="button"
+          onClick={() => onTab("profil")}
+          className="inline-flex min-h-9 items-center gap-1.5 rounded-xl px-3 text-xs font-black"
+          style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+        >
+          <Pencil className="h-3.5 w-3.5" strokeWidth={2.4} />
+          Modifier
+        </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        {actions.map(({ label, Icon, tab, href, primary }) => {
-          const style = primary
-            ? { background: "var(--accent-gold)", color: "var(--bg-primary)", border: "1px solid rgba(123,84,24,0.18)" }
-            : { background: "var(--bg-secondary)", color: "var(--text-primary)", border: "1px solid var(--border)" };
+      <div className="mb-3 flex items-center justify-between gap-3 rounded-2xl px-3 py-2.5" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}>
+        <div className="min-w-0">
+          <p className="text-xs font-bold" style={{ color: "var(--text-secondary)" }}>Type de compte</p>
+          <p className="text-sm font-black" style={{ color: "var(--text-primary)" }}>{accountTypeLabel}</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => onTab("profil")}
+          className="inline-flex min-h-9 items-center gap-1.5 rounded-xl px-3 text-xs font-black"
+          style={{ background: "rgba(185,138,46,0.14)", border: "1px solid rgba(185,138,46,0.26)", color: "var(--accent-gold)" }}
+        >
+          <RotateCcw className="h-3.5 w-3.5" strokeWidth={2.4} />
+          Changer
+        </button>
+      </div>
+
+      <div className="overflow-hidden rounded-2xl" style={{ border: "1px solid var(--border)" }}>
+        {actions.map(({ label, Icon, tab, href, highlight }, index) => {
+          const style = highlight
+            ? { background: "rgba(185,138,46,0.12)", color: "var(--text-primary)", borderBottom: index === actions.length - 1 ? "none" : "1px solid var(--border)" }
+            : { background: "var(--bg-card)", color: "var(--text-primary)", borderBottom: index === actions.length - 1 ? "none" : "1px solid var(--border)" };
           const content = (
             <>
-              <Icon className="mb-2 h-7 w-7" strokeWidth={2.4} />
-              <span className="text-base font-black leading-tight">{label}</span>
+              <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl" style={{ background: highlight ? "rgba(185,138,46,0.16)" : "var(--bg-secondary)", color: highlight ? "var(--accent-gold)" : "var(--text-primary)" }}>
+                <Icon className="h-5 w-5" strokeWidth={2.4} />
+              </span>
+              <span className="min-w-0 flex-1 truncate text-sm font-black">{label}</span>
+              <ChevronRight className="h-4 w-4 flex-shrink-0" style={{ color: "var(--text-muted)" }} strokeWidth={2.4} />
             </>
           );
           return href ? (
-            <Link key={label} href={href} className="flex min-h-[104px] flex-col items-center justify-center rounded-[var(--radius-card)] p-3 text-center transition-transform active:scale-[0.98]" style={style}>
+            <Link key={label} href={href} className="flex min-h-14 items-center gap-3 px-3 transition-colors active:bg-black/5" style={style}>
               {content}
             </Link>
           ) : (
-            <button key={label} type="button" onClick={() => tab && onTab(tab)} className="flex min-h-[104px] flex-col items-center justify-center rounded-[var(--radius-card)] p-3 text-center transition-transform active:scale-[0.98]" style={style}>
+            <button key={label} type="button" onClick={() => tab && onTab(tab)} className="flex min-h-14 w-full items-center gap-3 px-3 text-left transition-colors active:bg-black/5" style={style}>
               {content}
             </button>
           );
         })}
+      </div>
+
+      <div className="mt-3">
         <button
           type="button"
           onClick={async () => {
             await onSignOut();
             window.location.href = "/";
           }}
-          className="col-span-2 flex min-h-[58px] items-center justify-center gap-2 rounded-[var(--radius-btn)] text-base font-black transition-transform active:scale-[0.98]"
+          className="flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl text-sm font-black transition-transform active:scale-[0.98]"
           style={{ background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.24)", color: "#dc2626" }}
         >
-          <LogOut className="h-5 w-5" strokeWidth={2.4} />
+          <LogOut className="h-4 w-4" strokeWidth={2.4} />
           Déconnexion
         </button>
       </div>
@@ -2458,7 +2474,7 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
       />
       {tab === "recherches" && (
         <div>
-          <SectionHeader title="Votre espace recherche" subtitle="Gérez vos critères et alertes" action={
+          <SectionHeader title="Mes recherches" subtitle="Alertes logement" action={
             <button onClick={() => setShowNew(true)} className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}>
               <Plus className="w-3.5 h-3.5" /> Nouvelle
             </button>
@@ -2493,10 +2509,10 @@ function ChercheurDashboard({ user, profile, signOut, refreshProfile }: {
           {searchesLoading ? (
             <div className="space-y-3">{[1,2].map((i) => <div key={i} className="h-20 rounded-2xl animate-pulse" style={{ background: "var(--bg-secondary)" }} />)}</div>
           ) : searches.length === 0 ? (
-            <div className="text-center py-12 rounded-2xl" style={{ border: "2px dashed var(--border)" }}>
-              <Search className="w-8 h-8 mx-auto mb-3" style={{ color: "var(--text-primary-faint)" }} />
-              <p className="font-bold mb-1" style={{ color: "var(--text-primary)" }}>Aucune recherche sauvegardée</p>
-              <p className="text-sm mb-4" style={{ color: "var(--text-primary-faint)" }}>Sauvegardez vos critères pour recevoir des alertes.</p>
+            <div className="rounded-2xl px-4 py-7 text-center" style={{ background: "var(--bg-card)", border: "1px dashed var(--border)" }}>
+              <Search className="w-7 h-7 mx-auto mb-2" style={{ color: "var(--accent-gold)" }} />
+              <p className="font-black mb-1" style={{ color: "var(--text-primary)" }}>Aucune recherche</p>
+              <p className="text-sm mb-4" style={{ color: "var(--text-secondary)" }}>Crée une alerte pour être prévenu.</p>
               <button onClick={() => setShowNew(true)} className="inline-flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm" style={{ background: "var(--accent-gold)", color: "var(--text-primary)" }}>
                 <Plus className="w-4 h-4" /> Créer une recherche
               </button>

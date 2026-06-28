@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MessageSquare, Send, X, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
@@ -29,6 +29,15 @@ export function MessageButton({
   const [content,  setContent]  = useState("");
   const [sending,  setSending]  = useState(false);
   const [checking, setChecking] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
 
   // Never render for the property owner or when user would message themselves
   if (isOwner) return null;
@@ -119,8 +128,17 @@ export function MessageButton({
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-[var(--bg-primary)] rounded-3xl border border-[var(--border)] shadow-2xl">
+        <div
+          className="fixed inset-0 z-[2147483647] flex items-end justify-center overflow-y-auto bg-black/70 px-3 pt-6 backdrop-blur-sm sm:items-center sm:p-4"
+          style={{
+            paddingBottom: "max(18px, env(safe-area-inset-bottom, 0px))",
+            paddingTop: "max(18px, env(safe-area-inset-top, 0px))",
+          }}
+        >
+          <div
+            className="w-full max-w-md overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--bg-primary)] shadow-2xl"
+            style={{ maxHeight: "calc(100dvh - 36px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))" }}
+          >
             <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border)]">
               <div>
                 <h2 className="font-bold text-[var(--text-primary)] text-base">Envoyer un message</h2>
@@ -136,7 +154,11 @@ export function MessageButton({
               </button>
             </div>
 
-            <form onSubmit={handleSend} className="p-5 space-y-4">
+            <form
+              onSubmit={handleSend}
+              className="max-h-[calc(100dvh-150px-env(safe-area-inset-bottom,0px))] space-y-4 overflow-y-auto p-5"
+              style={{ paddingBottom: "max(20px, env(safe-area-inset-bottom, 0px))" }}
+            >
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
@@ -148,12 +170,12 @@ export function MessageButton({
                 style={{ fontSize: 16 }}
                 className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/50 resize-none"
               />
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-3">
                 <span className="text-xs text-[var(--text-muted)]">{content.length}/2000</span>
                 <button
                   type="submit"
                   disabled={!content.trim() || sending}
-                  className="flex items-center gap-2 bg-[var(--accent-gold)] hover:bg-[#B8963A] disabled:opacity-50 text-[var(--text-primary)] font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm"
+                  className="flex min-h-12 items-center gap-2 rounded-xl bg-[var(--accent-gold)] px-5 py-2.5 text-sm font-black text-[var(--text-primary)] transition-colors hover:bg-[#B8963A] disabled:opacity-50"
                 >
                   <Send className="w-4 h-4" />
                   {sending ? "Envoi…" : "Envoyer"}

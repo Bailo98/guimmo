@@ -118,7 +118,11 @@ export function ReportButton({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: 16,
+        paddingTop: "max(16px, env(safe-area-inset-top, 0px))",
+        paddingRight: 16,
+        paddingBottom: "max(16px, env(safe-area-inset-bottom, 0px))",
+        paddingLeft: 16,
+        overflowY: "auto",
       }}
       onClick={(e) => { if (e.target === e.currentTarget) close(); }}
     >
@@ -132,7 +136,7 @@ export function ReportButton({
           padding: 24,
           width: "100%",
           maxWidth: 460,
-          maxHeight: "80vh",
+          maxHeight: "calc(100dvh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))",
           overflowY: "auto",
         }}
       >
