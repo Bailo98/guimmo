@@ -9,12 +9,20 @@ interface Props {
   title: string;
 }
 
+function isValidImageUrl(url?: string | null): url is string {
+  if (!url) return false;
+  const value = url.trim();
+  if (!value || value === "null" || value === "undefined") return false;
+  return value.startsWith("http://") || value.startsWith("https://") || value.startsWith("/");
+}
+
 export function PhotoGallery({ images, title }: Props) {
   const [current, setCurrent] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
   const touchStartX = useRef(0);
+  const safeImages = images.filter((image) => isValidImageUrl(image.url));
 
-  if (!images.length) {
+  if (!safeImages.length) {
     return (
       <div className="aspect-[4/3] bg-slate-200 dark:bg-slate-700 rounded-2xl flex items-center justify-center">
         <Home className="h-10 w-10 text-slate-500 dark:text-slate-300" strokeWidth={1.8} />
@@ -23,18 +31,19 @@ export function PhotoGallery({ images, title }: Props) {
   }
 
   function prev() {
-    setCurrent((c) => (c === 0 ? images.length - 1 : c - 1));
+    setCurrent((c) => (c === 0 ? safeImages.length - 1 : c - 1));
   }
 
   function next() {
-    setCurrent((c) => (c === images.length - 1 ? 0 : c + 1));
+    setCurrent((c) => (c === safeImages.length - 1 ? 0 : c + 1));
   }
 
-  const activeImage = images[current];
-  const nextImage = images[(current + 1) % images.length];
-  const prevImage = images[(current - 1 + images.length) % images.length];
-  const visibleThumbs = images.slice(0, 4);
-  const remaining = Math.max(0, images.length - visibleThumbs.length);
+  const activeIndex = Math.min(current, safeImages.length - 1);
+  const activeImage = safeImages[activeIndex];
+  const nextImage = safeImages[(activeIndex + 1) % safeImages.length];
+  const prevImage = safeImages[(activeIndex - 1 + safeImages.length) % safeImages.length];
+  const visibleThumbs = safeImages.slice(0, 4);
+  const remaining = Math.max(0, safeImages.length - visibleThumbs.length);
   const fullscreenOverlay = (
     <div className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-black/95 p-3 md:p-8">
       <button
@@ -45,7 +54,7 @@ export function PhotoGallery({ images, title }: Props) {
       >
         <X className="h-6 w-6" strokeWidth={2.6} />
       </button>
-      {images.length > 1 && (
+      {safeImages.length > 1 && (
         <button type="button" onClick={prev} className="absolute left-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-white/20" aria-label="Photo précédente">
           <ChevronLeft className="h-7 w-7" />
         </button>
@@ -53,13 +62,13 @@ export function PhotoGallery({ images, title }: Props) {
       <div className="relative h-[82vh] w-full max-w-6xl touch-pan-x touch-pan-y" style={{ touchAction: "pinch-zoom pan-x pan-y" }}>
         <Image src={activeImage.url} alt={activeImage.alt || title} fill className="object-contain" sizes="100vw" quality={90} />
       </div>
-      {images.length > 1 && (
+      {safeImages.length > 1 && (
         <button type="button" onClick={next} className="absolute right-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-white/20" aria-label="Photo suivante">
           <ChevronRight className="h-7 w-7" />
         </button>
       )}
       <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm font-black text-white backdrop-blur">
-        {current + 1} / {images.length}
+        {activeIndex + 1} / {safeImages.length}
       </div>
     </div>
   );
@@ -85,7 +94,7 @@ export function PhotoGallery({ images, title }: Props) {
           quality={82}
           priority
         />
-        {images.length > 1 && (
+        {safeImages.length > 1 && (
           <div className="hidden" aria-hidden="true">
             <Image src={nextImage.url} alt="" width={32} height={32} priority={false} loading="eager" />
             <Image src={prevImage.url} alt="" width={32} height={32} priority={false} loading="eager" />
@@ -97,7 +106,7 @@ export function PhotoGallery({ images, title }: Props) {
 
         {/* Counter */}
         <div className="absolute bottom-3 right-3 bg-black/55 text-white text-sm font-black px-3 py-1.5 rounded-full pointer-events-none">
-          {current + 1} / {images.length}
+          {activeIndex + 1} / {safeImages.length}
         </div>
 
         <button
@@ -110,13 +119,13 @@ export function PhotoGallery({ images, title }: Props) {
         </button>
 
         {/* Dot indicators — inside image overlay */}
-        {images.length > 1 && (
+        {safeImages.length > 1 && (
           <div className="absolute bottom-10 left-0 right-0 flex gap-1.5 justify-center pointer-events-none">
-            {images.map((_, i) => (
+            {safeImages.map((_, i) => (
               <span
                 key={i}
                 className={`rounded-full transition-all ${
-                  i === current
+                  i === activeIndex
                     ? "w-5 h-2 bg-white"
                     : "w-2 h-2 bg-white/40"
                 }`}
@@ -126,7 +135,7 @@ export function PhotoGallery({ images, title }: Props) {
         )}
 
         {/* Desktop arrows */}
-        {images.length > 1 && (
+        {safeImages.length > 1 && (
           <>
             <button
               onClick={prev}
@@ -145,14 +154,14 @@ export function PhotoGallery({ images, title }: Props) {
       </div>
 
       {/* Thumbnail strip — desktop only */}
-      {images.length > 1 && (
+      {safeImages.length > 1 && (
         <div className="hidden gap-2 px-3 py-3 overflow-x-auto scrollbar-hide md:flex">
           {visibleThumbs.map((img, i) => (
             <button
               key={i}
               onClick={() => setCurrent(i)}
               className={`relative flex-none h-16 w-20 overflow-hidden rounded-xl border-2 transition-colors ${
-                i === current ? "border-[var(--accent-gold)]" : "border-transparent opacity-60 hover:opacity-100"
+                i === activeIndex ? "border-[var(--accent-gold)]" : "border-transparent opacity-60 hover:opacity-100"
               }`}
             >
               <Image src={img.url} alt={img.alt || `Photo ${i + 1}`} fill className="object-cover" sizes="64px" quality={50} loading="lazy" />

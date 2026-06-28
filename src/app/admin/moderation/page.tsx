@@ -14,6 +14,19 @@ const TYPE_LABELS: Record<string, string> = {
   shop: "Boutique", land: "Terrain",
 };
 
+const REPORT_REASON_LABELS: Record<string, string> = {
+  fraud: "Annonce frauduleuse / arnaque",
+  already_taken: "Logement déjà loué / vendu",
+  fake_photos: "Photos fausses ou volées",
+  wrong_price: "Prix incorrect",
+  other: "Autre",
+  owner_fraud: "Compte suspect / arnaque",
+  owner_phone: "Téléphone ou contact incorrect",
+  owner_behavior: "Mauvais comportement",
+  owner_payment: "Demande de paiement suspecte",
+  owner_other: "Autre signalement compte",
+};
+
 const ACCENT = "var(--accent-gold)";
 const S_CARD: React.CSSProperties = {
   background: "rgba(255,255,255,0.03)",
@@ -357,7 +370,9 @@ export default function AdminModerationPage() {
                 <div key={rep.id} style={{ ...S_CARD, borderColor: "rgba(239,68,68,0.25)", opacity: busy ? 0.6 : 1 }}>
                   <div style={{ marginBottom: 10 }}>
                     <p style={{ color: "var(--text-primary)", fontWeight: 700, fontSize: 14, margin: "0 0 3px" }}>{propTitle}</p>
-                    <p style={{ color: "#f87171", fontSize: 12, margin: "0 0 2px" }}>{rep.reason ?? "Raison non précisée"}</p>
+                    <p style={{ color: "#f87171", fontSize: 12, margin: "0 0 2px" }}>
+                      {rep.reason ? REPORT_REASON_LABELS[rep.reason] ?? rep.reason : "Raison non précisée"}
+                    </p>
                     {rep.details && (
                       <p style={{ color: "var(--text-primary-dim)", fontSize: 12, margin: "0 0 3px" }}>{rep.details}</p>
                     )}

@@ -5,6 +5,7 @@ import { MessageSquare, Send, X, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { toast } from "@/lib/toast";
+import { createNotification } from "@/lib/notifications";
 
 interface Props {
   propertyId: string;
@@ -84,9 +85,16 @@ export function MessageButton({
         setSending(false);
         return;
       }
+      await createNotification({
+        userId: ownerId,
+        type: "new_message",
+        title: "Nouveau message",
+        body: `Un utilisateur vous a écrit pour "${propertyTitle}".`,
+        data: { property_id: propertyId, sender_id: user.id },
+      });
     }
 
-    toast("Message envoyé !", "success");
+    toast("Message envoyé au propriétaire", "success");
     setContent("");
     setOpen(false);
     setSending(false);

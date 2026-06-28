@@ -57,8 +57,16 @@ function propertyTypeLabel(type: Property["type"]) {
   return type;
 }
 
+function isValidImageUrl(url?: string | null): url is string {
+  if (!url) return false;
+  const value = url.trim();
+  if (!value || value === "null" || value === "undefined") return false;
+  return value.startsWith("http://") || value.startsWith("https://") || value.startsWith("/");
+}
+
 function primaryImage(property: Property) {
-  return property.property_images?.find((image) => image.is_primary) ?? property.property_images?.[0];
+  const images = (property.property_images ?? []).filter((image) => isValidImageUrl(image.url));
+  return images.find((image) => image.is_primary) ?? images[0];
 }
 
 export function SwipeFeed({ properties }: { properties: Property[] }) {

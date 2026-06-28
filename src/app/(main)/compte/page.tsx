@@ -254,7 +254,13 @@ function ProfileForm({ user, profile, refreshProfile }: {
       </div>
 
       <div className="rounded-2xl p-4 mb-6" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
-        <p className="bl-section-label mb-3">Type de compte</p>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <p className="bl-section-label">Type de compte</p>
+          <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-black" style={{ background: "rgba(185,138,46,0.14)", border: "1px solid rgba(185,138,46,0.28)", color: "var(--accent-gold)" }}>
+            <CheckCircle className="h-3.5 w-3.5" strokeWidth={2.5} />
+            {accountMode === "owner" ? "Propriétaire" : "Chercheur"}
+          </span>
+        </div>
         <div className="grid grid-cols-2 gap-3">
           {([
             { id: "seeker" as const, icon: <Search className="h-5 w-5" strokeWidth={2.4} />, title: "Je cherche", sub: "Logement" },
@@ -267,14 +273,20 @@ function ProfileForm({ user, profile, refreshProfile }: {
                 type="button"
                 onClick={() => { if (!active) void updateAccountMode(item.id); }}
                 disabled={saving}
-                className="rounded-2xl p-4 text-left transition-all disabled:opacity-60"
+                className="relative rounded-2xl p-4 text-left transition-all active:scale-[0.97] disabled:opacity-60"
                 style={{
                   minHeight: 96,
                   background: active ? "rgba(185,138,46,0.16)" : "var(--bg-secondary)",
                   border: active ? "2px solid var(--accent-gold)" : "1px solid var(--border)",
                   color: "var(--text-primary)",
+                  boxShadow: active ? "0 10px 24px rgba(185,138,46,0.18)" : "none",
                 }}
               >
+                {active && (
+                  <span className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full" style={{ background: "var(--accent-gold)", color: "var(--bg-primary)" }}>
+                    {saving ? <RotateCcw className="h-4 w-4 animate-spin" strokeWidth={2.5} /> : <CheckCircle className="h-4 w-4" strokeWidth={2.6} />}
+                  </span>
+                )}
                 <span className="block text-3xl mb-2">{item.icon}</span>
                 <span className="block text-base font-black">{item.title}</span>
                 <span className="block text-xs font-bold mt-1" style={{ color: "var(--text-secondary)" }}>{item.sub}</span>

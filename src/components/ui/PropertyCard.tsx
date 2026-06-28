@@ -31,6 +31,13 @@ const NEIGHBORHOOD_LABELS: Record<string, string> = {
   dixinn: "Dixinn", matam: "Matam", madina: "Madina", kaloum: "Kaloum",
 };
 
+function isValidImageUrl(url?: string | null): url is string {
+  if (!url) return false;
+  const value = url.trim();
+  if (!value || value === "null" || value === "undefined") return false;
+  return value.startsWith("http://") || value.startsWith("https://") || value.startsWith("/");
+}
+
 // ── Feature 1: Availability mode badge config ──────────────────────────────────
 const AVAIL_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; Icon?: typeof Zap }> = {
   urgent:    { label: "Urgent",      color: "#ff4d4d", bg: "rgba(255,77,77,0.18)",    border: "rgba(255,77,77,0.45)", Icon: Zap },
@@ -54,11 +61,12 @@ export function PropertyCard({
   const [currentImg,    setCurrentImg]       = useState(0);
   const touchStartX = useRef<number | null>(null);
   const didSwipe    = useRef(false);
+  const simplified = variant === "compact";
 
   const fav    = _hasHydrated && isFavorite(property.id);
-  const images = [...(property.property_images ?? [])].sort((a, b) =>
-    a.is_primary === b.is_primary ? 0 : a.is_primary ? -1 : 1
-  );
+  const images = [...(property.property_images ?? [])]
+    .filter((image) => isValidImageUrl(image.url))
+    .sort((a, b) => a.is_primary === b.is_primary ? 0 : a.is_primary ? -1 : 1);
   const imgCount     = images.length;
   const primaryImage = images[0];
 
@@ -306,9 +314,9 @@ export function PropertyCard({
         pointerEvents: "none",
       }}>
         <TypeBadge propertyType={property.type} />
-        {property.is_verified && <PropertyBadge type="verified" />}
-        {!property.is_verified && property.is_featured && <PropertyBadge type="premium" />}
-        {property.contact_phone && (
+        {!simplified && property.is_verified && <PropertyBadge type="verified" />}
+        {!simplified && !property.is_verified && property.is_featured && <PropertyBadge type="premium" />}
+        {!simplified && property.contact_phone && (
           <span style={{
             display: "inline-flex",
             alignItems: "center",
@@ -330,7 +338,7 @@ export function PropertyCard({
       </div>
 
       {/* ── Urgency badge — below type badges ───────────────────────────────── */}
-      {availCfg.label && (
+      {!simplified && availCfg.label && (
         <div style={{
           position: "absolute", top: 40, left: 12, zIndex: 5, pointerEvents: "none",
         }}>
@@ -352,29 +360,31 @@ export function PropertyCard({
       )}
 
       {/* ── Favorite button — top right (z-6) ────────────────────────────────── */}
-      <button
-        onClick={handleFavorite}
-        aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
-        style={{
-          position: "absolute", top: 12, right: 12, zIndex: 6,
-          width: 40, height: 40,
-          background: "rgba(0,0,0,0.40)",
-          border: "none",
-          borderRadius: "50%",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          cursor: "pointer",
-          backdropFilter: "blur(6px)",
-          WebkitBackdropFilter: "blur(6px)",
-          transition: "background var(--ui-duration) var(--ui-ease), transform var(--ui-duration) var(--ui-ease)",
-        }}
-      >
-        <Heart style={{
-          width: 18, height: 18,
-          fill: fav ? "#ef4444" : "none",
-          stroke: fav ? "#ef4444" : "rgba(255,255,255,0.90)",
-          strokeWidth: fav ? 0 : 1.8,
-        }} />
-      </button>
+      {!simplified && (
+        <button
+          onClick={handleFavorite}
+          aria-label={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
+          style={{
+            position: "absolute", top: 12, right: 12, zIndex: 6,
+            width: 40, height: 40,
+            background: "rgba(0,0,0,0.40)",
+            border: "none",
+            borderRadius: "50%",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer",
+            backdropFilter: "blur(6px)",
+            WebkitBackdropFilter: "blur(6px)",
+            transition: "background var(--ui-duration) var(--ui-ease), transform var(--ui-duration) var(--ui-ease)",
+          }}
+        >
+          <Heart style={{
+            width: 18, height: 18,
+            fill: fav ? "#ef4444" : "none",
+            stroke: fav ? "#ef4444" : "rgba(255,255,255,0.90)",
+            strokeWidth: fav ? 0 : 1.8,
+          }} />
+        </button>
+      )}
 
       {/* ── Info overlay — bottom left (z-3) ─────────────────────────────────── */}
       <div style={{
@@ -462,7 +472,7 @@ export function PropertyCard({
             <CheckCircle2 style={{ width: 14, height: 14, display: "inline", marginRight: 4, verticalAlign: "-2px" }} strokeWidth={2.4} />
             {availability.label}
           </span>
-          {property.is_verified && (
+          {!simplified && property.is_verified && (
             <span style={{
               fontSize: 12,
               fontWeight: 900,
@@ -478,7 +488,7 @@ export function PropertyCard({
               Vérifié
             </span>
           )}
-          {published && (
+          {!simplified && published && (
             <span style={{
               fontSize: 12,
               fontWeight: 900,
@@ -494,7 +504,7 @@ export function PropertyCard({
               {published.label}
             </span>
           )}
-          <span style={{
+          {!simplified && <span style={{
             fontSize: 12,
             fontWeight: 900,
             color: "#ffffff",
@@ -506,7 +516,7 @@ export function PropertyCard({
             whiteSpace: "nowrap",
           }}>
             {advance}
-          </span>
+          </span>}
         </div>
       </div>
 

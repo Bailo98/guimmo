@@ -333,15 +333,22 @@ export default function PublierRapidePage() {
           <div className="grid grid-cols-3 gap-2">
             {TYPE_OPTIONS.map((t) => {
               const Icon = t.Icon;
+              const active = form.type === t.id;
               return (
               <button key={t.id} type="button" onClick={() => setForm((f) => ({ ...f, type: t.id }))}
-                className={cn("flex flex-col items-center gap-1 py-3 rounded-xl border-2 font-semibold text-xs transition-all")}
+                className={cn("relative flex flex-col items-center gap-1 py-3 rounded-xl border-2 font-semibold text-xs transition-all active:scale-95")}
                 style={{
                   minHeight: 60,
-                  borderColor: form.type === t.id ? "var(--accent-gold)" : "var(--border)",
-                  background: form.type === t.id ? "rgba(212,175,55,0.16)" : "var(--bg-card)",
-                  color: form.type === t.id ? "var(--accent-gold)" : "var(--text-primary)",
+                  borderColor: active ? "var(--accent-gold)" : "var(--border)",
+                  background: active ? "rgba(212,175,55,0.18)" : "var(--bg-card)",
+                  color: active ? "var(--accent-gold)" : "var(--text-primary)",
+                  boxShadow: active ? "0 8px 22px rgba(185,138,46,0.18)" : "none",
                 }}>
+                {active && (
+                  <span className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--accent-gold)] text-[var(--bg-primary)]">
+                    <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={2.8} />
+                  </span>
+                )}
                 <Icon className="h-5 w-5" strokeWidth={2.3} />
                 {t.label}
               </button>
@@ -356,21 +363,29 @@ export default function PublierRapidePage() {
             Offre
           </label>
           <div className="grid grid-cols-2 gap-3">
-            {(["rent", "sale"] as const).map((t) => (
+            {(["rent", "sale"] as const).map((t) => {
+              const active = form.txType === t;
+              return (
               <button key={t} type="button" onClick={() => setForm((f) => ({ ...f, txType: t }))}
-                className="py-4 rounded-xl border-2 font-bold text-sm transition-all"
+                className="relative py-4 rounded-xl border-2 font-bold text-sm transition-all active:scale-95"
                 style={{
                   minHeight: 52,
-                  borderColor: form.txType === t ? "var(--accent-gold)" : "var(--border)",
-                  background: form.txType === t ? "rgba(212,175,55,0.16)" : "var(--bg-card)",
-                  color: form.txType === t ? "var(--accent-gold)" : "var(--text-primary)",
+                  borderColor: active ? "var(--accent-gold)" : "var(--border)",
+                  background: active ? "rgba(212,175,55,0.18)" : "var(--bg-card)",
+                  color: active ? "var(--accent-gold)" : "var(--text-primary)",
+                  boxShadow: active ? "0 8px 22px rgba(185,138,46,0.18)" : "none",
                 }}>
+                {active && (
+                  <span className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--accent-gold)] text-[var(--bg-primary)]">
+                    <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={2.8} />
+                  </span>
+                )}
                 <span className="inline-flex items-center justify-center gap-2">
                   {t === "rent" ? <KeyRound className="h-4 w-4" strokeWidth={2.4} /> : <Banknote className="h-4 w-4" strokeWidth={2.4} />}
                   {t === "rent" ? "À Louer" : "À Vendre"}
                 </span>
               </button>
-            ))}
+            )})}
           </div>
         </section>
 

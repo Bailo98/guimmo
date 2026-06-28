@@ -48,6 +48,13 @@ function getDB() {
   return createClient(url, key);
 }
 
+function isValidImageUrl(url?: string | null): url is string {
+  if (!url) return false;
+  const value = url.trim();
+  if (!value || value === "null" || value === "undefined") return false;
+  return value.startsWith("http://") || value.startsWith("https://") || value.startsWith("/");
+}
+
 async function fetchHomeProperties(): Promise<Property[]> {
   try {
     const db = getDB();
@@ -66,7 +73,8 @@ async function fetchHomeProperties(): Promise<Property[]> {
 }
 
 function DiscoverPreview({ property }: { property: Property | undefined }) {
-  const primaryImg = property?.property_images?.find((i) => i.is_primary) ?? property?.property_images?.[0];
+  const safeImages = (property?.property_images ?? []).filter((image) => isValidImageUrl(image.url));
+  const primaryImg = safeImages.find((i) => i.is_primary) ?? safeImages[0];
   const [gradFrom, gradTo] = TYPE_GRADIENTS[property?.type ?? "apartment"] ?? HERO_GRADIENTS[0];
 
   return (
@@ -228,7 +236,7 @@ export default async function HomePage() {
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 xl:gap-6 items-stretch">
               {recent.map((p, i) => (
-                <PropertyCard key={p.id} property={p} index={i + 10} />
+                <PropertyCard key={p.id} property={p} index={i + 10} variant="compact" />
               ))}
             </div>
           </div>

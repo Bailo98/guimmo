@@ -735,17 +735,23 @@ export default function PublierPage() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {TYPE_OPTIONS.map((t) => {
               const Icon = t.Icon;
+              const active = form.type === t.id;
               return (
               <button
                 key={t.id}
                 onClick={() => update("type", t.id)}
                 className={cn(
-                  "flex flex-col items-center gap-2 p-5 rounded-2xl border-2 font-semibold text-sm transition-all active:scale-95",
-                  form.type === t.id
-                    ? "border-white/40 text-white"
+                  "relative flex flex-col items-center gap-2 p-5 rounded-2xl border-2 font-semibold text-sm transition-all active:scale-95",
+                  active
+                    ? "border-[var(--accent-gold)] bg-[rgba(212,175,55,0.16)] text-[var(--accent-gold)] shadow-[0_10px_26px_rgba(185,138,46,0.18)]"
                     : "hover:border-white/30 text-white"
                 )}
               >
+                {active && (
+                  <span className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-[var(--accent-gold)] text-[var(--bg-primary)]">
+                    <CheckCircle2 className="h-4 w-4" strokeWidth={2.8} />
+                  </span>
+                )}
                 <Icon className="h-9 w-9" strokeWidth={2.1} />
                 {t.label}
               </button>
@@ -760,24 +766,31 @@ export default function PublierPage() {
               {([
                 { id: "rent" as TxType, label: "Location", sub: "Louer mon bien", Icon: KeyRound },
                 { id: "sale" as TxType, label: "Vente",    sub: "Vendre mon bien", Icon: Banknote },
-              ] as const).map((tx) => (
+              ] as const).map((tx) => {
+                const active = form.txType === tx.id;
+                return (
                 <button
                   key={tx.id}
                   onClick={() => update("txType", tx.id)}
                   className={cn(
-                    "flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all active:scale-95",
-                    form.txType === tx.id
-                      ? "border-[var(--accent-gold)] bg-[rgba(212,175,55,0.12)]"
+                    "relative flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all active:scale-95",
+                    active
+                      ? "border-[var(--accent-gold)] bg-[rgba(212,175,55,0.16)] shadow-[0_10px_26px_rgba(185,138,46,0.18)]"
                       : "hover:border-white/30"
                   )}
                 >
+                  {active && (
+                    <span className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-[var(--accent-gold)] text-[var(--bg-primary)]">
+                      <CheckCircle2 className="h-4 w-4" strokeWidth={2.8} />
+                    </span>
+                  )}
                   <p className="inline-flex items-center gap-2 font-bold text-base text-white">
                     <tx.Icon className="h-4 w-4" strokeWidth={2.4} />
                     {tx.label}
                   </p>
                   <p className="text-xs text-white/50 mt-0.5">{tx.sub}</p>
                 </button>
-              ))}
+              )})}
             </div>
           </div>
 
@@ -789,17 +802,23 @@ export default function PublierPage() {
             <div className="grid grid-cols-2 gap-3">
               {AVAIL_OPTIONS.map((opt) => {
                 const Icon = opt.Icon;
+                const active = form.availabilityMode === opt.id;
                 return (
                 <button
                   key={opt.id}
                   onClick={() => update("availabilityMode", opt.id)}
                   className={cn(
-                    "flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all active:scale-95",
-                    form.availabilityMode === opt.id
-                      ? "border-[var(--accent-gold)] bg-[rgba(212,175,55,0.12)]"
+                    "relative flex flex-col items-start p-4 rounded-2xl border-2 text-left transition-all active:scale-95",
+                    active
+                      ? "border-[var(--accent-gold)] bg-[rgba(212,175,55,0.16)] shadow-[0_10px_26px_rgba(185,138,46,0.18)]"
                       : "hover:border-white/30"
                   )}
                 >
+                  {active && (
+                    <span className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-[var(--accent-gold)] text-[var(--bg-primary)]">
+                      <CheckCircle2 className="h-4 w-4" strokeWidth={2.8} />
+                    </span>
+                  )}
                   <Icon className="mb-1 h-6 w-6" strokeWidth={2.3} />
                   <p className="font-bold text-sm text-white">{opt.label}</p>
                   <p className="text-xs text-white/50">{opt.sub}</p>
@@ -832,12 +851,13 @@ export default function PublierPage() {
                       );
                     }}
                     className={cn(
-                      "flex-1 flex flex-col items-center gap-2 p-4 rounded-2xl border-2 font-semibold text-sm transition-all active:scale-95",
+                      "relative flex-1 flex flex-col items-center gap-2 p-4 rounded-2xl border-2 font-semibold text-sm transition-all active:scale-95",
                       active
-                        ? "border-[var(--accent-gold)] bg-[rgba(212,175,55,0.12)] text-[var(--accent-gold)]"
+                        ? "border-[var(--accent-gold)] bg-[rgba(212,175,55,0.16)] text-[var(--accent-gold)] shadow-[0_10px_26px_rgba(185,138,46,0.18)]"
                         : "text-white/70 hover:border-white/30"
                     )}
                   >
+                    {active && <CheckCircle2 className="absolute right-3 top-3 h-5 w-5 text-[var(--accent-gold)]" strokeWidth={2.8} />}
                     <Icon className="h-6 w-6" strokeWidth={2.3} />
                     {b.label}
                   </button>
@@ -1179,7 +1199,7 @@ export default function PublierPage() {
                       disabled
                         ? "opacity-30 cursor-not-allowed border-white/10 text-white/30"
                         : form.rooms === val
-                          ? "border-white/40 text-white"
+                          ? "border-[var(--accent-gold)] bg-[rgba(212,175,55,0.16)] text-[var(--accent-gold)] shadow-[0_8px_20px_rgba(185,138,46,0.18)]"
                           : "text-white/70 hover:border-white/30"
                     )}
                   >
@@ -1216,7 +1236,7 @@ export default function PublierPage() {
                   className={cn(
                     "flex-1 py-3 rounded-xl border-2 font-bold text-sm transition-all",
                     form.furnished === f.val
-                      ? "border-white/40 text-white"
+                      ? "border-[var(--accent-gold)] bg-[rgba(212,175,55,0.16)] text-[var(--accent-gold)] shadow-[0_8px_20px_rgba(185,138,46,0.18)]"
                       : "text-white/70 hover:border-white/30"
                   )}
                 >
@@ -1243,20 +1263,26 @@ export default function PublierPage() {
                   { id: "forage",  Icon: Droplets, label: "Forage" },
                   { id: "citerne", Icon: Droplets, label: "Citerne" },
                   { id: "none",    Icon: X, label: "Aucune" },
-                ] as const).map((opt) => (
+                ] as const).map((opt) => {
+                  const active = form.waterSource === opt.id;
+                  return (
                   <button key={opt.id} type="button" onClick={() => update("waterSource", opt.id)}
                     style={{
+                      position: "relative",
                       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                       gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70, minWidth: 70,
-                      border: form.waterSource === opt.id ? "2px solid var(--accent-gold)" : "1px solid var(--border)",
-                      background: form.waterSource === opt.id ? "rgba(212,175,55,0.12)" : "var(--bg-card)",
-                      color: form.waterSource === opt.id ? "var(--accent-gold)" : "#666666",
-                      fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
+                      border: active ? "2px solid var(--accent-gold)" : "1px solid var(--border)",
+                      background: active ? "rgba(212,175,55,0.16)" : "var(--bg-card)",
+                      color: active ? "var(--accent-gold)" : "#666666",
+                      fontSize: 11, fontWeight: 700, cursor: "pointer", transition: "all 0.15s",
+                      boxShadow: active ? "0 8px 20px rgba(185,138,46,0.18)" : "none",
                     }}>
+                    {active && <CheckCircle2 className="absolute right-2 top-2 h-4 w-4 text-[var(--accent-gold)]" strokeWidth={2.8} />}
                     <opt.Icon style={{ width: 24, height: 24 }} strokeWidth={2.2} />
                     {opt.label}
                   </button>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -1272,20 +1298,26 @@ export default function PublierPage() {
                   { id: "solaire", Icon: Sun, label: "Solaire" },
                   { id: "groupe",  Icon: Battery, label: "Groupe" },
                   { id: "none",    Icon: X, label: "Aucune" },
-                ] as const).map((opt) => (
+                ] as const).map((opt) => {
+                  const active = form.electricity === opt.id;
+                  return (
                   <button key={opt.id} type="button" onClick={() => update("electricity", opt.id)}
                     style={{
+                      position: "relative",
                       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                       gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70, minWidth: 70,
-                      border: form.electricity === opt.id ? "2px solid var(--accent-gold)" : "1px solid var(--border)",
-                      background: form.electricity === opt.id ? "rgba(212,175,55,0.12)" : "var(--bg-card)",
-                      color: form.electricity === opt.id ? "var(--accent-gold)" : "#666666",
-                      fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
+                      border: active ? "2px solid var(--accent-gold)" : "1px solid var(--border)",
+                      background: active ? "rgba(212,175,55,0.16)" : "var(--bg-card)",
+                      color: active ? "var(--accent-gold)" : "#666666",
+                      fontSize: 11, fontWeight: 700, cursor: "pointer", transition: "all 0.15s",
+                      boxShadow: active ? "0 8px 20px rgba(185,138,46,0.18)" : "none",
                     }}>
+                    {active && <CheckCircle2 className="absolute right-2 top-2 h-4 w-4 text-[var(--accent-gold)]" strokeWidth={2.8} />}
                     <opt.Icon style={{ width: 24, height: 24 }} strokeWidth={2.2} />
                     {opt.label}
                   </button>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -1299,20 +1331,26 @@ export default function PublierPage() {
                 {([
                   { id: "wifi", Icon: Wifi, label: "WiFi / Fibre" },
                   { id: "none", Icon: X, label: "Aucun" },
-                ] as const).map((opt) => (
+                ] as const).map((opt) => {
+                  const active = form.internet === opt.id;
+                  return (
                   <button key={opt.id} type="button" onClick={() => update("internet", opt.id)}
                     style={{
+                      position: "relative",
                       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                       gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70,
-                      border: form.internet === opt.id ? "2px solid var(--accent-gold)" : "1px solid var(--border)",
-                      background: form.internet === opt.id ? "rgba(212,175,55,0.12)" : "var(--bg-card)",
-                      color: form.internet === opt.id ? "var(--accent-gold)" : "#666666",
-                      fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
+                      border: active ? "2px solid var(--accent-gold)" : "1px solid var(--border)",
+                      background: active ? "rgba(212,175,55,0.16)" : "var(--bg-card)",
+                      color: active ? "var(--accent-gold)" : "#666666",
+                      fontSize: 11, fontWeight: 700, cursor: "pointer", transition: "all 0.15s",
+                      boxShadow: active ? "0 8px 20px rgba(185,138,46,0.18)" : "none",
                     }}>
+                    {active && <CheckCircle2 className="absolute right-2 top-2 h-4 w-4 text-[var(--accent-gold)]" strokeWidth={2.8} />}
                     <opt.Icon style={{ width: 24, height: 24 }} strokeWidth={2.2} />
                     {opt.label}
                   </button>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -1331,13 +1369,16 @@ export default function PublierPage() {
                   return (
                     <button key={opt.key} type="button" onClick={() => update(opt.key, !active)}
                       style={{
+                        position: "relative",
                         display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                         gap: 4, padding: "12px 8px", borderRadius: 10, minHeight: 70,
                         border: active ? "2px solid var(--accent-gold)" : "1px solid var(--border)",
-                        background: active ? "rgba(212,175,55,0.12)" : "var(--bg-card)",
+                        background: active ? "rgba(212,175,55,0.16)" : "var(--bg-card)",
                         color: active ? "var(--accent-gold)" : "#666666",
-                        fontSize: 11, fontWeight: 600, cursor: "pointer", transition: "border-color 0.15s",
+                        fontSize: 11, fontWeight: 700, cursor: "pointer", transition: "all 0.15s",
+                        boxShadow: active ? "0 8px 20px rgba(185,138,46,0.18)" : "none",
                       }}>
+                      {active && <CheckCircle2 className="absolute right-2 top-2 h-4 w-4 text-[var(--accent-gold)]" strokeWidth={2.8} />}
                       <opt.Icon style={{ width: 24, height: 24 }} strokeWidth={2.2} />
                       {opt.label}
                     </button>

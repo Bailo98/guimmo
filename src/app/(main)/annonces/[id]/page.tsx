@@ -50,7 +50,12 @@ const INET_INFO: Record<string, { Icon: typeof Wifi; label: string }> = {
   none: { Icon: XCircle, label: "Pas d'internet" },
 };
 
-
+function isValidImageUrl(url?: string | null): url is string {
+  if (!url) return false;
+  const value = url.trim();
+  if (!value || value === "null" || value === "undefined") return false;
+  return value.startsWith("http://") || value.startsWith("https://") || value.startsWith("/");
+}
 
 export const revalidate = 60;
 
@@ -96,7 +101,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ? row.description.slice(0, 155) + (row.description.length > 155 ? "…" : "")
       : `${typeLabel}${row.rooms ? ` ${row.rooms} chambre${(row.rooms ?? 0) > 1 ? "s" : ""}` : ""} à ${neighborhoodLabel} — ${priceFormatted} sur LogerBien.`;
   const ogDescription = `${typeLabel} à ${neighborhoodLabel}, Conakry`;
-  const image = (row.property_images ?? [])[0]?.url;
+  const image = (row.property_images ?? []).find((img) => isValidImageUrl(img.url))?.url;
 
   return {
     title: metaTitle,
@@ -184,6 +189,8 @@ export default async function PropertyDetailPage({ params }: Props) {
   }
 
   const property = finalRow as Property;
+  const safePropertyImages = (property.property_images ?? []).filter((image) => isValidImageUrl(image.url));
+  const posterImage = safePropertyImages.find((image) => image.is_primary) ?? safePropertyImages[0];
   const videoUrl = property.video_url ?? null;
   const shortRef = property.ref ?? null;
   const isOwner   = !!currentUserId && currentUserId === property.owner_id;
@@ -287,7 +294,7 @@ export default async function PropertyDetailPage({ params }: Props) {
       {/* Premium gallery */}
       <div className="relative mx-auto w-full max-w-none pt-0 md:w-[95vw] md:max-w-[1600px] md:pt-6">
         <PhotoGallery
-          images={(property.property_images ?? []).map((i) => ({ url: i.url, alt: property.title }))}
+          images={safePropertyImages.map((i) => ({ url: i.url, alt: property.title }))}
           title={property.title}
         />
         <div
@@ -577,6 +584,16 @@ export default async function PropertyDetailPage({ params }: Props) {
                       {neighborhoodLabel}
                     </span>
                   </div>
+                  {isLoggedIn && !isOwner && (
+                    <ReportButton
+                      propertyId={property.id}
+                      propertyTitle={property.title}
+                      ownerId={property.owner_id}
+                      ownerName={(profileData as { full_name?: string | null } | null)?.full_name ?? null}
+                      target="owner"
+                      isLoggedIn={isLoggedIn}
+                    />
+                  )}
                 </div>
               )}
 
@@ -636,7 +653,7 @@ export default async function PropertyDetailPage({ params }: Props) {
               )}
 
               {videoUrl && (
-                <VideoCard videoUrl={videoUrl} poster={property.property_images?.[0]?.url} />
+                <VideoCard videoUrl={videoUrl} poster={posterImage?.url} />
               )}
 
               {/* ── Carte de localisation ── */}
@@ -762,14 +779,14 @@ export default async function PropertyDetailPage({ params }: Props) {
 
                     <MessageButton propertyId={property.id} ownerId={property.owner_id} propertyTitle={property.title} />
 
-                    <Link
-                      href="/contact"
-                      className="flex items-center justify-center gap-2 w-full font-bold py-2.5 px-4 rounded-xl transition-colors text-sm hover:bg-red-50"
-                      style={{ background: "rgba(220,38,38,0.08)", border: "1px solid rgba(220,38,38,0.24)", color: "#dc2626" }}
-                    >
-                      <AlertTriangle className="h-4 w-4" strokeWidth={2.4} />
-                      Signaler le compte
-                    </Link>
+                    <ReportButton
+                      propertyId={property.id}
+                      propertyTitle={property.title}
+                      ownerId={property.owner_id}
+                      ownerName={(profileData as { full_name?: string | null } | null)?.full_name ?? null}
+                      target="owner"
+                      isLoggedIn={isLoggedIn}
+                    />
 
                     <p className="text-[11px] text-center" style={{ color: "var(--text-muted)" }}>Mentionnez LogerBien lors du contact</p>
                   </>

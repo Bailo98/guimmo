@@ -27,6 +27,11 @@ const REASON_LABELS: Record<string, string> = {
   fake_photos:   "Photos fausses ou volées",
   wrong_price:   "Prix incorrect",
   other:         "Autre",
+  owner_fraud:   "Compte suspect / arnaque",
+  owner_phone:   "Téléphone ou contact incorrect",
+  owner_behavior: "Mauvais comportement",
+  owner_payment: "Demande de paiement suspecte",
+  owner_other:   "Autre signalement compte",
 };
 
 function formatDate(iso: string) {
