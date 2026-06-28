@@ -1,5 +1,5 @@
 ﻿"use client";
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -89,6 +89,26 @@ export function PropertyCard({
   // Feature 1: availability mode badge
   const availMode = property.availability_mode ?? "flexible";
   const availCfg = AVAIL_CONFIG[availMode] ?? AVAIL_CONFIG.flexible;
+
+  useEffect(() => {
+    if (!_hasHydrated) return;
+    if (!user) {
+      setFavorite(property.id, false);
+      return;
+    }
+    if (!isSupabaseConfigured || !supabase) return;
+    let cancelled = false;
+    supabase
+      .from("favorites")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("property_id", property.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!cancelled) setFavorite(property.id, !!data);
+      });
+    return () => { cancelled = true; };
+  }, [_hasHydrated, property.id, setFavorite, user]);
 
   // ── Image nav ───────────────────────────────────────────────────────────────
   function prev(e: React.MouseEvent) {

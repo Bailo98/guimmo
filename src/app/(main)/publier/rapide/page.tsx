@@ -10,6 +10,7 @@ import { NEIGHBORHOODS } from "@/data/neighborhoods";
 import { cn, formatPrice } from "@/lib/utils";
 
 const COMMUNES = ["Ratoma", "Dixinn", "Matam", "Kaloum", "Matoto", "Coyah"];
+const FREE_ACTIVE_LISTING_LIMIT = 3;
 
 const fieldStyle = {
   background: "var(--bg-secondary)",
@@ -36,6 +37,32 @@ function formatGNF(raw: string): string {
   const n = parseInt(raw.replace(/\D/g, ""), 10);
   if (isNaN(n) || n === 0) return "";
   return formatPrice(n);
+}
+
+async function countFreeActiveListings(ownerId: string): Promise<number> {
+  if (!supabase) return 0;
+  const withAvailability = await supabase
+    .from("properties")
+    .select("id,status,available_now,availability_status")
+    .eq("owner_id", ownerId);
+  let data = withAvailability.data;
+  let error = withAvailability.error;
+  if (error && /availability_status/i.test(error.message ?? "")) {
+    const fallback = await supabase
+      .from("properties")
+      .select("id,status,available_now")
+      .eq("owner_id", ownerId);
+    data = fallback.data as typeof data;
+    error = fallback.error;
+  }
+  if (error || !data) return 0;
+  return data.filter((row) => {
+    const status = String(row.status ?? "");
+    const availability = String((row as { availability_status?: string | null }).availability_status ?? "");
+    if (status !== "active") return false;
+    if (availability) return availability === "available_now" || availability === "available_soon";
+    return row.available_now !== false;
+  }).length;
 }
 
 export default function PublierRapidePage() {
@@ -167,6 +194,13 @@ export default function PublierRapidePage() {
 
         // Force immediate sign-in to bypass email confirmation
         await supabase.auth.signInWithPassword({ email: tempEmail, password: tempPassword });
+      }
+
+      const activeListings = await countFreeActiveListings(userId);
+      if (!profile?.is_verified_pro && activeListings >= FREE_ACTIVE_LISTING_LIMIT) {
+        toast("Vous avez atteint la limite gratuite de 3 annonces actives.", "error");
+        setSubmitting(false);
+        return;
       }
 
       // ── 2. Upload photos ───────────────────────────────────────────

@@ -1,5 +1,5 @@
 ﻿"use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { Flag, X, Loader2, CheckCircle2 } from "lucide-react";
@@ -50,6 +50,12 @@ export function ReportButton({
   const [hovered, setHovered]             = useState(false);
   const reasons = target === "owner" ? OWNER_REASONS : REASONS;
   const title = target === "owner" ? "Pourquoi signalez-vous ce compte ?" : "Pourquoi signalez-vous cette annonce ?";
+
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   function openModal() {
     if (!isLoggedIn) {

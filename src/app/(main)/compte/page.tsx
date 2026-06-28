@@ -350,7 +350,7 @@ function ProfileForm({ user, profile, refreshProfile }: {
           {profile?.is_verified_pro ? "Plan Pro" : "Plan Gratuit"}
         </p>
         <p className="text-xs mt-1 mb-3" style={{ color: "var(--text-primary-faint)" }}>
-          {profile?.is_verified_pro ? "Annonces illimitées · Badge vérifié · Priorité dans les résultats" : "Jusqu'à 5 annonces · Visibilité standard"}
+          {profile?.is_verified_pro ? "Annonces illimitées · Badge vérifié · Priorité dans les résultats" : "Jusqu'à 3 annonces actives gratuites · Visibilité standard"}
         </p>
         <Link href="/tarifs" className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
           style={{ background: "rgba(212,175,55,0.12)", color: "var(--accent-gold)", border: "1px solid rgba(212,175,55,0.25)" }}>
@@ -592,9 +592,13 @@ async function loadDayStats(userId: string, days: number): Promise<{
   data: DayStat[]; active: number; total: number; totalViews: number; totalWA: number;
 }> {
   if (!supabase) return { data: [], active: 0, total: 0, totalViews: 0, totalWA: 0 };
-  const { data: props } = await supabase.from("properties").select("id,available_now").eq("owner_id", userId);
+  const { data: props } = await supabase.from("properties").select("id,status,available_now,availability_status").eq("owner_id", userId);
   const ids    = (props ?? []).map((p: { id: string }) => p.id);
-  const active = (props ?? []).filter((p: { available_now: boolean }) => p.available_now).length;
+  const active = (props ?? []).filter((p: { status?: string | null; available_now: boolean; availability_status?: string | null }) => {
+    if (p.status !== "active") return false;
+    if (p.availability_status) return p.availability_status === "available_now" || p.availability_status === "available_soon";
+    return p.available_now !== false;
+  }).length;
   const total  = (props ?? []).length;
 
   const emptyDays = Array.from({ length: days }, (_, i) => {
@@ -1384,7 +1388,7 @@ function AbonnementSection({ profile }: { profile: ReturnType<typeof useAuth>["p
     "Statistiques détaillées",
     "Rapports mensuels par WhatsApp",
   ] : [
-    "Jusqu'à 5 annonces",
+    "Jusqu'à 3 annonces actives",
     "Visibilité standard",
     "Statistiques de base",
   ];
@@ -2108,7 +2112,7 @@ function AnnonceurDashboard({ user, profile, signOut, refreshProfile }: {
                     <StatCard label="Vues (30j)"       value={totalViews}  sub="toutes annonces"   borderColor="var(--accent-gold)" />
                     <StatCard label="Clics WhatsApp"   value={totalWA}     sub="30 derniers jours" borderColor="var(--accent-gold)" />
                     <StatCard label="Messages reçus"   value={msgCount}    sub="cette semaine"     borderColor="var(--accent-gold)" />
-                    <StatCard label="Annonces actives" value={activeCount} sub={profile?.is_verified_pro ? "illimitées" : "sur 5 max"} borderColor="var(--accent-gold)" />
+                    <StatCard label="Annonces actives" value={activeCount} sub={profile?.is_verified_pro ? "illimitées" : `${Math.min(activeCount, 3)} / 3 gratuites utilisées`} borderColor="var(--accent-gold)" />
                   </div>
                 )}
 

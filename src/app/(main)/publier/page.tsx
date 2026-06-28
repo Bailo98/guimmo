@@ -44,6 +44,7 @@ const TYPE_OPTIONS: { id: PType; label: string; Icon: typeof Home }[] = [
 const ROOM_OPTIONS = [0, 1, 2, 3, 4, "5+"] as const;
 const COMMUNES = ["Ratoma", "Dixinn", "Matam", "Kaloum", "Matoto", "Coyah"];
 const STEP_LABELS = ["Type & transaction", "Photos & prix", "Quartier", "Contact"];
+const FREE_ACTIVE_LISTING_LIMIT = 3;
 
 interface TourRoom {
   id: string;
@@ -98,6 +99,31 @@ function generateTitle(type: string, rooms: number, neighborhood: string): strin
     return `${tLabel} ${rooms} chambre${rooms > 1 ? "s" : ""} à ${nName}`;
   }
   return `${tLabel} à ${nName}`;
+}
+
+async function countFreeActiveListings(ownerId: string): Promise<number> {
+  if (!supabase) return 0;
+  const baseQuery = supabase
+    .from("properties")
+    .select("id,status,available_now,availability_status")
+    .eq("owner_id", ownerId);
+  let { data, error } = await baseQuery;
+  if (error && /availability_status/i.test(error.message ?? "")) {
+    const fallback = await supabase
+      .from("properties")
+      .select("id,status,available_now")
+      .eq("owner_id", ownerId);
+    data = fallback.data as typeof data;
+    error = fallback.error;
+  }
+  if (error || !data) return 0;
+  return data.filter((row) => {
+    const status = String(row.status ?? "");
+    const availability = String((row as { availability_status?: string | null }).availability_status ?? "");
+    if (status !== "active") return false;
+    if (availability) return availability === "available_now" || availability === "available_soon";
+    return row.available_now !== false;
+  }).length;
 }
 
 export default function PublierPage() {
@@ -475,6 +501,14 @@ export default function PublierPage() {
         toast(msg, "error");
         return;
       }
+    }
+
+    const activeListings = await countFreeActiveListings(freshUser.id);
+    if (!profile?.is_verified_pro && activeListings >= FREE_ACTIVE_LISTING_LIMIT) {
+      const msg = "Vous avez atteint la limite gratuite de 3 annonces actives.";
+      setError(`${msg} Abonnement bientôt disponible.`);
+      toast(msg, "error");
+      return;
     }
 
     setSubmitting(true);

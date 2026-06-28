@@ -28,8 +28,8 @@ export function BottomNav() {
 
   const isDark = mounted && resolvedTheme === "dark";
   const MUTED = isDark ? "rgba(255,255,255,0.66)" : "#4f4535";
-  const pillBg = isDark ? "rgba(15,15,15,0.62)" : "rgba(255,255,255,0.72)";
-  const pillBorder = isDark ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.35)";
+  const pillBg = isDark ? "rgba(15,15,15,0.72)" : "rgba(250,246,237,0.94)";
+  const pillBorder = isDark ? "rgba(255,255,255,0.12)" : "rgba(185,138,46,0.22)";
 
   // Hidden on /decouvrir (full-screen swipe), /admin and /auth routes
   if (pathname === "/decouvrir") return null;
@@ -79,15 +79,15 @@ export function BottomNav() {
       className="mobile-bottom-nav flex md:hidden"
       style={{
         position: "fixed",
-        bottom: "env(safe-area-inset-bottom, 0px)",
+        bottom: 0,
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: 50,
 
         /* Pill geometry */
-        height: 64,
+        height: "calc(64px + env(safe-area-inset-bottom, 0px))",
         width: "min(92vw, 420px)",
-        padding: "6px 8px",
+        padding: "6px 8px max(6px, env(safe-area-inset-bottom, 0px))",
         borderRadius: 999,
 
         /* Glass surface */

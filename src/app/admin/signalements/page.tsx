@@ -38,6 +38,20 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
 }
 
+function parseReportDetails(details: string | null) {
+  const lines = (details ?? "").split("\n").map((line) => line.trim()).filter(Boolean);
+  const findValue = (prefix: string) => {
+    const line = lines.find((item) => item.toLowerCase().startsWith(prefix.toLowerCase()));
+    return line ? line.slice(prefix.length).trim() : null;
+  };
+  const ownerId = findValue("owner_id:");
+  const ownerName = findValue("propriétaire:");
+  const linkedAd = findValue("annonce:");
+  const message = findValue("message:");
+  const isOwnerReport = lines.some((line) => line.toLowerCase().includes("signalement de compte"));
+  return { ownerId, ownerName, linkedAd, message, isOwnerReport, raw: lines };
+}
+
 export default function AdminSignalementsPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
@@ -208,6 +222,7 @@ export default function AdminSignalementsPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {reports.map((r) => {
             const isBusy = busy?.startsWith(r.id);
+            const parsed = parseReportDetails(r.details);
             return (
               <div
                 key={r.id}
@@ -230,16 +245,35 @@ export default function AdminSignalementsPage() {
                   {/* Content */}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ color: TEXT_PRI, fontWeight: 600, fontSize: 14 }}>
-                      {r.property_title ?? "Annonce inconnue"}
+                      {parsed.isOwnerReport ? "Signalement propriétaire" : (r.property_title ?? "Annonce inconnue")}
                     </p>
                     <p style={{ color: TEXT_SEC, fontSize: 12, marginTop: 2 }}>
                       {formatDate(r.created_at)}{r.reporter_phone ? ` · ${r.reporter_phone}` : ""}
                     </p>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
+                      {r.property_id && (
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 8px", borderRadius: 999, background: "var(--border-subtle)", color: TEXT_SEC }}>
+                          Annonce : {r.property_title ?? parsed.linkedAd ?? r.property_id.slice(0, 8)}
+                        </span>
+                      )}
+                      {parsed.ownerName && (
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 8px", borderRadius: 999, background: "rgba(185,138,46,0.12)", color: "var(--accent-gold)" }}>
+                          Propriétaire : {parsed.ownerName}
+                        </span>
+                      )}
+                      {parsed.ownerId && (
+                        <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 8px", borderRadius: 999, background: "rgba(239,68,68,0.10)", color: "#dc2626" }}>
+                          ID : {parsed.ownerId.slice(0, 8)}
+                        </span>
+                      )}
+                    </div>
                     <p style={{ color: TEXT_PRI, fontSize: 13, marginTop: 6, fontWeight: 500 }}>
                       {REASON_LABELS[r.reason] ?? r.reason}
                     </p>
-                    {r.details && (
-                      <p style={{ color: TEXT_SEC, fontSize: 12, marginTop: 4, fontStyle: "italic" }}>{r.details}</p>
+                    {(parsed.message || r.details) && (
+                      <p style={{ color: TEXT_SEC, fontSize: 12, marginTop: 4, fontStyle: "italic" }}>
+                        {parsed.message ?? r.details}
+                      </p>
                     )}
 
                     {/* Actions */}
